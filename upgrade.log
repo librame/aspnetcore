@@ -1,0 +1,76 @@
+
+Librame 5.0.3 (2015-01-29)
+-- 修正 Librame.Context 命名空间下 ContextBase'T2、ContextRepository'T2、ContextApi'T2 的实体泛类型引用问题；
+
+Librame 5.0.2 (2015-01-29)
+-- 增加 ServiceMapper、ApplicationBinder 功能，分别用于管理 IServiceCollection、IApplicationBuilder 功能；同时 ApplicationBinder 自身是 Librame 级基础容器；
+-- 增加 Librame.Security 安全命名空间，支持哈希算法（MD5, SHA1, SHA256, SHA384, SHA512...）、键控哈希算法(HMACMD5, HMACSHA1, HMACSHA256, HMACSHA384, HMACSHA512, HMACTripleDES...)、对称算法(AES, DES, TripleDES)等大量算法功能；
+-- 优化 Librame.Context 命名空间下 QueryInterceptor 等相关功能；
+-- 调整 Librame.Context 命名空间下 ContextRepository'T3，为其 CRUD 方法增加 HttpMethodAttribute 属性，同时修正了继续此类会出现找不到路径等相关异常；
+-- 修正 Librame.Data 命名空间下数据查询的相关 BUG；
+-- 其它的一些细节优化；
+
+Librame 5.0.1 (2015-01-19)
+-- 新增 Librame.Context 命名空间；同时增加 ContextRepository'T3、ContextRepository'T2 统一上下文数据仓库封装类；
+-- 调整 Librame.Controllers 命名空间所有类到 Librame.Context.Controllers 命名空间下；同时增加 ControllerBase'T2、ControllerRepositoryBase'T2、ControllerApiBase'T2等整数型相关控制器；
+
+Librame 5.0.0 (2015-01-18)
+-- 修改 Librame.Data.Models 命名空间下 IdEntity、DataIdEntity 等抽象实体为泛类型（IdEntity'T、DataIdEntity'T），以支持不同 ID 编号类型（如 int、guid...）；
+-- 增加 Librame.Controllers 命名空间下 ControllerBase'T、ControlerApi'T、ControllerRepository'T 等控制器的实体编号类型，以支持上一条的改动；
+-- 其它的一些细节优化；
+
+Librame 5.0.0 beta1 (2015-01-17)
+-- 使用 ASP.NET 5 基础框架；
+-- 新增支持 EntityFramework 7；
+-- 新增支持 MVC 6；
+-- 新增支持 Kendo UI (Grid)；
+
+Librame,C#,MVC,EntityFramework,Kendo
+
+Example：
+1. Models
+public class Blog : Librame.Data.Models.IdEntity
+{
+	public string Title { get; set; }
+	public string Description { get; set; }
+	public DateTime Pubdate { get; set; }
+	public Blog()
+	{
+		Pubdate = DateTime.Now;
+	}
+}
+public class TestDbContext : DbContext
+{
+	protected override void OnModelCreating(ModelBuilder builder)
+	{
+		builder.Entity<Blog>(b =>
+		{
+			b.ForRelational().Table("Blogs");
+			b.Property(p => p.Id).GenerateValuesOnAdd();
+			b.Property(p => p.Title).Required().MaxLength(50);
+			b.Property(p => p.Description);
+			b.Property(p => p.Pubdate).Required();
+			b.Key(k => k.Id);
+		});
+	}
+}
+2. Startup.cs
+public void ConfigureServices(IServiceCollection services)
+{
+	services.AddEntityFramework(Configuration)
+		.AddSqlServer()
+		.AddDbContext<TestDbContext>();
+	services.AddMvc();
+	services.AddLibrame();
+}
+3. Controllers
+public class BlogController : Librame.Context.Controllers.ControllerRepositoryBase<TestDbContext, Blog>
+{
+}
+4. Request http://localhost/Blog
+Response [{Id:1,...}]
+5. Request http://localhost/Blog?take=10
+Response {rows:[{Id:1,...}],total:100}
+
+QQ Group: 112768263
+Email: 312535437@qq.com

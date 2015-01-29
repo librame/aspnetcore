@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+
+    string str = "算法测试";
+    // AES
+    Librame.Security.KeyIvInfo keyIvInfo;
+    string aesStr = str.AsAes(out keyIvInfo);
+    // HMAC
+    Librame.Security.KeyInfo keyInfo;
+    string hmacStr = str.AsHmacSha256(out keyInfo);
+}
+<h3 style="font-family:Verdana;">Librame v5.0.2</h3>
+<h4 style="font-family:Verdana;">Support ASP.NET vNext (MVC 6 + EntityFramework 7 + Kendo UI)</h4>
+
+<h3>测试字符串：@str</h3>
+
+<h3>AES 对称算法</h3>
+<p>
+    AES：@aesStr
+    <br />
+    还原: @aesStr.FromAes(keyIvInfo)
+    <br />
+    Key: @keyIvInfo.KeyString
+    <br />
+    IV:  @keyIvInfo.IvString
+</p>
+
+<h3>HMAC 消息验证算法</h3>
+<p>
+    HMAC SHA256：@hmacStr
+    <br />
+    验证有效: @hmacStr.IsHmacSha256(str, keyInfo)
+    <br />
+    Key: @keyInfo.KeyString
+</p>
+
+<h3>哈希算法</h3>
+<p>
+    MD5：@str.AsMd5()
+    <br />
+    SHA1：@str.AsSha1()
+    <br />
+    SHA256：@str.AsSha256()
+    <br />
+    SHA384：@str.AsSha384()
+    <br />
+    SHA512：@str.AsSha512()
+</p>
+
+<a href="~/ui/list.html">测试数据列表</a>

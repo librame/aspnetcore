@@ -1,0 +1,4370 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Librame</name>
+    </assembly>
+    <members>
+        <member name="T:Librame.ApplicationBinder">
+            <summary>
+            <see cref="T:Librame.ApplicationBinder"/> 应用绑定器。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="F:Librame.ApplicationBinder.AlgorithmDomain">
+            <summary>
+            算法域。
+            </summary>
+        </member>
+        <member name="F:Librame.ApplicationBinder.QueryInterceptorDomain">
+            <summary>
+            查询拦截器域。
+            </summary>
+        </member>
+        <member name="M:Librame.ApplicationBinder.#ctor(Microsoft.AspNet.Builder.IApplicationBuilder)">
+            <summary>
+            构造一个应用绑定器实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            builder 为空。
+            </exception>
+            <param name="builder">给定的应用构建器。</param>
+        </member>
+        <member name="P:Librame.ApplicationBinder.Builder">
+            <summary>
+            获取应用构建器。
+            </summary>
+            <seealso cref="T:Microsoft.AspNet.Builder.IApplicationBuilder"/>
+        </member>
+        <member name="P:Librame.ApplicationBinder.Item(System.String)">
+            <summary>
+            获取指定域的容器接口。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <returns>返回容器接口或空。</returns>
+        </member>
+        <member name="M:Librame.ApplicationBinder.CreateContainer(System.String)">
+            <summary>
+            创建应用容器。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <returns>返回容器实例。</returns>
+        </member>
+        <member name="M:Librame.ApplicationBinder.AddOrUpdateInstance(System.String,System.Type,System.Object)">
+            <summary>
+            增加或更新指定域、应用类型的实例。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <param name="applicationType">给定的应用类型。</param>
+            <param name="instance">给定的新实例。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Librame.ApplicationBinder.Bind(System.String,Librame.ApplicationOption)">
+            <summary>
+            绑定应用。
+            </summary>
+            <param name="domain">给定的应用域。</param>
+            <param name="option">给定的应用选项。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Librame.ApplicationBinder.Bind(System.String,System.Collections.Generic.IEnumerable{Librame.ApplicationOption})">
+            <summary>
+            绑定应用。
+            </summary>
+            <param name="domain">给定的应用域。</param>
+            <param name="options">给定的应用选项集合。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Librame.ApplicationBinder.Bind(System.String,System.Func{Librame.IApplicationContainer,Librame.IApplicationContainer})">
+            <summary>
+            绑定应用。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            binderFactory 为空。
+            </exception>
+            <param name="domain">给定的应用域。</param>
+            <param name="binderFactory">给定的应用绑定方法。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Librame.ApplicationBinder.GetOptions(System.String)">
+            <summary>
+            获取指定域的应用选项字典集合。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <returns>返回字典集合或空。</returns>
+        </member>
+        <member name="M:Librame.ApplicationBinder.GetOption(System.String,System.Type)">
+            <summary>
+            获取指定域的应用选项。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <param name="applicationType">给定的应用类型。</param>
+            <returns>返回应用选项或空。</returns>
+        </member>
+        <member name="M:Librame.ApplicationBinder.Resolve``1(System.String)">
+            <summary>
+            解析指定域、应用类型的实例。
+            </summary>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="domain">给定的域。</param>
+            <returns>返回实例或空。</returns>
+        </member>
+        <member name="M:Librame.ApplicationBinder.Resolve(System.String,System.Type)">
+            <summary>
+            解析指定域、应用类型的实例。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <param name="applicationType">给定的应用类型。</param>
+            <returns>返回实例或空。</returns>
+        </member>
+        <member name="T:Librame.ApplicationContainer">
+            <summary>
+            应用容器。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.ApplicationContainer.#ctor(System.String,System.Collections.Concurrent.ConcurrentDictionary{System.Type,Librame.ApplicationOption})">
+            <summary>
+            构造一个应用容器实例。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <param name="options">给定的应用选项。</param>
+        </member>
+        <member name="P:Librame.ApplicationContainer.Domain">
+            <summary>
+            获取应用域。
+            </summary>
+        </member>
+        <member name="P:Librame.ApplicationContainer.Options">
+            <summary>
+            获取应用选项集合。
+            </summary>
+        </member>
+        <member name="P:Librame.ApplicationContainer.Item(System.Type)">
+            <summary>
+            获取指定应用类型的选项。
+            </summary>
+            <param name="applicationType">给定的应用类型。</param>
+            <returns>返回应用选项。</returns>
+        </member>
+        <member name="M:Librame.ApplicationContainer.AddOrUpdateInstance(System.Type,System.Object)">
+            <summary>
+            增加或更新指定应用类型的选项中的实例。
+            </summary>
+            <param name="applicationType">给定的应用类型。</param>
+            <param name="instance">给定的应用选项中的实例。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="M:Librame.ApplicationContainer.Register``2(System.Object[])">
+            <summary>
+            注册指定类型与实现的应用。
+            </summary>
+            <typeparam name="TApplication">给定的应用类型。</typeparam>
+            <typeparam name="TImplementation">给定的应用实现类型。</typeparam>
+            <param name="parameters">给定的构造参数集合。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="M:Librame.ApplicationContainer.Register``1(``0)">
+            <summary>
+            注册指定类型实例。
+            </summary>
+            <typeparam name="TApplication">给定的应用类型。</typeparam>
+            <param name="instance">给定的实例。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="M:Librame.ApplicationContainer.Register(Librame.ApplicationOption)">
+            <summary>
+            注册应用选项。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            option 为空。
+            </exception>
+            <param name="option">给定的应用选项。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="M:Librame.ApplicationContainer.Register(System.Collections.Generic.IEnumerable{Librame.ApplicationOption})">
+            <summary>
+            注册应用选项集合。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            options 为空。
+            </exception>
+            <param name="options">给定的应用选项集合。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="M:Librame.ApplicationContainer.Resolve``1">
+            <summary>
+            解析指定应用类型的选项中的实例。
+            </summary>
+            <typeparam name="T">指定的应用类型。</typeparam>
+            <returns>返回实例。</returns>
+        </member>
+        <member name="M:Librame.ApplicationContainer.Resolve(System.Type)">
+            <summary>
+            解析指定应用类型的选项中的实例。
+            </summary>
+            <param name="applicationType">给定的应用类型。</param>
+            <returns>返回实例。</returns>
+        </member>
+        <member name="T:Librame.ApplicationContainerExtensions">
+            <summary>
+            应用容器静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.ApplicationContainerExtensions.RegisterQueryInterceptor``2(Librame.IApplicationContainer,Librame.Context.QueryInterceptorParameter[])">
+            <summary>
+            注册查询拦截器的指定类型与实现的应用。
+            </summary>
+            <typeparam name="TInterceptor">指定的拦截器类型。</typeparam>
+            <typeparam name="TImplementation">指定的实现类型。</typeparam>
+            <param name="parameters">给定的构造参数集合。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="T:Librame.ApplicationOption">
+            <summary>
+            应用选项。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.ApplicationOption.#ctor(System.Type,System.Type,System.Object[])">
+            <summary>
+            构造一个应用选项实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            applicationType 为空。
+            </exception>
+            <param name="applicationType">给定的应用类型。</param>
+            <param name="implementationType">给定的实现类型。</param>
+            <param name="parameters">给定的构造参数集合。</param>
+        </member>
+        <member name="M:Librame.ApplicationOption.#ctor(System.Type,System.Object)">
+            <summary>
+            构造一个应用选项实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            applicationType 为空。
+            </exception>
+            <param name="applicationType">给定的应用类型。</param>
+            <param name="instance">给定的实例。</param>
+        </member>
+        <member name="P:Librame.ApplicationOption.ApplicationType">
+            <summary>
+            获取应用类型。
+            </summary>
+        </member>
+        <member name="P:Librame.ApplicationOption.ImplementationType">
+            <summary>
+            获取实现类型。
+            </summary>
+        </member>
+        <member name="P:Librame.ApplicationOption.Parameters">
+            <summary>
+            获取构造参数集合。
+            </summary>
+        </member>
+        <member name="P:Librame.ApplicationOption.Instance">
+            <summary>
+            获取或设置应用实例。
+            </summary>
+        </member>
+        <member name="M:Librame.ApplicationOption.UpdateInstance(System.Object)">
+            <summary>
+            更新实例。
+            </summary>
+            <param name="instance">给定的实例。</param>
+            <returns>返回应用选项。</returns>
+        </member>
+        <member name="T:Librame.IApplicationBinder">
+            <summary>
+            <see cref="T:Librame.IApplicationBinder"/> 应用绑定器接口。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.IApplicationBinder.Builder">
+            <summary>
+            获取应用构建器。
+            </summary>
+            <seealso cref="T:Microsoft.AspNet.Builder.IApplicationBuilder"/>
+        </member>
+        <member name="P:Librame.IApplicationBinder.Item(System.String)">
+            <summary>
+            获取指定域的容器接口。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <returns>返回容器接口或空。</returns>
+        </member>
+        <member name="M:Librame.IApplicationBinder.AddOrUpdateInstance(System.String,System.Type,System.Object)">
+            <summary>
+            增加或更新指定域、应用类型的实例。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <param name="applicationType">给定的应用类型。</param>
+            <param name="instance">给定的新实例。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Librame.IApplicationBinder.Bind(System.String,Librame.ApplicationOption)">
+            <summary>
+            绑定应用。
+            </summary>
+            <param name="domain">给定的应用域。</param>
+            <param name="option">给定的应用选项。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Librame.IApplicationBinder.Bind(System.String,System.Collections.Generic.IEnumerable{Librame.ApplicationOption})">
+            <summary>
+            绑定应用。
+            </summary>
+            <param name="domain">给定的应用域。</param>
+            <param name="options">给定的应用选项集合。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Librame.IApplicationBinder.Bind(System.String,System.Func{Librame.IApplicationContainer,Librame.IApplicationContainer})">
+            <summary>
+            绑定应用。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            binderFactory 为空。
+            </exception>
+            <param name="domain">给定的应用域。</param>
+            <param name="binderFactory">给定的应用绑定方法。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Librame.IApplicationBinder.GetOptions(System.String)">
+            <summary>
+            获取指定域的应用选项字典集合。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <returns>返回字典集合或空。</returns>
+        </member>
+        <member name="M:Librame.IApplicationBinder.GetOption(System.String,System.Type)">
+            <summary>
+            获取指定域的应用选项。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <param name="applicationType">给定的应用类型。</param>
+            <returns>返回应用选项或空。</returns>
+        </member>
+        <member name="M:Librame.IApplicationBinder.Resolve``1(System.String)">
+            <summary>
+            解析指定域、应用类型的实例。
+            </summary>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="domain">给定的域。</param>
+            <returns>返回实例或空。</returns>
+        </member>
+        <member name="M:Librame.IApplicationBinder.Resolve(System.String,System.Type)">
+            <summary>
+            解析指定域、应用类型的实例。
+            </summary>
+            <param name="domain">给定的域。</param>
+            <param name="applicationType">给定的应用类型。</param>
+            <returns>返回实例或空。</returns>
+        </member>
+        <member name="T:Librame.IApplicationContainer">
+            <summary>
+            应用容器接口。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.IApplicationContainer.Domain">
+            <summary>
+            获取应用域。
+            </summary>
+        </member>
+        <member name="P:Librame.IApplicationContainer.Options">
+            <summary>
+            获取应用选项集合。
+            </summary>
+        </member>
+        <member name="P:Librame.IApplicationContainer.Item(System.Type)">
+            <summary>
+            获取指定应用类型的选项。
+            </summary>
+            <param name="applicationType">给定的应用类型。</param>
+            <returns>返回应用选项。</returns>
+        </member>
+        <member name="M:Librame.IApplicationContainer.AddOrUpdateInstance(System.Type,System.Object)">
+            <summary>
+            增加或更新指定应用类型的选项中的实例。
+            </summary>
+            <param name="applicationType">给定的应用类型。</param>
+            <param name="instance">给定的应用选项中的实例。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="M:Librame.IApplicationContainer.Register``2(System.Object[])">
+            <summary>
+            注册指定类型与实现的应用。
+            </summary>
+            <typeparam name="TApplication">给定的应用类型。</typeparam>
+            <typeparam name="TImplementation">给定的应用实现类型。</typeparam>
+            <param name="parameters">给定的构造参数集合。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="M:Librame.IApplicationContainer.Register``1(``0)">
+            <summary>
+            注册指定类型实例。
+            </summary>
+            <typeparam name="TApplication">给定的应用类型。</typeparam>
+            <param name="instance">给定的实例。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="M:Librame.IApplicationContainer.Register(Librame.ApplicationOption)">
+            <summary>
+            注册应用选项。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            option 为空。
+            </exception>
+            <param name="option">给定的应用选项。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="M:Librame.IApplicationContainer.Register(System.Collections.Generic.IEnumerable{Librame.ApplicationOption})">
+            <summary>
+            注册应用选项集合。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            options 为空。
+            </exception>
+            <param name="options">给定的应用选项集合。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationContainer"/>。</returns>
+        </member>
+        <member name="M:Librame.IApplicationContainer.Resolve``1">
+            <summary>
+            解析指定应用类型的选项中的实例。
+            </summary>
+            <typeparam name="T">指定的应用类型。</typeparam>
+            <returns>返回实例。</returns>
+        </member>
+        <member name="M:Librame.IApplicationContainer.Resolve(System.Type)">
+            <summary>
+            解析指定应用类型的选项中的实例。
+            </summary>
+            <param name="applicationType">给定的应用类型。</param>
+            <returns>返回实例。</returns>
+        </member>
+        <member name="T:Librame.IServiceMapper">
+            <summary>
+            <see cref="T:Librame.IServiceMapper"/> 服务映射器接口。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.IServiceMapper.Services">
+            <summary>
+            获取服务集合。
+            </summary>
+            <seealso cref="T:Microsoft.Framework.DependencyInjection.IServiceCollection"/>
+        </member>
+        <member name="M:Librame.IServiceMapper.Map``2(Microsoft.Framework.DependencyInjection.LifecycleKind)">
+            <summary>
+            映射服务与实现类型。
+            </summary>
+            <typeparam name="TService">指定的服务类型。</typeparam>
+            <typeparam name="TImplementation">指定的实现类型。</typeparam>
+            <param name="lifecycle">给定的生存周期种类（可选；默认为单例）。</param>
+            <returns>返回 <see cref="T:Librame.IServiceMapper"/>。</returns>
+        </member>
+        <member name="M:Librame.IServiceMapper.Map``1(``0)">
+            <summary>
+            映射服务类型。
+            </summary>
+            <typeparam name="TService">指定的服务类型。</typeparam>
+            <param name="implementationInstance">给定的服务实现实例（可选）。</param>
+            <returns>返回 <see cref="T:Librame.IServiceMapper"/>。</returns>
+        </member>
+        <member name="T:Librame.LibrameHelper">
+            <summary>
+            Librame 助手。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.LibrameHelper.GetOrCreateBinder(Microsoft.AspNet.Builder.IApplicationBuilder)">
+            <summary>
+            获取或创建应用绑定器。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            builder 为空（首次实例化时不能为空）。
+            </exception>
+            <param name="builder">给定的应用构建器（可为空，但首次实例化时不能为空）。</param>
+            <returns>返回应用绑定器。</returns>
+        </member>
+        <member name="M:Librame.LibrameHelper.GetOrCreateMapper(Microsoft.Framework.DependencyInjection.IServiceCollection)">
+            <summary>
+            获取或创建服务映射器。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            services 为空（首次实例化时不能为空）。
+            </exception>
+            <param name="services">给定的服务集合（可为空，但首次实例化时不能为空）。</param>
+            <returns>返回服务映射器。</returns>
+        </member>
+        <member name="T:Librame.ServiceMapper">
+            <summary>
+            <see cref="T:Librame.ServiceMapper"/> 服务映射器。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.ServiceMapper.#ctor(Microsoft.Framework.DependencyInjection.IServiceCollection)">
+            <summary>
+            构造一个服务映射器实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            services 为空。
+            </exception>
+            <param name="services">给定的服务集合。</param>
+        </member>
+        <member name="P:Librame.ServiceMapper.Services">
+            <summary>
+            获取服务集合。
+            </summary>
+            <seealso cref="T:Microsoft.Framework.DependencyInjection.IServiceCollection"/>
+        </member>
+        <member name="M:Librame.ServiceMapper.Map``2(Microsoft.Framework.DependencyInjection.LifecycleKind)">
+            <summary>
+            映射服务与实现类型。
+            </summary>
+            <typeparam name="TService">指定的服务类型。</typeparam>
+            <typeparam name="TImplementation">指定的实现类型。</typeparam>
+            <param name="lifecycle">给定的生存周期种类（可选；默认为单例）。</param>
+            <returns>返回 <see cref="T:Librame.IServiceMapper"/>。</returns>
+        </member>
+        <member name="M:Librame.ServiceMapper.Map``1(``0)">
+            <summary>
+            映射服务类型。
+            </summary>
+            <typeparam name="TService">指定的服务类型。</typeparam>
+            <param name="implementationInstance">给定的服务实现实例（可选）。</param>
+            <returns>返回 <see cref="T:Librame.IServiceMapper"/>。</returns>
+        </member>
+        <member name="T:Librame.UniqueIdentity">
+            <summary>
+            唯一标识。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.UniqueIdentity.#ctor">
+            <summary>
+            构造一个动态的唯一标识实例。
+            </summary>
+        </member>
+        <member name="M:Librame.UniqueIdentity.#ctor(System.String)">
+            <summary>
+            构造一个唯一标识实例。
+            </summary>
+            <param name="guid">给定的 GUID 字符串。</param>
+        </member>
+        <member name="M:Librame.UniqueIdentity.#ctor(System.Guid)">
+            <summary>
+            构造一个唯一标识实例。
+            </summary>
+            <param name="guid">给定的 <see cref="T:System.Guid"/>。</param>
+        </member>
+        <member name="P:Librame.UniqueIdentity.Guid">
+            <summary>
+            获取 <see cref="T:System.Guid"/>。
+            </summary>
+        </member>
+        <member name="T:Librame.Context.ContextRepository`2">
+            <summary>
+            带整数型编号的上下文数据仓库。
+            </summary>
+            <typeparam name="TDbContext">指定的 <see cref="T:Microsoft.Data.Entity.DbContext"/> 类型。</typeparam>
+            <typeparam name="TEntity">指定的实体类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`2.#ctor(Microsoft.AspNet.Http.HttpContext)">
+            <summary>
+            构造一个带整数型编号的上下文数据仓库实例。
+            </summary>
+            <exception cref="!:ArgumentNullException">
+            context 为空。
+            </exception>
+            <param name="context">给定的 <see cref="T:Microsoft.AspNet.Http.HttpContext"/>。</param>
+        </member>
+        <member name="T:Librame.Context.ContextRepository`3">
+            <summary>
+            带泛类型编号的上下文数据仓库。
+            </summary>
+            <typeparam name="TDbContext">指定的 <see cref="T:Microsoft.Data.Entity.DbContext"/> 类型。</typeparam>
+            <typeparam name="TEntity">指定的实体类型。</typeparam>
+            <typeparam name="TId">指定的实体编号类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.#ctor(Microsoft.AspNet.Http.HttpContext)">
+            <summary>
+            构造一个带泛类型编号的上下文数据仓库实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            context 为空。
+            </exception>
+            <param name="context">给定的 <see cref="T:Microsoft.AspNet.Http.HttpContext"/>。</param>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.Context">
+            <summary>
+            获取当前 <see cref="T:Microsoft.AspNet.Http.HttpContext"/>。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.Initialize">
+            <summary>
+            初始化请求。
+            </summary>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.Query">
+            <summary>
+            获取当前查询请求。
+            </summary>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.Accessor">
+            <summary>
+            获取当前数据访问器。
+            </summary>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.Entity">
+            <summary>
+            获取当前实体仓库。
+            </summary>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.IdIsNotNullFunc">
+            <summary>
+            获取或设置编号不为空的方法。
+            </summary>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.IdEqualsFunc">
+            <summary>
+            获取或设置编号是否相等的方法。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.GetSingle(`2)">
+            <summary>
+            获取指定编号的实体。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            <see cref="P:Librame.Context.ContextRepository`3.IdIsNotNullFunc"/> and <see cref="P:Librame.Context.ContextRepository`3.IdEqualsFunc"/> 属性为空。
+            </exception>
+            <param name="id">给定的编号。</param>
+            <returns>返回实体或空。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.GetSingleAsync(`2)">
+            <summary>
+            异步获取指定编号的实体。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            <see cref="P:Librame.Context.ContextRepository`3.IdIsNotNullFunc"/> and <see cref="P:Librame.Context.ContextRepository`3.IdEqualsFunc"/> 属性为空。
+            </exception>
+            <param name="id">给定的编号。</param>
+            <returns>返回实体或空。</returns>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.ListPreQueryFunc">
+            <summary>
+            获取或设置自定义列表预查询方法。
+            </summary>
+            <value>默认不处理，直接返回。</value>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.ListCompleteFunc">
+            <summary>
+            获取或设置自定义实体列表完成处理。
+            </summary>
+            <value>默认不处理，直接返回。</value>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.PagedListCompleteFunc">
+            <summary>
+            获取或设置自定义分页实体列表完成处理。
+            </summary>
+            <value>默认不处理，直接返回。</value>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.GetList">
+            <summary>
+            获取所有实体列表。
+            </summary>
+            <returns>返回实体集合。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.GetListAsync">
+            <summary>
+            异步获取所有实体列表。
+            </summary>
+            <returns>返回实体集合。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.GetPagedList(System.Int32,System.Int32)">
+            <summary>
+            获取分页实体列表。
+            </summary>
+            <param name="skip">给定的跳过条数。</param>
+            <param name="take">给定的取得条数。</param>
+            <returns>返回分页实体集合。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.GetPagedListAsync(System.Int32,System.Int32)">
+            <summary>
+            异步获取分页实体列表。
+            </summary>
+            <param name="skip">给定的跳过条数。</param>
+            <param name="take">给定的取得条数。</param>
+            <returns>返回分页实体集合。</returns>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.CreatingPredicateExpressionFunc">
+            <summary>
+            获取或设置创建实体断定表达式的方法。
+            </summary>
+            <value>默认返回空，表示不验证创建实体。</value>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.CreatingExistsFunc">
+            <summary>
+            获取或设置判定要创建的实体是否已存在的方法。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.Creating(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            创建实体集合。
+            </summary>
+            <param name="entities">给定的实体集合。</param>
+            <returns>返回实体集合。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.CreatingAsync(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            异步创建实体集合。
+            </summary>
+            <param name="entities">给定的实体集合。</param>
+            <returns>返回实体集合。</returns>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.UpdatingPredicateExpressionFunc">
+            <summary>
+            获取或设置更新实体断定表达式的方法。
+            </summary>
+            <value>默认返回空，表示不验证创建实体。</value>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.UpdatingExistsFunc">
+            <summary>
+            获取或设置判定要更新的实体是否已存在的方法。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.Updating(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            更新实体集合。
+            </summary>
+            <param name="entities">给定的实体集合。</param>
+            <returns>返回实体集合。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.UpdatingAsync(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            异步更新实体集合。
+            </summary>
+            <param name="entities">给定的实体集合。</param>
+            <returns>返回实体集合。</returns>
+        </member>
+        <member name="P:Librame.Context.ContextRepository`3.LogicalDeleteFactoryFunc">
+            <summary>
+            获取或删除逻辑删除工厂方法。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.LogicalDelete(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            逻辑删除实体集合。
+            </summary>
+            <remarks>
+            通过调用 <see cref="!:Repository.Update(TEntity)"/> 实现。
+            </remarks>
+            <param name="entities">给定的实体集合。</param>
+            <returns>返回实体集合。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.LogicalDeleteAsync(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            异步逻辑删除实体集合。
+            </summary>
+            <remarks>
+            通过调用 <see cref="!:Repository.Update(TEntity)"/> 实现。
+            </remarks>
+            <param name="entities">给定的实体集合。</param>
+            <returns>返回实体集合。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.PhysicalDelete(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            物理删除实体集合。
+            </summary>
+            <param name="entities">给定的实体集合。</param>
+            <returns>返回实体集合。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.PhysicalDeleteAsync(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            异步物理删除实体集合。
+            </summary>
+            <param name="entities">给定的实体集合。</param>
+            <returns>返回实体集合。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.Flush">
+            <summary>
+            清空实体变化并保存到数据库。
+            </summary>
+            <returns>返回受影响的行数。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.FlushAsync">
+            <summary>
+            异步清空实体变化并保存到数据库。
+            </summary>
+            <returns>返回受影响的行数。</returns>
+        </member>
+        <member name="M:Librame.Context.ContextRepository`3.Dispose">
+            <summary>
+            释放资源。
+            </summary>
+            <remarks>
+            立即释放实体仓库对象资源。
+            </remarks>
+        </member>
+        <member name="T:Librame.Context.QueryBase">
+            <summary>
+            查询抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.QueryBase.#ctor(Librame.Context.RequestBase,Librame.Context.QueryInterceptorOption)">
+            <summary>
+            构造一个查询抽象基类实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            request 与 option 为空。
+            </exception>
+            <param name="request">给定的请求对象。</param>
+            <param name="option">给定的查询拦截器选项。</param>
+        </member>
+        <member name="P:Librame.Context.QueryBase.Request">
+            <summary>
+            获取请求对象。
+            </summary>
+        </member>
+        <member name="P:Librame.Context.QueryBase.Option">
+            <summary>
+            获取查询拦截器选项。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.QueryBase.Initialize">
+            <summary>
+            初始化查询。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.QueryBase.Populate">
+            <summary>
+            填充查询参数。
+            </summary>
+        </member>
+        <member name="T:Librame.Context.QueryInterceptorOption">
+            <summary>
+            查询拦截器选项。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.QueryInterceptorOption.#ctor(System.Type,System.Type,Librame.Context.QueryInterceptorParameter[])">
+            <summary>
+            构造一个查询拦截器选项实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            interceptorType 为空。
+            </exception>
+            <param name="interceptorType">给定的拦截器类型。</param>
+            <param name="implementationType">给定的实现类型。</param>
+            <param name="parameters">给定的拦截器参数数组。</param>
+        </member>
+        <member name="P:Librame.Context.QueryInterceptorOption.IsSuccess">
+            <summary>
+            获取拦截是否成功。
+            </summary>
+        </member>
+        <member name="T:Librame.Context.QueryInterceptorParameter">
+            <summary>
+            查询拦截器参数。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.QueryInterceptorParameter.#ctor(System.String)">
+            <summary>
+            构造一个查询拦截器参数实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            pattern 为空。
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            出现正则表达式分析错误。
+            </exception>
+            <param name="pattern">给定要匹配的正则表达式模式。</param>
+        </member>
+        <member name="M:Librame.Context.QueryInterceptorParameter.#ctor(System.Text.RegularExpressions.Regex)">
+            <summary>
+            构造一个查询拦截器参数实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            rule 为空。
+            </exception>
+            <param name="rule">给定要匹配的正则表达式规则。</param>
+        </member>
+        <member name="P:Librame.Context.QueryInterceptorParameter.Rule">
+            <summary>
+            获取要匹配的正则表达式规则。
+            </summary>
+        </member>
+        <member name="P:Librame.Context.QueryInterceptorParameter.Queries">
+            <summary>
+            获取与当前规则匹配的查询参数键值对集合。
+            </summary>
+        </member>
+        <member name="T:Librame.Context.QueryRequest">
+            <summary>
+            查询请求。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.QueryRequest.#ctor(Microsoft.AspNet.Http.HttpRequest)">
+            <summary>
+            构造一个查询请求实例。
+            </summary>
+            <exception cref="!:ArgumentNullException">
+            request 为空。
+            </exception>
+            <param name="request">给定的 HTTP 请求对象。</param>
+        </member>
+        <member name="T:Librame.Context.QueryRequestBase">
+            <summary>
+            查询请求抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.QueryRequestBase.#ctor(Microsoft.AspNet.Http.HttpRequest)">
+            <summary>
+            构造一个查询请求抽象基类实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            request 为空。
+            </exception>
+            <param name="request">给定的 HTTP 请求对象。</param>
+        </member>
+        <member name="M:Librame.Context.QueryRequestBase.GetOptions">
+            <summary>
+            获取绑定的所有查询拦截器选项。
+            </summary>
+            <returns>返回拦截器列表。</returns>
+        </member>
+        <member name="M:Librame.Context.QueryRequestBase.Resolve">
+            <summary>
+            解析查询请求。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.QueryRequestBase.Populate">
+            <summary>
+            填充参数。
+            </summary>
+        </member>
+        <member name="P:Librame.Context.QueryRequestBase.Options">
+            <summary>
+            获取当前拦截器列表。
+            </summary>
+        </member>
+        <member name="P:Librame.Context.QueryRequestBase.Pager">
+            <summary>
+            获取分页器查询。
+            </summary>
+            <value>返回分页器查询或空。</value>
+        </member>
+        <member name="P:Librame.Context.QueryRequestBase.Filter">
+            <summary>
+            获取过滤器查询。
+            </summary>
+            <value>返回过滤器查询或空。</value>
+        </member>
+        <member name="P:Librame.Context.QueryRequestBase.Sorter">
+            <summary>
+            获取排序器查询。
+            </summary>
+            <value>返回过滤器查询或空。</value>
+        </member>
+        <member name="T:Librame.Context.RequestBase">
+            <summary>
+            请求抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.RequestBase.#ctor(Microsoft.AspNet.Http.HttpRequest)">
+            <summary>
+            构造一个请求抽象基类实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            request 为空。
+            </exception>
+            <param name="request">给定的 HTTP 请求对象。</param>
+        </member>
+        <member name="P:Librame.Context.RequestBase.Request">
+            <summary>
+            获取当前 HTTP 请求对象。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.RequestBase.Initialize">
+            <summary>
+            初始化请求。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.RequestBase.Resolve">
+            <summary>
+            解析请求。
+            </summary>
+        </member>
+        <member name="T:Librame.Context.Mvc.ControllerApi`2">
+            <summary>
+            带泛类型编号的 API 控制器。
+            </summary>
+            <typeparam name="TDbContext">指定的 <see cref="T:Microsoft.Data.Entity.DbContext"/> 类型。</typeparam>
+            <typeparam name="TEntity">指定的实体类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="T:Librame.Context.Mvc.ControllerApi`3">
+            <summary>
+            带泛类型编号的 API 控制器。
+            </summary>
+            <typeparam name="TDbContext">指定的 <see cref="T:Microsoft.Data.Entity.DbContext"/> 类型。</typeparam>
+            <typeparam name="TEntity">指定的实体类型。</typeparam>
+            <typeparam name="TId">指定的实体编号类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerApi`3.Get">
+            <summary>
+            获取数据集合（GET: api/values）。
+            </summary>
+            <remarks>
+            支持分页查询。
+            </remarks>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerApi`3.Get(`2)">
+            <summary>
+            获取指定 ID 的数据（GET: api/values/5）。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerApi`3.Post(System.String)">
+            <summary>
+            创建数据集合（POST: api/values）。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerApi`3.Put(System.String)">
+            <summary>
+            更新数据集合（PUT: api/values）。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerApi`3.Delete(System.String)">
+            <summary>
+            删除数据集合（DELETE: api/values）。
+            </summary>
+            <remarks>
+            支持逻辑（如果当前实体可从 <see cref="T:Librame.Data.Models.DataIdEntity"/> 分配）或物理删除。
+            </remarks>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="T:Librame.Context.Mvc.ControllerBase`2">
+            <summary>
+            带整数型编号的控制器抽象基类。
+            </summary>
+            <typeparam name="TDbContext">指定的 <see cref="T:Microsoft.Data.Entity.DbContext"/> 类型。</typeparam>
+            <typeparam name="TEntity">指定的实体类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`2.IdIsNotNull(System.Int32)">
+            <summary>
+            验证编号不为空。
+            </summary>
+            <param name="id">给定的编号。</param>
+            <returns>返回是否为空的布尔值。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`2.IdEquals(System.Int32,System.Int32)">
+            <summary>
+            验证指定编号与当前编号是否相等。
+            </summary>
+            <param name="id">给定的编号。</param>
+            <param name="compareId">给定的对比编号。</param>
+            <returns>返回是否相等的布尔值。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`2.PagedListComplete(System.Collections.Generic.IPageable{`1})">
+            <summary>
+            自定义分页实体列表完成处理。
+            </summary>
+            <param name="pagedList">给定的分页实体列表。</param>
+            <returns>返回实体集合（默认支持绑定初始项）。</returns>
+        </member>
+        <member name="T:Librame.Context.Mvc.ControllerBase`3">
+            <summary>
+            带泛类型编号的控制器抽象基类。
+            </summary>
+            <typeparam name="TDbContext">指定的 <see cref="T:Microsoft.Data.Entity.DbContext"/> 类型。</typeparam>
+            <typeparam name="TEntity">指定的实体类型。</typeparam>
+            <typeparam name="TId">指定的实体编号类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Context.Mvc.ControllerBase`3.Repository">
+            <summary>
+            获取请求上下文数据仓库。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.BindRepositoryFuncs">
+            <summary>
+            绑定数据仓库相关处理方法。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.IdIsNotNull(`2)">
+            <summary>
+            验证编号不为空。
+            </summary>
+            <param name="id">给定的编号。</param>
+            <returns>返回是否为空的布尔值。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.IdEquals(`2,`2)">
+            <summary>
+            验证指定编号与当前编号是否相等。
+            </summary>
+            <param name="id">给定的编号。</param>
+            <param name="compareId">给定的对比编号。</param>
+            <returns>返回是否相等的布尔值。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.ListPreQuery(System.Linq.IQueryable{`1})">
+            <summary>
+            自定义列表预查询。
+            </summary>
+            <param name="query">给定的当前查询对象。</param>
+            <returns>返回查询对象（默认不处理，直接返回）。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.ListComplete(System.Collections.Generic.IList{`1})">
+            <summary>
+            自定义实体列表完成处理。
+            </summary>
+            <param name="list">给定的实体列表。</param>
+            <returns>返回实体集合（默认不处理，直接返回）。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.PagedListComplete(System.Collections.Generic.IPageable{`1})">
+            <summary>
+            自定义分页实体列表完成处理。
+            </summary>
+            <param name="pagedList">给定的分页实体列表。</param>
+            <returns>返回实体集合（默认不处理，直接返回）。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.CreatingPredicateExpression(`1)">
+            <summary>
+            创建实体的断定表达式。
+            </summary>
+            <param name="create">给定要创建的实体。</param>
+            <returns>返回断定表达式（默认返回空）。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.CreatingExists(`1)">
+            <summary>
+            判定要创建的实体是否已存在的方法。
+            </summary>
+            <remarks>
+            如果断定表达式 <see cref="M:Librame.Context.Mvc.ControllerBase`3.CreatingPredicateExpression(`1)"/> 返回空，则此方法将无效。
+            </remarks>
+            <param name="result">给定要创建的实体。</param>
+            <returns>返回布尔值（TRUE 表示已存在，反之则不存在）。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.UpdatingPredicateExpression(`1)">
+            <summary>
+            更新实体的断定表达式。
+            </summary>
+            <param name="create">给定的更新实体。</param>
+            <returns>返回断定表达式（默认返回空）。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.UpdatingExists(`1)">
+            <summary>
+            判定要更新的实体是否已存在的方法。
+            </summary>
+            <remarks>
+            如果断定表达式 <see cref="M:Librame.Context.Mvc.ControllerBase`3.UpdatingPredicateExpression(`1)"/> 返回空，则此方法将无效。
+            </remarks>
+            <param name="result">给定要创建的实体。</param>
+            <returns>返回布尔值（TRUE 表示已存在，反之则不存在）。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.LogicalDeleteFactory(`1)">
+            <summary>
+            获取逻辑删除工厂方法。
+            </summary>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerBase`3.Dispose(System.Boolean)">
+            <summary>
+            释放资源。
+            </summary>
+            <param name="disposing">是否立即释放资源。</param>
+        </member>
+        <member name="T:Librame.Context.Mvc.ControllerRepository`2">
+            <summary>
+            带整数型编号的 Repository 控制器。
+            </summary>
+            <typeparam name="TDbContext">指定的 <see cref="T:Microsoft.Data.Entity.DbContext"/> 类型。</typeparam>
+            <typeparam name="TEntity">指定的实体类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="T:Librame.Context.Mvc.ControllerRepository`3">
+            <summary>
+            带泛类型编号的 Repository 控制器。
+            </summary>
+            <typeparam name="TDbContext">指定的 <see cref="T:Microsoft.Data.Entity.DbContext"/> 类型。</typeparam>
+            <typeparam name="TEntity">指定的实体类型。</typeparam>
+            <typeparam name="TId">指定的实体编号类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.Index">
+            <summary>
+            首页视图（即实体集合查询请求）。
+            </summary>
+            <remarks>
+            支持分页查询。
+            </remarks>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.IndexAsync">
+            <summary>
+            异步首页视图（即实体集合查询请求）。
+            </summary>
+            <remarks>
+            支持分页查询。
+            </remarks>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.Detail(`2)">
+            <summary>
+            详情视图（即实体查询请求）。
+            </summary>
+            <param name="id">给定的编号。</param>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.DetailAsync(`2)">
+            <summary>
+            异步详情视图（即实体查询请求）。
+            </summary>
+            <param name="id">给定的编号。</param>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.Create">
+            <summary>
+            创建视图。
+            </summary>
+            <returns>返回空视图。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.Create(System.String)">
+            <summary>
+            创建视图（即实体集合创建请求）。
+            </summary>
+            <param name="models">给定 JSON 格式字符串的实体集合。</param>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.CreateAsync(System.String)">
+            <summary>
+            异步创建视图（即实体集合创建请求）。
+            </summary>
+            <param name="models">给定 JSON 格式字符串的实体集合。</param>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.Update">
+            <summary>
+            更新视图。
+            </summary>
+            <returns>返回空视图。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.Update(System.String)">
+            <summary>
+            更新视图（即实体集合更新请求）。
+            </summary>
+            <param name="models">给定 JSON 格式字符串的实体集合。</param>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.UpdateAsync(System.String)">
+            <summary>
+            异步更新视图（即实体集合更新请求）。
+            </summary>
+            <param name="models">给定 JSON 格式字符串的实体集合。</param>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.Delete">
+            <summary>
+            删除视图。
+            </summary>
+            <returns>返回空视图。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.Delete(System.String)">
+            <summary>
+            删除视图（即实体集合删除请求）。
+            </summary>
+            <remarks>
+            支持逻辑（如果当前实体可从 <see cref="T:Librame.Data.Models.DataIdEntity"/> 分配）或物理删除。
+            </remarks>
+            <param name="models">给定 JSON 格式字符串的实体集合。</param>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.DeleteAsync(System.String)">
+            <summary>
+            异步删除视图（即实体集合删除请求）。
+            </summary>
+            <remarks>
+            支持逻辑（如果当前实体可从 <see cref="T:Librame.Data.Models.DataIdEntity"/> 分配）或物理删除。
+            </remarks>
+            <param name="models">给定 JSON 格式字符串的实体集合。</param>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.Save">
+            <summary>
+            保存变化的实体。
+            </summary>
+            <returns>返回受影响的行数。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.ControllerRepository`3.SaveAsync">
+            <summary>
+            异步保存变化的实体。
+            </summary>
+            <returns>返回受影响的行数。</returns>
+        </member>
+        <member name="T:Librame.Context.Mvc.DataScopesController">
+            <summary>
+            <see cref="T:Librame.Data.DataScope"/> 数据范围枚举的控制器。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.Mvc.DataScopesController.Index">
+            <summary>
+            首页视图。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.DataScopesController.Detail(System.Int32)">
+            <summary>
+            详情视图。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="T:Librame.Context.Mvc.FilterOperationsController">
+            <summary>
+            <see cref="!:Data.FilterOperation"/> 过滤运算方式枚举的控制器。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.Mvc.FilterOperationsController.Index">
+            <summary>
+            首页视图。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.FilterOperationsController.Detail(System.Int32)">
+            <summary>
+            详情视图。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="T:Librame.Context.Mvc.SortDirectionsController">
+            <summary>
+            <see cref="!:Data.SortDirection"/> 排序方向枚举的控制器。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.Mvc.SortDirectionsController.Index">
+            <summary>
+            首页视图。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.SortDirectionsController.Detail(System.Int32)">
+            <summary>
+            详情视图。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="T:Librame.Context.Mvc.TrackStatesController">
+            <summary>
+            <see cref="T:Librame.Data.TrackState"/> 跟踪状态枚举的控制器。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Context.Mvc.TrackStatesController.Index">
+            <summary>
+            首页视图。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="M:Librame.Context.Mvc.TrackStatesController.Detail(System.Int32)">
+            <summary>
+            详情视图。
+            </summary>
+            <returns>输出 JSON 格式的字符串。</returns>
+        </member>
+        <member name="T:Librame.Data.AccessorExtensions">
+            <summary>
+            访问器静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.AccessorExtensions.CreateRepository``1(Librame.Data.IAccessor)">
+            <summary>
+            创建实体仓库实例。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="accessor">给定的当前访问器。</param>
+            <returns>返回实体仓库对象。</returns>
+        </member>
+        <member name="T:Librame.Data.AccessorFactory">
+            <summary>
+            访问器抽象工厂。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.AccessorFactory.Create(System.IServiceProvider,Microsoft.Data.Entity.DbContextOptions)">
+            <summary>
+            创建访问器实例。
+            </summary>
+            <param name="serviceProvider">给定的 <see cref="T:System.IServiceProvider"/>。</param>
+            <param name="options">给定的 <see cref="T:Microsoft.Data.Entity.DbContextOptions"/>。</param>
+            <returns>返回访问器对象。</returns>
+        </member>
+        <member name="M:Librame.Data.AccessorFactory.Create(Microsoft.Data.Entity.DbContext)">
+            <summary>
+            创建访问器实例。
+            </summary>
+            <param name="context">给定的 <see cref="T:Microsoft.Data.Entity.DbContext"/>。</param>
+            <returns>返回访问器对象。</returns>
+        </member>
+        <member name="T:Librame.Data.DataScope">
+            <summary>
+            数据范围。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="F:Librame.Data.DataScope.None">
+            <summary>
+            无。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.DataScope.Deleted">
+            <summary>
+            已删除。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.DataScope.Removed">
+            <summary>
+            已撤下。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.DataScope.Public">
+            <summary>
+            公开的。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.DataScope.Entire">
+            <summary>
+            全部的。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.DataScope.Locked">
+            <summary>
+            已锁定。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.DataScope.Authorised">
+            <summary>
+            已授权。
+            </summary>
+        </member>
+        <member name="T:Librame.Data.IAccessor">
+            <summary>
+            访问器接口。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Data.IAccessor.Source">
+            <summary>
+            获取当前数据源对象。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.IAccessor.Query``1">
+            <summary>
+            获取查询接口。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <returns>返回查询对象。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.Get``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            获取匹配的单个实体。
+            </summary>
+            <remarks>
+            如果有多个匹配实体，则默认返回第一项。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="predicate">断定实体的表达式。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.GetAsync``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            异步获取匹配的单个实体。
+            </summary>
+            <remarks>
+            如果有多个匹配实体，则默认返回第一项。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="predicate">断定实体的表达式。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.Add``1(``0)">
+            <summary>
+            增加单个实体。
+            </summary>
+            <remarks>
+            已集成保存到数据库方法 <see cref="M:Librame.Data.IAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要增加的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.AddAsync``1(``0)">
+            <summary>
+            异步增加单个实体。
+            </summary>
+            <remarks>
+            已集成保存到数据库方法 <see cref="M:Librame.Data.IAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要增加的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.Update``1(``0)">
+            <summary>
+            更新单个实体。
+            </summary>
+            <remarks>
+            需自行调用保存到数据库方法 <see cref="M:Librame.Data.IAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.UpdateAsync``1(``0)">
+            <summary>
+            异步更新单个实体。
+            </summary>
+            <remarks>
+            需自行调用保存到数据库方法 <see cref="M:Librame.Data.IAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.Save``1(``0)">
+            <summary>
+            保存单个实体。
+            </summary>
+            <remarks>
+            支持增加或更新操作，已集成保存到数据库方法 <see cref="M:Librame.Data.IAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.SaveAsync``1(``0)">
+            <summary>
+            异步保存单个实体。
+            </summary>
+            <remarks>
+            支持增加或更新操作，已集成保存到数据库方法 <see cref="M:Librame.Data.IAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.Delete``1(``0)">
+            <summary>
+            删除单个实体。
+            </summary>
+            <remarks>
+            需自行调用保存到数据库方法 <see cref="M:Librame.Data.IAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.DeleteAsync``1(``0)">
+            <summary>
+            异步删除单个实体。
+            </summary>
+            <remarks>
+            需自行调用保存到数据库方法 <see cref="M:Librame.Data.IAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.Flush">
+            <summary>
+            清空实体变化并保存到数据库。
+            </summary>
+            <returns>返回受影响的行数。</returns>
+        </member>
+        <member name="M:Librame.Data.IAccessor.FlushAsync">
+            <summary>
+            异步清空实体变化并保存到数据库。
+            </summary>
+            <returns>返回受影响的行数。</returns>
+        </member>
+        <member name="T:Librame.Data.IRepository`1">
+            <summary>
+            ʵ��ֿ�ӿڡ�
+            </summary>
+            <typeparam name="T">ָ����ʵ�����͡�</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Data.IRepository`1.Accessor">
+            <summary>
+            ��ȡ�����÷�������
+            </summary>
+        </member>
+        <member name="P:Librame.Data.IRepository`1.Table">
+            <summary>
+            ��ȡ��ǰʵ���ѯ����
+            </summary>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.Add(`0)">
+            <summary>
+            ���ӵ���ʵ�塣
+            </summary>
+            <remarks>
+            �Ѽ��ɱ��浽���ݿⷽ�� <see cref="M:Librame.Data.IRepository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���ӵ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.AddAsync(`0)">
+            <summary>
+            �첽���ӵ���ʵ�塣
+            </summary>
+            <remarks>
+            �Ѽ��ɱ��浽���ݿⷽ�� <see cref="M:Librame.Data.IRepository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���ӵ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.Update(`0)">
+            <summary>
+            ���µ���ʵ�塣
+            </summary>
+            <remarks>
+            �����е��ñ��浽���ݿⷽ�� <see cref="M:Librame.Data.IRepository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.UpdateAsync(`0)">
+            <summary>
+            �첽���µ���ʵ�塣
+            </summary>
+            <remarks>
+            �����е��ñ��浽���ݿⷽ�� <see cref="M:Librame.Data.IRepository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.Save(`0)">
+            <summary>
+            ���浥��ʵ�塣
+            </summary>
+            <remarks>
+            ֧�����ӻ���²������Ѽ��ɱ��浽���ݿⷽ�� <see cref="M:Librame.Data.IRepository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.SaveAsync(`0)">
+            <summary>
+            �첽���浥��ʵ�塣
+            </summary>
+            <remarks>
+            ֧�����ӻ���²������Ѽ��ɱ��浽���ݿⷽ�� <see cref="M:Librame.Data.IRepository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.Delete(`0)">
+            <summary>
+            ɾ������ʵ�塣
+            </summary>
+            <remarks>
+            �����е��ñ��浽���ݿⷽ�� <see cref="M:Librame.Data.IRepository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.DeleteAsync(`0)">
+            <summary>
+            �첽ɾ������ʵ�塣
+            </summary>
+            <remarks>
+            �����е��ñ��浽���ݿⷽ�� <see cref="M:Librame.Data.IRepository`1.Flush"/>��
+            </remarks>
+            <typeparam name="T">ָ����ʵ�����͡�</typeparam>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.Flush">
+            <summary>
+            ���ʵ��仯�����浽���ݿ⡣
+            </summary>
+            <returns>������Ӱ���������</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.FlushAsync">
+            <summary>
+            �첽���ʵ��仯�����浽���ݿ⡣
+            </summary>
+            <returns>������Ӱ���������</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.Count(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            ������ѯͳ�ơ�
+            </summary>
+            <param name="predicate">�����Ĳ�ѯ�϶����ʽ��</param>
+            <returns>����������</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.CountAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            �첽������ѯͳ�ơ�
+            </summary>
+            <param name="predicate">�����Ĳ�ѯ�϶����ʽ��</param>
+            <returns>����������</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.Get(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            ��ȡƥ��ĵ���ʵ�塣
+            </summary>
+            <remarks>
+            ����ж��ƥ��ʵ�壬��Ĭ�Ϸ��ص�һ�
+            </remarks>
+            <typeparam name="T">ָ����ʵ�����͡�</typeparam>
+            <param name="predicate">�϶�ʵ��ı��ʽ��</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.GetAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            �첽��ȡƥ��ĵ���ʵ�塣
+            </summary>
+            <remarks>
+            ����ж��ƥ��ʵ�壬��Ĭ�Ϸ��ص�һ�
+            </remarks>
+            <typeparam name="T">ָ����ʵ�����͡�</typeparam>
+            <param name="predicate">�϶�ʵ��ı��ʽ��</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.List(System.Func{System.Linq.IQueryable{`0},System.Linq.IQueryable{`0}},System.Func{System.Linq.IQueryable{`0},System.Linq.IOrderedQueryable{`0}})">
+            <summary>
+            �б��ѯ��
+            </summary>
+            <param name="filterFactory">�����Ĺ��˷�������ѡ����</param>
+            <param name="sorterFactory">���������򷽷�����ѡ����</param>
+            <returns>����ʵ���б��</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.ListAsync(System.Func{System.Linq.IQueryable{`0},System.Linq.IQueryable{`0}},System.Func{System.Linq.IQueryable{`0},System.Linq.IOrderedQueryable{`0}})">
+            <summary>
+            �첽�б��ѯ��
+            </summary>
+            <param name="filterFactory">�����Ĺ��˷�������ѡ����</param>
+            <param name="sorterFactory">���������򷽷�����ѡ����</param>
+            <returns>����ʵ���б��</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.PagedList(System.Int32,System.Int32,System.Func{System.Linq.IQueryable{`0},System.Linq.IQueryable{`0}},System.Func{System.Linq.IQueryable{`0},System.Linq.IOrderedQueryable{`0}})">
+            <summary>
+            ��ҳ�б��ѯ��
+            </summary>
+            <param name="skip">����������������</param>
+            <param name="take">����ȡ�õ�������</param>
+            <param name="filterFactory">�����Ĺ��˷�������ѡ����</param>
+            <param name="sorterFactory">���������򷽷�����ѡ����</param>
+            <returns>���ط�ҳʵ���б��</returns>
+        </member>
+        <member name="M:Librame.Data.IRepository`1.PagedListAsync(System.Int32,System.Int32,System.Func{System.Linq.IQueryable{`0},System.Linq.IQueryable{`0}},System.Func{System.Linq.IQueryable{`0},System.Linq.IOrderedQueryable{`0}})">
+            <summary>
+            �첽��ҳ�б��ѯ��
+            </summary>
+            <param name="skip">����������������</param>
+            <param name="take">����ȡ�õ�������</param>
+            <param name="filterFactory">�����Ĺ��˷�������ѡ����</param>
+            <param name="sorterFactory">���������򷽷�����ѡ����</param>
+            <returns>���ط�ҳʵ���б��</returns>
+        </member>
+        <member name="T:Librame.Data.Repository`1">
+            <summary>
+            ʵ��ֿ⡣
+            </summary>
+            <typeparam name="T">ָ����ʵ�����͡�</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Repository`1.#ctor(Librame.Data.IAccessor)">
+            <summary>
+            ����һ��ʵ��ֿ�ʵ����
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            accessor Ϊ�ա�
+            </exception>
+            <param name="accessor">�����ķ�������</param>
+        </member>
+        <member name="P:Librame.Data.Repository`1.Accessor">
+            <summary>
+            ��ȡ�����÷�������
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Repository`1.Table">
+            <summary>
+            ��ȡ��ǰʵ���ѯ����
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Repository`1.Add(`0)">
+            <summary>
+            ���ӵ���ʵ�塣
+            </summary>
+            <remarks>
+            �Ѽ��ɱ��浽���ݿⷽ�� <see cref="M:Librame.Data.Repository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���ӵ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.AddAsync(`0)">
+            <summary>
+            �첽���ӵ���ʵ�塣
+            </summary>
+            <remarks>
+            �Ѽ��ɱ��浽���ݿⷽ�� <see cref="M:Librame.Data.Repository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���ӵ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.Update(`0)">
+            <summary>
+            ���µ���ʵ�塣
+            </summary>
+            <remarks>
+            �����е��ñ��浽���ݿⷽ�� <see cref="M:Librame.Data.Repository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.UpdateAsync(`0)">
+            <summary>
+            �첽���µ���ʵ�塣
+            </summary>
+            <remarks>
+            �����е��ñ��浽���ݿⷽ�� <see cref="M:Librame.Data.Repository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.Save(`0)">
+            <summary>
+            ���浥��ʵ�塣
+            </summary>
+            <remarks>
+            ֧�����ӻ���²������Ѽ��ɱ��浽���ݿⷽ�� <see cref="M:Librame.Data.Repository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.SaveAsync(`0)">
+            <summary>
+            �첽���浥��ʵ�塣
+            </summary>
+            <remarks>
+            ֧�����ӻ���²������Ѽ��ɱ��浽���ݿⷽ�� <see cref="M:Librame.Data.Repository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.Delete(`0)">
+            <summary>
+            ɾ������ʵ�塣
+            </summary>
+            <remarks>
+            �����е��ñ��浽���ݿⷽ�� <see cref="M:Librame.Data.Repository`1.Flush"/>��
+            </remarks>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.DeleteAsync(`0)">
+            <summary>
+            �첽ɾ������ʵ�塣
+            </summary>
+            <remarks>
+            �����е��ñ��浽���ݿⷽ�� <see cref="M:Librame.Data.Repository`1.Flush"/>��
+            </remarks>
+            <typeparam name="T">ָ����ʵ�����͡�</typeparam>
+            <param name="entity">����Ҫ���µ�ʵ�塣</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.Flush">
+            <summary>
+            ���ʵ��仯�����浽���ݿ⡣
+            </summary>
+            <returns>������Ӱ���������</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.FlushAsync">
+            <summary>
+            �첽���ʵ��仯�����浽���ݿ⡣
+            </summary>
+            <returns>������Ӱ���������</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.Count(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            ������ѯͳ�ơ�
+            </summary>
+            <param name="predicate">�����Ĳ�ѯ�϶����ʽ��</param>
+            <returns>����������</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.CountAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            �첽������ѯͳ�ơ�
+            </summary>
+            <param name="predicate">�����Ĳ�ѯ�϶����ʽ��</param>
+            <returns>����������</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.Get(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            ��ȡƥ��ĵ���ʵ�塣
+            </summary>
+            <remarks>
+            ����ж��ƥ��ʵ�壬��Ĭ�Ϸ��ص�һ�
+            </remarks>
+            <typeparam name="T">ָ����ʵ�����͡�</typeparam>
+            <param name="predicate">�϶�ʵ��ı��ʽ��</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.GetAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            �첽��ȡƥ��ĵ���ʵ�塣
+            </summary>
+            <remarks>
+            ����ж��ƥ��ʵ�壬��Ĭ�Ϸ��ص�һ�
+            </remarks>
+            <typeparam name="T">ָ����ʵ�����͡�</typeparam>
+            <param name="predicate">�϶�ʵ��ı��ʽ��</param>
+            <returns>����ʵ�塣</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.List(System.Func{System.Linq.IQueryable{`0},System.Linq.IQueryable{`0}},System.Func{System.Linq.IQueryable{`0},System.Linq.IOrderedQueryable{`0}})">
+            <summary>
+            �б��ѯ��
+            </summary>
+            <param name="filterFactory">�����Ĺ��˷�������ѡ����</param>
+            <param name="sorterFactory">���������򷽷�����ѡ����</param>
+            <returns>����ʵ���б��</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.ListAsync(System.Func{System.Linq.IQueryable{`0},System.Linq.IQueryable{`0}},System.Func{System.Linq.IQueryable{`0},System.Linq.IOrderedQueryable{`0}})">
+            <summary>
+            �첽�б��ѯ��
+            </summary>
+            <param name="filterFactory">�����Ĺ��˷�����</param>
+            <param name="sorterFactory">���������򷽷���</param>
+            <returns>����ʵ���б��</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.PagedList(System.Int32,System.Int32,System.Func{System.Linq.IQueryable{`0},System.Linq.IQueryable{`0}},System.Func{System.Linq.IQueryable{`0},System.Linq.IOrderedQueryable{`0}})">
+            <summary>
+            ��ҳ�б��ѯ��
+            </summary>
+            <param name="filterFactory">�����Ĺ��˷�����</param>
+            <param name="sorterFactory">���������򷽷���</param>
+            <param name="skip">����������������</param>
+            <param name="take">����ȡ�õ�������</param>
+            <returns>���ط�ҳʵ���б��</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.PagedListAsync(System.Int32,System.Int32,System.Func{System.Linq.IQueryable{`0},System.Linq.IQueryable{`0}},System.Func{System.Linq.IQueryable{`0},System.Linq.IOrderedQueryable{`0}})">
+            <summary>
+            �첽��ҳ�б��ѯ��
+            </summary>
+            <param name="filterFactory">�����Ĺ��˷�����</param>
+            <param name="sorterFactory">���������򷽷���</param>
+            <param name="skip">����������������</param>
+            <param name="take">����ȡ�õ�������</param>
+            <returns>���ط�ҳʵ���б��</returns>
+        </member>
+        <member name="M:Librame.Data.Repository`1.Dispose">
+            <summary>
+            �ͷŷ�������Դ��
+            </summary>
+        </member>
+        <member name="T:Librame.Data.TrackState">
+            <summary>
+            跟踪状态。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="F:Librame.Data.TrackState.None">
+            <summary>
+            未知。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.TrackState.Unchanged">
+            <summary>
+            无变化。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.TrackState.Deleted">
+            <summary>
+            已删除。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.TrackState.Added">
+            <summary>
+            已增加。
+            </summary>
+        </member>
+        <member name="T:Librame.Data.Accessors.DbContextAccessor">
+            <summary>
+            DbContext 访问器。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.#ctor(Microsoft.Data.Entity.DbContext)">
+            <summary>
+            构造一个 DbContext 访问器。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            context 为空。
+            </exception>
+            <param name="context">给定的 <see cref="T:Microsoft.Data.Entity.DbContext"/>。</param>
+        </member>
+        <member name="P:Librame.Data.Accessors.DbContextAccessor.Source">
+            <summary>
+            获取当前数据源对象。
+            </summary>
+            <value>即 <see cref="T:Microsoft.Data.Entity.DbContext"/>。</value>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.Query``1">
+            <summary>
+            获取查询接口。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <returns>返回查询对象。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.Get``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            获取匹配的单个实体。
+            </summary>
+            <remarks>
+            如果有多个匹配实体，则默认返回第一项。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="predicate">断定实体的表达式。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.GetAsync``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            异步获取匹配的单个实体。
+            </summary>
+            <remarks>
+            如果有多个匹配实体，则默认返回第一项。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="predicate">断定实体的表达式。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.Add``1(``0)">
+            <summary>
+            增加单个实体。
+            </summary>
+            <remarks>
+            已集成保存到数据库方法 <see cref="M:Librame.Data.Accessors.DbContextAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要增加的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.AddAsync``1(``0)">
+            <summary>
+            异步增加单个实体。
+            </summary>
+            <remarks>
+            已集成保存到数据库方法 <see cref="M:Librame.Data.Accessors.DbContextAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要增加的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.Update``1(``0)">
+            <summary>
+            更新单个实体。
+            </summary>
+            <remarks>
+            需自行调用保存到数据库方法 <see cref="M:Librame.Data.Accessors.DbContextAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.UpdateAsync``1(``0)">
+            <summary>
+            异步更新单个实体。
+            </summary>
+            <remarks>
+            需自行调用保存到数据库方法 <see cref="M:Librame.Data.Accessors.DbContextAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.Save``1(``0)">
+            <summary>
+            保存单个实体。
+            </summary>
+            <remarks>
+            支持增加或更新操作，已集成保存到数据库方法 <see cref="M:Librame.Data.Accessors.DbContextAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.SaveAsync``1(``0)">
+            <summary>
+            异步保存单个实体。
+            </summary>
+            <remarks>
+            支持增加或更新操作，已集成保存到数据库方法 <see cref="M:Librame.Data.Accessors.DbContextAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.Delete``1(``0)">
+            <summary>
+            删除单个实体。
+            </summary>
+            <remarks>
+            需自行调用保存到数据库方法 <see cref="M:Librame.Data.Accessors.DbContextAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.DeleteAsync``1(``0)">
+            <summary>
+            异步删除单个实体。
+            </summary>
+            <remarks>
+            需自行调用保存到数据库方法 <see cref="M:Librame.Data.Accessors.DbContextAccessor.Flush"/>。
+            </remarks>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="entity">给定要更新的实体。</param>
+            <returns>返回实体。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.Flush">
+            <summary>
+            清空实体变化并保存到数据库。
+            </summary>
+            <returns>返回受影响的行数。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.FlushAsync">
+            <summary>
+            异步清空实体变化并保存到数据库。
+            </summary>
+            <returns>返回受影响的行数。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessor.Dispose">
+            <summary>
+            释放访问器资源。
+            </summary>
+        </member>
+        <member name="T:Librame.Data.Accessors.DbContextAccessorFactory">
+            <summary>
+            DbContext 访问器工厂。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessorFactory.Create(System.IServiceProvider,Microsoft.Data.Entity.DbContextOptions)">
+            <summary>
+            创建访问器实例。
+            </summary>
+            <param name="serviceProvider">给定的 <see cref="T:System.IServiceProvider"/>。</param>
+            <param name="options">给定的 <see cref="T:Microsoft.Data.Entity.DbContextOptions"/>。</param>
+            <returns>返回访问器对象。</returns>
+        </member>
+        <member name="M:Librame.Data.Accessors.DbContextAccessorFactory.Create(Microsoft.Data.Entity.DbContext)">
+            <summary>
+            创建访问器实例。
+            </summary>
+            <param name="context">给定的 <see cref="T:Microsoft.Data.Entity.DbContext"/>。</param>
+            <returns>返回访问器对象。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.FilterExpressionBase">
+            <summary>
+            过滤器表达式抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.FilterExpressionBase.#ctor(Librame.Data.Context.FilterQueryBase)">
+            <summary>
+            构造一个过滤器表达式抽象基类实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            filter 为空。
+            </exception>
+            <param name="filter">给定的过滤器。</param>
+        </member>
+        <member name="P:Librame.Data.Context.FilterExpressionBase.Filter">
+            <summary>
+            获取当前过滤器。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.FilterExpressionBase.BuildExpression``1(Librame.Data.Context.FiltrationInfo)">
+            <summary>
+            建立用于筛选的查询表达式。
+            </summary>
+            <typeparam name="T">给定的实体类型。</typeparam>
+            <param name="info">给定的过滤信息。</param>
+            <returns>返回查询表达式。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.FilterExpressionBase.BuildExpression``1(System.Linq.IQueryable{``0})">
+            <summary>
+            建立（当前过滤器）用于筛选的查询表达式。
+            </summary>
+            <typeparam name="T">给定的实体类型。</typeparam>
+            <param name="query">给定的查询对象。</param>
+            <returns>返回查询对象。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.FilterExpressionExtensions">
+            <summary>
+            过滤器表达式静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.FilterExpressionExtensions.Filtration``1(System.Linq.IQueryable{``0},Librame.Data.Context.FilterQueryBase)">
+            <summary>
+            过滤筛选查询。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="query">给定的查询对象。</param>
+            <param name="filter">给定的过滤器对象（默认使用集成的过滤器查询表达式对象）。</param>
+            <returns>返回查询对象。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.FilterExpressionExtensions.Filtration``1(System.Linq.IQueryable{``0},Librame.Data.Context.FilterExpressionBase)">
+            <summary>
+            过滤筛选查询。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="query">给定的查询对象。</param>
+            <param name="filterExpression">给定的过滤表达式对象。</param>
+            <returns>返回查询对象。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.FilterOperation">
+            <summary>
+            过滤运算方式。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="F:Librame.Data.Context.FilterOperation.Equals">
+            <summary>
+            等于。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.Context.FilterOperation.NotEquals">
+            <summary>
+            不等于。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.Context.FilterOperation.GreaterThan">
+            <summary>
+            大于。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.Context.FilterOperation.GreaterThanOrEquals">
+            <summary>
+            大于或等于。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.Context.FilterOperation.LessThan">
+            <summary>
+            小于。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.Context.FilterOperation.LessThanOrEquals">
+            <summary>
+            小于或等于。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.Context.FilterOperation.StartsWith">
+            <summary>
+            以...开始。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.Context.FilterOperation.EndsWith">
+            <summary>
+            以...结束。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.Context.FilterOperation.Contains">
+            <summary>
+            包含。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.Context.FilterOperation.NotContains">
+            <summary>
+            不包含。
+            </summary>
+        </member>
+        <member name="T:Librame.Data.Context.FilterQueryBase">
+            <summary>
+            过滤器查询抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.FilterQueryBase.#ctor(Librame.Context.RequestBase,Librame.Context.QueryInterceptorOption)">
+            <summary>
+            构造一个过滤器查询抽象基类实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            request 与 option 为空。
+            </exception>
+            <param name="request">给定的请求对象。</param>
+            <param name="option">给定的查询拦截器选项。</param>
+        </member>
+        <member name="P:Librame.Data.Context.FilterQueryBase.Logic">
+            <summary>
+            获取或设置逻辑字符串。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.FilterQueryBase.Infos">
+            <summary>
+            获取或设置信息集合。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.FilterQueryBase.Populate">
+            <summary>
+            填充请求参数。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.FilterQueryBase.GetLogic">
+            <summary>
+            获取逻辑字符串。
+            </summary>
+            <returns>返回逻辑字符串。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.FilterQueryBase.GetInfos">
+            <summary>
+            获取信息集合。
+            </summary>
+            <returns>返回信息集合。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.FiltrationInfo">
+            <summary>
+            过滤信息。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Data.Context.FiltrationInfo.Field">
+            <summary>
+            获取或设置字段名。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.FiltrationInfo.Value">
+            <summary>
+            获取或设置运算值。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.FiltrationInfo.Operator">
+            <summary>
+            获取或设置运算符。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.FiltrationInfo.IgnoreCase">
+            <summary>
+            获取或设置忽略大小写。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.FiltrationInfo.GetRealValue(System.Type)">
+            <summary>
+            获取真实的运算值。
+            </summary>
+            <param name="valueType">给定的值类型。</param>
+            <returns>返回运算值。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.FiltrationInfo.ParseOperator(System.String)">
+            <summary>
+            解析运算符。
+            </summary>
+            <param name="theOperator">给定的运算符字符串。</param>
+            <returns>返回过滤运算方式。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.PagerQueryBase">
+            <summary>
+            分页器查询抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.PagerQueryBase.#ctor(Librame.Context.RequestBase,Librame.Context.QueryInterceptorOption)">
+            <summary>
+            构造一个分页器查询抽象基类实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            request 与 option 为空。
+            </exception>
+            <param name="request">给定的请求对象。</param>
+            <param name="option">给定的查询拦截器。</param>
+        </member>
+        <member name="P:Librame.Data.Context.PagerQueryBase.Index">
+            <summary>
+            获取或设置页索引。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.PagerQueryBase.Size">
+            <summary>
+            获取或设置页大小。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.PagerQueryBase.Take">
+            <summary>
+            获取或设置读取条数。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.PagerQueryBase.Skip">
+            <summary>
+            获取或设置跳过条数。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.PagerQueryBase.Populate">
+            <summary>
+            填充请求参数。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.PagerQueryBase.GetIndex">
+            <summary>
+            获取页索引。
+            </summary>
+            <returns>返回页索引。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.PagerQueryBase.GetSize">
+            <summary>
+            获取页大小。
+            </summary>
+            <returns>返回页大小。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.PagerQueryBase.GetTake">
+            <summary>
+            获取读取条数。
+            </summary>
+            <returns>返回读取条数。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.PagerQueryBase.GetSkip">
+            <summary>
+            获取跳过条数。
+            </summary>
+            <returns>返回跳过条数。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.SortDirection">
+            <summary>
+            排序方向。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="F:Librame.Data.Context.SortDirection.Asc">
+            <summary>
+            升序。
+            </summary>
+        </member>
+        <member name="F:Librame.Data.Context.SortDirection.Desc">
+            <summary>
+            降序。
+            </summary>
+        </member>
+        <member name="T:Librame.Data.Context.SorterExpressionBase">
+            <summary>
+            排序器表达式抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.SorterExpressionBase.#ctor(Librame.Data.Context.SorterQueryBase)">
+            <summary>
+            构造一个排序器表达式抽象基类实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            sorter 为空。
+            </exception>
+            <param name="sorter">给定的排序器。</param>
+        </member>
+        <member name="P:Librame.Data.Context.SorterExpressionBase.Sorter">
+            <summary>
+            获取当前排序器。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.SorterExpressionBase.Build``1(System.Linq.IQueryable{``0},Librame.Data.Context.SortingInfo)">
+            <summary>
+            建立排序规则。
+            </summary>
+            <typeparam name="T">给定的实体类型。</typeparam>
+            <param name="info">给定的排序信息。</param>
+            <returns>返回排序查询对象或空。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.SorterExpressionBase.BuildOrderBy``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Librame.Data.Context.SortDirection)">
+            <summary>
+            建立排序规则。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <typeparam name="TKey">指定的键类型。</typeparam>
+            <param name="query">给定的查询对象。</param>
+            <param name="keySelector">给定的查询键选择器。</param>
+            <param name="direction">给定的排序方向。</param>
+            <returns>返回查询对象。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.SorterExpressionBase.Build``1(System.Linq.IQueryable{``0})">
+            <summary>
+            建立（当前排序器）的排序规则。
+            </summary>
+            <typeparam name="T">给定的实体类型。</typeparam>
+            <param name="query">给定的查询对象。</param>
+            <returns>返回查询对象或空。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.SorterExpressionExtensions">
+            <summary>
+            排序器表达式静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.SorterExpressionExtensions.Sorting``1(System.Linq.IQueryable{``0},Librame.Data.Context.SorterQueryBase,System.Func{System.Linq.IQueryable{``0},System.Linq.IOrderedQueryable{``0}})">
+            <summary>
+            建立排序。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="query">给定的查询对象。</param>
+            <param name="sorter">给定的排序器对象（默认使用集成的排序器查询表达式对象）。</param>
+            <param name="defaultOrderByFactory">给定的默认排序工厂方法。</param>
+            <returns>返回查询对象或空。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.SorterExpressionExtensions.Sorting``1(System.Linq.IQueryable{``0},Librame.Data.Context.SorterExpressionBase)">
+            <summary>
+            建立排序。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="query">给定的查询对象。</param>
+            <param name="sorterExpression">给定的排序表达式对象。</param>
+            <returns>返回查询对象或空。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.SorterQueryBase">
+            <summary>
+            排序器查询抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.SorterQueryBase.#ctor(Librame.Context.RequestBase,Librame.Context.QueryInterceptorOption)">
+            <summary>
+            构造一个排序器查询抽象基类实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            request 与 option 为空。
+            </exception>
+            <param name="request">给定的请求对象。</param>
+            <param name="option">给定的查询拦截器选项。</param>
+        </member>
+        <member name="P:Librame.Data.Context.SorterQueryBase.Infos">
+            <summary>
+            获取或设置信息集合。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.SorterQueryBase.Populate">
+            <summary>
+            填充请求参数。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.SorterQueryBase.GetInfos">
+            <summary>
+            获取信息集合。
+            </summary>
+            <returns>返回信息集合。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.SortingInfo">
+            <summary>
+            排序信息。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Data.Context.SortingInfo.Field">
+            <summary>
+            获取或设置字段名。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.SortingInfo.Direction">
+            <summary>
+            获取或设置方向。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.SortingInfo.ParseDirection(System.String)">
+            <summary>
+            解析排序方向。
+            </summary>
+            <param name="theOperator">给定的排序方向字符串。</param>
+            <returns>返回排序方向。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.Kendo.FilterExpression">
+            <summary>
+            过滤器表达式。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.FilterExpression.#ctor(Librame.Data.Context.FilterQueryBase)">
+            <summary>
+            构造一个过滤器表达式实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            filter 为空。
+            </exception>
+            <param name="filter">给定的过滤器。</param>
+        </member>
+        <member name="T:Librame.Data.Context.Kendo.KendoFilterQuery">
+            <summary>
+            Kendo UI 过滤器查询。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoFilterQuery.#ctor(Librame.Context.RequestBase,Librame.Context.QueryInterceptorOption)">
+            <summary>
+            构造一个 Kendo UI 过滤器查询实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            request 与 option 为空。
+            </exception>
+            <param name="request">给定的请求对象。</param>
+            <param name="option">给定的查询拦截器选项。</param>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoFilterQuery.Populate">
+            <summary>
+            填充请求参数。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoFilterQuery.GetLogic">
+            <summary>
+            获取逻辑字符串。
+            </summary>
+            <returns>返回逻辑字符串。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoFilterQuery.GetInfos">
+            <summary>
+            获取信息集合。
+            </summary>
+            <returns>返回信息集合。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.Kendo.KendoPagerQuery">
+            <summary>
+            Kendo UI 分页器查询。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoPagerQuery.#ctor(Librame.Context.RequestBase,Librame.Context.QueryInterceptorOption)">
+            <summary>
+            构造一个 Kendo UI 分页器查询实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            request 与 option 为空。
+            </exception>
+            <param name="request">给定的请求对象。</param>
+            <param name="option">给定的查询拦截器选项。</param>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoPagerQuery.GetIndex">
+            <summary>
+            获取页索引。
+            </summary>
+            <returns>返回页索引。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoPagerQuery.GetSize">
+            <summary>
+            获取页大小。
+            </summary>
+            <returns>返回页大小。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoPagerQuery.GetTake">
+            <summary>
+            获取读取条数。
+            </summary>
+            <returns>返回读取条数。</returns>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoPagerQuery.GetSkip">
+            <summary>
+            获取跳过条数。
+            </summary>
+            <returns>返回跳过条数。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.Kendo.KendoQuery">
+            <summary>
+            Kendo UI 请求参数。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.Kendo.KendoQuery.FilterParameters">
+            <summary>
+            获取过滤器查询拦截器参数数组。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.Kendo.KendoQuery.SorterParameters">
+            <summary>
+            获取排序器查询拦截器参数数组。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Context.Kendo.KendoQuery.PagerParameters">
+            <summary>
+            获取分页器查询拦截器参数数组。
+            </summary>
+        </member>
+        <member name="T:Librame.Data.Context.Kendo.KendoSorterQuery">
+            <summary>
+            Kendo UI 排序器查询。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoSorterQuery.#ctor(Librame.Context.RequestBase,Librame.Context.QueryInterceptorOption)">
+            <summary>
+            构造一个 Kendo UI 排序器查询实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            request 与 option 为空。
+            </exception>
+            <param name="request">给定的请求对象。</param>
+            <param name="option">给定的查询拦截器选项。</param>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoSorterQuery.Populate">
+            <summary>
+            填充请求参数。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.KendoSorterQuery.GetInfos">
+            <summary>
+            获取信息集合。
+            </summary>
+            <returns>返回信息集合。</returns>
+        </member>
+        <member name="T:Librame.Data.Context.Kendo.SorterExpression">
+            <summary>
+            排序器表达式。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Context.Kendo.SorterExpression.#ctor(Librame.Data.Context.SorterQueryBase)">
+            <summary>
+            构造一个排序器表达式实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            sorter 为空。
+            </exception>
+            <param name="sorter">给定的排序器。</param>
+        </member>
+        <member name="T:Librame.Data.Models.DataIdEntity`1">
+            <summary>
+            带数据、泛类型编号的抽象实体。
+            </summary>
+            <typeparam name="TId">指定的编号类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Data.Models.DataIdEntity`1.DataScope">
+            <summary>
+            数据范围。
+            </summary>
+        </member>
+        <member name="P:Librame.Data.Models.DataIdEntity`1.DataSorting">
+            <summary>
+            数据排序。
+            </summary>
+        </member>
+        <member name="M:Librame.Data.Models.DataIdEntity`1.#ctor">
+            <summary>
+            构造一个带数据编号的抽象实体对象。
+            </summary>
+        </member>
+        <member name="T:Librame.Data.Models.DataIdEntity">
+            <summary>
+            带数据、整数型编号的抽象实体。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Data.Models.DataIdEntity.#ctor">
+            <summary>
+            构造一个带数据编号的抽象实体对象。
+            </summary>
+        </member>
+        <member name="T:Librame.Data.Models.IdEntity`1">
+            <summary>
+            带泛类型编号的抽象实体。
+            </summary>
+            <typeparam name="TId">指定的编号类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Data.Models.IdEntity`1.Id">
+            <summary>
+            编号。
+            </summary>
+        </member>
+        <member name="T:Librame.Data.Models.IdEntity">
+            <summary>
+            带整数型编号的抽象实体。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="T:Librame.Security.AlgorithmBase">
+            <summary>
+            算法抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.AlgorithmBase.#ctor(System.Text.Encoding)">
+            <summary>
+            构造一个算法抽象基类实例。
+            </summary>
+            <remarks>
+            如果 encoding 为空，则默认采用 <see cref="P:System.Text.Encoding.UTF8"/>。
+            </remarks>
+            <param name="encoding">给定的字符编码（可选）。</param>
+        </member>
+        <member name="P:Librame.Security.AlgorithmBase.Encoding">
+            <summary>
+            获取或设置字符编码。
+            </summary>
+        </member>
+        <member name="M:Librame.Security.AlgorithmBase.Encode(System.String)">
+            <summary>
+            编码字符串。
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <returns>返回编码后的字符串。</returns>
+        </member>
+        <member name="M:Librame.Security.AlgorithmBase.ComputeEncoding(System.Byte[])">
+            <summary>
+            计算编码。
+            </summary>
+            <param name="buffer">给定的字节数组。</param>
+            <returns>返回计算后的字节数组。</returns>
+        </member>
+        <member name="T:Librame.Security.AsymmetryAlgorithmBase">
+            <summary>
+            非对称算法抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.AsymmetryAlgorithmBase.#ctor(System.Text.Encoding)">
+            <summary>
+            构造一个非对称算法抽象基类实例。
+            </summary>
+            <remarks>
+            如果 encoding 为空，则默认采用 <see cref="P:System.Text.Encoding.UTF8"/>。
+            </remarks>
+            <param name="encoding">给定的字符编码。</param>
+        </member>
+        <member name="P:Librame.Security.AsymmetryAlgorithmBase.IncludePrivateParameters">
+            <summary>
+            获取或设置是否要包括私有参数。
+            </summary>
+            <value>
+            True 表示公私参数对；False 表示公有参数（默认为 False）。
+            </value>
+        </member>
+        <member name="P:Librame.Security.AsymmetryAlgorithmBase.Parameters">
+            <summary>
+            获取或设置算法参数。
+            </summary>
+        </member>
+        <member name="M:Librame.Security.AsymmetryAlgorithmBase.Decode(System.String)">
+            <summary>
+            解码字符串。
+            </summary>
+            <param name="str">给定要解密的字符串。</param>
+            <returns>返回解码后的字符串。</returns>
+        </member>
+        <member name="M:Librame.Security.AsymmetryAlgorithmBase.ComputeDecoding(System.Byte[])">
+            <summary>
+            计算编码。
+            </summary>
+            <param name="buffer">给定的字节数组。</param>
+            <returns>返回计算后的字节数组。</returns>
+        </member>
+        <member name="T:Librame.Security.BitSize">
+            <summary>
+            位大小。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="F:Librame.Security.BitSize._64">
+            <summary>
+            64 位（8 字节）。
+            </summary>
+        </member>
+        <member name="F:Librame.Security.BitSize._128">
+            <summary>
+            128 位（16 字节）。
+            </summary>
+        </member>
+        <member name="F:Librame.Security.BitSize._160">
+            <summary>
+            160 位（20 字节）。
+            </summary>
+        </member>
+        <member name="F:Librame.Security.BitSize._192">
+            <summary>
+            192 位（24 字节）。
+            </summary>
+        </member>
+        <member name="F:Librame.Security.BitSize._256">
+            <summary>
+            256 位（32 字节）。
+            </summary>
+        </member>
+        <member name="F:Librame.Security.BitSize._384">
+            <summary>
+            384 位（48 字节）。
+            </summary>
+        </member>
+        <member name="F:Librame.Security.BitSize._512">
+            <summary>
+            512 位（64 字节）。
+            </summary>
+        </member>
+        <member name="F:Librame.Security.BitSize._768">
+            <summary>
+            768 位（96 字节）。
+            </summary>
+        </member>
+        <member name="F:Librame.Security.BitSize._1024">
+            <summary>
+            1024 位（128 字节）。
+            </summary>
+        </member>
+        <member name="T:Librame.Security.HashAlgorithmBase">
+            <summary>
+            哈希算法抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.HashAlgorithmBase.#ctor(System.Text.Encoding)">
+            <summary>
+            构造一个哈希算法抽象基类实例。
+            </summary>
+            <remarks>
+            如果 encoding 为空，则默认采用 <see cref="P:System.Text.Encoding.UTF8"/>。
+            </remarks>
+            <param name="encoding">给定的字符编码。</param>
+        </member>
+        <member name="M:Librame.Security.HashAlgorithmBase.ComputeEncoding(System.Byte[])">
+            <summary>
+            计算编码。
+            </summary>
+            <param name="buffer">给定的字节数组。</param>
+            <returns>返回计算后的字节数组。</returns>
+        </member>
+        <member name="M:Librame.Security.HashAlgorithmBase.CreateAlgorithm">
+            <summary>
+            创建哈希算法。
+            </summary>
+            <returns>返回算法实例。</returns>
+        </member>
+        <member name="T:Librame.Security.IAlgorithm">
+            <summary>
+            算法接口。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Security.IAlgorithm.Encoding">
+            <summary>
+            获取或设置字符编码。
+            </summary>
+        </member>
+        <member name="M:Librame.Security.IAlgorithm.Encode(System.String)">
+            <summary>
+            编码字符串。
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <returns>返回编码后的字符串。</returns>
+        </member>
+        <member name="M:Librame.Security.IAlgorithm.ComputeEncoding(System.Byte[])">
+            <summary>
+            计算编码。
+            </summary>
+            <param name="buffer">给定的字节数组。</param>
+            <returns>返回计算后的字节数组。</returns>
+        </member>
+        <member name="T:Librame.Security.IAsymmetryAlgorithm">
+            <summary>
+            非对称算法接口。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Security.IAsymmetryAlgorithm.IncludePrivateParameters">
+            <summary>
+            获取或设置是否要包括私有参数。
+            </summary>
+            <value>
+            True 表示公私参数对；False 表示公有参数（默认为 False）。
+            </value>
+        </member>
+        <member name="P:Librame.Security.IAsymmetryAlgorithm.Parameters">
+            <summary>
+            获取或设置算法参数。
+            </summary>
+            <value>
+            如果需要生成，则由属性 <see cref="P:Librame.Security.IAsymmetryAlgorithm.IncludePrivateParameters"/> 控制此参数为公有还是公私参数对。
+            </value>
+        </member>
+        <member name="M:Librame.Security.IAsymmetryAlgorithm.Decode(System.String)">
+            <summary>
+            解码字符串。
+            </summary>
+            <param name="str">给定要解密的字符串。</param>
+            <returns>返回解码后的字符串。</returns>
+        </member>
+        <member name="M:Librame.Security.IAsymmetryAlgorithm.ComputeDecoding(System.Byte[])">
+            <summary>
+            计算解码。
+            </summary>
+            <param name="buffer">给定的字节数组。</param>
+            <returns>返回计算后的原始字符串。</returns>
+        </member>
+        <member name="T:Librame.Security.IKeyedAlgorithm">
+            <summary>
+            键控算法接口。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Security.IKeyedAlgorithm.KeyInfo">
+            <summary>
+            获取密钥信息。
+            </summary>
+        </member>
+        <member name="T:Librame.Security.ISignatureAlgorithm">
+            <summary>
+            签名算法接口。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Security.ISignatureAlgorithm.SignHashAlgoName">
+            <summary>
+            获取或设置用于签名哈希算法的名称。
+            </summary>
+            <value>
+            支持如“SHA1”；如果为空则表示不签名。
+            </value>
+        </member>
+        <member name="M:Librame.Security.ISignatureAlgorithm.VerifySign(System.Byte[],System.Byte[])">
+            <summary>
+            验证签名。
+            </summary>
+            <param name="rgbHash">用 rgbSignature 签名的数据的哈希值。</param>
+            <param name="rgbSignature">要为 rgbData 验证的签名。</param>
+            <returns>如果 rgbSignature 与使用指定的哈希算法和密钥在 rgbHash 上计算出的签名匹配，则为 true；否则为 false。</returns>
+        </member>
+        <member name="T:Librame.Security.ISymmetryAlgorithm">
+            <summary>
+            对称算法接口。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Security.ISymmetryAlgorithm.KeyIvInfo">
+            <summary>
+            获取密钥向量信息。
+            </summary>
+        </member>
+        <member name="M:Librame.Security.ISymmetryAlgorithm.Decode(System.String)">
+            <summary>
+            解码字符串。
+            </summary>
+            <param name="str">给定要解密的字符串。</param>
+            <returns>返回解码后的字符串。</returns>
+        </member>
+        <member name="M:Librame.Security.ISymmetryAlgorithm.ComputeDecoding(System.Byte[])">
+            <summary>
+            计算解码。
+            </summary>
+            <param name="buffer">给定的字节数组。</param>
+            <returns>返回计算后的原始字符串。</returns>
+        </member>
+        <member name="T:Librame.Security.IvIdentity">
+            <summary>
+            向量标识。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.IvIdentity.#ctor(Librame.UniqueIdentity,Librame.Security.BitSize)">
+            <summary>
+            构造一个向量标识实例。
+            </summary>
+            <param name="unique">给定的唯一标识。</param>
+            <param name="maxSize">给定的最大向量大小。</param>
+        </member>
+        <member name="M:Librame.Security.IvIdentity.Generate64SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 64 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.IvIdentity.Generate128SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 128 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.IvIdentity.Generate160SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 160 位保密识别码。
+            </summary>
+            <remarks>
+            默认直接返回。
+            </remarks>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.IvIdentity.Generate192SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 192 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.IvIdentity.Generate256SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 256 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.IvIdentity.Generate384SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 384 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.IvIdentity.Generate512SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 512 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.IvIdentity.Generate768SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 768 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.IvIdentity.Generate1024SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 1024 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="T:Librame.Security.KeyedAlgorithmBase">
+            <summary>
+            键控算法抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.KeyedAlgorithmBase.#ctor(System.Byte[],System.Text.Encoding)">
+            <summary>
+            构造一个键控算法抽象基类实例。
+            </summary>
+            <remarks>
+            如果 encoding 为空，则默认采用 <see cref="P:System.Text.Encoding.UTF8"/>。
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            key 为空。
+            </exception>
+            <param name="key">给定的密钥字节数组。</param>
+            <param name="encoding">给定的字符编码（可选）。</param>
+        </member>
+        <member name="M:Librame.Security.KeyedAlgorithmBase.#ctor(Librame.Security.KeyIdentity,System.Text.Encoding)">
+            <summary>
+            构造一个键控算法抽象基类实例。
+            </summary>
+            <remarks>
+            如果 encoding 为空，则默认采用 <see cref="P:System.Text.Encoding.UTF8"/>。
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            keyId 为空。
+            </exception>
+            <param name="keyId">给定的密钥标识。</param>
+            <param name="encoding">给定的字符编码（可选）。</param>
+        </member>
+        <member name="P:Librame.Security.KeyedAlgorithmBase.KeyInfo">
+            <summary>
+            获取密钥信息。
+            </summary>
+        </member>
+        <member name="M:Librame.Security.KeyedAlgorithmBase.ComputeEncoding(System.Byte[])">
+            <summary>
+            计算编码。
+            </summary>
+            <param name="buffer">给定的字节数组。</param>
+            <returns>返回计算后的字节数组。</returns>
+        </member>
+        <member name="M:Librame.Security.KeyedAlgorithmBase.CreateAlgorithm(System.Byte[])">
+            <summary>
+            创建键控哈希算法。
+            </summary>
+            <param name="key">给定的密钥字节数组。</param>
+            <returns>返回算法实例。</returns>
+        </member>
+        <member name="T:Librame.Security.KeyIdentity">
+            <summary>
+            密钥标识。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.KeyIdentity.#ctor(Librame.UniqueIdentity,Librame.Security.BitSize)">
+            <summary>
+            构造一个密钥标识实例。
+            </summary>
+            <param name="unique">给定的唯一标识。</param>
+            <param name="maxSize">给定的最大键位大小。</param>
+        </member>
+        <member name="T:Librame.Security.KeyInfo">
+            <summary>
+            密钥信息。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.KeyInfo.#ctor(System.String)">
+            <summary>
+            构造一个密钥信息实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            keyString 为空或 <see cref="F:System.String.Empty"/>。
+            </exception>
+            <param name="keyString">给定的密钥字符串。</param>
+        </member>
+        <member name="M:Librame.Security.KeyInfo.#ctor(System.Byte[])">
+            <summary>
+            构造一个密钥信息实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            key 为空。
+            </exception>
+            <param name="key">给定的密钥字节数组。</param>
+        </member>
+        <member name="P:Librame.Security.KeyInfo.Key">
+            <summary>
+            获取密钥字节数组。
+            </summary>
+        </member>
+        <member name="P:Librame.Security.KeyInfo.KeyString">
+            <summary>
+            获取密钥字符串。
+            </summary>
+        </member>
+        <member name="T:Librame.Security.KeyIvInfo">
+            <summary>
+            密钥向量信息。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.KeyIvInfo.#ctor(System.String,System.String)">
+            <summary>
+            构造一个密钥向量信息实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            keyString 与 ivString 为空或 <see cref="F:System.String.Empty"/>。
+            </exception>
+            <param name="keyString">给定的密钥字符串。</param>
+            <param name="ivString">给定的向量字符串。</param>
+        </member>
+        <member name="M:Librame.Security.KeyIvInfo.#ctor(System.Byte[],System.Byte[])">
+            <summary>
+            构造一个密钥向量信息实例。
+            </summary>
+            <exception cref="T:System.ArgumentNullException">
+            key 与 iv 为空。
+            </exception>
+            <param name="key">给定的密钥字节数组。</param>
+            <param name="iv">给定的向量字符数组。</param>
+        </member>
+        <member name="P:Librame.Security.KeyIvInfo.Iv">
+            <summary>
+            获取向量字节数组。
+            </summary>
+        </member>
+        <member name="P:Librame.Security.KeyIvInfo.IvString">
+            <summary>
+            获取向量字符串。
+            </summary>
+        </member>
+        <member name="T:Librame.Security.SecurityIdentityBase">
+            <summary>
+            安全标识抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.#ctor(Librame.UniqueIdentity,Librame.Security.BitSize)">
+            <summary>
+            构造一个安全标识抽象基类实例。
+            </summary>
+            <param name="unique">给定的唯一标识。</param>
+            <param name="maxSize">给定的最大位大小。</param>
+        </member>
+        <member name="P:Librame.Security.SecurityIdentityBase.Unique">
+            <summary>
+            获取唯一标识。
+            </summary>
+        </member>
+        <member name="P:Librame.Security.SecurityIdentityBase.MaxSize">
+            <summary>
+            获取最大的位大小。
+            </summary>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.GetBaseSecretIdCode">
+            <summary>
+            获取当前标识对应的基础保密识别码（128 位）。
+            </summary>
+            <remarks>
+            保密识别码为字节数组，可用于密钥，向量等。
+            </remarks>
+            <returns>返回 16 元素字节数组。</returns>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.GenerateSecretIdCode">
+            <summary>
+            生成指定位大小的保密识别码。
+            </summary>
+            <remarks>
+            保密识别码为字节数组，可用于密钥，向量等。
+            </remarks>
+            <returns>返回字节数组。</returns>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.Generate64SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 64 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.Generate128SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 128 位保密识别码。
+            </summary>
+            <remarks>
+            默认直接返回。
+            </remarks>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.Generate160SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 160 位保密识别码。
+            </summary>
+            <remarks>
+            默认直接返回。
+            </remarks>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.Generate192SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 192 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.Generate256SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 256 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.Generate384SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 384 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.Generate512SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 512 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.Generate768SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 768 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="M:Librame.Security.SecurityIdentityBase.Generate1024SecretIdCode(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            生成 1024 位保密识别码。
+            </summary>
+            <param name="baseSecretIdCode">给定的基础保密识别码（128 位）。</param>
+            <returns>返回字节集合。</returns>
+        </member>
+        <member name="T:Librame.Security.SymmetryAlgorithmBase">
+            <summary>
+            对称算法抽象基类。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.SymmetryAlgorithmBase.#ctor(System.Byte[],System.Byte[],System.Text.Encoding)">
+            <summary>
+            构造一个对称算法抽象基类实例。
+            </summary>
+            <remarks>
+            如果 encoding 为空，则默认采用 <see cref="P:System.Text.Encoding.UTF8"/>。
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            key 和 iv 为空。
+            </exception>
+            <param name="key">给定的密钥字节数组。</param>
+            <param name="iv">给定的向量字节数组。</param>
+            <param name="encoding">给定的字符编码（可选）。</param>
+        </member>
+        <member name="M:Librame.Security.SymmetryAlgorithmBase.#ctor(Librame.Security.KeyIdentity,Librame.Security.IvIdentity,System.Text.Encoding)">
+            <summary>
+            构造一个对称算法抽象基类实例。
+            </summary>
+            <remarks>
+            如果 encoding 为空，则默认采用 <see cref="P:System.Text.Encoding.UTF8"/>。
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            keyId 和 ivId 为空。
+            </exception>
+            <param name="keyId">给定的密钥标识。</param>
+            <param name="ivId">给定的向量标识。</param>
+            <param name="encoding">给定的字符编码（可选）。</param>
+        </member>
+        <member name="P:Librame.Security.SymmetryAlgorithmBase.KeyIvInfo">
+            <summary>
+            获取密钥向量信息。
+            </summary>
+        </member>
+        <member name="M:Librame.Security.SymmetryAlgorithmBase.Decode(System.String)">
+            <summary>
+            解码字符串。
+            </summary>
+            <param name="str">给定要解密的字符串。</param>
+            <returns>返回解码后的字符串。</returns>
+        </member>
+        <member name="M:Librame.Security.SymmetryAlgorithmBase.ComputeDecoding(System.Byte[])">
+            <summary>
+            计算解码。
+            </summary>
+            <param name="buffer">给定的字节数组。</param>
+            <returns>返回计算后的字节数组。</returns>
+        </member>
+        <member name="M:Librame.Security.SymmetryAlgorithmBase.ComputeEncoding(System.Byte[])">
+            <summary>
+            计算编码。
+            </summary>
+            <param name="buffer">给定的字节数组。</param>
+            <returns>返回计算后的字节数组。</returns>
+        </member>
+        <member name="M:Librame.Security.SymmetryAlgorithmBase.CreateAlgorithm">
+            <summary>
+            创建对称算法。
+            </summary>
+            <returns>返回算法实例。</returns>
+        </member>
+        <member name="T:Librame.Security.WebEncoders">
+            <summary>
+            Web 编码器。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Security.WebEncoders.Base64UrlDecode(System.String)">
+            <summary>
+            解码 Base64 URL 格式字符串。
+            </summary>
+            <param name="input">给定的 Base64 URL 格式字符串。</param>
+            <returns>返回解码后的字节数组。</returns>
+        </member>
+        <member name="M:Librame.Security.WebEncoders.Base64UrlEncode(System.Byte[])">
+            <summary>
+            以 Base64 URL 格式字符串编码。
+            </summary>
+            <param name="input">给定要编码的字节数组。</param>
+            <returns>返回编码后的字符串。</returns>
+        </member>
+        <member name="T:Librame.Utility.EnumInfo">
+            <summary>
+            枚举信息。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Utility.EnumInfo.#ctor(System.String,System.Int32,System.String)">
+            <summary>
+            构造一个枚举信息。
+            </summary>
+            <param name="name">给定的名称。</param>
+            <param name="value">给定的常数值。</param>
+            <param name="description">给定的描述。</param>
+        </member>
+        <member name="P:Librame.Utility.EnumInfo.Name">
+            <summary>
+            获取名称。
+            </summary>
+        </member>
+        <member name="P:Librame.Utility.EnumInfo.Value">
+            <summary>
+            获取常数值。
+            </summary>
+        </member>
+        <member name="P:Librame.Utility.EnumInfo.Description">
+            <summary>
+            获取描述。
+            </summary>
+        </member>
+        <member name="T:Librame.Utility.EnumUtils">
+            <summary>
+            枚举工具。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:Librame.Utility.EnumUtils.DataScopes">
+            <summary>
+            数据范围枚举信息集合。
+            </summary>
+        </member>
+        <member name="P:Librame.Utility.EnumUtils.TrackStates">
+            <summary>
+            跟踪状态枚举信息集合。
+            </summary>
+        </member>
+        <member name="P:Librame.Utility.EnumUtils.FilterOperations">
+            <summary>
+            过滤运算方式枚举信息集合。
+            </summary>
+        </member>
+        <member name="P:Librame.Utility.EnumUtils.SortDirections">
+            <summary>
+            排序方向枚举信息集合。
+            </summary>
+        </member>
+        <member name="M:Librame.Utility.EnumUtils.ParseInfos``1">
+            <summary>
+            解析指定枚举类型的信息集合。
+            </summary>
+            <remarks>
+            支持枚举项的 <see cref="T:System.ComponentModel.DescriptionAttribute"/> 自定义属性（如果此属性存在）。
+            </remarks>
+            <typeparam name="TEnum">指定的枚举类型。</typeparam>
+            <returns>返回枚举信息集合。</returns>
+        </member>
+        <member name="M:Librame.Utility.EnumUtils.ParseInfos(System.Type)">
+            <summary>
+            解析指定枚举类型的信息集合。
+            </summary>
+            <remarks>
+            支持枚举项的 <see cref="T:System.ComponentModel.DescriptionAttribute"/> 自定义属性（如果此属性存在）。
+            </remarks>
+            <param name="type">给定的枚举类型。</param>
+            <returns>返回枚举信息集合。</returns>
+        </member>
+        <member name="T:Librame.Utility.ExpressionUtils">
+            <summary>
+            表达式工具。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Utility.ExpressionUtils.Build``2(System.String)">
+            <summary>
+            建立单个属性键的 Lambda 表达式（例：p => p.PropertyName）。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <typeparam name="TKey">指定的键类型。</typeparam>
+            <param name="propertyName">给定的属性名。</param>
+            <returns>返回 lambda 表达式。</returns>
+        </member>
+        <member name="M:Librame.Utility.ExpressionUtils.BuildGreaterThan``1(System.String,System.Object,System.Type)">
+            <summary>
+            建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName > compareValue）。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="propertyName">给定用于对比的属性名。</param>
+            <param name="value">给定的参考值。</param>
+            <param name="propertyType">给定的属性类型。</param>
+            <returns>返回 Lambda 表达式。</returns>
+        </member>
+        <member name="M:Librame.Utility.ExpressionUtils.BuildGreaterThanOrEqual``1(System.String,System.Object,System.Type)">
+            <summary>
+            建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName >= compareValue）。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="propertyName">给定用于对比的属性名。</param>
+            <param name="value">给定的参考值。</param>
+            <param name="propertyType">给定的属性类型。</param>
+            <returns>返回 Lambda 表达式。</returns>
+        </member>
+        <member name="M:Librame.Utility.ExpressionUtils.BuildLessThan``1(System.String,System.Object,System.Type)">
+            <summary>
+            建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName 〈 compareValue）。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="propertyName">给定用于对比的属性名。</param>
+            <param name="value">给定的参考值。</param>
+            <param name="propertyType">给定的属性类型。</param>
+            <returns>返回 Lambda 表达式。</returns>
+        </member>
+        <member name="M:Librame.Utility.ExpressionUtils.BuildLessThanOrEqual``1(System.String,System.Object,System.Type)">
+            <summary>
+            建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName 〈= compareValue）。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="propertyName">给定用于对比的属性名。</param>
+            <param name="value">给定的参考值。</param>
+            <param name="propertyType">给定的属性类型。</param>
+            <returns>返回 Lambda 表达式。</returns>
+        </member>
+        <member name="M:Librame.Utility.ExpressionUtils.BuildNotEqual``1(System.String,System.Object,System.Type)">
+            <summary>
+            建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName != compareValue）。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="propertyName">给定用于对比的属性名。</param>
+            <param name="value">给定的参考值。</param>
+            <param name="propertyType">给定的属性类型。</param>
+            <returns>返回 Lambda 表达式。</returns>
+        </member>
+        <member name="M:Librame.Utility.ExpressionUtils.BuildEqual``1(System.String,System.Object,System.Type)">
+            <summary>
+            建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName == compareValue）。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="propertyName">给定用于对比的属性名。</param>
+            <param name="value">给定的参考值。</param>
+            <param name="propertyType">给定的属性类型。</param>
+            <returns>返回 Lambda 表达式。</returns>
+        </member>
+        <member name="M:Librame.Utility.ExpressionUtils.Build``2(System.String,System.Object,System.Type,System.Func{System.Linq.Expressions.MemberExpression,System.Linq.Expressions.ConstantExpression,``1})">
+            <summary>
+            建立使用单个属性值进行比较的 Lambda 表达式（例：p => p.PropertyName.CompareTo(value)）。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <typeparam name="TExpression">指定的表达式类型。</typeparam>
+            <param name="propertyName">给定的属性名。</param>
+            <param name="value">给定的参考值。</param>
+            <param name="propertyType">给定的属性类型。</param>
+            <param name="compareTo">给定的对比方法。</param>
+            <returns>返回 Lambda 表达式。</returns>
+        </member>
+        <member name="M:Librame.Utility.ExpressionUtils.Build``1(System.String,System.Object,System.Type,System.String)">
+            <summary>
+            建立使用单个属性值进行比较的 Lambda 表达式（例：p => p.PropertyName.CallMethodName(value)）。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="propertyName">给定的属性名。</param>
+            <param name="value">给定的参考值。</param>
+            <param name="propertyType">给定的属性类型。</param>
+            <param name="callMethodName">给定要调用的方法名。</param>
+            <returns>返回 Lambda 表达式。</returns>
+        </member>
+        <member name="T:Librame.Utility.NotPassValidationResult">
+            <summary>
+            表示一个执行时将产生未通过验证(412)的 HTTP 响应。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Utility.NotPassValidationResult.#ctor">
+            <summary>
+            构造一个未通过验证(412)的 HTTP 响应实例。
+            </summary>
+        </member>
+        <member name="T:Librame.Utility.ReflectionUtils">
+            <summary>
+            反射工具。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="F:Librame.Utility.ReflectionUtils.DefaultBindingFlags">
+            <summary>
+            默认绑定搜索标志。
+            </summary>
+        </member>
+        <member name="M:Librame.Utility.ReflectionUtils.GetProperty``1(System.String,System.Reflection.BindingFlags)">
+            <summary>
+            获取指定名称的属性。
+            </summary>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="name">给定的名称。</param>
+            <param name="bindingAttr">给定的绑定搜索标志。</param>
+            <returns>返回属性。</returns>
+        </member>
+        <member name="M:Librame.Utility.ReflectionUtils.GetProperties``1(System.Reflection.BindingFlags)">
+            <summary>
+            获取指定类型的属性集合。
+            </summary>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="bindingAttr">给定的绑定搜索标志。</param>
+            <returns>返回属性集合。</returns>
+        </member>
+        <member name="M:Librame.Utility.ReflectionUtils.GetProperties(System.Type,System.Reflection.BindingFlags)">
+            <summary>
+            获取指定类型的属性集合。
+            </summary>
+            <param name="type">给定的类型。</param>
+            <param name="bindingAttr">给定的绑定搜索标志。</param>
+            <returns>返回属性集合。</returns>
+        </member>
+        <member name="M:Librame.Utility.ReflectionUtils.SelectProperties``2(System.Func{System.Reflection.PropertyInfo,System.Int32,``1},System.Reflection.BindingFlags)">
+            <summary>
+            投影指定类型的结果集合到新表中。
+            </summary>
+            <typeparam name="T">指定的类型。</typeparam>
+            <typeparam name="TResult">指定的结果类型。</typeparam>
+            <param name="selector">给定的选择器。</param>
+            <param name="bindingAttr">给定的绑定搜索标志。</param>
+            <returns>返回结果集合。</returns>
+        </member>
+        <member name="M:Librame.Utility.ReflectionUtils.SelectProperties``2(System.Func{System.Reflection.PropertyInfo,``1},System.Reflection.BindingFlags)">
+            <summary>
+            投影指定类型的结果集合到新表中。
+            </summary>
+            <typeparam name="T">指定的类型。</typeparam>
+            <typeparam name="TResult">指定的结果类型。</typeparam>
+            <param name="selector">给定的选择器。</param>
+            <param name="bindingAttr">给定的绑定搜索标志。</param>
+            <returns>返回结果集合。</returns>
+        </member>
+        <member name="M:Librame.Utility.ReflectionUtils.SelectProperties``1(System.Type,System.Func{System.Reflection.PropertyInfo,System.Int32,``0},System.Reflection.BindingFlags)">
+            <summary>
+            投影指定类型的结果集合到新表中。
+            </summary>
+            <typeparam name="TResult">指定的结果类型。</typeparam>
+            <param name="type">给定的类型。</param>
+            <param name="selector">给定的选择器。</param>
+            <param name="bindingAttr">给定的绑定搜索标志。</param>
+            <returns>返回结果集合。</returns>
+        </member>
+        <member name="M:Librame.Utility.ReflectionUtils.SelectProperties``1(System.Type,System.Func{System.Reflection.PropertyInfo,``0},System.Reflection.BindingFlags)">
+            <summary>
+            投影指定类型的结果集合到新表中。
+            </summary>
+            <typeparam name="TResult">指定的结果类型。</typeparam>
+            <param name="type">给定的类型。</param>
+            <param name="selector">给定的选择器。</param>
+            <param name="bindingAttr">给定的绑定搜索标志。</param>
+            <returns>返回结果集合。</returns>
+        </member>
+        <member name="T:Librame.Utility.LibrameEntityExtensions">
+            <summary>
+            Librame 实体静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Librame.Utility.LibrameEntityExtensions.Merge``1(``0,``0)">
+            <summary>
+            将已变化的被提交实体合并到被管理实体中。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="managed">给定的被管理实体。</param>
+            <param name="posted">给定的被提交实体。</param>
+        </member>
+        <member name="T:Microsoft.AspNet.Builder.ApplicationBinderExtensions">
+            <summary>
+            应用绑定器静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.ApplicationBinderExtensions.GetService``1(Librame.IApplicationBinder)">
+            <summary>
+            获取指定类型的服务。
+            </summary>
+            <typeparam name="TService">指定的服务类型。</typeparam>
+            <param name="binder">给定的 <see cref="T:Librame.IApplicationBinder"/>。</param>
+            <returns>返回服务对象。</returns>
+            <seealso cref="M:System.IServiceProvider.GetService(System.Type)"/>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.ApplicationBinderExtensions.BindQueryInterceptor(Librame.IApplicationBinder,System.Func{Librame.IApplicationContainer,Librame.IApplicationContainer})">
+            <summary>
+            绑定查询拦截器。
+            </summary>
+            <param name="binder">给定的 <see cref="T:Librame.IApplicationBinder"/>。</param>
+            <param name="binderFactory">给定的应用绑定方法。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.ApplicationBinderExtensions.BindSha256(Librame.IApplicationBinder,Librame.Security.IAlgorithm)">
+            <summary>
+            绑定 SHA256 哈希算法。
+            </summary>
+            <param name="binder">给定的 <see cref="T:Librame.IApplicationBinder"/>。</param>
+            <param name="sha256">给定的 SHA256 哈希算法（可选）。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.ApplicationBinderExtensions.BindHmacSha256(Librame.IApplicationBinder,Librame.Security.IKeyedAlgorithm)">
+            <summary>
+            绑定 HMAC SHA256 键控哈希算法。
+            </summary>
+            <param name="binder">给定的 <see cref="T:Librame.IApplicationBinder"/>。</param>
+            <param name="hmacSha256">给定的 HMAC SHA256 键控哈希算法（可选）。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.ApplicationBinderExtensions.BindAes(Librame.IApplicationBinder,Librame.Security.ISymmetryAlgorithm)">
+            <summary>
+            绑定 AES 对称算法。
+            </summary>
+            <param name="binder">给定的 <see cref="T:Librame.IApplicationBinder"/>。</param>
+            <param name="aes">给定的 AES 对称算法（可选）。</param>
+            <returns>返回 <see cref="T:Librame.IApplicationBinder"/>。</returns>
+        </member>
+        <member name="T:Microsoft.AspNet.Builder.ServiceMapperExtensions">
+            <summary>
+            服务映射器静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.ServiceMapperExtensions.MapId(Librame.IServiceMapper,System.String)">
+            <summary>
+            映射唯一标识。
+            </summary>
+            <param name="mapper">给定的 <see cref="T:Librame.IServiceMapper"/>。</param>
+            <param name="guid">给定的 GUID 字符串。</param>
+            <returns>返回 <see cref="T:Librame.IServiceMapper"/>。</returns>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.ServiceMapperExtensions.MapId(Librame.IServiceMapper,Librame.UniqueIdentity)">
+            <summary>
+            映射唯一标识。
+            </summary>
+            <param name="mapper">给定的 <see cref="T:Librame.IServiceMapper"/>。</param>
+            <param name="unique">给定的唯一标识。</param>
+            <returns>返回 <see cref="T:Librame.IServiceMapper"/>。</returns>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.ServiceMapperExtensions.MapEncoding(Librame.IServiceMapper,System.Text.Encoding)">
+            <summary>
+            映射字符编码。
+            </summary>
+            <remarks>
+            如果 encoding 为空，则默认映射 <see cref="P:System.Text.Encoding.UTF8"/>。
+            </remarks>
+            <param name="mapper">给定的 <see cref="T:Librame.IServiceMapper"/>。</param>
+            <param name="encoding">给定的字符编码（可选）。</param>
+            <returns>返回 <see cref="T:Librame.IServiceMapper"/>。</returns>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.ServiceMapperExtensions.MapAccessorFactory(Librame.IServiceMapper)">
+            <summary>
+            映射访问器工厂。
+            </summary>
+            <remarks>
+            默认映射 <see cref="T:Librame.Data.Accessors.DbContextAccessorFactory"/>。
+            </remarks>
+            <param name="mapper">给定的 <see cref="T:Librame.IServiceMapper"/>。</param>
+            <returns>返回 <see cref="T:Librame.IServiceMapper"/>。</returns>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.ServiceMapperExtensions.MapAccessorFactory``1(Librame.IServiceMapper)">
+            <summary>
+            映射访问器工厂。
+            </summary>
+            <typeparam name="TAccessorFactory">指定的访问器工厂。</typeparam>
+            <param name="mapper">给定的 <see cref="T:Librame.IServiceMapper"/>。</param>
+            <returns>返回 <see cref="T:Librame.IServiceMapper"/>。</returns>
+        </member>
+        <member name="T:Microsoft.AspNet.Builder.LibrameApplicationBuilderExtensions">
+            <summary>
+            Librame 应用构建器静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.LibrameApplicationBuilderExtensions.GetService``1(Microsoft.AspNet.Builder.IApplicationBuilder)">
+            <summary>
+            获取指定类型的服务。
+            </summary>
+            <typeparam name="TService">指定的服务类型。</typeparam>
+            <param name="app">给定的 <see cref="T:Microsoft.AspNet.Builder.IApplicationBuilder"/>。</param>
+            <returns>返回服务对象。</returns>
+            <seealso cref="M:System.IServiceProvider.GetService(System.Type)"/>
+        </member>
+        <member name="M:Microsoft.AspNet.Builder.LibrameApplicationBuilderExtensions.UseLibrame(Microsoft.AspNet.Builder.IApplicationBuilder,System.Action{Librame.IApplicationBinder})">
+            <summary>
+            使用 Librame。
+            </summary>
+            <param name="app">给定的 <see cref="T:Microsoft.AspNet.Builder.IApplicationBuilder"/>。</param>
+            <param name="binderFactory">给定的绑定器工厂方法。</param>
+            <returns>返回 <see cref="T:Microsoft.AspNet.Builder.IApplicationBuilder"/>。</returns>
+        </member>
+        <member name="T:Microsoft.AspNet.Mvc.LibrameControllerExtensions">
+            <summary>
+            Librame 控制器静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Microsoft.AspNet.Mvc.LibrameControllerExtensions.NotPassValidation(Microsoft.AspNet.Mvc.Controller)">
+            <summary>
+            未通过验证(412)的 HTTP 响应。
+            </summary>
+            <param name="controller">给定的控制器。</param>
+            <returns>返回一个未通过验证(412)的 HTTP 响应实例。</returns>
+        </member>
+        <member name="M:Microsoft.AspNet.Mvc.LibrameControllerExtensions.JsonUTF8Content``1(Microsoft.AspNet.Mvc.Controller,System.Collections.Generic.IPageable{``0})">
+            <summary>
+            输出 JSON 格式的 UTF8 编码内容。
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="controller">给定的控制器。</param>
+            <param name="pageable">给定的数据分页列表。</param>
+            <returns>返回内容输出响应对象。</returns>
+        </member>
+        <member name="M:Microsoft.AspNet.Mvc.LibrameControllerExtensions.JsonUTF8Content(Microsoft.AspNet.Mvc.Controller,System.String)">
+            <summary>
+            输出 JSON 格式的 UTF8 编码内容。
+            </summary>
+            <param name="controller">给定的控制器。</param>
+            <param name="json">给定的 JSON。</param>
+            <returns>返回内容输出响应对象。</returns>
+        </member>
+        <member name="M:Microsoft.AspNet.Mvc.LibrameControllerExtensions.UTF8Content(Microsoft.AspNet.Mvc.Controller,System.String)">
+            <summary>
+            输出 UTF8 编码的内容。
+            </summary>
+            <param name="controller">给定的控制器。</param>
+            <param name="content">给定的内容。</param>
+            <returns>返回内容输出响应对象。</returns>
+        </member>
+        <member name="T:Microsoft.Framework.DependencyInjection.LibrameServiceCollectionExtensions">
+            <summary>
+            Librame 服务集合静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:Microsoft.Framework.DependencyInjection.LibrameServiceCollectionExtensions.AddLibrame(Microsoft.Framework.DependencyInjection.IServiceCollection,System.Action{Librame.IServiceMapper})">
+            <summary>
+            增加 Librame 支持。
+            </summary>
+            <param name="services">给定的服务集合接口。</param>
+            <param name="mapperFactory">给定的映射器工厂方法。</param>
+            <returns>返回服务集合对象。</returns>
+        </member>
+        <member name="T:System.Collections.Generic.IPageable`1">
+            <summary>
+            用于泛类型的可分页接口。
+            </summary>
+            <typeparam name="T">列表中元素的类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="P:System.Collections.Generic.IPageable`1.Rows">
+            <summary>
+            获取数据行集合。
+            </summary>
+            <value>
+            分页查询时的单页数据列表。
+            </value>
+        </member>
+        <member name="P:System.Collections.Generic.IPageable`1.Total">
+            <summary>
+            获取数据总条数。
+            </summary>
+            <value>
+            分页查询时的数据总条数。
+            </value>
+        </member>
+        <member name="P:System.Collections.Generic.IPageable`1.Skip">
+            <summary>
+            获取跳过的数据条数。
+            </summary>
+        </member>
+        <member name="P:System.Collections.Generic.IPageable`1.Take">
+            <summary>
+            获取显示的数据条数。
+            </summary>
+        </member>
+        <member name="P:System.Collections.Generic.IPageable`1.First">
+            <summary>
+            获取开始或默认项。
+            </summary>
+        </member>
+        <member name="P:System.Collections.Generic.IPageable`1.Last">
+            <summary>
+            获取末尾或默认项。
+            </summary>
+        </member>
+        <member name="T:System.Collections.Generic.PagedList`1">
+            <summary>
+            用于泛类型的可分页列表。
+            </summary>
+            <typeparam name="T">列表中元素的类型。</typeparam>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:System.Collections.Generic.PagedList`1.#ctor(System.Collections.Generic.IList{`0},System.Int32,System.Int32,System.Int32)">
+            <summary>
+            构造一个 <see cref="T:System.Collections.Generic.PagedList`1"/> 对象。
+            </summary>
+            <param name="rows">给定的数据集合。</param>
+            <param name="total">给定的数据总条数。</param>
+            <param name="skip">给定跳过的数据条数。</param>
+            <param name="take">给定显示的数据条数。</param>
+        </member>
+        <member name="P:System.Collections.Generic.PagedList`1.Rows">
+            <summary>
+            获取数据行集合。
+            </summary>
+            <value>
+            分页查询时的单页数据列表。
+            </value>
+        </member>
+        <member name="P:System.Collections.Generic.PagedList`1.Total">
+            <summary>
+            获取数据总条数。
+            </summary>
+            <value>
+            分页查询时的数据总条数。
+            </value>
+        </member>
+        <member name="P:System.Collections.Generic.PagedList`1.Skip">
+            <summary>
+            获取跳过的数据条数。
+            </summary>
+        </member>
+        <member name="P:System.Collections.Generic.PagedList`1.Take">
+            <summary>
+            获取显示的数据条数。
+            </summary>
+        </member>
+        <member name="P:System.Collections.Generic.PagedList`1.First">
+            <summary>
+            获取开始或默认项。
+            </summary>
+        </member>
+        <member name="P:System.Collections.Generic.PagedList`1.Last">
+            <summary>
+            获取末尾或默认项。
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PagedList`1.GetEnumerator">
+            <summary>
+            返回一个循环访问集合的枚举数。
+            </summary>
+            <returns>返回枚举数。</returns>
+        </member>
+        <member name="T:System.Collections.Generic.PagedListExtensions">
+            <summary>
+            分页列表静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:System.Collections.Generic.PagedListExtensions.ToPagedList``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32,System.Int32)">
+            <summary>
+            将列表集合转换为分页列表集合。
+            </summary>
+            <typeparam name="T">指定的实体类型。</typeparam>
+            <param name="rows">给定的列表集合。</param>
+            <param name="total">给定的总条数。</param>
+            <param name="skip">给定跳过的数据条数。</param>
+            <param name="take">给定显示的数据条数。</param>
+            <returns>返回数据分页对象。</returns>
+        </member>
+        <member name="T:System.Collections.Generic.LibrameReadOnlyCollectionExtensions">
+            <summary>
+            Librame 只读集合静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:System.Collections.Generic.LibrameReadOnlyCollectionExtensions.ToReadOnlyCollection``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            转化为只读集合对象。
+            </summary>
+            <typeparam name="T">指定的集合类型。</typeparam>
+            <param name="enumerable">给定的可枚举集合对象。</param>
+            <returns>返回只读集合对象。</returns>
+        </member>
+        <member name="M:System.Collections.Generic.LibrameReadOnlyCollectionExtensions.ToReadOnlyCollection``1(System.Collections.Generic.IList{``0})">
+            <summary>
+            转化为只读集合对象。
+            </summary>
+            <typeparam name="T">指定的集合类型。</typeparam>
+            <param name="list">给定的列表对象。</param>
+            <returns>返回只读集合对象。</returns>
+        </member>
+        <member name="T:System.AlgorithmExtensions">
+            <summary>
+            算法静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:System.AlgorithmExtensions.AsAes(System.String)">
+            <summary>
+            AES 加密。
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <returns>返回加密字符串。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.AsAes(System.String,Librame.Security.KeyIvInfo@)">
+            <summary>
+            AES 加密。
+            </summary>
+            <remarks>
+            支持输出密钥、向量等算法信息。
+            </remarks>
+            <param name="str">给定的字符串。</param>
+            <param name="keyIvInfo">输出密钥向量信息。</param>
+            <returns>返回加密字符串。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.FromAes(System.String,Librame.Security.KeyIvInfo)">
+            <summary>
+            AES 解密。
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <param name="keyIvInfo">给定的密钥向量信息（可选）。</param>
+            <returns>返回解密字符串。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.FromAes(System.String,Librame.UniqueIdentity)">
+            <summary>
+            AES 解密。
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <param name="unique">给定的唯一标识。</param>
+            <returns>返回解密字符串。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.AsHmacSha256(System.String)">
+            <summary>
+            计算字符串的 HMAC SHA256 哈希值。 
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <returns>返回哈希字符串。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.AsHmacSha256(System.String,Librame.Security.KeyInfo@)">
+            <summary>
+            计算字符串的 HMAC SHA256 哈希值。 
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <param name="keyInfo">输出密钥信息。</param>
+            <returns>返回哈希字符串。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.IsHmacSha256(System.String,System.String,Librame.Security.KeyInfo)">
+            <summary>
+            是否为有效的 HMAC SHA256 哈希值。
+            </summary>
+            <param name="hmacString">给定的 HMAC SHA256 哈希字符串。</param>
+            <param name="str">给定的原始字符串。</param>
+            <param name="keyInfo">给定的密钥信息。</param>
+            <returns>返回比较结果的布尔值。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.AsMd5(System.String)">
+            <summary>
+            计算字符串的 MD5 哈希值。 
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <returns>返回哈希字符串。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.AsSha1(System.String)">
+            <summary>
+            计算字符串的 SHA1 哈希值。 
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <returns>返回哈希字符串。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.AsSha256(System.String)">
+            <summary>
+            计算字符串的 SHA256 哈希值。 
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <returns>返回哈希字符串。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.AsSha384(System.String)">
+            <summary>
+            计算字符串的 SHA384 哈希值。 
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <returns>返回哈希字符串。</returns>
+        </member>
+        <member name="M:System.AlgorithmExtensions.AsSha512(System.String)">
+            <summary>
+            计算字符串的 SHA512 哈希值。 
+            </summary>
+            <param name="str">给定的字符串。</param>
+            <returns>返回哈希字符串。</returns>
+        </member>
+        <member name="T:System.Linq.ArrayTransformation">
+            <summary>
+            数组变换。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:System.Linq.ArrayTransformation.Half(System.Collections.Generic.IEnumerable{System.Byte},System.Boolean)">
+            <summary>
+            获取指定集合的一半元素。
+            </summary>
+            <param name="source">给定的字节集合。</param>
+            <param name="extractSingular">提取奇数行元素（反之则取偶数行）。</param>
+            <returns>返回新集合。</returns>
+        </member>
+        <member name="M:System.Linq.ArrayTransformation.Multiple(System.Collections.Generic.IEnumerable{System.Byte},System.Int32)">
+            <summary>
+            获取成倍扩展集合。
+            </summary>
+            <param name="source">给定的字节集合。</param>
+            <param name="factor">给定的成倍系数（增加倍数的系数）。</param>
+            <returns>返回新集合。</returns>
+        </member>
+        <member name="T:System.Linq.LibrameEnumerableExtensions">
+            <summary>
+            Librame 枚举静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:System.Linq.LibrameEnumerableExtensions.ParseEnumerable``1(``0)">
+            <summary>
+            将单个对象解析为枚举集合对象。
+            </summary>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="item">给定的对象。</param>
+            <returns>返回枚举集合。</returns>
+        </member>
+        <member name="T:System.Linq.LibrameQueryableExtensions">
+            <summary>
+            Librame 可查询静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:System.Linq.LibrameQueryableExtensions.Query``1(System.Linq.IQueryable{``0},System.Int32@,System.Func{System.Linq.IQueryable{``0},System.Linq.IQueryable{``0}},System.Func{System.Linq.IQueryable{``0},System.Linq.IOrderedQueryable{``0}},System.Int32,System.Int32)">
+            <summary>
+            统一查询。
+            </summary>
+            <remarks>
+            支持过滤、排序和可分页查询。
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            query 为空。
+            </exception>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="query">给定的可查询对象。</param>
+            <param name="total">输出总条数。</param>
+            <param name="filterFactory">给定的过滤方法（可选）。</param>
+            <param name="sorterFactory">给定的排序方法（可选）。</param>
+            <param name="skip">给定跳过的数据条数。</param>
+            <param name="take">给定显示的数据条数。</param>
+            <returns>返回列表集合。</returns>
+        </member>
+        <member name="M:System.Linq.LibrameQueryableExtensions.QueryAsync``1(System.Linq.IQueryable{``0},System.Func{System.Linq.IQueryable{``0},System.Linq.IQueryable{``0}},System.Func{System.Linq.IQueryable{``0},System.Linq.IOrderedQueryable{``0}},System.Int32,System.Int32)">
+            <summary>
+            异步统一查询（异步方法不支持 OUT 参数）。
+            </summary>
+            <remarks>
+            支持过滤、排序和可分页查询。
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            query 为空。
+            </exception>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="query">给定的可查询对象。</param>
+            <param name="filterFactory">给定的过滤方法（可选）。</param>
+            <param name="sorterFactory">给定的排序方法（可选）。</param>
+            <param name="skip">给定跳过的数据条数。</param>
+            <param name="take">给定显示的数据条数。</param>
+            <returns>返回列表集合。</returns>
+        </member>
+        <member name="M:System.Linq.LibrameQueryableExtensions.QueryTotalAsync``1(System.Linq.IQueryable{``0},System.Func{System.Linq.IQueryable{``0},System.Linq.IQueryable{``0}},System.Func{System.Linq.IQueryable{``0},System.Linq.IOrderedQueryable{``0}})">
+            <summary>
+            异步统一查询总条数（异步方法不支持 OUT 参数）。
+            </summary>
+            <remarks>
+            支持过滤、排序和可分页查询。
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            query 为空。
+            </exception>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="query">给定的可查询对象。</param>
+            <param name="filterFactory">给定的过滤方法（可选）。</param>
+            <param name="sorterFactory">给定的排序方法（可选）。</param>
+            <param name="skip">给定跳过的数据条数。</param>
+            <param name="take">给定显示的数据条数。</param>
+            <returns>返回总条数。</returns>
+        </member>
+        <member name="T:System.LibrameJsonExtensions">
+            <summary>
+            Librame JSON 静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:System.LibrameJsonExtensions.JsonDeserialize``1(System.String)">
+            <summary>
+            JSON 反序列化。
+            </summary>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="json">给定的 JSON 字符串。</param>
+            <returns>返回对象。</returns>
+        </member>
+        <member name="M:System.LibrameJsonExtensions.JsonSerializer``1(``0)">
+            <summary>
+            JSON 序列化。
+            </summary>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="t">给定的对象。</param>
+            <returns>返回 JSON 字符串。</returns>
+        </member>
+        <member name="T:System.LibrameServiceProviderExtensions">
+            <summary>
+            Librame 服务管道静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:System.LibrameServiceProviderExtensions.CreateRepository``2(System.IServiceProvider,System.Func{``0,Librame.Data.IAccessor})">
+            <summary>
+            创建实体仓库。
+            </summary>
+            <typeparam name="TDbContext">指定的数据上下文类型。</typeparam>
+            <typeparam name="TEntity">指定的实体类型。</typeparam>
+            <param name="provider">给定的服务管道接口。</param>
+            <param name="createAccessorFactory">给定的创建访问器方法。</param>
+            <returns>返回实体仓库对象。</returns>
+        </member>
+        <member name="M:System.LibrameServiceProviderExtensions.CreateAccessor``1(System.IServiceProvider,System.Func{``0,Librame.Data.IAccessor})">
+            <summary>
+            创建数据访问器。
+            </summary>
+            <typeparam name="TDbContext">指定的数据上下文类型。</typeparam>
+            <param name="provider">给定的服务管道接口。</param>
+            <param name="createAccessorFactory">给定的创建访问器方法。</param>
+            <returns>返回数据访问器对象。</returns>
+        </member>
+        <member name="M:System.LibrameServiceProviderExtensions.GetService``1(System.IServiceProvider)">
+            <summary>
+            获取指定类型的服务。
+            </summary>
+            <typeparam name="TService">指定的服务类型。</typeparam>
+            <param name="provider">给定的服务管道接口。</param>
+            <returns>返回服务对象。</returns>
+            <seealso cref="M:System.IServiceProvider.GetService(System.Type)"/>
+        </member>
+        <member name="T:System.LibrameStringExtensions">
+            <summary>
+            Librame 字符串静态扩展。
+            </summary>
+            <author>Librame Pang</author>
+        </member>
+        <member name="M:System.LibrameStringExtensions.ParseOrNull``1(System.String)">
+            <summary>
+            解析指定类型的空结构体。
+            </summary>
+            <typeparam name="T">指定的类型。</typeparam>
+            <param name="str">给定的字符串。</param>
+            <returns>返回该类型的空结构体。</returns>
+        </member>
+        <member name="M:System.LibrameStringExtensions.Parse``1(System.String,``0)">
+            <summary>
+            解析指定泛类型的字符串值。
+            </summary>
+            <remarks>
+            支持枚举类型的解析。
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            strType 为空。
+            </exception>
+            <typeparam name="T">指定的对象类型。</typeparam>
+            <param name="str">给定的字符串。</param>
+            <param name="defaultValue">给定的默认值（可选；默认返回空）。</param>
+            <returns>返回指定类型的对象。</returns>
+            <seealso cref="M:System.Enum.Parse(System.Type,System.String)"/>
+            <seealso cref="M:System.Convert.ChangeType(System.Object,System.Type)"/>
+        </member>
+        <member name="M:System.LibrameStringExtensions.Parse(System.String,System.Type,System.Object)">
+            <summary>
+            解析指定类型的字符串值。
+            </summary>
+            <remarks>
+            支持枚举类型的解析。
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            strType 为空。
+            </exception>
+            <param name="str">给定的字符串。</param>
+            <param name="strType">指定的对象类型。</param>
+            <param name="defaultValue">给定的默认值（可选；默认返回空）。</param>
+            <returns>返回指定类型的对象。</returns>
+            <seealso cref="M:System.Enum.Parse(System.Type,System.String)"/>
+            <seealso cref="M:System.Convert.ChangeType(System.Object,System.Type)"/>
+        </member>
+        <member name="M:System.LibrameStringExtensions.EmptyDefault(System.String,System.String)">
+            <summary>
+            检测当前字符串，并根据是否为空来返回当前值或默认值。
+            </summary>
+            <param name="str">给定的当前字符串。</param>
+            <param name="defaultValue">给定的默认值（可选；默认返回空字符串）。</param>
+            <returns>返回字符串。</returns>
+        </member>
+    </members>
+</doc>

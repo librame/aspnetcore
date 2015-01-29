@@ -1,0 +1,16 @@
+﻿@model IList<LibrameSample.Mvc.Models.Blog>
+@{
+    ViewBag.Title = "Blog List";
+}
+
+<div>
+    @{
+        foreach (var m in Model)
+        {
+            <ul>
+                <li>@m.Title - @m.Pubdate</li>
+                <li>@m.Description</li>
+            </ul>
+        }
+    }
+</div>

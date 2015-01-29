@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ActiveTargetFramework>Asp.Net,Version=v5.0</ActiveTargetFramework>
+    <TargetKREVersion>KRE-CLR-x86.1.0.0-beta1</TargetKREVersion>
+    <AutoRefresh>true</AutoRefresh>
+    <NameOfLastUsedPublishProfile>librame</NameOfLastUsedPublishProfile>
+  </PropertyGroup>
+</Project>
