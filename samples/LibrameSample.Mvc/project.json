@@ -11,7 +11,7 @@
         "Microsoft.AspNet.StaticFiles": "1.0.0-*",
         "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-*",
         "Microsoft.Framework.DependencyInjection": "1.0.0-*",
-        "Librame": "5.0.3-*",
+        "Librame": "5.0.5-*",
 		"Newtonsoft.Json": "6.0.8.0"
     },
 

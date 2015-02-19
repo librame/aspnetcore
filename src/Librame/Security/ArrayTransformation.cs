@@ -15,19 +15,19 @@ namespace System.Linq
         /// 获取指定集合的一半元素。
         /// </summary>
         /// <param name="source">给定的字节集合。</param>
-        /// <param name="extractSingular">提取奇数行元素（反之则取偶数行）。</param>
+        /// <param name="atLast">提取后半部分元素（反之则取前半部分）。</param>
         /// <returns>返回新集合。</returns>
-        public static IEnumerable<byte> Half(this IEnumerable<byte> source, bool extractSingular = true)
+        public static IEnumerable<byte> Half(this IEnumerable<byte> source, bool atLast = true)
         {
-            if (extractSingular)
+            int halfCount = (source.Count() / 2);
+
+            if (atLast)
             {
-                // 获取奇数行（跳过偶数行）
-                return source.SkipWhile((b, i) => (i % 2 == 0));
+                return source.Skip(halfCount).Take(halfCount);
             }
             else
             {
-                // 获取偶数行数组（跳过奇数行）
-                return source.SkipWhile((b, i) => (i % 2 != 0));
+                return source.Take(halfCount);
             }
         }
 

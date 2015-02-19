@@ -82,7 +82,7 @@ namespace System
         /// 解析指定泛类型的字符串值。
         /// </summary>
         /// <remarks>
-        /// 支持枚举类型的解析。
+        /// 支持枚举、GUID 类型的解析。
         /// </remarks>
         /// <exception cref="ArgumentNullException">
         /// strType 为空。
@@ -101,7 +101,7 @@ namespace System
         /// 解析指定类型的字符串值。
         /// </summary>
         /// <remarks>
-        /// 支持枚举类型的解析。
+        /// 支持枚举、GUID 类型的解析。
         /// </remarks>
         /// <exception cref="ArgumentNullException">
         /// strType 为空。
@@ -126,7 +126,14 @@ namespace System
                 {
                     return Enum.Parse(strType, str);
                 }
-
+                // 支持 GUID
+                else if (strType == typeof(Guid))
+                {
+                    return Guid.Parse(str);
+                }
+                else
+                { }
+                
                 return Convert.ChangeType(str, strType);
             }
 

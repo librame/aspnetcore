@@ -135,7 +135,7 @@ namespace Librame.Security
         /// <returns>返回字节集合。</returns>
         protected virtual IEnumerable<byte> Generate192SecretIdCode(IEnumerable<byte> baseSecretIdCode)
         {
-            return baseSecretIdCode.Concat(baseSecretIdCode.Half());
+            return baseSecretIdCode.Concat(baseSecretIdCode.Half().Reverse());
         }
         /// <summary>
         /// 生成 256 位保密识别码。

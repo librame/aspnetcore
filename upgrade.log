@@ -1,6 +1,12 @@
+Librame 5.0.5 (2015-02-19)
+-- 移除 Librame.Context.Mvc 命名空间下默认的 DataScopesController 等枚举控制器；
+
+Librame 5.0.4 (2015-02-17)
+-- 移除 Librame.Context.Mvc 命名空间下 ContextApi'T3、ContextApi'T2 类 RouteAttribute 属性设置，解决多个 GET 请求抛出 500 异常问题；
+-- 增加 Librame.Security 命名空间下 DES、TripleDes、BASE64、Password 等静态扩展，同时修正相关异常；
 
 Librame 5.0.3 (2015-01-29)
--- 修正 Librame.Context 命名空间下 ContextBase'T2、ContextRepository'T2、ContextApi'T2 的实体泛类型引用问题；
+-- 修正 Librame.Context.Mvc 命名空间下 ContextBase'T2、ContextRepository'T2、ContextApi'T2 的实体泛类型引用问题；
 
 Librame 5.0.2 (2015-01-29)
 -- 增加 ServiceMapper、ApplicationBinder 功能，分别用于管理 IServiceCollection、IApplicationBuilder 功能；同时 ApplicationBinder 自身是 Librame 级基础容器；
@@ -25,6 +31,8 @@ Librame 5.0.0 beta1 (2015-01-17)
 -- 新增支持 MVC 6；
 -- 新增支持 Kendo UI (Grid)；
 
+https://avatars0.githubusercontent.com/u/10363349?v=3&s=460
+https://github.com/librame/Librame
 Librame,C#,MVC,EntityFramework,Kendo
 
 Example：
@@ -64,12 +72,21 @@ public void ConfigureServices(IServiceCollection services)
 	services.AddLibrame();
 }
 3. Controllers
-public class BlogController : Librame.Context.Controllers.ControllerRepositoryBase<TestDbContext, Blog>
+public class BlogController : Librame.Context.Controllers.ControllerRepository<TestDbContext, Blog>
 {
 }
-4. Request http://localhost/Blog
+4. Apis
+[Route("api/[controller]")]
+public class BlogsController : Librame.Context.Controllers.ControllerApi<TestDbContext, Blog>
+{
+}
+
+Request http://localhost/Blog
+Request http://localhost/api/Blogs
 Response [{Id:1,...}]
-5. Request http://localhost/Blog?take=10
+
+Request http://localhost/Blog?take=10
+Request http://localhost/api/Blogs?take=10
 Response {rows:[{Id:1,...}],total:100}
 
 QQ Group: 112768263

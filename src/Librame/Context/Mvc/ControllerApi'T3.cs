@@ -16,7 +16,6 @@ namespace Librame.Context.Mvc
     /// <typeparam name="TEntity">指定的实体类型。</typeparam>
     /// <typeparam name="TId">指定的实体编号类型。</typeparam>
     /// <author>Librame Pang</author>
-    [Route("api/[controller]")]
     public class ControllerApi<TDbContext, TEntity, TId> : ControllerBase<TDbContext, TEntity, TId>
         where TDbContext : DbContext
         where TEntity : IdEntity<TId>
