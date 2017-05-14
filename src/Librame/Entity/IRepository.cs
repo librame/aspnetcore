@@ -21,7 +21,7 @@ namespace Librame.Entity
     using Repositories;
     
     /// <summary>
-    /// 实体仓库接口。
+    /// 仓库接口。
     /// </summary>
     /// <typeparam name="TEntity">指定实现自映射接口的实体类型。</typeparam>
     public interface IRepository<TEntity> : IRepositoryReader<TEntity>
@@ -31,7 +31,7 @@ namespace Librame.Entity
 
 
     /// <summary>
-    /// 实体仓库静态扩展。
+    /// 仓库静态扩展。
     /// </summary>
     public static class EntityRepositoryExtensions
     {

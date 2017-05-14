@@ -28,25 +28,20 @@ namespace Librame.Entity.Repositories
         where TEntity : class
     {
         /// <summary>
-        /// 构造一个 <see cref="EntityRepositoryEntry{TEntity}"/> 实例。
+        /// 构造一个实体框架仓库入口实例。
         /// </summary>
         /// <param name="provider">给定的数据库上下文提供程序。</param>
         /// <param name="logger">给定的记录器接口。</param>
         public EntityRepositoryEntry(DbContextProvider provider, ILogger<AbstractRepositoryEntry<TEntity>> logger)
+            : base(logger)
         {
             Provider = provider.NotNull(nameof(provider));
-            Logger = logger.NotNull(nameof(logger));
         }
         
         /// <summary>
         /// 数据上下文提供程序。
         /// </summary>
         protected DbContextProvider Provider { get; }
-
-        /// <summary>
-        /// 记录器接口。
-        /// </summary>
-        protected ILogger Logger { get; }
 
         /// <summary>
         /// 实体集。

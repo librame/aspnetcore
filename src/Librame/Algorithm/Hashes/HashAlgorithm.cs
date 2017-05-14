@@ -16,27 +16,31 @@ using System.Security.Cryptography;
 
 namespace Librame.Algorithm.Hashes
 {
+    using Utility;
+
     /// <summary>
-    /// 抽象散列算法。
+    /// 散列算法。
     /// </summary>
-    public abstract class AbstractHashAlgorithm : AbstractByteCodec, IHashAlgorithm
+    public class HashAlgorithm : AbstractByteCodec, IHashAlgorithm
     {
         /// <summary>
-        /// 构造一个抽象散列算法实例。
+        /// 构造一个散列算法实例。
         /// </summary>
+        /// <param name="converter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器工厂接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public AbstractHashAlgorithm(ILogger<AbstractByteCodec> logger, IOptions<LibrameOptions> options)
+        public HashAlgorithm(IByteConverter converter,
+            ILogger<HashAlgorithm> logger, IOptions<LibrameOptions> options)
             : base(logger, options)
         {
+            Converter = converter.NotNull(nameof(converter));
         }
 
+
         /// <summary>
-        /// 将字节数组转换为字符串。
+        /// 字节转换器接口。
         /// </summary>
-        /// <param name="buffer">给定的字节数组。</param>
-        /// <returns>返回字符串。</returns>
-        protected abstract string ToString(byte[] buffer);
+        public IByteConverter Converter { get; }
 
 
         /// <summary>
@@ -51,7 +55,7 @@ namespace Librame.Algorithm.Hashes
             var hash = MD5.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return ToString(buffer);
+            return Converter.ToString(buffer);
         }
 
 
@@ -67,7 +71,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA1.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return ToString(buffer);
+            return Converter.ToString(buffer);
         }
 
 
@@ -83,7 +87,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA256.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return ToString(buffer);
+            return Converter.ToString(buffer);
         }
 
 
@@ -99,7 +103,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA384.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return ToString(buffer);
+            return Converter.ToString(buffer);
         }
 
 
@@ -115,7 +119,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA512.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return ToString(buffer);
+            return Converter.ToString(buffer);
         }
 
     }

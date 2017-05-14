@@ -14,7 +14,7 @@ namespace Librame.Tests.Adaptation
 
             // 注册 Librame （默认使用内存配置源）
             var builder = services.AddLibrameByMemory()
-                .UseAdaptation(typeof(TestAdapter)); // 使用适配功能
+                .UseAdaptation(typeof(TestAdapter)); // 使用适配模块
 
             // ServiceType is IAdapter
             var adapter = builder.ServiceProvider.GetService<IAdapter>();

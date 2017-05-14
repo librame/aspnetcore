@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Librame.Tests.Entity
 {
-    public class EntityRepositoryTests
+    public class EntityTests
     {
         [Fact]
         public void UseEntityTest()
@@ -18,14 +18,14 @@ namespace Librame.Tests.Entity
 
             // 注册实体框架
             var connectionString = "Data Source=(local);Initial Catalog=librame;Integrated Security=False;Persist Security Info=False;User ID=librame;Password=123456";
-            services.AddEntityFrameworkSqlServer().AddDbContext<DbContextProvider>(options =>
-            {
-                options.UseSqlServer(connectionString, sql =>
-                {
-                    sql.UseRowNumberForPaging();
-                    sql.MaxBatchSize(50);
-                });
-            });
+            //services.AddEntityFrameworkSqlServer().AddDbContext<DbContextProvider>(options =>
+            //{
+            //    options.UseSqlServer(connectionString, sql =>
+            //    {
+            //        sql.UseRowNumberForPaging();
+            //        sql.MaxBatchSize(50);
+            //    });
+            //});
 
             // 注册 Librame （默认使用内存配置源）
             var builder = services.AddLibrameByMemory(source =>
@@ -34,7 +34,7 @@ namespace Librame.Tests.Entity
                 source[EntityOptions.AutomappingAssembliesKey]
                     = TypeUtil.GetAssemblyName<Article>().Name;
             })
-            .UseEntity(); // 使用实体功能
+            .UseEntity(connectionString: connectionString); // 使用内部集成 SQLSERVER 数据源的实体框架模块
 
             // 创建实体仓库
             var repository = builder.ServiceProvider.GetService<IRepository<Article>>();

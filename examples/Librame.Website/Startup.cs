@@ -38,17 +38,19 @@ namespace Librame.Website
             // Add framework services.
             services.AddMvc();
 
-            services.AddEntityFrameworkSqlServer().AddDbContext<DbContextProvider>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("SqlServer"), sql =>
-                {
-                    sql.UseRowNumberForPaging();
-                    sql.MaxBatchSize(50);
-                });
-            });
+            //services.AddEntityFrameworkSqlServer().AddDbContext<DbContextProvider>(options =>
+            //{
+            //    options.UseSqlServer(Configuration.GetConnectionString("SqlServer"), sql =>
+            //    {
+            //        sql.UseRowNumberForPaging();
+            //        sql.MaxBatchSize(50);
+            //    });
+            //});
 
             // Librame
-            services.AddLibrame(Configuration.GetSection("Librame"));
+            services.AddLibrame(Configuration.GetSection("Librame"))
+                .UseAlgorithm()
+                .UseEntity(connectionString: Configuration.GetConnectionString("SqlServer")); // 使用内部集成 SQLSERVER 数据源的实体框架模块
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

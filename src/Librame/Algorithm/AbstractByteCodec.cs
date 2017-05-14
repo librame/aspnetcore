@@ -28,7 +28,7 @@ namespace Librame.Algorithm
         /// </summary>
         /// <param name="logger">给定的记录器工厂接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public AbstractByteCodec(ILogger<AbstractByteCodec> logger, IOptions<LibrameOptions> options)
+        public AbstractByteCodec(ILogger logger, IOptions<LibrameOptions> options)
         {
             Options = options.NotNull(nameof(options)).Value;
             Logger = logger.NotNull(nameof(logger));

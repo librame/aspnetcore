@@ -20,33 +20,35 @@ namespace Librame.Algorithm.Symmetries
     using Utility;
 
     /// <summary>
-    /// 抽象对称算法。
+    /// 对称算法。
     /// </summary>
-    public abstract class AbstractSymmetryAlgorithm : AbstractByteCodec, ISymmetryAlgorithm
+    public class SymmetryAlgorithm : AbstractByteCodec, ISymmetryAlgorithm
     {
         /// <summary>
-        /// 构造一个抽象对称算法实例。
+        /// 构造一个对称算法实例。
         /// </summary>
+        /// <param name="keyGenerator">给定的密钥生成器接口。</param>
         /// <param name="logger">给定的记录器工厂接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public AbstractSymmetryAlgorithm(ILogger<AbstractByteCodec> logger, IOptions<LibrameOptions> options)
+        public SymmetryAlgorithm(ISAKeyGenerator keyGenerator,
+            ILogger<SymmetryAlgorithm> logger, IOptions<LibrameOptions> options)
             : base(logger, options)
         {
+            KeyGenerator = keyGenerator.NotNull(nameof(keyGenerator));
         }
 
+
         /// <summary>
-        /// 将字节数组转换为字符串。
+        /// 密钥生成器接口。
         /// </summary>
-        /// <param name="buffer">给定的字节数组。</param>
-        /// <returns>返回字符串。</returns>
-        protected abstract string ToString(byte[] buffer);
+        public ISAKeyGenerator KeyGenerator { get; }
+
         /// <summary>
-        /// 将加密字符串还原为字节数组。
+        /// 字节转换器接口。
         /// </summary>
-        /// <param name="encrypt">给定的加密字符串。</param>
-        /// <returns>返回字节数组。</returns>
-        protected abstract byte[] FromString(string encrypt);
-        
+        public IByteConverter Converter => KeyGenerator.Converter;
+
+
         /// <summary>
         /// 加密字符串。
         /// </summary>
@@ -65,7 +67,7 @@ namespace Librame.Algorithm.Symmetries
                 var ct = sa.CreateEncryptor();
                 buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);
 
-                return ToString(buffer);
+                return Converter.ToString(buffer);
             }
             catch (Exception ex)
             {
@@ -74,6 +76,7 @@ namespace Librame.Algorithm.Symmetries
                 return str;
             }
         }
+
         /// <summary>
         /// 解密字符串。
         /// </summary>
@@ -87,7 +90,7 @@ namespace Librame.Algorithm.Symmetries
                 sa.Mode = CipherMode.ECB;
                 sa.Padding = PaddingMode.PKCS7;
 
-                var buffer = FromString(encrypt);
+                var buffer = Converter.FromString(encrypt);
 
                 var ct = sa.CreateDecryptor();
                 buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);
@@ -103,18 +106,35 @@ namespace Librame.Algorithm.Symmetries
         }
 
 
+        /// <summary>
+        /// 转换为 AES。
+        /// </summary>
+        /// <param name="str">给定待加密的字符串。</param>
+        /// <param name="keyString">给定的密钥字符串（可选）。</param>
+        /// <returns>返回加密字符串。</returns>
+        public virtual string ToAes(string str, string keyString = null)
+        {
+            var sa = Aes.Create();
+            sa.Key = KeyGenerator.GenerateAesKey(keyString);
+            sa.IV = KeyGenerator.GenerateAesIv(sa.Key);
 
-        //public virtual string ToAes(string str, string authId = null)
-        //{
-        //    if (string.IsNullOrEmpty(authId))
-        //        authId = Options.AuthId;
+            return Encrypt(sa, str);
+        }
 
-        //    var sa = Aes.Create();
-        //    //sa.Key = ?;
-        //    //sa.IV = ?;
+        /// <summary>
+        /// 还原 AES。
+        /// </summary>
+        /// <param name="encrypt">给定的加密字符串。</param>
+        /// <param name="keyString">给定的密钥字符串（可选）。</param>
+        /// <returns>返回原始字符串。</returns>
+        public virtual string FromAes(string encrypt, string keyString = null)
+        {
+            var sa = Aes.Create();
+            sa.Key = KeyGenerator.GenerateAesKey(keyString);
+            sa.IV = KeyGenerator.GenerateAesIv(sa.Key);
 
-        //    return Encrypt(sa, str);
-        //}
+            return Decrypt(sa, encrypt);
+        }
 
     }
 }

@@ -27,7 +27,7 @@ namespace Librame.Entity.Repositories
         where TEntity : class
     {
         /// <summary>
-        /// 构造一个 <see cref="EntityRepositoryWriter{TEntity}"/> 实例。
+        /// 构造一个实体框架仓库写入器实例。
         /// </summary>
         /// <param name="provider">给定的数据库上下文提供程序。</param>
         /// <param name="logger">给定的记录器接口。</param>

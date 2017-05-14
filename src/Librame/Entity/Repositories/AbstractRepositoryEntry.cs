@@ -10,6 +10,7 @@
 
 #endregion
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 
@@ -24,6 +25,22 @@ namespace Librame.Entity.Repositories
     public abstract class AbstractRepositoryEntry<TEntity> : IRepositoryEntry<TEntity>
         where TEntity : class
     {
+        /// <summary>
+        /// 构造一个抽象仓库入口实例。
+        /// </summary>
+        /// <param name="logger">给定的记录器接口。</param>
+        public AbstractRepositoryEntry(ILogger<AbstractRepositoryEntry<TEntity>> logger)
+        {
+            Logger = logger.NotNull(nameof(logger));
+        }
+
+
+        /// <summary>
+        /// 记录器接口。
+        /// </summary>
+        public ILogger Logger { get; }
+
+
         private IEntityBinding<TEntity> _binding;
         /// <summary>
         /// 实体绑定接口。

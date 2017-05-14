@@ -25,6 +25,31 @@ namespace Librame.Algorithm
         internal static readonly string KeyPrefix = (nameof(Algorithm) + ":");
 
 
+        #region ByteConverterTypeName
+
+        /// <summary>
+        /// 字节转换器类型名键。
+        /// </summary>
+        public static readonly string ByteConverterTypeNameKey
+            = (KeyPrefix + nameof(ByteConverterTypeName));
+
+        /// <summary>
+        /// 默认字节转换器类型名。
+        /// </summary>
+        public static readonly string DefaultByteConverterTypeName
+            = typeof(HexByteConverter).AssemblyQualifiedNameWithoutVcp();
+
+        /// <summary>
+        /// 字节转换器类型名。
+        /// </summary>
+        /// <value>
+        /// 默认为 <see cref="DefaultByteConverterTypeName"/>。
+        /// </value>
+        public string ByteConverterTypeName { get; set; } = DefaultByteConverterTypeName;
+
+        #endregion
+
+
         #region HashAlgorithmTypeName
 
         /// <summary>
@@ -37,7 +62,7 @@ namespace Librame.Algorithm
         /// 默认散列算法类型名。
         /// </summary>
         public static readonly string DefaultHashAlgorithmTypeName
-            = typeof(Hashes.Base64HashAlgorithm).AssemblyQualifiedNameWithoutVcp();
+            = typeof(Hashes.HashAlgorithm).AssemblyQualifiedNameWithoutVcp();
 
         /// <summary>
         /// 散列算法类型名。
@@ -48,31 +73,56 @@ namespace Librame.Algorithm
         public string HashAlgorithmTypeName { get; set; } = DefaultHashAlgorithmTypeName;
 
         #endregion
-		
-		
-		//#region KeyGeneratorTypeName
 
-  //      /// <summary>
-  //      /// 散列算法类型名键。
-  //      /// </summary>
-  //      public static readonly string KeyGeneratorTypeNameKey
-  //          = (KeyPrefix + nameof(KeyGeneratorTypeName));
 
-  //      /// <summary>
-  //      /// 默认散列算法类型名。
-  //      /// </summary>
-  //      public static readonly string DefaultKeyGeneratorTypeName
-  //          = typeof(HexKeyGenerator).AssemblyQualifiedNameWithoutVcp();
+        #region SAKeyGeneratorTypeName
 
-  //      /// <summary>
-  //      /// 散列算法类型名。
-  //      /// </summary>
-  //      /// <value>
-  //      /// 默认为 <see cref="DefaultKeyGeneratorTypeName"/>。
-  //      /// </value>
-  //      public string KeyGeneratorTypeName { get; set; } = DefaultKeyGeneratorTypeName;
+        /// <summary>
+        /// 对称算法密钥生成器类型名键。
+        /// </summary>
+        public static readonly string SAKeyGeneratorTypeNameKey
+            = (KeyPrefix + nameof(SAKeyGeneratorTypeName));
 
-  //      #endregion
+        /// <summary>
+        /// 默认对称算法密钥生成器类型名。
+        /// </summary>
+        public static readonly string DefaultSAKeyGeneratorTypeName
+            = typeof(Symmetries.AuthIdSAKeyGenerator).AssemblyQualifiedNameWithoutVcp();
+
+        /// <summary>
+        /// 对称算法密钥生成器类型名。
+        /// </summary>
+        /// <value>
+        /// 默认为 <see cref="DefaultSAKeyGeneratorTypeName"/>。
+        /// </value>
+        public string SAKeyGeneratorTypeName { get; set; } = DefaultSAKeyGeneratorTypeName;
+
+        #endregion
+
+
+        #region SymmetryAlgorithmTypeName
+
+        /// <summary>
+        /// 对称算法类型名键。
+        /// </summary>
+        public static readonly string SymmetryAlgorithmTypeNameKey
+            = (KeyPrefix + nameof(SymmetryAlgorithmTypeName));
+
+        /// <summary>
+        /// 默认对称算法类型名。
+        /// </summary>
+        public static readonly string DefaultSymmetryAlgorithmTypeName
+            = typeof(Symmetries.SymmetryAlgorithm).AssemblyQualifiedNameWithoutVcp();
+
+        /// <summary>
+        /// 对称算法类型名。
+        /// </summary>
+        /// <value>
+        /// 默认为 <see cref="DefaultSymmetryAlgorithmTypeName"/>。
+        /// </value>
+        public string SymmetryAlgorithmTypeName { get; set; } = DefaultSymmetryAlgorithmTypeName;
+
+        #endregion
 
     }
 }

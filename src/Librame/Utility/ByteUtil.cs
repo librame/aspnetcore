@@ -48,12 +48,14 @@ namespace Librame.Utility
         /// <returns>返回十六进制字符串。</returns>
         public static string ToHex(this byte[] buffer)
         {
-            // 同 BitConverter.ToString(buffer).Replace("-", string.Empty);
+            buffer.NotNull(nameof(buffer));
 
             var sb = new StringBuilder();
 
             if (buffer != null || buffer.Length == 0)
             {
+                // 同 BitConverter.ToString(buffer).Replace("-", string.Empty);
+
                 for (int i = 0; i < buffer.Length; i++)
                 {
                     sb.Append(buffer[i].ToString("X2"));
@@ -70,8 +72,13 @@ namespace Librame.Utility
         /// <returns>返回字节数组。</returns>
         public static byte[] FromHex(this string hex)
         {
-            if (string.IsNullOrEmpty(hex) || (hex.Length % 2 != 0))
-                return null;
+            hex.NotNull(nameof(hex));
+
+            if (hex.Length % 2 != 0)
+            {
+                var ex = new ArgumentException("hex length must be in multiples of 2.");
+                throw ex;
+            }
 
             int length = hex.Length / 2;
             var buffer = new byte[length];

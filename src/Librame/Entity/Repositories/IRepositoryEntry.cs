@@ -10,6 +10,7 @@
 
 #endregion
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 
@@ -22,6 +23,11 @@ namespace Librame.Entity.Repositories
     public interface IRepositoryEntry<TEntity>
         where TEntity : class
     {
+        /// <summary>
+        /// 记录器接口。
+        /// </summary>
+        ILogger Logger { get; }
+
         /// <summary>
         /// 实体绑定接口。
         /// </summary>

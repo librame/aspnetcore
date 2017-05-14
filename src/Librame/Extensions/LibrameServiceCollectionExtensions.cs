@@ -11,10 +11,12 @@
 #endregion
 
 using Librame;
+using Librame.Algorithm;
 using Librame.Entity;
 using Librame.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
@@ -39,6 +41,24 @@ namespace Microsoft.Extensions.DependencyInjection
                 { LibrameOptions.AuthIdKey, LibrameOptions.DefaultAuthId },
                 { LibrameOptions.BaseDirectoryKey, LibrameOptions.DefaultBaseDirectory },
                 { LibrameOptions.EncodingKey, LibrameOptions.DefaultEncoding },
+
+                // Algorithm
+                {
+                    AlgorithmOptions.ByteConverterTypeNameKey,
+                    AlgorithmOptions.DefaultByteConverterTypeName
+                },
+                {
+                    AlgorithmOptions.HashAlgorithmTypeNameKey,
+                    AlgorithmOptions.DefaultHashAlgorithmTypeName
+                },
+                {
+                    AlgorithmOptions.SAKeyGeneratorTypeNameKey,
+                    AlgorithmOptions.DefaultSAKeyGeneratorTypeName
+                },
+                {
+                    AlgorithmOptions.SymmetryAlgorithmTypeNameKey,
+                    AlgorithmOptions.DefaultSymmetryAlgorithmTypeName
+                },
 
                 // Entity
                 {
@@ -123,9 +143,15 @@ namespace Microsoft.Extensions.DependencyInjection
             // 注入 LibrameOptions (使用 Options 模式)
             services.AddOptions()
                 .Configure<LibrameOptions>(configuration); // options => configuration.Bind(options)
-
+            
             // 构造并注入 LibrameBuilder
-            return new LibrameBuilder(services);
+            var builder = new LibrameBuilder(services);
+
+            // 如果还未注册记录器
+            if (!builder.ContainsService(typeof(ILogger<>)))
+                builder.Services.AddLogging();
+
+            return builder;
         }
 
     }

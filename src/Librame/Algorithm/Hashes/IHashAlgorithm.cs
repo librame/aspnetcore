@@ -18,6 +18,12 @@ namespace Librame.Algorithm.Hashes
     public interface IHashAlgorithm : IByteCodec
     {
         /// <summary>
+        /// 字节转换器接口。
+        /// </summary>
+        IByteConverter Converter { get; }
+
+
+        /// <summary>
         /// 转换为 MD5。
         /// </summary>
         /// <param name="str">给定的字符串。</param>
