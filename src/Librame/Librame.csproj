@@ -16,9 +16,9 @@
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageReleaseNotes>Librame Framework for .NET Core 1.1</PackageReleaseNotes>
-    <ApplicationIcon>..\..\resource\Librame.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\resource\LibrameCore.ico</ApplicationIcon>
     <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\resource\Librame.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\resource\LibrameCore.pfx</AssemblyOriginatorKeyFile>
     <Version>1.1.1705.1</Version>
   </PropertyGroup>
 

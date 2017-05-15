@@ -3,8 +3,8 @@
 /examples/Librame.Entities/obj
 /examples/Librame.Website/wwwroot/lib
 *.user
-/resource/Librame.pfx
-/resource/Librame.pfx.txt
+/resource/LibrameCore.pfx
+/resource/LibrameCore.pfx.txt
 /src/Librame/obj
 /tests/Librame.Mvc.Tests/obj
 /examples/Librame.Entities/bin
