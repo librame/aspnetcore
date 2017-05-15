@@ -159,6 +159,87 @@ namespace Librame.Utility
         }
 
 
+        #region CopyTo
+
+        /// <summary>
+        /// 将源类型实例复制到新实例。
+        /// </summary>
+        /// <param name="source">给定的源类型实例。</param>
+        /// <returns>返回新实例。</returns>
+        public static T CopyToCreate<T>(this T source)
+            where T : class, new()
+        {
+            var target = Activator.CreateInstance<T>();
+            CopyTo(source, target);
+
+            return target;
+        }
+        /// <summary>
+        /// 将源类型实例复制到目标类型实例。
+        /// </summary>
+        /// <param name="source">给定的源类型实例。</param>
+        /// <param name="target">给定的目标类型实例。</param>
+        public static void CopyTo<T>(this T source, T target)
+            where T : class
+        {
+            source.NotNull(nameof(source));
+            target.NotNull(nameof(target));
+
+            var properties = typeof(T).GetProperties();
+            if (properties.Length < 1)
+                return;
+
+            properties.Invoke(pi =>
+            {
+                var sourceValue = pi.GetValue(source);
+                pi.SetValue(target, sourceValue);
+            });
+        }
+
+        /// <summary>
+        /// 将源对象复制到新对象。
+        /// </summary>
+        /// <param name="source">给定的源对象。</param>
+        /// <returns>返回新对象。</returns>
+        public static object CopyToCreate(this object source)
+        {
+            var target = Activator.CreateInstance(source?.GetType());
+            CopyTo(source, target);
+
+            return target;
+        }
+        /// <summary>
+        /// 将源对象复制到目标对象。
+        /// </summary>
+        /// <param name="source">给定的源对象。</param>
+        /// <param name="target">给定的目标对象。</param>
+        public static void CopyTo(this object source, object target)
+        {
+            source = source.NotNull(nameof(source));
+            target = target.NotNull(nameof(target));
+
+            var sourceType = source.GetType();
+            var targetType = target.GetType();
+            if (sourceType != targetType)
+            {
+                throw new ArgumentException(string.Format("源类型 {0} 与目标类型 {1} 不一致",
+                    sourceType.Name, targetType.Name));
+            }
+
+            var properties = sourceType.GetProperties();
+            if (properties.Length < 1)
+                return;
+
+            properties.Invoke(pi =>
+            {
+                var sourceValue = pi.GetValue(source);
+                pi.SetValue(target, sourceValue);
+            });
+        }
+
+        #endregion
+
+
         #region Instantiation
 
         /// <summary>
