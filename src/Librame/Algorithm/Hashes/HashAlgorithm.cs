@@ -26,21 +26,21 @@ namespace Librame.Algorithm.Hashes
         /// <summary>
         /// 构造一个散列算法实例。
         /// </summary>
-        /// <param name="converter">给定的字节转换器接口。</param>
+        /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器工厂接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public HashAlgorithm(IByteConverter converter,
+        public HashAlgorithm(IByteConverter byteConverter,
             ILogger<HashAlgorithm> logger, IOptions<LibrameOptions> options)
             : base(logger, options)
         {
-            Converter = converter.NotNull(nameof(converter));
+            ByteConverter = byteConverter.NotNull(nameof(byteConverter));
         }
 
 
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        public IByteConverter Converter { get; }
+        public IByteConverter ByteConverter { get; }
 
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Librame.Algorithm.Hashes
             var hash = MD5.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return Converter.ToString(buffer);
+            return ByteConverter.ToString(buffer);
         }
 
 
@@ -71,7 +71,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA1.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return Converter.ToString(buffer);
+            return ByteConverter.ToString(buffer);
         }
 
 
@@ -87,7 +87,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA256.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return Converter.ToString(buffer);
+            return ByteConverter.ToString(buffer);
         }
 
 
@@ -103,7 +103,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA384.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return Converter.ToString(buffer);
+            return ByteConverter.ToString(buffer);
         }
 
 
@@ -119,7 +119,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA512.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return Converter.ToString(buffer);
+            return ByteConverter.ToString(buffer);
         }
 
     }

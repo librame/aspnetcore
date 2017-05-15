@@ -10,11 +10,14 @@
 
 #endregion
 
+using System.Runtime.InteropServices;
+
 namespace Librame.Adaptation
 {
     /// <summary>
     /// 适配器信息。
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     public class AdapterInfo
     {
         /// <summary>

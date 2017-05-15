@@ -51,8 +51,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Algorithm\Asymmetries\" />
-  </ItemGroup>
-
 </Project>

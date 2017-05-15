@@ -21,9 +21,6 @@ namespace Librame.Utility
     /// </summary>
     public static class ExpressionUtil
     {
-
-        #region AsProperty
-
         /// <summary>
         /// 解析指定属性表达式对应的名称。
         /// </summary>
@@ -84,19 +81,17 @@ namespace Librame.Utility
             }
         }
 
-        #endregion
 
-
-        #region BuildProperty
+        #region AsPropertyExpression
 
         /// <summary>
-        /// 建立单个属性键的 Lambda 表达式（例：p => p.PropertyName）。
+        /// 转换为单个属性键的 Lambda 表达式（例：p => p.PropertyName）。
         /// </summary>
         /// <typeparam name="T">指定的实体类型。</typeparam>
         /// <typeparam name="TKey">指定的键类型。</typeparam>
         /// <param name="propertyName">给定的属性名。</param>
         /// <returns>返回 lambda 表达式。</returns>
-        public static Expression<Func<T, TKey>> BuildProperty<T, TKey>(this string propertyName)
+        public static Expression<Func<T, TKey>> AsPropertyExpression<T, TKey>(this string propertyName)
         {
             // 建立变量
             var p = Expression.Parameter(typeof(T), "p");
@@ -109,98 +104,98 @@ namespace Librame.Utility
         }
 
         /// <summary>
-        /// 建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName > compareValue）。
+        /// 转换为比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName > compareValue）。
         /// </summary>
         /// <typeparam name="T">指定的实体类型。</typeparam>
         /// <param name="propertyName">给定用于对比的属性名。</param>
         /// <param name="value">给定的参考值。</param>
         /// <param name="propertyType">给定的属性类型。</param>
         /// <returns>返回 Lambda 表达式。</returns>
-        public static Expression<Func<T, bool>> BuildGreaterThanProperty<T>(this string propertyName,
+        public static Expression<Func<T, bool>> AsGreaterThanPropertyExpression<T>(this string propertyName,
             object value, Type propertyType)
         {
-            return BuildProperty<T, BinaryExpression>(propertyName, value, propertyType,
+            return propertyName.AsPropertyExpression<T, BinaryExpression>(value, propertyType,
                 (p, c) => Expression.GreaterThan(p, c));
         }
 
         /// <summary>
-        /// 建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName >= compareValue）。
+        /// 转换为比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName >= compareValue）。
         /// </summary>
         /// <typeparam name="T">指定的实体类型。</typeparam>
         /// <param name="propertyName">给定用于对比的属性名。</param>
         /// <param name="value">给定的参考值。</param>
         /// <param name="propertyType">给定的属性类型。</param>
         /// <returns>返回 Lambda 表达式。</returns>
-        public static Expression<Func<T, bool>> BuildGreaterThanOrEqualProperty<T>(this string propertyName,
+        public static Expression<Func<T, bool>> AsGreaterThanOrEqualPropertyExpression<T>(this string propertyName,
             object value, Type propertyType)
         {
-            return BuildProperty<T, BinaryExpression>(propertyName, value, propertyType,
+            return propertyName.AsPropertyExpression<T, BinaryExpression>(value, propertyType,
                 (p, c) => Expression.GreaterThanOrEqual(p, c));
         }
 
         /// <summary>
-        /// 建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName 〈 compareValue）。
+        /// 转换为比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName 〈 compareValue）。
         /// </summary>
         /// <typeparam name="T">指定的实体类型。</typeparam>
         /// <param name="propertyName">给定用于对比的属性名。</param>
         /// <param name="value">给定的参考值。</param>
         /// <param name="propertyType">给定的属性类型。</param>
         /// <returns>返回 Lambda 表达式。</returns>
-        public static Expression<Func<T, bool>> BuildLessThanProperty<T>(this string propertyName,
+        public static Expression<Func<T, bool>> AsLessThanPropertyExpression<T>(this string propertyName,
             object value, Type propertyType)
         {
-            return BuildProperty<T, BinaryExpression>(propertyName, value, propertyType,
+            return propertyName.AsPropertyExpression<T, BinaryExpression>(value, propertyType,
                 (p, c) => Expression.LessThan(p, c));
         }
 
         /// <summary>
-        /// 建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName 〈= compareValue）。
+        /// 转换为比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName 〈= compareValue）。
         /// </summary>
         /// <typeparam name="T">指定的实体类型。</typeparam>
         /// <param name="propertyName">给定用于对比的属性名。</param>
         /// <param name="value">给定的参考值。</param>
         /// <param name="propertyType">给定的属性类型。</param>
         /// <returns>返回 Lambda 表达式。</returns>
-        public static Expression<Func<T, bool>> BuildLessThanOrEqualProperty<T>(this string propertyName,
+        public static Expression<Func<T, bool>> AsLessThanOrEqualPropertyExpression<T>(this string propertyName,
             object value, Type propertyType)
         {
-            return BuildProperty<T, BinaryExpression>(propertyName, value, propertyType,
+            return propertyName.AsPropertyExpression<T, BinaryExpression>(value, propertyType,
                 (p, c) => Expression.LessThanOrEqual(p, c));
         }
 
         /// <summary>
-        /// 建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName != compareValue）。
+        /// 转换为比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName != compareValue）。
         /// </summary>
         /// <typeparam name="T">指定的实体类型。</typeparam>
         /// <param name="propertyName">给定用于对比的属性名。</param>
         /// <param name="value">给定的参考值。</param>
         /// <param name="propertyType">给定的属性类型。</param>
         /// <returns>返回 Lambda 表达式。</returns>
-        public static Expression<Func<T, bool>> BuildNotEqualProperty<T>(this string propertyName,
+        public static Expression<Func<T, bool>> AsNotEqualPropertyExpression<T>(this string propertyName,
             object value, Type propertyType)
         {
-            return BuildProperty<T, BinaryExpression>(propertyName, value, propertyType,
+            return propertyName.AsPropertyExpression<T, BinaryExpression>(value, propertyType,
                 (p, c) => Expression.NotEqual(p, c));
         }
 
         /// <summary>
-        /// 建立比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName == compareValue）。
+        /// 转换为比较的单个属性值等于的 Lambda 表达式（例：p => p.PropertyName == compareValue）。
         /// </summary>
         /// <typeparam name="T">指定的实体类型。</typeparam>
         /// <param name="propertyName">给定用于对比的属性名。</param>
         /// <param name="value">给定的参考值。</param>
         /// <param name="propertyType">给定的属性类型。</param>
         /// <returns>返回 Lambda 表达式。</returns>
-        public static Expression<Func<T, bool>> BuildEqualProperty<T>(this string propertyName,
+        public static Expression<Func<T, bool>> AsEqualPropertyExpression<T>(this string propertyName,
             object value, Type propertyType)
         {
-            return BuildProperty<T, BinaryExpression>(propertyName, value, propertyType,
+            return propertyName.AsPropertyExpression<T, BinaryExpression>(value, propertyType,
                 (p, c) => Expression.Equal(p, c));
         }
 
 
         /// <summary>
-        /// 建立使用单个属性值进行比较的 Lambda 表达式（例：p => p.PropertyName.CompareTo(value)）。
+        /// 转换为使用单个属性值进行比较的 Lambda 表达式（例：p => p.PropertyName.CompareTo(value)）。
         /// </summary>
         /// <typeparam name="T">指定的实体类型。</typeparam>
         /// <typeparam name="TExpression">指定的表达式类型。</typeparam>
@@ -209,7 +204,7 @@ namespace Librame.Utility
         /// <param name="propertyType">给定的属性类型。</param>
         /// <param name="compareToFactory">给定的对比方法。</param>
         /// <returns>返回 Lambda 表达式。</returns>
-        public static Expression<Func<T, bool>> BuildProperty<T, TExpression>(this string propertyName,
+        public static Expression<Func<T, bool>> AsPropertyExpression<T, TExpression>(this string propertyName,
             object value, Type propertyType,
             Func<MemberExpression, ConstantExpression, TExpression> compareToFactory)
             where TExpression : Expression
@@ -231,7 +226,7 @@ namespace Librame.Utility
         }
 
         /// <summary>
-        /// 建立使用单个属性值进行比较的 Lambda 表达式（例：p => p.PropertyName.CallMethodName(value)）。
+        /// 转换为使用单个属性值进行比较的 Lambda 表达式（例：p => p.PropertyName.CallMethodName(value)）。
         /// </summary>
         /// <typeparam name="T">指定的实体类型。</typeparam>
         /// <param name="propertyName">给定的属性名。</param>
@@ -239,7 +234,7 @@ namespace Librame.Utility
         /// <param name="propertyType">给定的属性类型。</param>
         /// <param name="callMethodName">给定要调用的方法名。</param>
         /// <returns>返回 Lambda 表达式。</returns>
-        public static Expression<Func<T, bool>> BuildProperty<T>(this string propertyName,
+        public static Expression<Func<T, bool>> AsPropertyExpression<T>(this string propertyName,
             object value, Type propertyType, string callMethodName)
         {
             var type = typeof(T);

@@ -12,6 +12,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace Librame.Entity.Descriptors
 {
@@ -19,6 +20,7 @@ namespace Librame.Entity.Descriptors
     /// 抽象更新、创建、数据、主键描述符。
     /// </summary>
     /// <typeparam name="TId">指定的主键类型。</typeparam>
+    [StructLayout(LayoutKind.Sequential)]
     public abstract class AbstractUpdateAndCreateDataIdDescriptor<TId> : AbstractCreateDataIdDescriptor<TId>, IUpdateAndCreateIdDescriptor<TId>
         where TId : struct
     {

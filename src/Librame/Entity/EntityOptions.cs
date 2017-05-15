@@ -10,6 +10,8 @@
 
 #endregion
 
+using System.Runtime.InteropServices;
+
 namespace Librame.Entity
 {
     using Utility;
@@ -17,6 +19,7 @@ namespace Librame.Entity
     /// <summary>
     /// 实体选项。
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     public class EntityOptions : ILibrameOptions
     {
         /// <summary>

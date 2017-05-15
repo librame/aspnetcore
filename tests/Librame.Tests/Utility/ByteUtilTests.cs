@@ -14,7 +14,7 @@ namespace Librame.Tests.Utility
         public void Base64Test()
         {
             var buffer = _encoding.GetBytes(_text);
-            var base64 = buffer.ToBase64();
+            var base64 = buffer.AsBase64();
 
             var text = _encoding.GetString(base64.FromBase64());
             Assert.Equal(text, _text);
@@ -24,7 +24,7 @@ namespace Librame.Tests.Utility
         public void HexTest()
         {
             var buffer = _encoding.GetBytes(_text);
-            var hex = buffer.ToHex();
+            var hex = buffer.AsHex();
 
             var text = _encoding.GetString(hex.FromHex());
             Assert.Equal(text, _text);

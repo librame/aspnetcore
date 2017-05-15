@@ -43,20 +43,20 @@ namespace Librame.Utility
 
 
         /// <summary>
-        /// 构建键名。
+        /// 转换为键名。
         /// </summary>
         /// <typeparam name="T">指定的类型。</typeparam>
         /// <returns>返回字符串。</returns>
-        public static string BuildKey<T>()
+        public static string AsKey<T>()
         {
-            return typeof(T).BuildKey();
+            return typeof(T).AsKey();
         }
         /// <summary>
-        /// 构建键名。
+        /// 转换为键名。
         /// </summary>
         /// <param name="type">给定的类型。</param>
         /// <returns>返回字符串。</returns>
-        public static string BuildKey(this Type type)
+        public static string AsKey(this Type type)
         {
             return type.NotNull(nameof(type)).AssemblyQualifiedNameWithoutVcp();
         }

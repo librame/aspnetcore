@@ -20,7 +20,7 @@ namespace Librame.Algorithm.Hashes
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        IByteConverter Converter { get; }
+        IByteConverter ByteConverter { get; }
 
 
         /// <summary>

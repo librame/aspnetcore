@@ -16,10 +16,12 @@ using System.Linq;
 
 namespace Librame.Algorithm.Symmetries
 {
+    using Utility;
+
     /// <summary>
     /// 授权标识对称算法密钥生成器。
     /// </summary>
-    public class AuthIdSAKeyGenerator : AbstractSAKeyGenerator
+    public class AuthIdSymmetryAlgorithmKeyGenerator : AbstractSymmetryAlgorithmKeyGenerator
     {
         /// <summary>
         /// 构造一个授权标识对称算法密钥生成器实例。
@@ -27,42 +29,21 @@ namespace Librame.Algorithm.Symmetries
         /// <param name="converter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public AuthIdSAKeyGenerator(IByteConverter converter,
-            ILogger<AuthIdSAKeyGenerator> logger, IOptions<LibrameOptions> options)
+        public AuthIdSymmetryAlgorithmKeyGenerator(IByteConverter converter,
+            ILogger<AuthIdSymmetryAlgorithmKeyGenerator> logger, IOptions<LibrameOptions> options)
             : base(converter, logger, options?.Value.AuthId)
         {
         }
 
         /// <summary>
-        /// 转换核心。
+        /// 解析基础字节数组。
         /// </summary>
-        /// <param name="bytes">给定的字节数组。</param>
-        /// <param name="length">给定要生成的字节数组长度。</param>
-        /// <returns>返回字节数组。</returns>
-        protected virtual byte[] ConvertCore(byte[] bytes, int length)
+        /// <param name="keyString">给定的密钥字符串。</param>
+        /// <returns>返回基础字节数组。</returns>
+        protected override byte[] ParseBaseBytes(string keyString)
         {
-            // 默认授权标识为 GUID 格式编码生成，标准字节数组长度为 16（128 位）
-
-            switch (length)
-            {
-                // 最小支持 64 位
-                case 8:
-                    return bytes.Skip(4).Take(8).ToArray();
-
-                // 基方法虽然有判断长度相同直接返回，但不一定表示长度均为 16。
-                case 16:
-                    return bytes.Take(16).ToArray();
-
-                case 24:
-                    return bytes.Concat(bytes.Take(8).Reverse()).ToArray();
-
-                // 当前最大仅支持 256 位
-                case 32:
-                    return bytes.Concat(bytes.Reverse()).ToArray();
-
-                default:
-                    return bytes;
-            }
+            // 授权标识的格式是十六进制字符串
+            return keyString.FromHex();
         }
 
         /// <summary>
@@ -85,6 +66,37 @@ namespace Librame.Algorithm.Symmetries
         protected override byte[] ConvertIvBytes(byte[] key, int bytesLength)
         {
             return ConvertCore(key.Reverse().ToArray(), bytesLength);
+        }
+
+        /// <summary>
+        /// 转换核心。
+        /// </summary>
+        /// <param name="bytes">给定的字节数组。</param>
+        /// <param name="length">给定要生成的字节数组长度。</param>
+        /// <returns>返回字节数组。</returns>
+        protected virtual byte[] ConvertCore(byte[] bytes, int length)
+        {
+            // 默认授权标识的字节数组长度为 16（128 位）
+            switch (length)
+            {
+                // 最小支持 64 位
+                case 8:
+                    return bytes.Skip(4).Take(8).ToArray();
+
+                // 基方法虽然有判断长度相同直接返回，但不一定表示长度均为 16。
+                case 16:
+                    return bytes.Take(16).ToArray();
+
+                case 24:
+                    return bytes.Concat(bytes.Take(8).Reverse()).ToArray();
+
+                // 当前最大仅支持 256 位
+                case 32:
+                    return bytes.Concat(bytes.Reverse()).ToArray();
+
+                default:
+                    return bytes;
+            }
         }
 
     }

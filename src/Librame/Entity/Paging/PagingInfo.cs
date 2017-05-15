@@ -10,11 +10,14 @@
 
 #endregion
 
+using System.Runtime.InteropServices;
+
 namespace System.Collections.Generic
 {
     /// <summary>
     /// 分页信息。
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     public class PagingInfo
     {
         /// <summary>

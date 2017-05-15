@@ -11,6 +11,7 @@
 #endregion
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace Librame
 {
@@ -22,11 +23,12 @@ namespace Librame
     public interface ILibrameOptions
     {
     }
-    
+
 
     /// <summary>
     /// Librame 选项。
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     public class LibrameOptions : ILibrameOptions
     {
 

@@ -20,12 +20,12 @@ namespace Librame.Algorithm.Symmetries
         /// <summary>
         /// 密钥生成器接口。
         /// </summary>
-        ISAKeyGenerator KeyGenerator { get; }
+        ISymmetryAlgorithmKeyGenerator KeyGenerator { get; }
 
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        IByteConverter Converter { get; }
+        IByteConverter ByteConverter { get; }
 
 
         /// <summary>

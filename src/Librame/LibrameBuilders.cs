@@ -43,6 +43,13 @@ namespace Librame
 
 
         /// <summary>
+        /// 生成授权标识。
+        /// </summary>
+        /// <returns>返回字符串。</returns>
+        string GenerateAuthId();
+
+
+        /// <summary>
         /// 是否包含指定服务。
         /// </summary>
         /// <typeparam name="TService">指定的服务类型。</typeparam>
@@ -89,6 +96,16 @@ namespace Librame
         /// 选项。
         /// </summary>
         public LibrameOptions Options => ServiceProvider.GetService<IOptions<LibrameOptions>>().Value;
+
+
+        /// <summary>
+        /// 生成授权标识。
+        /// </summary>
+        /// <returns>返回字符串。</returns>
+        public virtual string GenerateAuthId()
+        {
+            return Guid.NewGuid().ToByteArray().AsHex();
+        }
 
 
         /// <summary>
@@ -176,7 +193,7 @@ namespace Librame
         /// <param name="builder">给定的 Librame 构建器接口。</param>
         /// <param name="byteConverterType">给定实现 <see cref="Algorithm.IByteConverter"/> 接口的字节转换器类型（可选）。</param>
         /// <param name="hashAlgorithmType">给定实现 <see cref="Algorithm.Hashes.IHashAlgorithm"/> 接口的散列算法类型（可选）。</param>
-        /// <param name="saKeyGeneratorType">给定实现 <see cref="Algorithm.Symmetries.ISAKeyGenerator"/> 接口的对称算法密钥生成器类型（可选）。</param>
+        /// <param name="saKeyGeneratorType">给定实现 <see cref="Algorithm.Symmetries.ISymmetryAlgorithmKeyGenerator"/> 接口的对称算法密钥生成器类型（可选）。</param>
         /// <param name="symmetryAlgorithmType">给定实现 <see cref="Algorithm.Symmetries.ISymmetryAlgorithm"/> 接口的对称算法类型（可选）。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
         public static ILibrameBuilder UseAlgorithm(this ILibrameBuilder builder, Type byteConverterType = null,
@@ -203,7 +220,7 @@ namespace Librame
             var baseHashAlgorithmType = typeof(Algorithm.Hashes.IHashAlgorithm);
             hashAlgorithmType = baseHashAlgorithmType.CanAssignableFromType(hashAlgorithmType);
 
-            var baseSAKeyGenerateType = typeof(Algorithm.Symmetries.ISAKeyGenerator);
+            var baseSAKeyGenerateType = typeof(Algorithm.Symmetries.ISymmetryAlgorithmKeyGenerator);
             saKeyGeneratorType = baseSAKeyGenerateType.CanAssignableFromType(saKeyGeneratorType);
 
             var baseSymmetryAlgorithmType = typeof(Algorithm.Symmetries.ISymmetryAlgorithm);

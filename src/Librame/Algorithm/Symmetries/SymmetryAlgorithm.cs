@@ -30,7 +30,7 @@ namespace Librame.Algorithm.Symmetries
         /// <param name="keyGenerator">给定的密钥生成器接口。</param>
         /// <param name="logger">给定的记录器工厂接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public SymmetryAlgorithm(ISAKeyGenerator keyGenerator,
+        public SymmetryAlgorithm(ISymmetryAlgorithmKeyGenerator keyGenerator,
             ILogger<SymmetryAlgorithm> logger, IOptions<LibrameOptions> options)
             : base(logger, options)
         {
@@ -41,12 +41,12 @@ namespace Librame.Algorithm.Symmetries
         /// <summary>
         /// 密钥生成器接口。
         /// </summary>
-        public ISAKeyGenerator KeyGenerator { get; }
+        public ISymmetryAlgorithmKeyGenerator KeyGenerator { get; }
 
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        public IByteConverter Converter => KeyGenerator.Converter;
+        public IByteConverter ByteConverter => KeyGenerator.ByteConverter;
 
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Librame.Algorithm.Symmetries
                 var ct = sa.CreateEncryptor();
                 buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);
 
-                return Converter.ToString(buffer);
+                return ByteConverter.ToString(buffer);
             }
             catch (Exception ex)
             {
@@ -90,7 +90,7 @@ namespace Librame.Algorithm.Symmetries
                 sa.Mode = CipherMode.ECB;
                 sa.Padding = PaddingMode.PKCS7;
 
-                var buffer = Converter.FromString(encrypt);
+                var buffer = ByteConverter.FromString(encrypt);
 
                 var ct = sa.CreateDecryptor();
                 buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);

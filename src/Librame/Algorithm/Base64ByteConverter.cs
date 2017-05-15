@@ -26,7 +26,7 @@ namespace Librame.Algorithm
         /// <returns>返回字符串。</returns>
         public string ToString(byte[] buffer)
         {
-            return buffer.ToBase64();
+            return buffer.AsBase64();
         }
 
         /// <summary>

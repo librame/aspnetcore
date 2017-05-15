@@ -21,7 +21,7 @@ namespace Librame.Algorithm.Symmetries
     /// <summary>
     /// 抽象对称算法密钥生成器。
     /// </summary>
-    public abstract class AbstractSAKeyGenerator : ISAKeyGenerator
+    public abstract class AbstractSymmetryAlgorithmKeyGenerator : ISymmetryAlgorithmKeyGenerator
     {
         private readonly string _defaultKeyString;
 
@@ -31,10 +31,10 @@ namespace Librame.Algorithm.Symmetries
         /// <param name="converter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
         /// <param name="keyString">给定的密钥字符串。</param>
-        public AbstractSAKeyGenerator(IByteConverter converter, ILogger logger,
+        public AbstractSymmetryAlgorithmKeyGenerator(IByteConverter converter, ILogger logger,
             string keyString)
         {
-            Converter = converter.NotNull(nameof(converter));
+            ByteConverter = converter.NotNull(nameof(converter));
             Logger = logger.NotNull(nameof(logger));
 
             _defaultKeyString = keyString.NotNullOrEmpty(nameof(keyString));
@@ -44,7 +44,7 @@ namespace Librame.Algorithm.Symmetries
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        public IByteConverter Converter { get; }
+        public IByteConverter ByteConverter { get; }
 
         /// <summary>
         /// 记录器接口。
@@ -76,7 +76,7 @@ namespace Librame.Algorithm.Symmetries
         /// <returns>返回基础字节数组。</returns>
         protected virtual byte[] ParseBaseBytes(string keyString)
         {
-            return Converter.FromString(keyString);
+            return ByteConverter.FromString(keyString);
         }
 
         /// <summary>

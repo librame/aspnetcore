@@ -27,7 +27,7 @@ namespace Librame.Entity.Providers
     /// </summary>
     public class DbContextProvider : DbContext
     {
-        private static readonly string _cacheKey = TypeUtil.BuildKey<DbContextProvider>();
+        private static readonly string _cacheKey = TypeUtil.AsKey<DbContextProvider>();
 
         private readonly ILogger _logger;
         private readonly LibrameOptions _options;

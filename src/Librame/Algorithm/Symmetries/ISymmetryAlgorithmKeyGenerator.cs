@@ -17,12 +17,12 @@ namespace Librame.Algorithm.Symmetries
     /// <summary>
     /// 对称算法密钥生成器接口。
     /// </summary>
-    public interface ISAKeyGenerator : IKeyGenerator
+    public interface ISymmetryAlgorithmKeyGenerator : IKeyGenerator
     {
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        IByteConverter Converter { get; }
+        IByteConverter ByteConverter { get; }
 
         /// <summary>
         /// 记录器接口。

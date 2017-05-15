@@ -10,6 +10,8 @@
 
 #endregion
 
+using System.Runtime.InteropServices;
+
 namespace Librame.Algorithm
 {
     using Utility;
@@ -17,6 +19,7 @@ namespace Librame.Algorithm
     /// <summary>
     /// 算法选项。
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     public class AlgorithmOptions
     {
         /// <summary>
@@ -87,7 +90,7 @@ namespace Librame.Algorithm
         /// 默认对称算法密钥生成器类型名。
         /// </summary>
         public static readonly string DefaultSAKeyGeneratorTypeName
-            = typeof(Symmetries.AuthIdSAKeyGenerator).AssemblyQualifiedNameWithoutVcp();
+            = typeof(Symmetries.AuthIdSymmetryAlgorithmKeyGenerator).AssemblyQualifiedNameWithoutVcp();
 
         /// <summary>
         /// 对称算法密钥生成器类型名。
