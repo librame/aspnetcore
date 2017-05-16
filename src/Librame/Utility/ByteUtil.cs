@@ -30,14 +30,21 @@ namespace Librame.Utility
         {
             obj.NotNull(nameof(obj));
 
-            // 对象类名需设置 [StructLayout(LayoutKind.Sequential)] 属性特性，否则会抛出异常
-            var buffer = new byte[Marshal.SizeOf(obj)];
-            var ip = Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0);
+            try
+            {
+                // 对象类名需设置 [StructLayout(LayoutKind.Sequential)] 属性特性，否则会抛出异常
+                var buffer = new byte[Marshal.SizeOf(obj)];
+                var ip = Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0);
 
-            // 此方法比 BinaryFormatter 序列化方法生成的字节数组短了很多，非常节省空间
-            Marshal.StructureToPtr(obj, ip, true);
+                // 此方法比 [Serializable] 序列化方法生成的字节数组短了很多，非常节省空间
+                Marshal.StructureToPtr(obj, ip, true);
 
-            return buffer;
+                return buffer;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -58,9 +65,16 @@ namespace Librame.Utility
         /// <returns>返回对象。</returns>
         public static object FromBytes(this byte[] bytes, Type type)
         {
-            var ptr = Marshal.UnsafeAddrOfPinnedArrayElement(bytes, 0);
+            try
+            {
+                var ptr = Marshal.UnsafeAddrOfPinnedArrayElement(bytes, 0);
 
-            return Marshal.PtrToStructure(ptr, type);
+                return Marshal.PtrToStructure(ptr, type);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 
@@ -71,7 +85,16 @@ namespace Librame.Utility
         /// <returns>返回 BASE64 字符串。</returns>
         public static string AsBase64(this byte[] buffer)
         {
-            return Convert.ToBase64String(buffer.NotNull(nameof(buffer)));
+            buffer.NotNull(nameof(buffer));
+
+            try
+            {
+                return Convert.ToBase64String(buffer);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -81,7 +104,16 @@ namespace Librame.Utility
         /// <returns>返回字节数组。</returns>
         public static byte[] FromBase64(this string base64)
         {
-            return Convert.FromBase64String(base64.NotNullOrEmpty(nameof(base64)));
+            base64.NotNullOrEmpty(nameof(base64));
+
+            try
+            {
+                return Convert.FromBase64String(base64);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 
@@ -94,18 +126,25 @@ namespace Librame.Utility
         {
             buffer.NotNull(nameof(buffer));
 
-            var sb = new StringBuilder();
-
-            if (buffer != null || buffer.Length == 0)
+            try
             {
-                // 同 BitConverter.ToString(buffer).Replace("-", string.Empty);
-                for (int i = 0; i < buffer.Length; i++)
-                {
-                    sb.Append(buffer[i].ToString("X2"));
-                }
-            }
+                var sb = new StringBuilder();
 
-            return sb.ToString();
+                if (buffer != null || buffer.Length == 0)
+                {
+                    // 同 BitConverter.ToString(buffer).Replace("-", string.Empty);
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        sb.Append(buffer[i].ToString("X2"));
+                    }
+                }
+
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -119,19 +158,25 @@ namespace Librame.Utility
 
             if (hex.Length % 2 != 0)
             {
-                var ex = new ArgumentException("hex length must be in multiples of 2.");
+                throw new ArgumentException("hex length must be in multiples of 2.");
+            }
+
+            try
+            {
+                int length = hex.Length / 2;
+                var buffer = new byte[length];
+
+                for (int i = 0; i < length; i++)
+                {
+                    buffer[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+                }
+
+                return buffer;
+            }
+            catch (Exception ex)
+            {
                 throw ex;
             }
-
-            int length = hex.Length / 2;
-            var buffer = new byte[length];
-
-            for (int i = 0; i < length; i++)
-            {
-                buffer[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
-            }
-
-            return buffer;
         }
 
     }
