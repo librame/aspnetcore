@@ -43,6 +43,44 @@ namespace Librame.Utility
 
 
         /// <summary>
+        /// 转换为指定类型实例（虚方法，不执行实际转换）。
+        /// </summary>
+        /// <typeparam name="TValue">指定的值类型。</typeparam>
+        /// <param name="value">给定的当前值类型实例。</param>
+        /// <param name="defaultValue">如果实例为空要返回的默认值。</param>
+        /// <returns>返回当前值或默认值。</returns>
+        public static TValue As<TValue>(this TValue value, TValue defaultValue)
+        {
+            return value.As(defaultValue, v => v);
+        }
+
+        /// <summary>
+        /// 泛型类型通用转换。
+        /// </summary>
+        /// <typeparam name="TInput">指定的输入类型。</typeparam>
+        /// <typeparam name="TOutput">指定的输出类型。</typeparam>
+        /// <param name="input">给定的输入类型实例。</param>
+        /// <param name="defaultValue">如果类型实例为空或转换失败要返回的默认值。</param>
+        /// <param name="factory">给定的转换方法。</param>
+        /// <returns>返回经过转换的值或默认值。</returns>
+        public static TOutput As<TInput, TOutput>(this TInput input, TOutput defaultValue,
+            Func<TInput, TOutput> factory)
+        {
+            if (input == null)
+                return defaultValue;
+
+            try
+            {
+                return factory.Invoke(input);
+            }
+            catch //(Exception ex)
+            {
+                return defaultValue;
+            }
+        }
+
+
+        /// <summary>
         /// 转换为键名。
         /// </summary>
         /// <typeparam name="T">指定的类型。</typeparam>

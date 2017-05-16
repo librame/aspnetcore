@@ -12,6 +12,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Security.Cryptography;
 
 namespace Librame.Algorithm.Asymmetries
@@ -46,69 +47,8 @@ namespace Librame.Algorithm.Asymmetries
         /// 字节转换器接口。
         /// </summary>
         public IByteConverter ByteConverter => KeyGenerator.ByteConverter;
-
-
-        /// <summary>
-        /// 加密字符串。
-        /// </summary>
-        /// <param name="aa">给定的非对称算法。</param>
-        /// <param name="str">给定的字符串。</param>
-        /// <returns>返回加密字符串。</returns>
-        protected virtual string Encrypt(AsymmetricAlgorithm aa, string str)
-        {
-            //try
-            //{
-            //    aa.Mode = CipherMode.ECB;
-            //    aa.Padding = PaddingMode.PKCS7;
-
-            //    var buffer = EncodeBytes(str);
-
-            //    var ct = aa.CreateEncryptor();
-            //    buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);
-
-            //    return ByteConverter.ToString(buffer);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogWarning(ex.InnerMessage());
-
-            //    return str;
-            //}
-
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// 解密字符串。
-        /// </summary>
-        /// <param name="aa">给定的非对称算法。</param>
-        /// <param name="encrypt">给定的加密字符串。</param>
-        /// <returns>返回原始字符串。</returns>
-        protected virtual string Decrypt(AsymmetricAlgorithm aa, string encrypt)
-        {
-            //try
-            //{
-            //    aa.Mode = CipherMode.ECB;
-            //    aa.Padding = PaddingMode.PKCS7;
-
-            //    var buffer = ByteConverter.FromString(encrypt);
-
-            //    var ct = aa.CreateDecryptor();
-            //    buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);
-
-            //    return DecodeBytes(buffer);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogWarning(ex.InnerMessage());
-
-            //    return encrypt;
-            //}
-
-            return string.Empty;
-        }
-
-
+        
+        
         /// <summary>
         /// 对指定字节数组进行签名。
         /// </summary>
@@ -127,6 +67,69 @@ namespace Librame.Algorithm.Asymmetries
             //return Convert.ToBase64String(signature);
 
             return null;
+        }
+
+
+        /// <summary>
+        /// 转换为 RSA。
+        /// </summary>
+        /// <param name="str">给定待加密的字符串。</param>
+        /// <param name="padding">给定的最优非对称加密填充方式（可选；默认为 Pkcs1，支持 OpenSSL）。</param>
+        /// <param name="publicKeyString">给定的公钥字符串（可选）。</param>
+        /// <returns>返回加密字符串。</returns>
+        public virtual string ToRsa(string str, RSAEncryptionPadding padding = null,
+            string publicKeyString = null)
+        {
+            try
+            {
+                var buffer = EncodeBytes(str);
+
+                var aa = RSA.Create();
+
+                aa.ImportParameters(KeyGenerator.GenerateRsaPublicKey(publicKeyString,
+                    Options.Encoding.AsEncoding()));
+
+                aa.Encrypt(buffer, padding.As(RSAEncryptionPadding.Pkcs1));
+                
+                return ByteConverter.AsString(buffer);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex.AsInnerMessage());
+
+                return str;
+            }
+        }
+
+        /// <summary>
+        /// 还原 RSA。
+        /// </summary>
+        /// <param name="encrypt">给定的加密字符串。</param>
+        /// <param name="padding">给定的最优非对称加密填充方式（可选；默认为 Pkcs1，支持 OpenSSL）。</param>
+        /// <param name="privateKeyString">给定的私钥字符串（可选）。</param>
+        /// <returns>返回原始字符串。</returns>
+        public virtual string FromRsa(string encrypt, RSAEncryptionPadding padding = null,
+            string privateKeyString = null)
+        {
+            try
+            {
+                var buffer = ByteConverter.FromString(encrypt);
+
+                var aa = RSA.Create();
+
+                aa.ImportParameters(KeyGenerator.GenerateRsaPrivateKey(privateKeyString,
+                    Options.Encoding.AsEncoding()));
+
+                aa.Decrypt(buffer, padding.As(RSAEncryptionPadding.Pkcs1));
+
+                return DecodeBytes(buffer);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex.AsInnerMessage());
+
+                return encrypt;
+            }
         }
 
     }

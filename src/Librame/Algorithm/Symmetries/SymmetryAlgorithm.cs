@@ -59,19 +59,16 @@ namespace Librame.Algorithm.Symmetries
         {
             try
             {
-                sa.Mode = CipherMode.ECB;
-                sa.Padding = PaddingMode.PKCS7;
-
                 var buffer = EncodeBytes(str);
 
                 var ct = sa.CreateEncryptor();
                 buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);
 
-                return ByteConverter.ToString(buffer);
+                return ByteConverter.AsString(buffer);
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.InnerMessage());
+                Logger.LogWarning(ex.AsInnerMessage());
 
                 return str;
             }
@@ -87,9 +84,6 @@ namespace Librame.Algorithm.Symmetries
         {
             try
             {
-                sa.Mode = CipherMode.ECB;
-                sa.Padding = PaddingMode.PKCS7;
-
                 var buffer = ByteConverter.FromString(encrypt);
 
                 var ct = sa.CreateDecryptor();
@@ -99,7 +93,7 @@ namespace Librame.Algorithm.Symmetries
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.InnerMessage());
+                Logger.LogWarning(ex.AsInnerMessage());
 
                 return encrypt;
             }
@@ -115,8 +109,12 @@ namespace Librame.Algorithm.Symmetries
         public virtual string ToAes(string str, string keyString = null)
         {
             var sa = Aes.Create();
+
             sa.Key = KeyGenerator.GenerateAesKey(keyString);
             sa.IV = KeyGenerator.GenerateAesIv(sa.Key);
+
+            sa.Mode = CipherMode.ECB;
+            sa.Padding = PaddingMode.PKCS7;
 
             return Encrypt(sa, str);
         }
@@ -130,8 +128,12 @@ namespace Librame.Algorithm.Symmetries
         public virtual string FromAes(string encrypt, string keyString = null)
         {
             var sa = Aes.Create();
+
             sa.Key = KeyGenerator.GenerateAesKey(keyString);
             sa.IV = KeyGenerator.GenerateAesIv(sa.Key);
+
+            sa.Mode = CipherMode.ECB;
+            sa.Padding = PaddingMode.PKCS7;
 
             return Decrypt(sa, encrypt);
         }

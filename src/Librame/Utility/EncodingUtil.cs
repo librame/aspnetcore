@@ -26,7 +26,7 @@ namespace Librame.Utility
         /// <returns>返回与指定代码页关联的编码。</returns>
         public static Encoding AsEncoding(this string name)
         {
-            return Encoding.GetEncoding(name.NotNullOrEmpty(nameof(name)));
+            return Encoding.GetEncoding(name.NotEmpty(nameof(name)));
         }
 
         /// <summary>

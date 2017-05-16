@@ -55,7 +55,7 @@ namespace Librame.Algorithm.Hashes
             var hash = MD5.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return ByteConverter.ToString(buffer);
+            return ByteConverter.AsString(buffer);
         }
 
 
@@ -71,7 +71,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA1.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return ByteConverter.ToString(buffer);
+            return ByteConverter.AsString(buffer);
         }
 
 
@@ -87,7 +87,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA256.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return ByteConverter.ToString(buffer);
+            return ByteConverter.AsString(buffer);
         }
 
 
@@ -103,7 +103,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA384.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return ByteConverter.ToString(buffer);
+            return ByteConverter.AsString(buffer);
         }
 
 
@@ -119,7 +119,7 @@ namespace Librame.Algorithm.Hashes
             var hash = SHA512.Create();
             buffer = hash.ComputeHash(buffer);
 
-            return ByteConverter.ToString(buffer);
+            return ByteConverter.AsString(buffer);
         }
 
     }

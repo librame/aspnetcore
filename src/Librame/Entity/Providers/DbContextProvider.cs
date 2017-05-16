@@ -143,7 +143,7 @@ namespace Librame.Entity.Providers
         /// <returns>返回程序集集合。</returns>
         protected virtual IEnumerable<Assembly> ResolveMappingAssemblies(string automappingAssemblies)
         {
-            return automappingAssemblies.NotNullOrEmpty(nameof(automappingAssemblies)).Split(',').Select(assembly =>
+            return automappingAssemblies.NotEmpty(nameof(automappingAssemblies)).Split(',').Select(assembly =>
             {
                 var assemblyName = new AssemblyName(assembly);
 

@@ -26,12 +26,12 @@ namespace Librame.Algorithm.Symmetries
         /// <summary>
         /// 构造一个授权标识对称算法密钥生成器实例。
         /// </summary>
-        /// <param name="converter">给定的字节转换器接口。</param>
+        /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public AuthIdSymmetryAlgorithmKeyGenerator(IByteConverter converter,
+        public AuthIdSymmetryAlgorithmKeyGenerator(IByteConverter byteConverter,
             ILogger<AuthIdSymmetryAlgorithmKeyGenerator> logger, IOptions<LibrameOptions> options)
-            : base(converter, logger, options?.Value.AuthId)
+            : base(byteConverter, logger, options?.Value.AuthId)
         {
         }
 

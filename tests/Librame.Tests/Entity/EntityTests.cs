@@ -35,16 +35,15 @@ namespace Librame.Tests.Entity
                     = TypeUtil.GetAssemblyName<Article>().Name;
             })
             .UseEntity(connectionString: connectionString); // 使用内部集成 SQLSERVER 数据源的实体框架模块
-
-            // 创建实体仓库
-            var repository = builder.ServiceProvider.GetService<IRepository<Article>>();
-
+            
             // 初始化文章
             var article = new Article
             {
                 Title = "Test Title",
                 Descr = "Test Descr"
             };
+            
+            var repository = builder.GetRepository<Article>();
 
             // 标题不能重复
             Article dbArticle;

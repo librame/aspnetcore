@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.Configuration
             var value = configuration[key];
 
             if (string.IsNullOrEmpty(value))
-                return defaultValue.NotNullOrEmpty(nameof(defaultValue));
+                return defaultValue.NotEmpty(nameof(defaultValue));
 
             return value;
         }

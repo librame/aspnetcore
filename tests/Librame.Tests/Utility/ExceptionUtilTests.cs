@@ -17,7 +17,7 @@ namespace Librame.Tests.Utility
             }
             catch (Exception ex)
             {
-                Assert.NotEmpty(ex.InnerMessage());
+                Assert.NotEmpty(ex.AsInnerMessage());
             }
         }
 

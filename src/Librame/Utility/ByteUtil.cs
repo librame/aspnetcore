@@ -104,7 +104,7 @@ namespace Librame.Utility
         /// <returns>返回字节数组。</returns>
         public static byte[] FromBase64(this string base64)
         {
-            base64.NotNullOrEmpty(nameof(base64));
+            base64.NotEmpty(nameof(base64));
 
             try
             {

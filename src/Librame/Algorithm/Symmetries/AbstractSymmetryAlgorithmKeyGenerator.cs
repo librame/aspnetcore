@@ -28,16 +28,16 @@ namespace Librame.Algorithm.Symmetries
         /// <summary>
         /// 构造一个抽象对称算法密钥生成器实例。
         /// </summary>
-        /// <param name="converter">给定的字节转换器接口。</param>
+        /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
         /// <param name="keyString">给定的密钥字符串。</param>
-        public AbstractSymmetryAlgorithmKeyGenerator(IByteConverter converter, ILogger logger,
+        public AbstractSymmetryAlgorithmKeyGenerator(IByteConverter byteConverter, ILogger logger,
             string keyString)
         {
-            ByteConverter = converter.NotNull(nameof(converter));
+            ByteConverter = byteConverter.NotNull(nameof(byteConverter));
             Logger = logger.NotNull(nameof(logger));
 
-            _defaultKeyString = keyString.NotNullOrEmpty(nameof(keyString));
+            _defaultKeyString = keyString.NotEmpty(nameof(keyString));
         }
 
 
@@ -109,17 +109,14 @@ namespace Librame.Algorithm.Symmetries
         /// <returns>返回密钥字节数组。</returns>
         protected virtual byte[] GenerateKey(int bitSize, string keyString = null)
         {
-            // 如果指定密钥为空，则使用默认密钥
-            keyString = keyString.As(_defaultKeyString);
-
             // 解析密钥字符串的基础字节数组
-            var baseBytes = ParseBaseBytes(keyString);
+            var baseBytes = ParseBaseBytes(keyString.As(_defaultKeyString));
 
             // 如果指定的比特大小无效，则抛出异常
             if (!IsEffectiveBitSize(bitSize))
             {
                 var ex = new ArgumentException("bitSize must be in multiples of 8.");
-                Logger.LogError(ex.InnerMessage());
+                Logger.LogError(ex.AsInnerMessage());
 
                 throw ex;
             }

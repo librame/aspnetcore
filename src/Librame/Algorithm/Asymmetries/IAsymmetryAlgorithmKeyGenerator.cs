@@ -11,6 +11,8 @@
 #endregion
 
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Librame.Algorithm.Asymmetries
 {
@@ -28,5 +30,22 @@ namespace Librame.Algorithm.Asymmetries
         /// 记录器接口。
         /// </summary>
         ILogger Logger { get; }
+
+
+        /// <summary>
+        /// 生成 RSA 公钥。
+        /// </summary>
+        /// <param name="publicKeyString">给定的公钥字符串（可选）。</param>
+        /// <param name="encoding">给定的字符编码（可选）。</param>
+        /// <returns>返回参数。</returns>
+        RSAParameters GenerateRsaPublicKey(string publicKeyString = null, Encoding encoding = null);
+
+        /// <summary>
+        /// 生成 RSA 私钥。
+        /// </summary>
+        /// <param name="privateKeyString">给定的私钥字符串（可选）。</param>
+        /// <param name="encoding">给定的字符编码（可选）。</param>
+        /// <returns>返回参数。</returns>
+        RSAParameters GenerateRsaPrivateKey(string privateKeyString = null, Encoding encoding = null);
     }
 }

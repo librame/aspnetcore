@@ -189,20 +189,20 @@ namespace Librame.Utility
         }
 
         /// <summary>
-        /// 字符串转换为字符串（虚方法，不执行实际转换）。
+        /// 转换为字符串（虚方法，不执行实际转换）。
         /// </summary>
         /// <param name="str">给定的字符串。</param>
-        /// <returns>返回经过转换的值或默认值 String.Empty。</returns>
+        /// <returns>返回当前值或默认值 String.Empty。</returns>
         public static string As(this string str)
         {
             return str.As(string.Empty);
         }
         /// <summary>
-        /// 字符串转换为字符串（虚方法，不执行实际转换）。
+        /// 转换为字符串（虚方法，不执行实际转换）。
         /// </summary>
         /// <param name="str">给定的字符串。</param>
-        /// <param name="defaultValue">如果字符串为空或转换失败要返回的默认值。</param>
-        /// <returns>返回经过转换的值或默认值。</returns>
+        /// <param name="defaultValue">如果字符串为空要返回的默认值。</param>
+        /// <returns>返回当前值或默认值。</returns>
         public static string As(this string str, string defaultValue)
         {
             return str.As(defaultValue, s => s);
@@ -246,7 +246,7 @@ namespace Librame.Utility
         /// <returns>返回字符串。</returns>
         public static string AsSingularize(this string plural)
         {
-            plural.NotNullOrEmpty(nameof(plural));
+            plural.NotEmpty(nameof(plural));
 
             Regex plural1 = new Regex("(?<keep>[^aeiou])ies$");
             Regex plural2 = new Regex("(?<keep>[aeiou]y)s$");
@@ -276,7 +276,7 @@ namespace Librame.Utility
         /// <returns>返回字符串。</returns>
         public static string AsPluralize(this string singular)
         {
-            singular.NotNullOrEmpty(nameof(singular));
+            singular.NotEmpty(nameof(singular));
 
             Regex plural1 = new Regex("(?<keep>[^aeiou])y$");
             Regex plural2 = new Regex("(?<keep>[aeiou]y)$");

@@ -71,7 +71,7 @@ namespace Librame.Templates
         /// <param name="template">给定的模板内容。</param>
         public TemplateFormatter(string template)
         {
-            Template = template.NotNullOrEmpty(nameof(template));
+            Template = template.NotEmpty(nameof(template));
         }
 
 
@@ -88,7 +88,7 @@ namespace Librame.Templates
         /// <returns>返回可格式化键名字符串。</returns>
         public virtual string BuildFormatKey(string name)
         {
-            name.NotNullOrEmpty(nameof(name));
+            name.NotEmpty(nameof(name));
 
             // 如果不是可格式化键名（以花括号为规则）
             if (!name.StartsWith("{") && !name.EndsWith("}"))
@@ -105,7 +105,7 @@ namespace Librame.Templates
         /// <returns>返回布尔值。</returns>
         public virtual bool ContainsFormatKey(string formatKey)
         {
-            return Template.Contains(formatKey.NotNullOrEmpty(nameof(formatKey)));
+            return Template.Contains(formatKey.NotEmpty(nameof(formatKey)));
         }
 
 
@@ -148,7 +148,7 @@ namespace Librame.Templates
         /// <returns>返回经过格式化的模板内容。</returns>
         protected virtual string FormattingCore(string formatKey, string formatValue, string template)
         {
-            formatKey.NotNullOrEmpty(nameof(formatKey));
+            formatKey.NotEmpty(nameof(formatKey));
             formatValue.NotNull(nameof(formatValue));
 
             if (string.IsNullOrEmpty(template))
@@ -171,7 +171,7 @@ namespace Librame.Templates
         /// <returns>返回布尔值。</returns>
         protected virtual bool IsEscapedFormatKey(string formatKey)
         {
-            formatKey.NotNullOrEmpty(nameof(formatKey));
+            formatKey.NotEmpty(nameof(formatKey));
 
             return formatKey.StartsWith("{{{") && formatKey.EndsWith("}}}");
         }

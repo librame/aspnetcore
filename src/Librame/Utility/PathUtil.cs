@@ -31,7 +31,7 @@ namespace Librame.Utility
         {
             if (checkStartWithBasePath)
             {
-                relativePath.NotNullOrEmpty(nameof(relativePath));
+                relativePath.NotEmpty(nameof(relativePath));
 
                 if (relativePath.StartsWith(basePath))
                     return relativePath;

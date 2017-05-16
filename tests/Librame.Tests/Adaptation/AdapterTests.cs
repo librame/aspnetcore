@@ -1,6 +1,7 @@
 ﻿using Librame.Adaptation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.Linq;
 using Xunit;
 
 namespace Librame.Tests.Adaptation
@@ -15,9 +16,8 @@ namespace Librame.Tests.Adaptation
             // 注册 Librame （默认使用内存配置源）
             var builder = services.AddLibrameByMemory()
                 .UseAdaptation(typeof(TestAdapter)); // 使用适配模块
-
-            // ServiceType is IAdapter
-            var adapter = builder.ServiceProvider.GetService<IAdapter>();
+            
+            var adapter = builder.GetAdapters().FirstOrDefault();
             Assert.NotNull(adapter);
 
             var name = "Librame";

@@ -78,7 +78,7 @@ namespace Librame.Adaptation
         /// <param name="name">给定的适配器名称。</param>
         /// <param name="options">给定的选择项。</param>
         protected AbstractAdapter(string name, IOptions<LibrameOptions> options)
-            : this(new AdapterInfo(name.NotNullOrEmpty(nameof(name))), options)
+            : this(new AdapterInfo(name.NotEmpty(nameof(name))), options)
         {
         }
         /// <summary>
@@ -144,7 +144,7 @@ namespace Librame.Adaptation
         public virtual void ExportManifestResourceFile(Assembly adapterAssembly, string outputRelativeFilePath,
             string manifestResourceName = null)
         {
-            outputRelativeFilePath.NotNullOrEmpty(nameof(outputRelativeFilePath));
+            outputRelativeFilePath.NotEmpty(nameof(outputRelativeFilePath));
 
             if (string.IsNullOrEmpty(manifestResourceName))
                 manifestResourceName = ToManifestResourceName(adapterAssembly, outputRelativeFilePath);

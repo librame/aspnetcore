@@ -22,7 +22,7 @@ namespace Librame.Algorithm
         /// </summary>
         /// <param name="buffer">给定的字节数组。</param>
         /// <returns>返回字符串。</returns>
-        string ToString(byte[] buffer);
+        string AsString(byte[] buffer);
 
         /// <summary>
         /// 将字符串还原为字节数组。

@@ -11,8 +11,8 @@
 #endregion
 
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Librame.Algorithm.Asymmetries
 {
@@ -23,21 +23,15 @@ namespace Librame.Algorithm.Asymmetries
     /// </summary>
     public abstract class AbstractAsymmetryAlgorithmKeyGenerator : IAsymmetryAlgorithmKeyGenerator
     {
-        private readonly string _defaultKeyString;
-
         /// <summary>
         /// 构造一个抽象非对称算法密钥生成器实例。
         /// </summary>
-        /// <param name="converter">给定的字节转换器接口。</param>
+        /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
-        /// <param name="keyString">给定的密钥字符串。</param>
-        public AbstractAsymmetryAlgorithmKeyGenerator(IByteConverter converter, ILogger logger,
-            string keyString)
+        public AbstractAsymmetryAlgorithmKeyGenerator(IByteConverter byteConverter, ILogger logger)
         {
-            ByteConverter = converter.NotNull(nameof(converter));
+            ByteConverter = byteConverter.NotNull(nameof(byteConverter));
             Logger = logger.NotNull(nameof(logger));
-
-            _defaultKeyString = keyString.NotNullOrEmpty(nameof(keyString));
         }
 
 
@@ -50,5 +44,24 @@ namespace Librame.Algorithm.Asymmetries
         /// 记录器接口。
         /// </summary>
         public ILogger Logger { get; }
+
+
+        /// <summary>
+        /// 生成 RSA 公钥。
+        /// </summary>
+        /// <param name="publicKeyString">给定的公钥字符串（可选）。</param>
+        /// <param name="encoding">给定的字符编码（可选）。</param>
+        /// <returns>返回参数。</returns>
+        public abstract RSAParameters GenerateRsaPublicKey(string publicKeyString = null,
+            Encoding encoding = null);
+
+        /// <summary>
+        /// 生成 RSA 私钥。
+        /// </summary>
+        /// <param name="privateKeyString">给定的私钥字符串（可选）。</param>
+        /// <param name="encoding">给定的字符编码（可选）。</param>
+        /// <returns>返回参数。</returns>
+        public abstract RSAParameters GenerateRsaPrivateKey(string privateKeyString = null,
+            Encoding encoding = null);
     }
 }

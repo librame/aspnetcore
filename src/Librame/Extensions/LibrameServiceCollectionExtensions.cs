@@ -52,12 +52,28 @@ namespace Microsoft.Extensions.DependencyInjection
                     AlgorithmOptions.DefaultHashAlgorithmTypeName
                 },
                 {
-                    AlgorithmOptions.SAKeyGeneratorTypeNameKey,
-                    AlgorithmOptions.DefaultSAKeyGeneratorTypeName
+                    AlgorithmOptions.SymmetryAlgorithmKeyGeneratorTypeNameKey,
+                    AlgorithmOptions.DefaultSymmetryAlgorithmKeyGeneratorTypeName
                 },
                 {
                     AlgorithmOptions.SymmetryAlgorithmTypeNameKey,
                     AlgorithmOptions.DefaultSymmetryAlgorithmTypeName
+                },
+                {
+                    AlgorithmOptions.AsymmetryAlgorithmKeyGeneratorTypeNameKey,
+                    AlgorithmOptions.DefaultAsymmetryAlgorithmKeyGeneratorTypeName
+                },
+                {
+                    AlgorithmOptions.AsymmetryAlgorithmTypeNameKey,
+                    AlgorithmOptions.DefaultAsymmetryAlgorithmTypeName
+                },
+                {
+                    AlgorithmOptions.RsaPublicKeyStringKey,
+                    AlgorithmOptions.DefaultRsaPublicKeyString
+                },
+                {
+                    AlgorithmOptions.RsaPrivateKeyStringKey,
+                    AlgorithmOptions.DefaultRsaPrivateKeyString
                 },
 
                 // Entity

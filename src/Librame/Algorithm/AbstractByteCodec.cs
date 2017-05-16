@@ -73,7 +73,7 @@ namespace Librame.Algorithm
         /// <returns>返回字节数组。</returns>
         public virtual byte[] EncodeBytes(string str)
         {
-            return Encoding.GetBytes(str);
+            return Encoding.GetBytes(str.NotEmpty(nameof(str)));
         }
 
         /// <summary>
@@ -83,6 +83,8 @@ namespace Librame.Algorithm
         /// <returns>返回字符串。</returns>
         public virtual string DecodeBytes(byte[] buffer)
         {
+            buffer.NotNull(nameof(buffer));
+
             return Encoding.GetString(buffer, 0, buffer.Length);
         }
 

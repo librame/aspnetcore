@@ -60,7 +60,7 @@ namespace Librame.Entity.Repositories
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.InnerMessage());
+                Logger.LogWarning(ex.AsInnerMessage());
 
                 return;
             }
@@ -80,7 +80,7 @@ namespace Librame.Entity.Repositories
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.InnerMessage());
+                Logger.LogWarning(ex.AsInnerMessage());
 
                 return default(TValue);
             }

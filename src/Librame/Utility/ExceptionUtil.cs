@@ -26,10 +26,10 @@ namespace Librame.Utility
         /// </summary>
         /// <param name="ex">给定的异常。</param>
         /// <returns>返回消息字符串。</returns>
-        public static string InnerMessage(this Exception ex)
+        public static string AsInnerMessage(this Exception ex)
         {
             if (ex.InnerException != null)
-                return InnerMessage(ex.InnerException);
+                return ex.InnerException.AsInnerMessage();
 
             return ex.Message;
         }
@@ -63,7 +63,7 @@ namespace Librame.Utility
         /// <param name="str">给定的字符串。</param>
         /// <param name="paramName">给定的参数名。</param>
         /// <returns>返回字符串或抛出异常。</returns>
-        public static string NotNullOrEmpty(this string str, string paramName)
+        public static string NotEmpty(this string str, string paramName)
         {
             if (string.IsNullOrEmpty(str))
                 throw new ArgumentNullException(paramName);
