@@ -223,15 +223,7 @@ namespace Librame.Utility
             source.NotNull(nameof(source));
             target.NotNull(nameof(target));
 
-            var properties = typeof(T).GetProperties();
-            if (properties.Length < 1)
-                return;
-
-            properties.Invoke(pi =>
-            {
-                var sourceValue = pi.GetValue(source);
-                pi.SetValue(target, sourceValue);
-            });
+            SetProperties(typeof(T), source, target);
         }
 
         /// <summary>
@@ -264,14 +256,20 @@ namespace Librame.Utility
                     sourceType.Name, targetType.Name));
             }
 
-            var properties = sourceType.GetProperties();
+            SetProperties(sourceType, source, target);
+        }
+		
+		private static void SetProperties(Type propertyType, object source, object target)
+        {
+            var properties = propertyType.GetProperties();
             if (properties.Length < 1)
                 return;
 
             properties.Invoke(pi =>
             {
                 var sourceValue = pi.GetValue(source);
-                pi.SetValue(target, sourceValue);
+                if (sourceValue != null)
+                    pi.SetValue(target, sourceValue);
             });
         }
 

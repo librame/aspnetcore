@@ -183,6 +183,9 @@ namespace Librame.Adaptation
 
             if (manifestResourceName.Contains("/"))
                 manifestResourceName = manifestResourceName.Replace('/', '.');
+			
+			if (manifestResourceName.StartsWith("."))
+                manifestResourceName = manifestResourceName.TrimStart('.');
 
             // 附加命令空间
             if (!manifestResourceName.StartsWith(assemblyName.Name))

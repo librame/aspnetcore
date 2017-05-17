@@ -96,16 +96,16 @@ namespace Librame.Utility
             if (ReferenceEquals(enumerable, null))
                 return;
 
-            foreach (var sink in enumerable)
+            try
             {
-                try
+                foreach (var sink in enumerable)
                 {
                     dispatch(sink);
                 }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
@@ -120,19 +120,18 @@ namespace Librame.Utility
             if (ReferenceEquals(enumerable, null))
                 return;
 
-            var i = 0;
-            foreach (var sink in enumerable)
+            try
             {
-                try
+                var i = 0;
+                foreach (var sink in enumerable)
                 {
                     dispatch(sink, i);
+                    i++;
                 }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-
-                i++;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
