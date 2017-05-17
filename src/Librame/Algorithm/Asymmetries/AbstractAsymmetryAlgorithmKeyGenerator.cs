@@ -28,7 +28,7 @@ namespace Librame.Algorithm.Asymmetries
         /// </summary>
         /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
-        public AbstractAsymmetryAlgorithmKeyGenerator(IByteConverter byteConverter, ILogger logger)
+        public AbstractAsymmetryAlgorithmKeyGenerator(ICiphertextCodec byteConverter, ILogger logger)
         {
             ByteConverter = byteConverter.NotNull(nameof(byteConverter));
             Logger = logger.NotNull(nameof(logger));
@@ -38,7 +38,7 @@ namespace Librame.Algorithm.Asymmetries
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        public IByteConverter ByteConverter { get; }
+        public ICiphertextCodec ByteConverter { get; }
 
         /// <summary>
         /// 记录器接口。

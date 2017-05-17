@@ -24,7 +24,7 @@ namespace Librame.Algorithm.Asymmetries
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        IByteConverter ByteConverter { get; }
+        ICiphertextCodec ByteConverter { get; }
 
         /// <summary>
         /// 记录器接口。

@@ -22,7 +22,7 @@ namespace Librame.Algorithm.Asymmetries
     /// <summary>
     /// 非对称算法。
     /// </summary>
-    public class AsymmetryAlgorithm : AbstractByteCodec, IAsymmetryAlgorithm
+    public class AsymmetryAlgorithm : AbstractAlgorithm, IAsymmetryAlgorithm
     {
         /// <summary>
         /// 构造一个对称算法实例。
@@ -46,27 +46,46 @@ namespace Librame.Algorithm.Asymmetries
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        public IByteConverter ByteConverter => KeyGenerator.ByteConverter;
-        
-        
+        public ICiphertextCodec ByteConverter => KeyGenerator.ByteConverter;
+
+
         /// <summary>
         /// 对指定字节数组进行签名。
         /// </summary>
-        /// <param name="privateKey">给定的私钥。</param>
+        /// <param name="privateKeyString">给定的私钥字符串。</param>
         /// <param name="bytes">给定要签名的字节数组。</param>
+        /// <param name="hashName">给定的散列算法名。</param>
+        /// <param name="padding">给定的最优非对称签名填充方式（可选；默认为 Pkcs1，支持 OpenSSL）。</param>
         /// <returns>返回签名后的字节数组。</returns>
-        public virtual byte[] Signature(string privateKey, byte[] bytes)
+        public virtual byte[] Sign(string privateKeyString, byte[] bytes, HashAlgorithmName hashName,
+            RSASignaturePadding padding = null)
         {
-            //RSA.Create();
+            var aa = RSA.Create();
 
-            //RSACryptoServiceProvider rsp = new RSACryptoServiceProvider();
-            //rsp.FromXmlString(strPrivateKey);
-            //RSAPKCS1SignatureFormatter rf = new RSAPKCS1SignatureFormatter(rsp);
-            //rf.SetHashAlgorithm("MD5");
-            //byte[] signature = rf.CreateSignature(hv);
-            //return Convert.ToBase64String(signature);
+            aa.ImportParameters(KeyGenerator.GenerateRsaPrivateKey(privateKeyString,
+                    Options.Encoding.AsEncoding()));
 
-            return null;
+            return aa.SignData(bytes, hashName, padding);
+        }
+
+        /// <summary>
+        /// 验证指定字节数组是否已签名。
+        /// </summary>
+        /// <param name="publicKeyString">给定的公钥字符串。</param>
+        /// <param name="bytes">给定未签名的字节数组。</param>
+        /// <param name="signBytes">给定已签名的字节数组。</param>
+        /// <param name="hashName">给定的散列算法名。</param>
+        /// <param name="padding">给定的最优非对称签名填充方式（可选；默认为 Pkcs1，支持 OpenSSL）。</param>
+        /// <returns>返回是否通过验证的布尔值。</returns>
+        public virtual bool Verify(string publicKeyString, byte[] bytes, byte[] signBytes,
+            HashAlgorithmName hashName, RSASignaturePadding padding = null)
+        {
+            var aa = RSA.Create();
+
+            aa.ImportParameters(KeyGenerator.GenerateRsaPublicKey(publicKeyString,
+                    Options.Encoding.AsEncoding()));
+
+            return aa.VerifyData(bytes, signBytes, hashName, padding);
         }
 
 
@@ -85,7 +104,7 @@ namespace Librame.Algorithm.Asymmetries
                 var buffer = EncodeBytes(str);
 
                 var aa = RSA.Create();
-
+                
                 aa.ImportParameters(KeyGenerator.GenerateRsaPublicKey(publicKeyString,
                     Options.Encoding.AsEncoding()));
 

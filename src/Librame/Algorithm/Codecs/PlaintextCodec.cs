@@ -13,27 +13,24 @@
 using Microsoft.Extensions.Logging;
 using System.Text;
 
-namespace Librame.Algorithm
+namespace Librame.Algorithm.Codecs
 {
+    using Utility;
+
     /// <summary>
-    /// 字节编解码器接口。
+    /// 明文编解码器。
     /// </summary>
-    public interface IByteCodec
+    public class PlaintextCodec : AbstractTextCodec
     {
         /// <summary>
-        /// 选项项。
+        /// 构造一个明文编解码器。
         /// </summary>
-        LibrameOptions Options { get; }
-
-        /// <summary>
-        /// 记录器。
-        /// </summary>
-        ILogger Logger { get; }
-
-        /// <summary>
-        /// 字符编码。
-        /// </summary>
-        Encoding Encoding { get; set; }
+        /// <param name="logger">给定的记录器。</param>
+        /// <param name="encoding">给定的字符编码。</param>
+        public PlaintextCodec(ILogger logger, Encoding encoding)
+            : base(logger, encoding)
+        {
+        }
 
 
         /// <summary>
@@ -41,13 +38,21 @@ namespace Librame.Algorithm
         /// </summary>
         /// <param name="str">给定的字符串。</param>
         /// <returns>返回字节数组。</returns>
-        byte[] EncodeBytes(string str);
+        protected override byte[] EncodeBytesCore(string str)
+        {
+            return Encoding.GetBytes(str.NotEmpty(nameof(str)));
+        }
+
 
         /// <summary>
         /// 将字节序列解码为字符串。
         /// </summary>
         /// <param name="buffer">给定的字节序列。</param>
         /// <returns>返回字符串。</returns>
-        string DecodeBytes(byte[] buffer);
+        protected override string DecodeBytesCore(byte[] buffer)
+        {
+            return Encoding.GetString(buffer, 0, buffer.Length);
+        }
+
     }
 }

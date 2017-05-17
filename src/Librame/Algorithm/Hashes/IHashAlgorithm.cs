@@ -15,14 +15,8 @@ namespace Librame.Algorithm.Hashes
     /// <summary>
     /// 散列算法接口。
     /// </summary>
-    public interface IHashAlgorithm : IByteCodec
+    public interface IHashAlgorithm : ITextCodec
     {
-        /// <summary>
-        /// 字节转换器接口。
-        /// </summary>
-        IByteConverter ByteConverter { get; }
-
-
         /// <summary>
         /// 转换为 MD5。
         /// </summary>

@@ -35,7 +35,7 @@ namespace Librame.Algorithm.Asymmetries
         /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public RsaAsymmetryAlgorithmKeyGenerator(IByteConverter byteConverter,
+        public RsaAsymmetryAlgorithmKeyGenerator(ICiphertextCodec byteConverter,
             ILogger<RsaAsymmetryAlgorithmKeyGenerator> logger, IOptions<LibrameOptions> options)
             : base(byteConverter, logger)
         {
@@ -212,7 +212,7 @@ namespace Librame.Algorithm.Asymmetries
                     if (br.ReadByte() != 0x02)
                         return parameters;
 
-                    int expbytes = (int)br.ReadByte();
+                    int expbytes = br.ReadByte();
 
                     parameters.Modulus = modulus;
                     parameters.Exponent = br.ReadBytes(expbytes);

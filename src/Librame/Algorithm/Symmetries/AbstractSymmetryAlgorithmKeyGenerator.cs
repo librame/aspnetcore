@@ -31,7 +31,7 @@ namespace Librame.Algorithm.Symmetries
         /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
         /// <param name="keyString">给定的密钥字符串。</param>
-        public AbstractSymmetryAlgorithmKeyGenerator(IByteConverter byteConverter, ILogger logger,
+        public AbstractSymmetryAlgorithmKeyGenerator(ICiphertextCodec byteConverter, ILogger logger,
             string keyString)
         {
             ByteConverter = byteConverter.NotNull(nameof(byteConverter));
@@ -44,7 +44,7 @@ namespace Librame.Algorithm.Symmetries
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        public IByteConverter ByteConverter { get; }
+        public ICiphertextCodec ByteConverter { get; }
 
         /// <summary>
         /// 记录器接口。

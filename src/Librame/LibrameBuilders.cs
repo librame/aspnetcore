@@ -207,7 +207,7 @@ namespace Librame
         /// 使用算法模块。
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <param name="byteConverterType">给定实现 <see cref="Algorithm.IByteConverter"/> 接口的字节转换器类型（可选）。</param>
+        /// <param name="byteConverterType">给定实现 <see cref="Algorithm.ICiphertextCodec"/> 接口的字节转换器类型（可选）。</param>
         /// <param name="hashAlgorithmType">给定实现 <see cref="Algorithm.Hashes.IHashAlgorithm"/> 接口的散列算法类型（可选）。</param>
         /// <param name="symmetryAlgorithmKeyGeneratorType">给定实现 <see cref="Algorithm.Symmetries.ISymmetryAlgorithmKeyGenerator"/> 接口的对称算法密钥生成器类型（可选）。</param>
         /// <param name="symmetryAlgorithmType">给定实现 <see cref="Algorithm.Symmetries.ISymmetryAlgorithm"/> 接口的对称算法类型（可选）。</param>
@@ -240,7 +240,7 @@ namespace Librame
                 asymmetryAlgorithmType = Type.GetType(builder.Options.Algorithm.AsymmetryAlgorithmTypeName, throwOnError: true);
 
             // 验证类型
-            var baseByteConverterType = typeof(Algorithm.IByteConverter);
+            var baseByteConverterType = typeof(Algorithm.ICiphertextCodec);
             byteConverterType = baseByteConverterType.CanAssignableFromType(byteConverterType);
 
             var baseHashAlgorithmType = typeof(Algorithm.Hashes.IHashAlgorithm);

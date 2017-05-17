@@ -11,37 +11,38 @@
 #endregion
 
 using Microsoft.Extensions.Logging;
+using System.Text;
 
-namespace Librame.Algorithm.Symmetries
+namespace Librame.Algorithm.Codecs
 {
     /// <summary>
-    /// 对称算法密钥生成器接口。
+    /// 文本编解码器接口。
     /// </summary>
-    public interface ISymmetryAlgorithmKeyGenerator : IKeyGenerator
+    public interface ITextCodec
     {
         /// <summary>
-        /// 字节转换器接口。
-        /// </summary>
-        ICiphertextCodec ByteConverter { get; }
-
-        /// <summary>
-        /// 记录器接口。
+        /// 记录器。
         /// </summary>
         ILogger Logger { get; }
 
+        /// <summary>
+        /// 字符编码。
+        /// </summary>
+        Encoding Encoding { get; }
+
 
         /// <summary>
-        /// 生成 AES 密钥。
+        /// 将字符串编码为字节序列。
         /// </summary>
-        /// <param name="keyString">给定的密钥字符串（可选）。</param>
+        /// <param name="str">给定的字符串。</param>
         /// <returns>返回字节数组。</returns>
-        byte[] GenerateAesKey(string keyString = null);
+        byte[] EncodeBytes(string str);
 
         /// <summary>
-        /// 生成 AES 向量。
+        /// 将字节序列解码为字符串。
         /// </summary>
-        /// <param name="key">给定的密钥字节数组。</param>
-        /// <returns>返回字节数组。</returns>
-        byte[] GenerateAesIv(byte[] key);
+        /// <param name="buffer">给定的字节序列。</param>
+        /// <returns>返回字符串。</returns>
+        string DecodeBytes(byte[] buffer);
     }
 }

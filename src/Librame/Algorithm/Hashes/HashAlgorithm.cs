@@ -21,7 +21,7 @@ namespace Librame.Algorithm.Hashes
     /// <summary>
     /// 散列算法。
     /// </summary>
-    public class HashAlgorithm : AbstractByteCodec, IHashAlgorithm
+    public class HashAlgorithm : AbstractAlgorithm, IHashAlgorithm
     {
         /// <summary>
         /// 构造一个散列算法实例。
@@ -29,7 +29,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器工厂接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public HashAlgorithm(IByteConverter byteConverter,
+        public HashAlgorithm(ICiphertextCodec byteConverter,
             ILogger<HashAlgorithm> logger, IOptions<LibrameOptions> options)
             : base(logger, options)
         {
@@ -40,7 +40,7 @@ namespace Librame.Algorithm.Hashes
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        public IByteConverter ByteConverter { get; }
+        public ICiphertextCodec ByteConverter { get; }
 
 
         /// <summary>

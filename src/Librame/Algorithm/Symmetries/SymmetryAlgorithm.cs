@@ -22,7 +22,7 @@ namespace Librame.Algorithm.Symmetries
     /// <summary>
     /// 对称算法。
     /// </summary>
-    public class SymmetryAlgorithm : AbstractByteCodec, ISymmetryAlgorithm
+    public class SymmetryAlgorithm : AbstractAlgorithm, ISymmetryAlgorithm
     {
         /// <summary>
         /// 构造一个对称算法实例。
@@ -46,7 +46,7 @@ namespace Librame.Algorithm.Symmetries
         /// <summary>
         /// 字节转换器接口。
         /// </summary>
-        public IByteConverter ByteConverter => KeyGenerator.ByteConverter;
+        public ICiphertextCodec ByteConverter => KeyGenerator.ByteConverter;
 
 
         /// <summary>

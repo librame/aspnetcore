@@ -40,7 +40,7 @@ namespace Librame.Algorithm
         /// 默认字节转换器类型名。
         /// </summary>
         public static readonly string DefaultByteConverterTypeName
-            = typeof(HexByteConverter).AssemblyQualifiedNameWithoutVcp();
+            = typeof(Base64ByteConverter).AssemblyQualifiedNameWithoutVcp();
 
         /// <summary>
         /// 字节转换器类型名。

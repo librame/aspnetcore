@@ -16,19 +16,20 @@ using System.Text;
 
 namespace Librame.Algorithm
 {
+    using Codecs;
     using Utility;
 
     /// <summary>
-    /// 抽象字节编解码器。
+    /// 抽象算法。
     /// </summary>
-    public abstract class AbstractByteCodec : IByteCodec
+    public abstract class AbstractAlgorithm : IAlgorithm
     {
         /// <summary>
         /// 构造一个抽象字节编解码器实例。
         /// </summary>
         /// <param name="logger">给定的记录器工厂接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public AbstractByteCodec(ILogger logger, IOptions<LibrameOptions> options)
+        public AbstractAlgorithm(ILogger logger, IOptions<LibrameOptions> options)
         {
             Options = options.NotNull(nameof(options)).Value;
             Logger = logger.NotNull(nameof(logger));
@@ -67,26 +68,14 @@ namespace Librame.Algorithm
 
 
         /// <summary>
-        /// 将字符串编码为字节序列。
+        /// 密文编解码器。
         /// </summary>
-        /// <param name="str">给定的字符串。</param>
-        /// <returns>返回字节数组。</returns>
-        public virtual byte[] EncodeBytes(string str)
-        {
-            return Encoding.GetBytes(str.NotEmpty(nameof(str)));
-        }
+        public ITextCodec Ciphertext { get; }
 
         /// <summary>
-        /// 将字节序列解码为字符串。
+        /// 明文编解码器。
         /// </summary>
-        /// <param name="buffer">给定的字节序列。</param>
-        /// <returns>返回字符串。</returns>
-        public virtual string DecodeBytes(byte[] buffer)
-        {
-            buffer.NotNull(nameof(buffer));
-
-            return Encoding.GetString(buffer, 0, buffer.Length);
-        }
+        public ITextCodec Plaintext { get; }
 
     }
 }

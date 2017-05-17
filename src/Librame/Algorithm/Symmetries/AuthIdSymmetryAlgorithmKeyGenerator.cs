@@ -29,7 +29,7 @@ namespace Librame.Algorithm.Symmetries
         /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public AuthIdSymmetryAlgorithmKeyGenerator(IByteConverter byteConverter,
+        public AuthIdSymmetryAlgorithmKeyGenerator(ICiphertextCodec byteConverter,
             ILogger<AuthIdSymmetryAlgorithmKeyGenerator> logger, IOptions<LibrameOptions> options)
             : base(byteConverter, logger, options?.Value.AuthId)
         {
