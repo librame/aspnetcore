@@ -19,12 +19,13 @@ using System.Security.Cryptography;
 
 namespace Librame.Algorithm.Asymmetries
 {
+    using Codecs;
     using Utility;
 
     /// <summary>
     /// RSA 非对称算法密钥生成器。
     /// </summary>
-    public class RsaAsymmetryAlgorithmKeyGenerator : AbstractAsymmetryAlgorithmKeyGenerator
+    public class RsaAsymmetryKeyGenerator : AbstractKeyGenerator, IRsaAsymmetryKeyGenerator
     {
         private readonly string _defaultPublicKeyString;
         private readonly string _defaultPrivateKeyString;
@@ -32,17 +33,16 @@ namespace Librame.Algorithm.Asymmetries
         /// <summary>
         /// 构造一个 RSA 非对称算法密钥生成器实例。
         /// </summary>
-        /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public RsaAsymmetryAlgorithmKeyGenerator(ICiphertextCodec byteConverter,
-            ILogger<RsaAsymmetryAlgorithmKeyGenerator> logger, IOptions<LibrameOptions> options)
-            : base(byteConverter, logger)
+        /// <param name="plaintext">给定的明文编解码器接口。</param>
+        /// <param name="ciphertext">给定的密文编解码器接口。</param>
+        public RsaAsymmetryKeyGenerator(ILogger<RsaAsymmetryKeyGenerator> logger, IOptions<LibrameOptions> options,
+            IPlainTextCodec plaintext, ICipherTextCodec ciphertext)
+            : base(logger, options, plaintext, ciphertext)
         {
-            var algoOptions = options.NotNull(nameof(options)).Value.Algorithm;
-
-            _defaultPublicKeyString = algoOptions.RsaPublicKeyString.NotEmpty(nameof(AlgorithmOptions.RsaPublicKeyString));
-            _defaultPrivateKeyString = algoOptions.RsaPrivateKeyString.NotEmpty(nameof(AlgorithmOptions.RsaPrivateKeyString));
+            _defaultPublicKeyString = Options.Algorithm.RsaPublicKeyString.NotEmpty(nameof(AlgorithmOptions.RsaPublicKeyString));
+            _defaultPrivateKeyString = Options.Algorithm.RsaPrivateKeyString.NotEmpty(nameof(AlgorithmOptions.RsaPrivateKeyString));
         }
 
 
@@ -120,7 +120,7 @@ namespace Librame.Algorithm.Asymmetries
         /// <param name="publicKeyString">给定的公钥字符串（可选）。</param>
         /// <param name="encoding">给定的字符编码（可选）。</param>
         /// <returns>返回参数。</returns>
-        public override RSAParameters GenerateRsaPublicKey(string publicKeyString = null,
+        public virtual RSAParameters GenerateRsaPublicKey(string publicKeyString = null,
             Encoding encoding = null)
         {
             byte[] seqOID =
@@ -135,14 +135,14 @@ namespace Librame.Algorithm.Asymmetries
             byte[] buffer;
             int x509size;
 
-            buffer = ByteConverter.FromString(publicKeyString.As(_defaultPublicKeyString));
+            buffer = CipherText.GetBytes(publicKeyString.AsOrDefault(_defaultPublicKeyString));
             x509size = buffer.Length;
 
             var parameters = new RSAParameters();
 
             using (var ms = new MemoryStream(buffer))
             {
-                using (var br = new BinaryReader(ms, encoding.As(Encoding.UTF8)))
+                using (var br = new BinaryReader(ms, encoding.AsOrDefault(Encoding.UTF8)))
                 {
                     byte b = 0;
                     ushort twoBytes = 0;
@@ -228,15 +228,15 @@ namespace Librame.Algorithm.Asymmetries
         /// <param name="privateKeyString">给定的私钥字符串（可选）。</param>
         /// <param name="encoding">给定的字符编码（可选）。</param>
         /// <returns>返回参数。</returns>
-        public override RSAParameters GenerateRsaPrivateKey(string privateKeyString = null,
+        public virtual RSAParameters GenerateRsaPrivateKey(string privateKeyString = null,
             Encoding encoding = null)
         {
             var parameters = new RSAParameters();
 
-            var buffer = ByteConverter.FromString(privateKeyString.As(_defaultPrivateKeyString));
+            var buffer = CipherText.GetBytes(privateKeyString.AsOrDefault(_defaultPrivateKeyString));
             using (var ms = new MemoryStream(buffer))
             {
-                using (var br = new BinaryReader(ms, encoding.As(Encoding.UTF8)))
+                using (var br = new BinaryReader(ms, encoding.AsOrDefault(Encoding.UTF8)))
                 {
                     byte b = 0;
                     ushort twoBytes = 0;

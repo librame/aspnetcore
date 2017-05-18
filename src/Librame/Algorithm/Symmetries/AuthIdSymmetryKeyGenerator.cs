@@ -16,22 +16,24 @@ using System.Linq;
 
 namespace Librame.Algorithm.Symmetries
 {
+    using Codecs;
     using Utility;
 
     /// <summary>
     /// 授权标识对称算法密钥生成器。
     /// </summary>
-    public class AuthIdSymmetryAlgorithmKeyGenerator : AbstractSymmetryAlgorithmKeyGenerator
+    public class AuthIdSymmetryKeyGenerator : AbstractSymmetryKeyGenerator
     {
         /// <summary>
         /// 构造一个授权标识对称算法密钥生成器实例。
         /// </summary>
-        /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public AuthIdSymmetryAlgorithmKeyGenerator(ICiphertextCodec byteConverter,
-            ILogger<AuthIdSymmetryAlgorithmKeyGenerator> logger, IOptions<LibrameOptions> options)
-            : base(byteConverter, logger, options?.Value.AuthId)
+        /// <param name="plainText">给定的明文编解码器接口。</param>
+        /// <param name="cipherText">给定的密文编解码器接口。</param>
+        public AuthIdSymmetryKeyGenerator(ILogger<AuthIdSymmetryKeyGenerator> logger, IOptions<LibrameOptions> options,
+            IPlainTextCodec plainText, ICipherTextCodec cipherText)
+            : base(logger, options, plainText, cipherText, options.Value.AuthId)
         {
         }
 

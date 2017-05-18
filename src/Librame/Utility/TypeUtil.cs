@@ -11,9 +11,11 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Librame.Utility
 {
@@ -22,25 +24,6 @@ namespace Librame.Utility
     /// </summary>
     public static class TypeUtil
     {
-        /// <summary>
-        /// 获取指定类型的程序集限定名，但不包括版本、文化、公钥标记等信息（如 Librame.Utility.TypeUtil, Librame）。
-        /// </summary>
-        /// <typeparam name="T">指定的类型。</typeparam>
-        /// <returns>返回字符串。</returns>
-        public static string AssemblyQualifiedNameWithoutVcp<T>()
-        {
-            return typeof(T).AssemblyQualifiedNameWithoutVcp();
-        }
-        /// <summary>
-        /// 获取指定类型的程序集限定名，但不包括版本、文化、公钥标记等信息（如 Librame.Utility.TypeUtil, Librame）。
-        /// </summary>
-        /// <param name="type">给定的类型。</param>
-        /// <returns>返回字符串。</returns>
-        public static string AssemblyQualifiedNameWithoutVcp(this Type type)
-        {
-            return string.Format("{0}, {1}", type.FullName, type.GetTypeInfo().Assembly.GetName().Name);
-        }
-
 
         /// <summary>
         /// 转换为指定类型实例（虚方法，不执行实际转换）。
@@ -49,9 +32,9 @@ namespace Librame.Utility
         /// <param name="value">给定的当前值类型实例。</param>
         /// <param name="defaultValue">如果实例为空要返回的默认值。</param>
         /// <returns>返回当前值或默认值。</returns>
-        public static TValue As<TValue>(this TValue value, TValue defaultValue)
+        public static TValue AsOrDefault<TValue>(this TValue value, TValue defaultValue)
         {
-            return value.As(defaultValue, v => v);
+            return value.AsOrDefault(defaultValue, v => v);
         }
 
         /// <summary>
@@ -63,7 +46,7 @@ namespace Librame.Utility
         /// <param name="defaultValue">如果类型实例为空或转换失败要返回的默认值。</param>
         /// <param name="factory">给定的转换方法。</param>
         /// <returns>返回经过转换的值或默认值。</returns>
-        public static TOutput As<TInput, TOutput>(this TInput input, TOutput defaultValue,
+        public static TOutput AsOrDefault<TInput, TOutput>(this TInput input, TOutput defaultValue,
             Func<TInput, TOutput> factory)
         {
             if (input == null)
@@ -97,6 +80,28 @@ namespace Librame.Utility
         public static string AsKey(this Type type)
         {
             return type.NotNull(nameof(type)).AssemblyQualifiedNameWithoutVcp();
+        }
+
+
+        #region Assembly
+
+        /// <summary>
+        /// 获取指定类型的程序集限定名，但不包括版本、文化、公钥标记等信息（如 Librame.Utility.TypeUtil, Librame）。
+        /// </summary>
+        /// <typeparam name="T">指定的类型。</typeparam>
+        /// <returns>返回字符串。</returns>
+        public static string AssemblyQualifiedNameWithoutVcp<T>()
+        {
+            return typeof(T).AssemblyQualifiedNameWithoutVcp();
+        }
+        /// <summary>
+        /// 获取指定类型的程序集限定名，但不包括版本、文化、公钥标记等信息（如 Librame.Utility.TypeUtil, Librame）。
+        /// </summary>
+        /// <param name="type">给定的类型。</param>
+        /// <returns>返回字符串。</returns>
+        public static string AssemblyQualifiedNameWithoutVcp(this Type type)
+        {
+            return string.Format("{0}, {1}", type.FullName, type.GetTypeInfo().Assembly.GetName().Name);
         }
 
 
@@ -138,63 +143,168 @@ namespace Librame.Utility
             return new AssemblyName(type.NotNull(nameof(type)).GetTypeInfo().Assembly.FullName);
         }
 
+        #endregion
+
+
+        #region AsPairsString
 
         /// <summary>
-        /// 枚举指定程序集中派生于基础类型的所有类型集合。
+        /// 将对象转换为键值对集合的字符串形式。
         /// </summary>
-        /// <typeparam name="TBase">指定的基础类型。</typeparam>
-        /// <param name="assembly">给定的程序集。</param>
-        /// <param name="withInstantiable">仅支持可实例化类型（可选）。</param>
-        /// <param name="withoutBaseType">排除基础类型自身（可选）。</param>
-        /// <returns>返回类型数组。</returns>
-        public static Type[] EnumerableAssignableTypes<TBase>(Assembly assembly = null,
-            bool withInstantiable = true, bool withoutBaseType = true)
+        /// <param name="obj">给定的对象。</param>
+        /// <param name="searchMode">给定的搜索模式（可选；默认不进行成员名称筛选）。</param>
+        /// <param name="searchNames">要排除的成员名称数组。</param>
+        /// <returns>返回字符串。</returns>
+        public static string AsPairsString(this object obj, SearchMode searchMode = SearchMode.Default,
+            params string[] searchNames)
         {
-            return typeof(TBase).EnumerableAssignableTypes(assembly, withInstantiable, withoutBaseType);
+            obj.NotNull(nameof(obj));
+
+            var properties = obj.GetType().SearchProperties(searchMode, searchNames);
+
+            // 如果有需要处理的属性信息集合
+            if (properties.Length > 0)
+            {
+                var sb = new StringBuilder();
+
+                var last = properties.Last();
+                foreach (var p in properties)
+                {
+                    var o = p.GetValue(obj);
+                    var value = string.Empty;
+
+                    if (o != null)
+                    {
+                        var typeInfo = p.PropertyType.GetTypeInfo();
+
+                        // 字符串不属于值类型
+                        if (typeInfo.IsValueType || typeInfo.IsAnsiClass)
+                            value = o.ToString();
+                        else
+                            value = o.AsPairsString(SearchMode.Default);
+                    }
+
+                    sb.AppendFormat("{0}={1}", p.Name, value);
+
+                    if (p.Name != last.Name)
+                        sb.Append(",");
+                }
+
+                return sb.ToString();
+            }
+
+            return string.Empty;
         }
+
 
         /// <summary>
-        /// 枚举指定程序集中派生于基础类型的所有类型集合。
+        /// 将键值对集合的字符串还原为对象。
         /// </summary>
-        /// <param name="baseType">给定的基础类型。</param>
-        /// <param name="assembly">给定的程序集（可选；默认查找基础类型所在的程序集）。</param>
-        /// <param name="withInstantiable">仅支持可实例化类型（可选）。</param>
-        /// <param name="withoutBaseType">排除基础类型自身（可选）。</param>
-        /// <returns>返回类型数组。</returns>
-        public static Type[] EnumerableAssignableTypes(this Type baseType, Assembly assembly = null,
-            bool withInstantiable = true, bool withoutBaseType = true)
+        /// <typeparam name="T">指定的对象类型。</typeparam>
+        /// <param name="str">给定的字符串。</param>
+        /// <param name="searchMode">给定的搜索模式（可选；默认不进行成员名称筛选）。</param>
+        /// <param name="searchNames">要排除的成员名称数组。</param>
+        /// <returns>返回对象。</returns>
+        public static T FromPairsString<T>(this string str, SearchMode searchMode = SearchMode.Default,
+            params string[] searchNames)
         {
-            baseType.NotNull(nameof(baseType));
-
-            try
-            {
-                // 默认查找基础类型所在的程序集
-                if (assembly == null)
-                    assembly = baseType.GetTypeInfo().Assembly;
-
-                // 获取定义的公共类型
-                var allTypes = assembly.GetExportedTypes();
-                if (allTypes == null || allTypes.Length < 1)
-                    return allTypes;
-
-                // 加载所有派生类型集合
-                var types = allTypes.Where(t => baseType.IsAssignableFrom(t));
-
-                // 仅包含可实例化类（排除抽象类）
-                if (withInstantiable)
-                    types = types.Where(t => !t.GetTypeInfo().IsAbstract);
-
-                // 移除自身基类
-                if (withoutBaseType)
-                    types = types.Where(t => t.FullName != baseType.FullName);
-
-                return types.ToArray();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return (T)str.FromPairsString(typeof(T), searchMode, searchNames);
         }
+        /// <summary>
+        /// 将键值对集合的字符串还原为对象。
+        /// </summary>
+        /// <param name="str">给定的字符串。</param>
+        /// <param name="type">给定的对象类型。</param>
+        /// <param name="searchMode">给定的搜索模式（可选；默认不进行成员名称筛选）。</param>
+        /// <param name="searchNames">要排除的成员名称数组。</param>
+        /// <returns>返回对象。</returns>
+        public static object FromPairsString(this string str, Type type, SearchMode searchMode = SearchMode.Default,
+            params string[] searchNames)
+        {
+            str.NotEmpty(nameof(str));
+            type.NotNull(nameof(type));
+
+            var obj = Activator.CreateInstance(type);
+
+            var properties = type.SearchProperties(searchMode, searchNames);
+
+            // 如果有需要处理的属性信息集合
+            if (properties.Length > 0)
+            {
+                var pairs = str.Split(',');
+                foreach (var pair in pairs)
+                {
+                    if (string.IsNullOrEmpty(pair))
+                        continue;
+
+                    var part = pair.Split('=');
+                    if (part.Length < 1 || part.Length > 2)
+                        continue; // 不标准的键值对
+
+                    var name = part[0];
+                    var value = part[1];
+                    if (string.IsNullOrEmpty(value))
+                        continue; // 空字符串值
+
+                    var pi = properties.First(p => p.Name == name);
+                    var o = value.AsOrDefault(pi.PropertyType);// 转换值
+                    if (o != null)
+                        pi.SetValue(obj, o); // 更新值
+                }
+            }
+
+            return obj;
+        }
+
+
+        /// <summary>
+        /// 搜索指定类型的属性集合。
+        /// </summary>
+        /// <param name="type">给定的类型。</param>
+        /// <param name="searchMode">给定的搜索模式（可选；默认不进行成员名称筛选）。</param>
+        /// <param name="searchNames">要排除的成员名称数组。</param>
+        /// <returns>返回属性数组。</returns>
+        public static PropertyInfo[] SearchProperties(this Type type, SearchMode searchMode = SearchMode.Default,
+            params string[] searchNames)
+        {
+            var properties = type.GetProperties();
+
+            // 如果需要成员名称筛选
+            if (searchNames.Length > 0)
+            {
+                // 排除模式
+                if (searchMode == SearchMode.Exclude)
+                {
+                    foreach (var key in searchNames)
+                    {
+                        // 越来越少
+                        properties = properties.Where(f => f.Name != key).ToArray();
+                    }
+                }
+                // 包含模式
+                else if (searchMode == SearchMode.Include)
+                {
+                    var list = new List<PropertyInfo>();
+
+                    foreach (var name in searchNames)
+                    {
+                        var p = properties.Where(f => f.Name == name);
+                        list.AddRange(p);
+                    }
+
+                    // 移除可能存在的重复项
+                    properties = list.Distinct().ToArray();
+                }
+                else
+                {
+                    // 默认不操作
+                }
+            }
+
+            return properties;
+        }
+
+        #endregion
 
 
         #region CopyTo
@@ -258,8 +368,8 @@ namespace Librame.Utility
 
             SetProperties(sourceType, source, target);
         }
-		
-		private static void SetProperties(Type propertyType, object source, object target)
+
+        private static void SetProperties(Type propertyType, object source, object target)
         {
             var properties = propertyType.GetProperties();
             if (properties.Length < 1)
@@ -276,6 +386,68 @@ namespace Librame.Utility
         #endregion
 
 
+        #region Enumerable AssignableTypes
+
+        /// <summary>
+        /// 枚举指定程序集中派生于基础类型的所有类型集合。
+        /// </summary>
+        /// <typeparam name="TBase">指定的基础类型。</typeparam>
+        /// <param name="assembly">给定的程序集。</param>
+        /// <param name="withInstantiable">仅支持可实例化类型（可选）。</param>
+        /// <param name="withoutBaseType">排除基础类型自身（可选）。</param>
+        /// <returns>返回类型数组。</returns>
+        public static Type[] EnumerableAssignableTypes<TBase>(Assembly assembly = null,
+            bool withInstantiable = true, bool withoutBaseType = true)
+        {
+            return typeof(TBase).EnumerableAssignableTypes(assembly, withInstantiable, withoutBaseType);
+        }
+
+        /// <summary>
+        /// 枚举指定程序集中派生于基础类型的所有类型集合。
+        /// </summary>
+        /// <param name="baseType">给定的基础类型。</param>
+        /// <param name="assembly">给定的程序集（可选；默认查找基础类型所在的程序集）。</param>
+        /// <param name="withInstantiable">仅支持可实例化类型（可选）。</param>
+        /// <param name="withoutBaseType">排除基础类型自身（可选）。</param>
+        /// <returns>返回类型数组。</returns>
+        public static Type[] EnumerableAssignableTypes(this Type baseType, Assembly assembly = null,
+            bool withInstantiable = true, bool withoutBaseType = true)
+        {
+            baseType.NotNull(nameof(baseType));
+
+            try
+            {
+                // 默认查找基础类型所在的程序集
+                if (assembly == null)
+                    assembly = baseType.GetTypeInfo().Assembly;
+
+                // 获取定义的公共类型
+                var allTypes = assembly.GetExportedTypes();
+                if (allTypes == null || allTypes.Length < 1)
+                    return allTypes;
+
+                // 加载所有派生类型集合
+                var types = allTypes.Where(t => baseType.IsAssignableFrom(t));
+
+                // 仅包含可实例化类（排除抽象类）
+                if (withInstantiable)
+                    types = types.Where(t => !t.GetTypeInfo().IsAbstract);
+
+                // 移除自身基类
+                if (withoutBaseType)
+                    types = types.Where(t => t.FullName != baseType.FullName);
+
+                return types.ToArray();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        #endregion
+
+        
         #region Instantiation
 
         /// <summary>
@@ -314,7 +486,7 @@ namespace Librame.Utility
                 var value = GetDefaultValue(p);
 
                 if (value == null)
-                    value = InitializePropertyValue(p.PropertyType);
+                    value = p.PropertyType.AsDefault();
 
                 p.SetValue(obj, value, null);
             }
@@ -334,14 +506,15 @@ namespace Librame.Utility
             return attrib?.Value;
         }
 
+
         /// <summary>
-        /// 初始化属性值。
+        /// 转换对象的默认值。
         /// </summary>
-        /// <param name="propertyType">给定的属性类型。</param>
-        /// <returns>返回属性值对象。</returns>
-        private static object InitializePropertyValue(Type propertyType)
+        /// <param name="type">给定的转换类型。</param>
+        /// <returns>返回对象。</returns>
+        public static object AsDefault(this Type type)
         {
-            switch (propertyType.FullName)
+            switch (type.FullName)
             {
                 case "System.Boolean":
                     return false;
@@ -378,7 +551,7 @@ namespace Librame.Utility
                     return byte.MinValue; // long
 
                 case "System.SByte":
-                    return byte.MinValue; // sbyte
+                    return sbyte.MinValue; // sbyte
 
                 case "System.UInt16":
                     return byte.MinValue; // ushort
@@ -391,16 +564,17 @@ namespace Librame.Utility
 
                 default:
                     {
-                        var typeInfo = propertyType.GetTypeInfo();
+                        var typeInfo = type.GetTypeInfo();
                         
-                        if (typeInfo.IsSubclassOf(typeof(Nullable<>)))
+                        if (typeInfo.IsGenericType)
                         {
                             try
                             {
-                                var gts = propertyType.GenericTypeArguments;
-                                var parameters = gts.Select(t => InitializePropertyValue(t)).ToArray();
+                                var gts = type.GenericTypeArguments;
+                                // 链式转换
+                                var parameters = gts.Select(t => AsDefault(t)).ToArray();
 
-                                var ci = propertyType.GetConstructor(propertyType.GenericTypeArguments);
+                                var ci = type.GetConstructor(type.GenericTypeArguments);
                                 return ci.Invoke(parameters);
                             }
                             catch (Exception ex)
@@ -410,7 +584,7 @@ namespace Librame.Utility
                         }
 
                         if (typeInfo.IsClass && !typeInfo.IsAbstract)
-                            return Activator.CreateInstance(propertyType);
+                            return Activator.CreateInstance(type);
 
                         return null;
                     }

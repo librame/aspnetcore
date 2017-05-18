@@ -32,17 +32,17 @@ namespace Librame.Algorithm.Codecs
 
 
         /// <summary>
-        /// 将字符串编码为字节序列。
+        /// 将字符串转换为字节序列。
         /// </summary>
         /// <param name="str">给定的字符串。</param>
         /// <returns>返回字节数组。</returns>
-        byte[] EncodeBytes(string str);
+        byte[] GetBytes(string str);
 
         /// <summary>
-        /// 将字节序列解码为字符串。
+        /// 将字节序列转换为字符串。
         /// </summary>
         /// <param name="buffer">给定的字节序列。</param>
         /// <returns>返回字符串。</returns>
-        string DecodeBytes(byte[] buffer);
+        string GetString(byte[] buffer);
     }
 }

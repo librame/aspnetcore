@@ -11,45 +11,36 @@
 #endregion
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 
 namespace Librame.Algorithm.Symmetries
 {
+    using Codecs;
     using Utility;
 
     /// <summary>
     /// 抽象对称算法密钥生成器。
     /// </summary>
-    public abstract class AbstractSymmetryAlgorithmKeyGenerator : ISymmetryAlgorithmKeyGenerator
+    public abstract class AbstractSymmetryKeyGenerator : AbstractAlgorithm, ISymmetryKeyGenerator
     {
         private readonly string _defaultKeyString;
 
         /// <summary>
-        /// 构造一个抽象对称算法密钥生成器实例。
+        /// 构造一个散列算法实例。
         /// </summary>
-        /// <param name="byteConverter">给定的字节转换器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
+        /// <param name="options">给定的选择项。</param>
+        /// <param name="plainText">给定的明文编解码器接口。</param>
+        /// <param name="cipherText">给定的密文编解码器接口。</param>
         /// <param name="keyString">给定的密钥字符串。</param>
-        public AbstractSymmetryAlgorithmKeyGenerator(ICiphertextCodec byteConverter, ILogger logger,
-            string keyString)
+        public AbstractSymmetryKeyGenerator(ILogger logger, IOptions<LibrameOptions> options,
+            IPlainTextCodec plainText, ICipherTextCodec cipherText, string keyString)
+            : base(logger, options, plainText, cipherText)
         {
-            ByteConverter = byteConverter.NotNull(nameof(byteConverter));
-            Logger = logger.NotNull(nameof(logger));
-
             _defaultKeyString = keyString.NotEmpty(nameof(keyString));
         }
-
-
-        /// <summary>
-        /// 字节转换器接口。
-        /// </summary>
-        public ICiphertextCodec ByteConverter { get; }
-
-        /// <summary>
-        /// 记录器接口。
-        /// </summary>
-        public ILogger Logger { get; }
 
         
         /// <summary>
@@ -76,7 +67,7 @@ namespace Librame.Algorithm.Symmetries
         /// <returns>返回基础字节数组。</returns>
         protected virtual byte[] ParseBaseBytes(string keyString)
         {
-            return ByteConverter.FromString(keyString);
+            return CipherText.GetBytes(keyString);
         }
 
         /// <summary>
@@ -110,7 +101,7 @@ namespace Librame.Algorithm.Symmetries
         protected virtual byte[] GenerateKey(int bitSize, string keyString = null)
         {
             // 解析密钥字符串的基础字节数组
-            var baseBytes = ParseBaseBytes(keyString.As(_defaultKeyString));
+            var baseBytes = ParseBaseBytes(keyString.AsOrDefault(_defaultKeyString));
 
             // 如果指定的比特大小无效，则抛出异常
             if (!IsEffectiveBitSize(bitSize))

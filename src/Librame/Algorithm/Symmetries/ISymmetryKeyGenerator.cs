@@ -10,26 +10,13 @@
 
 #endregion
 
-using Microsoft.Extensions.Logging;
-
 namespace Librame.Algorithm.Symmetries
 {
     /// <summary>
     /// 对称算法密钥生成器接口。
     /// </summary>
-    public interface ISymmetryAlgorithmKeyGenerator : IKeyGenerator
+    public interface ISymmetryKeyGenerator : IKeyGenerator
     {
-        /// <summary>
-        /// 字节转换器接口。
-        /// </summary>
-        ICiphertextCodec ByteConverter { get; }
-
-        /// <summary>
-        /// 记录器接口。
-        /// </summary>
-        ILogger Logger { get; }
-
-
         /// <summary>
         /// 生成 AES 密钥。
         /// </summary>

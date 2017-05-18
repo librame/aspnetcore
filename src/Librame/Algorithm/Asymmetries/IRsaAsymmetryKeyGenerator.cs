@@ -10,28 +10,16 @@
 
 #endregion
 
-using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Librame.Algorithm.Asymmetries
 {
     /// <summary>
-    /// 非对称算法密钥生成器接口。
+    /// RSA 非对称算法密钥生成器接口。
     /// </summary>
-    public interface IAsymmetryAlgorithmKeyGenerator : IKeyGenerator
+    public interface IRsaAsymmetryKeyGenerator : IKeyGenerator
     {
-        /// <summary>
-        /// 字节转换器接口。
-        /// </summary>
-        ICiphertextCodec ByteConverter { get; }
-
-        /// <summary>
-        /// 记录器接口。
-        /// </summary>
-        ILogger Logger { get; }
-
-
         /// <summary>
         /// 生成 RSA 公钥。
         /// </summary>

@@ -11,6 +11,8 @@
 #endregion
 
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Librame.Utility
@@ -36,6 +38,11 @@ namespace Librame.Utility
         public const string COMMA = ",";
 
         /// <summary>
+        /// 句号字符串。
+        /// </summary>
+        public const string PERIOD = ".";
+
+        /// <summary>
         /// 分号字符串。
         /// </summary>
         public const string SEMICOLON = ";";
@@ -46,7 +53,7 @@ namespace Librame.Utility
         public const string EQUALITY = "=";
 
 
-        #region Type Converter
+        #region AsOrDefault
 
         /// <summary>
         /// 字符串转换为布尔值。
@@ -55,7 +62,7 @@ namespace Librame.Utility
         /// <returns>返回经过转换的值或默认值 False。</returns>
         public static bool AsBool(this string str)
         {
-            return str.As(false);
+            return str.AsOrDefault(false);
         }
         /// <summary>
         /// 字符串转换为布尔值。
@@ -63,9 +70,9 @@ namespace Librame.Utility
         /// <param name="str">给定的字符串。</param>
         /// <param name="defaultValue">如果字符串为空或转换失败要返回的默认值。</param>
         /// <returns>返回经过转换的值或默认值。</returns>
-        public static bool As(this string str, bool defaultValue)
+        public static bool AsOrDefault(this string str, bool defaultValue)
         {
-            return str.As(defaultValue, s => bool.Parse(s));
+            return str.AsOrDefault(defaultValue, s => bool.Parse(s));
         }
 
         /// <summary>
@@ -75,7 +82,7 @@ namespace Librame.Utility
         /// <returns>返回经过转换的值或默认值 DateTime.MaxValue。</returns>
         public static DateTime AsDateTime(this string str)
         {
-            return str.As(DateTime.MaxValue);
+            return str.AsOrDefault(DateTime.MaxValue);
         }
         /// <summary>
         /// 字符串转换为时间。
@@ -83,9 +90,9 @@ namespace Librame.Utility
         /// <param name="str">给定的字符串。</param>
         /// <param name="defaultValue">如果字符串为空或转换失败要返回的默认值。</param>
         /// <returns>返回经过转换的值或默认值。</returns>
-        public static DateTime As(this string str, DateTime defaultValue)
+        public static DateTime AsOrDefault(this string str, DateTime defaultValue)
         {
-            return str.As(defaultValue, s => DateTime.Parse(s));
+            return str.AsOrDefault(defaultValue, s => DateTime.Parse(s));
         }
 
         /// <summary>
@@ -95,7 +102,7 @@ namespace Librame.Utility
         /// <returns>返回经过转换的值或默认值 0F。</returns>
         public static float AsFloat(this string str)
         {
-            return str.As(0F);
+            return str.AsOrDefault(0F);
         }
         /// <summary>
         /// 字符串转换为单精度浮点数。
@@ -103,9 +110,9 @@ namespace Librame.Utility
         /// <param name="str">给定的字符串。</param>
         /// <param name="defaultValue">如果字符串为空或转换失败要返回的默认值。</param>
         /// <returns>返回经过转换的值或默认值。</returns>
-        public static float As(this string str, float defaultValue)
+        public static float AsOrDefault(this string str, float defaultValue)
         {
-            return str.As(defaultValue, s => float.Parse(s));
+            return str.AsOrDefault(defaultValue, s => float.Parse(s));
         }
 
         /// <summary>
@@ -115,7 +122,7 @@ namespace Librame.Utility
         /// <returns>返回经过转换的值或默认值 0D。</returns>
         public static double AsDouble(this string str)
         {
-            return str.As(0D);
+            return str.AsOrDefault(0D);
         }
         /// <summary>
         /// 字符串转换为双精度浮点数。
@@ -123,9 +130,9 @@ namespace Librame.Utility
         /// <param name="str">给定的字符串。</param>
         /// <param name="defaultValue">如果字符串为空或转换失败要返回的默认值。</param>
         /// <returns>返回经过转换的值或默认值。</returns>
-        public static double As(this string str, double defaultValue)
+        public static double AsOrDefault(this string str, double defaultValue)
         {
-            return str.As(defaultValue, s => double.Parse(s));
+            return str.AsOrDefault(defaultValue, s => double.Parse(s));
         }
 
         /// <summary>
@@ -135,7 +142,7 @@ namespace Librame.Utility
         /// <returns>返回经过转换的值或默认值 Guid.Empty。</returns>
         public static Guid AsGuid(this string str)
         {
-            return str.As(Guid.Empty);
+            return str.AsOrDefault(Guid.Empty);
         }
         /// <summary>
         /// 字符串转换为 GUID。
@@ -143,9 +150,9 @@ namespace Librame.Utility
         /// <param name="str">给定的字符串。</param>
         /// <param name="defaultValue">如果字符串为空或转换失败要返回的默认值。</param>
         /// <returns>返回经过转换的值或默认值。</returns>
-        public static Guid As(this string str, Guid defaultValue)
+        public static Guid AsOrDefault(this string str, Guid defaultValue)
         {
-            return str.As(defaultValue, s => Guid.Parse(s));
+            return str.AsOrDefault(defaultValue, s => Guid.Parse(s));
         }
 
         /// <summary>
@@ -155,7 +162,7 @@ namespace Librame.Utility
         /// <returns>返回经过转换的值或默认值 0L。</returns>
         public static long AsLong(this string str)
         {
-            return str.As(0L);
+            return str.AsOrDefault(0L);
         }
         /// <summary>
         /// 字符串转换为整数。
@@ -163,9 +170,9 @@ namespace Librame.Utility
         /// <param name="str">给定的字符串。</param>
         /// <param name="defaultValue">如果字符串为空或转换失败要返回的默认值。</param>
         /// <returns>返回经过转换的值或默认值。</returns>
-        public static long As(this string str, long defaultValue)
+        public static long AsOrDefault(this string str, long defaultValue)
         {
-            return str.As(defaultValue, s => long.Parse(s));
+            return str.AsOrDefault(defaultValue, s => long.Parse(s));
         }
 
         /// <summary>
@@ -175,7 +182,7 @@ namespace Librame.Utility
         /// <returns>返回经过转换的值或默认值 0。</returns>
         public static int AsInt(this string str)
         {
-            return str.As(0);
+            return str.AsOrDefault(0);
         }
         /// <summary>
         /// 字符串转换为整数。
@@ -183,9 +190,9 @@ namespace Librame.Utility
         /// <param name="str">给定的字符串。</param>
         /// <param name="defaultValue">如果字符串为空或转换失败要返回的默认值。</param>
         /// <returns>返回经过转换的值或默认值。</returns>
-        public static int As(this string str, int defaultValue)
+        public static int AsOrDefault(this string str, int defaultValue)
         {
-            return str.As(defaultValue, s => int.Parse(s));
+            return str.AsOrDefault(defaultValue, s => int.Parse(s));
         }
 
         /// <summary>
@@ -193,9 +200,9 @@ namespace Librame.Utility
         /// </summary>
         /// <param name="str">给定的字符串。</param>
         /// <returns>返回当前值或默认值 String.Empty。</returns>
-        public static string As(this string str)
+        public static string AsString(this string str)
         {
-            return str.As(string.Empty);
+            return str.AsOrDefault(string.Empty);
         }
         /// <summary>
         /// 转换为字符串（虚方法，不执行实际转换）。
@@ -203,9 +210,9 @@ namespace Librame.Utility
         /// <param name="str">给定的字符串。</param>
         /// <param name="defaultValue">如果字符串为空要返回的默认值。</param>
         /// <returns>返回当前值或默认值。</returns>
-        public static string As(this string str, string defaultValue)
+        public static string AsOrDefault(this string str, string defaultValue)
         {
-            return str.As(defaultValue, s => s);
+            return str.AsOrDefault(defaultValue, s => s);
         }
 
         /// <summary>
@@ -216,7 +223,7 @@ namespace Librame.Utility
         /// <param name="defaultValue">如果字符串为空或转换失败要返回的默认值。</param>
         /// <param name="factory">给定的转换方法。</param>
         /// <returns>返回经过转换的值或默认值。</returns>
-        public static TValue As<TValue>(this string str, TValue defaultValue, Func<string, TValue> factory)
+        public static TValue AsOrDefault<TValue>(this string str, TValue defaultValue, Func<string, TValue> factory)
         {
             if (string.IsNullOrEmpty(str))
                 return defaultValue;
@@ -229,6 +236,191 @@ namespace Librame.Utility
             {
                 return defaultValue;
             }
+        }
+
+
+        /// <summary>
+        /// 转换对象或默认值。
+        /// </summary>
+        /// <param name="value">给定的值。</param>
+        /// <param name="type">给定的转换类型。</param>
+        /// <returns>返回对象。</returns>
+        public static object AsOrDefault(this string value, Type type)
+        {
+            bool isDefault = string.IsNullOrEmpty(value);
+
+            switch (type.FullName)
+            {
+                case "System.Boolean":
+                    return (isDefault ? false : bool.Parse(value));
+
+                case "System.Decimal":
+                    return (isDefault ? decimal.One : decimal.Parse(value));
+
+                case "System.Double":
+                    return (isDefault ? double.NaN : double.Parse(value));
+
+                case "System.DateTime":
+                    return (isDefault ? DateTime.Now : DateTime.Parse(value));
+
+                case "System.Guid":
+                    return (isDefault ? Guid.Empty : Guid.Parse(value));
+
+                case "System.String":
+                    return value;
+
+                case "System.TimeSpan":
+                    return (isDefault ? TimeSpan.Zero : TimeSpan.Parse(value));
+
+                // Int
+                case "System.Byte":
+                    return (isDefault ? byte.MinValue : byte.Parse(value)); // byte
+
+                case "System.Int16":
+                    return (isDefault ? byte.MinValue : short.Parse(value)); // short
+
+                case "System.Int32":
+                    return (isDefault ? byte.MinValue : int.Parse(value)); // int
+
+                case "System.Int64":
+                    return (isDefault ? byte.MinValue : long.Parse(value)); // long
+
+                case "System.SByte":
+                    return (isDefault ? sbyte.MinValue : sbyte.Parse(value)); // sbyte
+
+                case "System.UInt16":
+                    return (isDefault ? byte.MinValue : ushort.Parse(value)); // ushort
+
+                case "System.UInt32":
+                    return (isDefault ? byte.MinValue : uint.Parse(value)); // uint
+
+                case "System.UInt64":
+                    return (isDefault ? byte.MinValue : ulong.Parse(value)); // ulong
+
+                default:
+                    {
+                        var typeInfo = type.GetTypeInfo();
+
+                        if (typeInfo.IsGenericType)
+                        {
+                            try
+                            {
+                                var gts = type.GenericTypeArguments;
+
+                                // 链式转换
+                                var parameters = gts.Select(t => AsOrDefault(value, t)).ToArray();
+
+                                var ci = type.GetConstructor(type.GenericTypeArguments);
+                                return ci.Invoke(parameters);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                        }
+
+                        if (typeInfo.IsClass && !typeInfo.IsAbstract)
+                            return Activator.CreateInstance(type);
+
+                        return null;
+                    }
+            }
+        }
+
+        #endregion
+
+
+        #region Trim
+
+        /// <summary>
+        /// 清除首尾英文逗号。
+        /// </summary>
+        /// <param name="str">指定的字符串。</param>
+        /// <returns>返回清除后的字符串。</returns>
+        public static string TrimComma(this string str)
+        {
+            return Trim(str, COMMA);
+        }
+
+        /// <summary>
+        /// 清除首尾英文句号。
+        /// </summary>
+        /// <param name="str">指定的字符串。</param>
+        /// <returns>返回清除后的字符串。</returns>
+        public static string TrimPeriod(this string str)
+        {
+            return Trim(str, PERIOD);
+        }
+
+        /// <summary>
+        /// 清除首尾英文分号。
+        /// </summary>
+        /// <param name="str">指定的字符串。</param>
+        /// <returns>返回清除后的字符串。</returns>
+        public static string TrimSemicolon(this string str)
+        {
+            return Trim(str, SEMICOLON);
+        }
+
+
+        /// <summary>
+        /// 清除首尾指定字符串（忽略大小写）。
+        /// </summary>
+        /// <param name="str">指定的字符串。</param>
+        /// <param name="trim">要清除的字符串。</param>
+        /// <param name="loops">是否循环查找（可选；默认启用）。</param>
+        /// <returns>返回清除后的字符串。</returns>
+        public static string Trim(this string str, string trim, bool loops = true)
+        {
+            str = TrimStart(str, trim, loops);
+
+            str = TrimEnd(str, trim, loops);
+
+            return str;
+        }
+
+        /// <summary>
+        /// 清除首部指定字符串（忽略大小写）。
+        /// </summary>
+        /// <param name="str">指定的字符串。</param>
+        /// <param name="trim">要清除的字符串。</param>
+        /// <param name="loops">是否循环查找（可选；默认启用）。</param>
+        /// <returns>返回清除后的字符串。</returns>
+        public static string TrimStart(this string str, string trim, bool loops = true)
+        {
+            if (str.StartsWith(trim, StringComparison.OrdinalIgnoreCase))
+            {
+                str = str.Substring(trim.Length);
+
+                if (loops)
+                {
+                    str = TrimStart(str, trim);
+                }
+            }
+
+            return str;
+        }
+
+        /// <summary>
+        /// 清除尾部指定字符串（忽略大小写）。
+        /// </summary>
+        /// <param name="str">指定的字符串。</param>
+        /// <param name="trim">要清除的字符串。</param>
+        /// <param name="loops">是否循环查找（可选；默认启用）。</param>
+        /// <returns>返回清除后的字符串。</returns>
+        public static string TrimEnd(this string str, string trim, bool loops = true)
+        {
+            if (str.EndsWith(trim, StringComparison.OrdinalIgnoreCase))
+            {
+                str = str.Substring(0, (str.Length - trim.Length));
+
+                if (loops)
+                {
+                    str = TrimEnd(str, trim);
+                }
+            }
+
+            return str;
         }
 
         #endregion

@@ -11,7 +11,7 @@
 #endregion
 
 using Microsoft.Extensions.Logging;
-using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace Librame.Algorithm.Codecs
 {
@@ -20,15 +20,15 @@ namespace Librame.Algorithm.Codecs
     /// <summary>
     /// BASE64 密文编解码器。
     /// </summary>
-    public class Base64CiphertextCodec : AbstractTextCodec
+    public class Base64CipherTextCodec : AbstractTextCodec, ICipherTextCodec
     {
         /// <summary>
         /// 构造一个抽象文本编解码器。
         /// </summary>
         /// <param name="logger">给定的记录器。</param>
-        /// <param name="encoding">给定的字符编码。</param>
-        public Base64CiphertextCodec(ILogger logger, Encoding encoding)
-            : base(logger, encoding)
+        /// <param name="options">给定的选择项。</param>
+        public Base64CipherTextCodec(ILogger<Base64CipherTextCodec> logger, IOptions<LibrameOptions> options)
+            : base(logger, options.Value.Encoding.AsEncoding())
         {
         }
 

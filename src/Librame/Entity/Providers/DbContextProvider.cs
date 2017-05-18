@@ -39,7 +39,7 @@ namespace Librame.Entity.Providers
         /// 构造一个 <see cref="DbContextProvider"/> 实例。
         /// </summary>
         /// <param name="dbContextOptions">给定的数据上下文选择项。</param>
-        /// <param name="logger">给定的记录器工厂接口。</param>
+        /// <param name="logger">给定的记录器接口。</param>
         /// <param name="options">给定的选择项。</param>
         public DbContextProvider(DbContextOptions<DbContextProvider> dbContextOptions,
             ILogger<DbContextProvider> logger, IOptions<LibrameOptions> options)

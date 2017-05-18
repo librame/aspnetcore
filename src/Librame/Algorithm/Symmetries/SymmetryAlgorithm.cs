@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 
 namespace Librame.Algorithm.Symmetries
 {
+    using Codecs;
     using Utility;
 
     /// <summary>
@@ -27,12 +28,15 @@ namespace Librame.Algorithm.Symmetries
         /// <summary>
         /// 构造一个对称算法实例。
         /// </summary>
-        /// <param name="keyGenerator">给定的密钥生成器接口。</param>
-        /// <param name="logger">给定的记录器工厂接口。</param>
+        /// <param name="logger">给定的记录器接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public SymmetryAlgorithm(ISymmetryAlgorithmKeyGenerator keyGenerator,
-            ILogger<SymmetryAlgorithm> logger, IOptions<LibrameOptions> options)
-            : base(logger, options)
+        /// <param name="plainText">给定的明文编解码器接口。</param>
+        /// <param name="cipherText">给定的密文编解码器接口。</param>
+        /// <param name="keyGenerator">给定的密钥生成器接口。</param>
+        public SymmetryAlgorithm(ILogger<SymmetricAlgorithm> logger, IOptions<LibrameOptions> options,
+            IPlainTextCodec plainText, ICipherTextCodec cipherText,
+            ISymmetryKeyGenerator keyGenerator)
+            : base(logger, options, plainText, cipherText)
         {
             KeyGenerator = keyGenerator.NotNull(nameof(keyGenerator));
         }
@@ -41,12 +45,7 @@ namespace Librame.Algorithm.Symmetries
         /// <summary>
         /// 密钥生成器接口。
         /// </summary>
-        public ISymmetryAlgorithmKeyGenerator KeyGenerator { get; }
-
-        /// <summary>
-        /// 字节转换器接口。
-        /// </summary>
-        public ICiphertextCodec ByteConverter => KeyGenerator.ByteConverter;
+        public ISymmetryKeyGenerator KeyGenerator { get; }
 
 
         /// <summary>
@@ -59,12 +58,12 @@ namespace Librame.Algorithm.Symmetries
         {
             try
             {
-                var buffer = EncodeBytes(str);
+                var buffer = PlainText.GetBytes(str);
 
                 var ct = sa.CreateEncryptor();
                 buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);
 
-                return ByteConverter.AsString(buffer);
+                return CipherText.GetString(buffer);
             }
             catch (Exception ex)
             {
@@ -84,12 +83,12 @@ namespace Librame.Algorithm.Symmetries
         {
             try
             {
-                var buffer = ByteConverter.FromString(encrypt);
+                var buffer = CipherText.GetBytes(encrypt);
 
                 var ct = sa.CreateDecryptor();
                 buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);
 
-                return DecodeBytes(buffer);
+                return PlainText.GetString(buffer);
             }
             catch (Exception ex)
             {

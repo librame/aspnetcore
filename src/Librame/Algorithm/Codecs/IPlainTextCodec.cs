@@ -10,12 +10,12 @@
 
 #endregion
 
-namespace Librame.Algorithm.Asymmetries
+namespace Librame.Algorithm.Codecs
 {
-    ///// <summary>
-    ///// 非对称算法接口。
-    ///// </summary>
-    //public interface IAsymmetryAlgorithm : IAlgorithm
-    //{
-    //}
+    /// <summary>
+    /// 明文编解码器接口。
+    /// </summary>
+    public interface IPlainTextCodec : ITextCodec
+    {
+    }
 }

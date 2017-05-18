@@ -15,18 +15,13 @@ namespace Librame.Algorithm.Symmetries
     /// <summary>
     /// 对称算法接口。
     /// </summary>
-    public interface ISymmetryAlgorithm
+    public interface ISymmetryAlgorithm : IAlgorithm
     {
         /// <summary>
         /// 密钥生成器接口。
         /// </summary>
-        ISymmetryAlgorithmKeyGenerator KeyGenerator { get; }
-
-        /// <summary>
-        /// 字节转换器接口。
-        /// </summary>
-        ICiphertextCodec ByteConverter { get; }
-
+        ISymmetryKeyGenerator KeyGenerator { get; }
+        
 
         /// <summary>
         /// 转换为 AES。

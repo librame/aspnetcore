@@ -15,7 +15,7 @@ namespace Librame.Algorithm
     /// <summary>
     /// 密钥生成器接口。
     /// </summary>
-    public interface IKeyGenerator
+    public interface IKeyGenerator : IAlgorithm
     {
     }
 }

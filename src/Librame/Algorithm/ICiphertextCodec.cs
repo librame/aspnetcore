@@ -15,7 +15,7 @@ namespace Librame.Algorithm
     ///// <summary>
     ///// 字节转换器接口。
     ///// </summary>
-    //public interface ICiphertextCodec
+    //public interface ICipherTextCodec
     //{
     //    /// <summary>
     //    /// 字节数组转换器。

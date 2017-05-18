@@ -21,6 +21,40 @@ namespace Librame.Utility
     /// </summary>
     public static class ByteUtil
     {
+
+        #region Encoding
+
+        /// <summary>
+        /// 将字符串编码为字节序列。
+        /// </summary>
+        /// <param name="str">给定的字符串。</param>
+        /// <param name="encoding">给定的字符编码。</param>
+        /// <returns>返回字节数组。</returns>
+        public static byte[] EncodeBytes(this string str, Encoding encoding = null)
+        {
+            encoding = encoding.AsOrDefault(Encoding.UTF8);
+
+            return encoding.GetBytes(str);
+        }
+
+        /// <summary>
+        /// 将字节序列还原为字符串。
+        /// </summary>
+        /// <param name="bytes">给定的字节数组。</param>
+        /// <param name="encoding">给定的字符编码。</param>
+        /// <returns>返回字符串。</returns>
+        public static string DecodeBytes(this byte[] bytes, Encoding encoding = null)
+        {
+            encoding = encoding.AsOrDefault(Encoding.UTF8);
+
+            return encoding.GetString(bytes);
+        }
+
+        #endregion
+
+
+        #region Marshal
+
         /// <summary>
         /// 将对象转换为字节数组。
         /// </summary>
@@ -77,6 +111,10 @@ namespace Librame.Utility
             }
         }
 
+        #endregion
+
+
+        #region Base64
 
         /// <summary>
         /// 转换字节序列为 BASE64。
@@ -116,7 +154,11 @@ namespace Librame.Utility
             }
         }
 
+        #endregion
 
+
+        #region Hex
+        
         /// <summary>
         /// 转换字节序列为十六进制。
         /// </summary>
@@ -178,6 +220,8 @@ namespace Librame.Utility
                 throw ex;
             }
         }
+
+        #endregion
 
     }
 }

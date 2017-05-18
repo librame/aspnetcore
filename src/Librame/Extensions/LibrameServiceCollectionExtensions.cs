@@ -44,29 +44,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 // Algorithm
                 {
-                    AlgorithmOptions.ByteConverterTypeNameKey,
-                    AlgorithmOptions.DefaultByteConverterTypeName
+                    AlgorithmOptions.PlainTextCodecTypeNameKey,
+                    AlgorithmOptions.DefaultPlainTextCodecTypeName
                 },
                 {
-                    AlgorithmOptions.HashAlgorithmTypeNameKey,
-                    AlgorithmOptions.DefaultHashAlgorithmTypeName
+                    AlgorithmOptions.CipherTextCodecTypeNameKey,
+                    AlgorithmOptions.DefaultCipherTextCodecTypeName
                 },
-                {
-                    AlgorithmOptions.SymmetryAlgorithmKeyGeneratorTypeNameKey,
-                    AlgorithmOptions.DefaultSymmetryAlgorithmKeyGeneratorTypeName
-                },
-                {
-                    AlgorithmOptions.SymmetryAlgorithmTypeNameKey,
-                    AlgorithmOptions.DefaultSymmetryAlgorithmTypeName
-                },
-                {
-                    AlgorithmOptions.AsymmetryAlgorithmKeyGeneratorTypeNameKey,
-                    AlgorithmOptions.DefaultAsymmetryAlgorithmKeyGeneratorTypeName
-                },
-                {
-                    AlgorithmOptions.AsymmetryAlgorithmTypeNameKey,
-                    AlgorithmOptions.DefaultAsymmetryAlgorithmTypeName
-                },
+
                 {
                     AlgorithmOptions.RsaPublicKeyStringKey,
                     AlgorithmOptions.DefaultRsaPublicKeyString
@@ -74,6 +59,28 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     AlgorithmOptions.RsaPrivateKeyStringKey,
                     AlgorithmOptions.DefaultRsaPrivateKeyString
+                },
+                {
+                    AlgorithmOptions.RsaAsymmetryKeyGeneratorTypeNameKey,
+                    AlgorithmOptions.DefaultRsaAsymmetryKeyGeneratorTypeName
+                },
+                {
+                    AlgorithmOptions.RsaAsymmetryAlgorithmTypeNameKey,
+                    AlgorithmOptions.DefaultRsaAsymmetryAlgorithmTypeName
+                },
+
+                {
+                    AlgorithmOptions.HashAlgorithmTypeNameKey,
+                    AlgorithmOptions.DefaultHashAlgorithmTypeName
+                },
+
+                {
+                    AlgorithmOptions.SymmetryKeyGeneratorTypeNameKey,
+                    AlgorithmOptions.DefaultSymmetryKeyGeneratorTypeName
+                },
+                {
+                    AlgorithmOptions.SymmetryAlgorithmTypeNameKey,
+                    AlgorithmOptions.DefaultSymmetryAlgorithmTypeName
                 },
 
                 // Entity

@@ -51,7 +51,7 @@ namespace Librame.Algorithm.Codecs
         /// </summary>
         /// <param name="str">给定的字符串。</param>
         /// <returns>返回字节数组。</returns>
-        public virtual byte[] EncodeBytes(string str)
+        public virtual byte[] GetBytes(string str)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace Librame.Algorithm.Codecs
         /// </summary>
         /// <param name="buffer">给定的字节序列。</param>
         /// <returns>返回字符串。</returns>
-        public virtual string DecodeBytes(byte[] buffer)
+        public virtual string GetString(byte[] buffer)
         {
             buffer.NotNull(nameof(buffer));
 

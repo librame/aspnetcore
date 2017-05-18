@@ -11,7 +11,7 @@
 #endregion
 
 using Microsoft.Extensions.Logging;
-using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace Librame.Algorithm.Codecs
 {
@@ -20,15 +20,15 @@ namespace Librame.Algorithm.Codecs
     /// <summary>
     /// 十六进制密文编解码器。
     /// </summary>
-    public class HexCiphertextCodec : AbstractTextCodec
+    public class HexCipherTextCodec : AbstractTextCodec, ICipherTextCodec
     {
         /// <summary>
         /// 构造一个十六进制密文编解码器。
         /// </summary>
         /// <param name="logger">给定的记录器。</param>
-        /// <param name="encoding">给定的字符编码。</param>
-        public HexCiphertextCodec(ILogger logger, Encoding encoding)
-            : base(logger, encoding)
+        /// <param name="options">给定的选择项。</param>
+        public HexCipherTextCodec(ILogger<HexCipherTextCodec> logger, IOptions<LibrameOptions> options)
+            : base(logger, options.Value.Encoding.AsEncoding())
         {
         }
 
@@ -51,7 +51,7 @@ namespace Librame.Algorithm.Codecs
         /// <returns>返回字符串。</returns>
         protected override string DecodeBytesCore(byte[] buffer)
         {
-            return buffer.FromHex();
+            return buffer.AsHex();
         }
 
     }

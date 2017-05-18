@@ -39,7 +39,7 @@ namespace Librame.Tests.Utility
 
             // Default: string.Empty
             var s = "test";
-            Assert.NotEqual(s.As(), string.Empty);
+            Assert.NotEqual(s.AsString(), string.Empty);
         }
 
 

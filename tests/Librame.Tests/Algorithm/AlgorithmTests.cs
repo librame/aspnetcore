@@ -25,9 +25,6 @@ namespace Librame.Tests.Algorightm
             Assert.NotEmpty(ha.ToSha384(test));
             Assert.NotEmpty(ha.ToSha512(test));
 
-            //var rsa = System.Security.Cryptography.RSA.Create();
-            //rsa.
-
             // SymmetryAlgorithm
             var sa = builder.GetSymmetryAlgorithm();
             Assert.NotNull(sa);

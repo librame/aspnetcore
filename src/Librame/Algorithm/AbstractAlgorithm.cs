@@ -25,14 +25,20 @@ namespace Librame.Algorithm
     public abstract class AbstractAlgorithm : IAlgorithm
     {
         /// <summary>
-        /// 构造一个抽象字节编解码器实例。
+        /// 构造一个抽象算法实例。
         /// </summary>
-        /// <param name="logger">给定的记录器工厂接口。</param>
+        /// <param name="logger">给定的记录器接口。</param>
         /// <param name="options">给定的选择项。</param>
-        public AbstractAlgorithm(ILogger logger, IOptions<LibrameOptions> options)
+        /// <param name="plainText">给定的明文编解码器接口。</param>
+        /// <param name="cipherText">给定的密文编解码器接口。</param>
+        public AbstractAlgorithm(ILogger logger, IOptions<LibrameOptions> options,
+            IPlainTextCodec plainText, ICipherTextCodec cipherText)
         {
             Options = options.NotNull(nameof(options)).Value;
             Logger = logger.NotNull(nameof(logger));
+
+            PlainText = plainText.NotNull(nameof(plainText));
+            CipherText = cipherText.NotNull(nameof(cipherText));
         }
 
 
@@ -45,6 +51,16 @@ namespace Librame.Algorithm
         /// 选项项。
         /// </summary>
         public LibrameOptions Options { get; }
+        
+        /// <summary>
+        /// 密文编解码器。
+        /// </summary>
+        public ITextCodec CipherText { get; }
+
+        /// <summary>
+        /// 明文编解码器。
+        /// </summary>
+        public ITextCodec PlainText { get; }
 
 
         private Encoding _encoding;
@@ -65,17 +81,6 @@ namespace Librame.Algorithm
                 _encoding = value.NotNull(nameof(value));
             }
         }
-
-
-        /// <summary>
-        /// 密文编解码器。
-        /// </summary>
-        public ITextCodec Ciphertext { get; }
-
-        /// <summary>
-        /// 明文编解码器。
-        /// </summary>
-        public ITextCodec Plaintext { get; }
 
     }
 }

@@ -207,66 +207,120 @@ namespace Librame
         /// 使用算法模块。
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <param name="byteConverterType">给定实现 <see cref="Algorithm.ICiphertextCodec"/> 接口的字节转换器类型（可选）。</param>
+        /// <param name="plainTextCodecType">给定实现 <see cref="Algorithm.Codecs.IPlainTextCodec"/> 接口的明文编解码器类型（可选）。</param>
+        /// <param name="cipherTextCodecType">给定实现 <see cref="Algorithm.Codecs.ICipherTextCodec"/> 接口的密文编解码器类型（可选）。</param>
+        /// <param name="rsaAsymmetryKeyGeneratorType">给定实现 <see cref="Algorithm.Asymmetries.IRsaAsymmetryKeyGenerator"/> 接口的非对称算法密钥生成器类型（可选）。</param>
+        /// <param name="rsaAsymmetryAlgorithmType">给定实现 <see cref="Algorithm.Asymmetries.IRsaAsymmetryAlgorithm"/> 接口的非对称算法类型（可选）。</param>
         /// <param name="hashAlgorithmType">给定实现 <see cref="Algorithm.Hashes.IHashAlgorithm"/> 接口的散列算法类型（可选）。</param>
-        /// <param name="symmetryAlgorithmKeyGeneratorType">给定实现 <see cref="Algorithm.Symmetries.ISymmetryAlgorithmKeyGenerator"/> 接口的对称算法密钥生成器类型（可选）。</param>
+        /// <param name="symmetryKeyGeneratorType">给定实现 <see cref="Algorithm.Symmetries.ISymmetryKeyGenerator"/> 接口的对称算法密钥生成器类型（可选）。</param>
         /// <param name="symmetryAlgorithmType">给定实现 <see cref="Algorithm.Symmetries.ISymmetryAlgorithm"/> 接口的对称算法类型（可选）。</param>
-        /// <param name="asymmetryAlgorithmKeyGeneratorType">给定实现 <see cref="Algorithm.Asymmetries.IAsymmetryAlgorithmKeyGenerator"/> 接口的非对称算法密钥生成器类型（可选）。</param>
-        /// <param name="asymmetryAlgorithmType">给定实现 <see cref="Algorithm.Asymmetries.IAsymmetryAlgorithm"/> 接口的非对称算法类型（可选）。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
         public static ILibrameBuilder UseAlgorithm(this ILibrameBuilder builder,
-            Type byteConverterType = null, Type hashAlgorithmType = null,
-            Type symmetryAlgorithmKeyGeneratorType = null, Type symmetryAlgorithmType = null,
-            Type asymmetryAlgorithmKeyGeneratorType = null, Type asymmetryAlgorithmType = null)
+            Type plainTextCodecType = null, Type cipherTextCodecType = null,
+            Type rsaAsymmetryKeyGeneratorType = null, Type rsaAsymmetryAlgorithmType = null,
+            Type hashAlgorithmType = null,
+            Type symmetryKeyGeneratorType = null, Type symmetryAlgorithmType = null)
         {
             builder.NotNull(nameof(builder));
 
-            if (byteConverterType == null)
-                byteConverterType = Type.GetType(builder.Options.Algorithm.ByteConverterTypeName, throwOnError: true);
+            if (plainTextCodecType == null)
+                plainTextCodecType = Type.GetType(builder.Options.Algorithm.PlainTextCodecTypeName, throwOnError: true);
+            if (cipherTextCodecType == null)
+                cipherTextCodecType = Type.GetType(builder.Options.Algorithm.CipherTextCodecTypeName, throwOnError: true);
+
+            if (rsaAsymmetryKeyGeneratorType == null)
+                rsaAsymmetryKeyGeneratorType = Type.GetType(builder.Options.Algorithm.RsaAsymmetryKeyGeneratorTypeName, throwOnError: true);
+            if (rsaAsymmetryAlgorithmType == null)
+                rsaAsymmetryAlgorithmType = Type.GetType(builder.Options.Algorithm.RsaAsymmetryAlgorithmTypeName, throwOnError: true);
 
             if (hashAlgorithmType == null)
                 hashAlgorithmType = Type.GetType(builder.Options.Algorithm.HashAlgorithmTypeName, throwOnError: true);
 
-            if (symmetryAlgorithmKeyGeneratorType == null)
-                symmetryAlgorithmKeyGeneratorType = Type.GetType(builder.Options.Algorithm.SymmetryAlgorithmKeyGeneratorTypeName, throwOnError: true);
-
+            if (symmetryKeyGeneratorType == null)
+                symmetryKeyGeneratorType = Type.GetType(builder.Options.Algorithm.SymmetryKeyGeneratorTypeName, throwOnError: true);
             if (symmetryAlgorithmType == null)
                 symmetryAlgorithmType = Type.GetType(builder.Options.Algorithm.SymmetryAlgorithmTypeName, throwOnError: true);
-
-            if (asymmetryAlgorithmKeyGeneratorType == null)
-                asymmetryAlgorithmKeyGeneratorType = Type.GetType(builder.Options.Algorithm.AsymmetryAlgorithmKeyGeneratorTypeName, throwOnError: true);
-
-            if (asymmetryAlgorithmType == null)
-                asymmetryAlgorithmType = Type.GetType(builder.Options.Algorithm.AsymmetryAlgorithmTypeName, throwOnError: true);
-
+            
             // 验证类型
-            var baseByteConverterType = typeof(Algorithm.ICiphertextCodec);
-            byteConverterType = baseByteConverterType.CanAssignableFromType(byteConverterType);
+            var basePlainTextCodecType = typeof(Algorithm.Codecs.IPlainTextCodec);
+            plainTextCodecType = basePlainTextCodecType.CanAssignableFromType(plainTextCodecType);
+
+            var baseCipherTextCodecType = typeof(Algorithm.Codecs.ICipherTextCodec);
+            cipherTextCodecType = baseCipherTextCodecType.CanAssignableFromType(cipherTextCodecType);
+
+
+            var baseRsaAsymmetryKeyGenerateType = typeof(Algorithm.Asymmetries.IRsaAsymmetryKeyGenerator);
+            rsaAsymmetryKeyGeneratorType = baseRsaAsymmetryKeyGenerateType.CanAssignableFromType(rsaAsymmetryKeyGeneratorType);
+
+            var baseRsaAsymmetryAlgorithmType = typeof(Algorithm.Asymmetries.IRsaAsymmetryAlgorithm);
+            rsaAsymmetryAlgorithmType = baseRsaAsymmetryAlgorithmType.CanAssignableFromType(rsaAsymmetryAlgorithmType);
+
 
             var baseHashAlgorithmType = typeof(Algorithm.Hashes.IHashAlgorithm);
             hashAlgorithmType = baseHashAlgorithmType.CanAssignableFromType(hashAlgorithmType);
 
-            var baseSymmetryAlgorithmKeyGenerateType = typeof(Algorithm.Symmetries.ISymmetryAlgorithmKeyGenerator);
-            symmetryAlgorithmKeyGeneratorType = baseSymmetryAlgorithmKeyGenerateType.CanAssignableFromType(symmetryAlgorithmKeyGeneratorType);
+
+            var baseSymmetryKeyGenerateType = typeof(Algorithm.Symmetries.ISymmetryKeyGenerator);
+            symmetryKeyGeneratorType = baseSymmetryKeyGenerateType.CanAssignableFromType(symmetryKeyGeneratorType);
 
             var baseSymmetryAlgorithmType = typeof(Algorithm.Symmetries.ISymmetryAlgorithm);
             symmetryAlgorithmType = baseSymmetryAlgorithmType.CanAssignableFromType(symmetryAlgorithmType);
 
-            var baseAsymmetryAlgorithmKeyGenerateType = typeof(Algorithm.Asymmetries.IAsymmetryAlgorithmKeyGenerator);
-            asymmetryAlgorithmKeyGeneratorType = baseAsymmetryAlgorithmKeyGenerateType.CanAssignableFromType(asymmetryAlgorithmKeyGeneratorType);
-
-            var baseAsymmetryAlgorithmType = typeof(Algorithm.Asymmetries.IAsymmetryAlgorithm);
-            asymmetryAlgorithmType = baseAsymmetryAlgorithmType.CanAssignableFromType(asymmetryAlgorithmType);
-
+            
             // 注册类型
-            builder.Services.AddSingleton(baseByteConverterType, byteConverterType);
-            builder.Services.AddSingleton(baseHashAlgorithmType, hashAlgorithmType);
-            builder.Services.AddSingleton(baseSymmetryAlgorithmKeyGenerateType, symmetryAlgorithmKeyGeneratorType);
-            builder.Services.AddSingleton(baseSymmetryAlgorithmType, symmetryAlgorithmType);
-            builder.Services.AddSingleton(baseAsymmetryAlgorithmKeyGenerateType, asymmetryAlgorithmKeyGeneratorType);
-            builder.Services.AddSingleton(baseAsymmetryAlgorithmType, asymmetryAlgorithmType);
+            builder.Services.AddSingleton(basePlainTextCodecType, plainTextCodecType);
+            builder.Services.AddSingleton(baseCipherTextCodecType, cipherTextCodecType);
 
+            builder.Services.AddSingleton(baseRsaAsymmetryKeyGenerateType, rsaAsymmetryKeyGeneratorType);
+            builder.Services.AddSingleton(baseRsaAsymmetryAlgorithmType, rsaAsymmetryAlgorithmType);
+
+            builder.Services.AddSingleton(baseHashAlgorithmType, hashAlgorithmType);
+
+            builder.Services.AddSingleton(baseSymmetryKeyGenerateType, symmetryKeyGeneratorType);
+            builder.Services.AddSingleton(baseSymmetryAlgorithmType, symmetryAlgorithmType);
+            
             return builder;
+        }
+
+
+        /// <summary>
+        /// 获取明文编解码器。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <returns>返回算法接口。</returns>
+        public static Algorithm.Codecs.IPlainTextCodec GetPlainTextCodec(this ILibrameBuilder builder)
+        {
+            if (!builder.ContainsService<Algorithm.Codecs.IPlainTextCodec>())
+                builder.UseAlgorithm();
+
+            return builder.ServiceProvider.GetService<Algorithm.Codecs.IPlainTextCodec>();
+        }
+
+        /// <summary>
+        /// 获取密文编解码器。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <returns>返回算法接口。</returns>
+        public static Algorithm.Codecs.ICipherTextCodec GetCipherTextCodec(this ILibrameBuilder builder)
+        {
+            if (!builder.ContainsService<Algorithm.Codecs.ICipherTextCodec>())
+                builder.UseAlgorithm();
+
+            return builder.ServiceProvider.GetService<Algorithm.Codecs.ICipherTextCodec>();
+        }
+
+
+        /// <summary>
+        /// 获取 RSA 非对称算法。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <returns>返回算法接口。</returns>
+        public static Algorithm.Asymmetries.IRsaAsymmetryAlgorithm GetAsymmetryAlgorithm(this ILibrameBuilder builder)
+        {
+            if (!builder.ContainsService<Algorithm.Asymmetries.IRsaAsymmetryAlgorithm>())
+                builder.UseAlgorithm();
+
+            return builder.ServiceProvider.GetService<Algorithm.Asymmetries.IRsaAsymmetryAlgorithm>();
         }
 
 
@@ -283,6 +337,7 @@ namespace Librame
             return builder.ServiceProvider.GetService<Algorithm.Hashes.IHashAlgorithm>();
         }
 
+
         /// <summary>
         /// 获取对称算法。
         /// </summary>
@@ -294,19 +349,6 @@ namespace Librame
                 builder.UseAlgorithm();
 
             return builder.ServiceProvider.GetService<Algorithm.Symmetries.ISymmetryAlgorithm>();
-        }
-
-        /// <summary>
-        /// 获取非对称算法。
-        /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <returns>返回算法接口。</returns>
-        public static Algorithm.Asymmetries.IAsymmetryAlgorithm GetAsymmetryAlgorithm(this ILibrameBuilder builder)
-        {
-            if (!builder.ContainsService<Algorithm.Asymmetries.IAsymmetryAlgorithm>())
-                builder.UseAlgorithm();
-
-            return builder.ServiceProvider.GetService<Algorithm.Asymmetries.IAsymmetryAlgorithm>();
         }
 
         #endregion
