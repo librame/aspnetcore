@@ -25,7 +25,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="str">给定的字符串。</param>
         /// <param name="rsa">给定的 RSA 签名算法接口（可选；默认为空表示不签名）。</param>
         /// <returns>返回散列字符串。</returns>
-        string ToMd5(string str, IRsaAsymmetryAlgorithm rsa = null);
+        string ToMd5(string str, IRsaAsymmetryAlgorithm rsa = null, ISymmetryAlgorithm sa = null);
 
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="str">给定的字符串。</param>
         /// <param name="rsa">给定的 RSA 签名算法接口（可选；默认为空表示不签名）。</param>
         /// <returns>返回散列字符串。</returns>
-        string ToSha1(string str, IRsaAsymmetryAlgorithm rsa = null);
+        string ToSha1(string str, IRsaAsymmetryAlgorithm rsa = null, ISymmetryAlgorithm sa = null);
 
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="str">给定的字符串。</param>
         /// <param name="rsa">给定的 RSA 签名算法接口（可选；默认为空表示不签名）。</param>
         /// <returns>返回散列字符串。</returns>
-        string ToSha256(string str, IRsaAsymmetryAlgorithm rsa = null);
+        string ToSha256(string str, IRsaAsymmetryAlgorithm rsa = null, ISymmetryAlgorithm sa = null);
 
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="str">给定的字符串。</param>
         /// <param name="rsa">给定的 RSA 签名算法接口（可选；默认为空表示不签名）。</param>
         /// <returns>返回散列字符串。</returns>
-        string ToSha384(string str, IRsaAsymmetryAlgorithm rsa = null);
+        string ToSha384(string str, IRsaAsymmetryAlgorithm rsa = null, ISymmetryAlgorithm sa = null);
 
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="str">给定的字符串。</param>
         /// <param name="rsa">给定的 RSA 签名算法接口（可选；默认为空表示不签名）。</param>
         /// <returns>返回散列字符串。</returns>
-        string ToSha512(string str, IRsaAsymmetryAlgorithm rsa = null);
+        string ToSha512(string str, IRsaAsymmetryAlgorithm rsa = null, ISymmetryAlgorithm sa = null);
 
     }
 }

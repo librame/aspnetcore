@@ -315,7 +315,7 @@ namespace Librame
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
         /// <returns>返回算法接口。</returns>
-        public static Algorithm.Asymmetries.IRsaAsymmetryAlgorithm GetAsymmetryAlgorithm(this ILibrameBuilder builder)
+        public static Algorithm.Asymmetries.IRsaAsymmetryAlgorithm GetRsaAsymmetryAlgorithm(this ILibrameBuilder builder)
         {
             if (!builder.ContainsService<Algorithm.Asymmetries.IRsaAsymmetryAlgorithm>())
                 builder.UseAlgorithm();

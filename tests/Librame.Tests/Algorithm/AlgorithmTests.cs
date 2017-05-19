@@ -19,6 +19,7 @@ namespace Librame.Tests.Algorightm
             // HashAlgorithm
             var ha = builder.GetHashAlgorithm();
             Assert.NotNull(ha);
+
             Assert.NotEmpty(ha.ToMd5(test));
             Assert.NotEmpty(ha.ToSha1(test));
             Assert.NotEmpty(ha.ToSha256(test));
@@ -30,14 +31,19 @@ namespace Librame.Tests.Algorightm
             Assert.NotNull(sa);
 
             var aes = sa.ToAes(test);
+            Assert.NotEqual(test, aes);
             Assert.Equal(test, sa.FromAes(aes));
 
-            // AsymmetryAlgorithm
-            var aa = builder.GetAsymmetryAlgorithm();
+            // RsaAsymmetryAlgorithm
+            var aa = builder.GetRsaAsymmetryAlgorithm();
             Assert.NotNull(aa);
 
-            var rsa = aa.ToRsa(test);
-            Assert.Equal(test, aa.FromRsa(rsa));
+            var publicKeyString = aa.KeyGenerator.ToPublicKeyString(sa);
+            var privateKeyString = aa.KeyGenerator.ToPrivateKeyString(sa);
+
+            var rsa = aa.ToRsa(sa, test);
+            Assert.NotEqual(test, rsa);
+            Assert.Equal(test, aa.FromRsa(sa, rsa));
         }
 
     }

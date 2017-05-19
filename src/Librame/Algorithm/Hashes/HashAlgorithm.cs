@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 namespace Librame.Algorithm.Hashes
 {
     using Asymmetries;
+    using Symmetries;
     using Codecs;
 
     /// <summary>
@@ -44,9 +45,9 @@ namespace Librame.Algorithm.Hashes
         /// <param name="buffer">给定要签名的字节数组。</param>
         /// <param name="hashName">给定的散列算法名。</param>
         /// <returns>返回签名的字节数组。</returns>
-        protected virtual byte[] Sign(IRsaAsymmetryAlgorithm rsa, byte[] buffer, HashAlgorithmName hashName)
+        protected virtual byte[] Sign(IRsaAsymmetryAlgorithm rsa, ISymmetryAlgorithm sa, byte[] buffer, HashAlgorithmName hashName)
         {
-            return rsa.Sign(buffer, hashName);
+            return rsa.Sign(buffer, hashName, sa);
         }
 
 
@@ -56,7 +57,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="str">给定的字符串。</param>
         /// <param name="rsa">给定的 RSA 签名算法接口（可选；默认为空表示不签名）。</param>
         /// <returns>返回散列字符串。</returns>
-        public virtual string ToMd5(string str, IRsaAsymmetryAlgorithm rsa = null)
+        public virtual string ToMd5(string str, IRsaAsymmetryAlgorithm rsa = null, ISymmetryAlgorithm sa = null)
         {
             var buffer = PlainText.GetBytes(str);
             
@@ -76,7 +77,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="str">给定的字符串。</param>
         /// <param name="rsa">给定的 RSA 签名算法接口（可选；默认为空表示不签名）。</param>
         /// <returns>返回散列字符串。</returns>
-        public virtual string ToSha1(string str, IRsaAsymmetryAlgorithm rsa = null)
+        public virtual string ToSha1(string str, IRsaAsymmetryAlgorithm rsa = null, ISymmetryAlgorithm sa = null)
         {
             var buffer = PlainText.GetBytes(str);
 
@@ -96,7 +97,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="str">给定的字符串。</param>
         /// <param name="rsa">给定的 RSA 签名算法接口（可选；默认为空表示不签名）。</param>
         /// <returns>返回散列字符串。</returns>
-        public virtual string ToSha256(string str, IRsaAsymmetryAlgorithm rsa = null)
+        public virtual string ToSha256(string str, IRsaAsymmetryAlgorithm rsa = null, ISymmetryAlgorithm sa = null)
         {
             var buffer = PlainText.GetBytes(str);
 
@@ -116,7 +117,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="str">给定的字符串。</param>
         /// <param name="rsa">给定的 RSA 签名算法接口（可选；默认为空表示不签名）。</param>
         /// <returns>返回散列字符串。</returns>
-        public virtual string ToSha384(string str, IRsaAsymmetryAlgorithm rsa = null)
+        public virtual string ToSha384(string str, IRsaAsymmetryAlgorithm rsa = null, ISymmetryAlgorithm sa = null)
         {
             var buffer = PlainText.GetBytes(str);
 
@@ -136,7 +137,7 @@ namespace Librame.Algorithm.Hashes
         /// <param name="str">给定的字符串。</param>
         /// <param name="rsa">给定的 RSA 签名算法接口（可选；默认为空表示不签名）。</param>
         /// <returns>返回散列字符串。</returns>
-        public virtual string ToSha512(string str, IRsaAsymmetryAlgorithm rsa = null)
+        public virtual string ToSha512(string str, IRsaAsymmetryAlgorithm rsa = null, ISymmetryAlgorithm sa = null)
         {
             var buffer = PlainText.GetBytes(str);
 

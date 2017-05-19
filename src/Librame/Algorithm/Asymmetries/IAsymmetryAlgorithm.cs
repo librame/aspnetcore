@@ -12,10 +12,10 @@
 
 namespace Librame.Algorithm.Asymmetries
 {
-    ///// <summary>
-    ///// 非对称算法接口。
-    ///// </summary>
-    //public interface IAsymmetryAlgorithm : IAlgorithm
-    //{
-    //}
+    /// <summary>
+    /// 非对称算法接口。
+    /// </summary>
+    public interface IAsymmetryAlgorithm : IAlgorithm
+    {
+    }
 }
