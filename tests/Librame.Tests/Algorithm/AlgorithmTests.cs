@@ -38,12 +38,12 @@ namespace Librame.Tests.Algorightm
             var aa = builder.GetRsaAsymmetryAlgorithm();
             Assert.NotNull(aa);
 
-            var publicKeyString = aa.KeyGenerator.ToPublicKeyString(sa);
-            var privateKeyString = aa.KeyGenerator.ToPrivateKeyString(sa);
+            var publicKeyString = aa.KeyGenerator.ToPublicKeyString();
+            var privateKeyString = aa.KeyGenerator.ToPrivateKeyString();
 
-            var rsa = aa.ToRsa(sa, test);
+            var rsa = aa.ToRsa(test);
             Assert.NotEqual(test, rsa);
-            Assert.Equal(test, aa.FromRsa(sa, rsa));
+            Assert.Equal(test, aa.FromRsa(rsa));
         }
 
     }

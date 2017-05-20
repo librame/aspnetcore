@@ -15,7 +15,7 @@ using System.Text;
 
 namespace Librame.Algorithm
 {
-    using Codecs;
+    using TextCodecs;
 
     /// <summary>
     /// 算法接口。

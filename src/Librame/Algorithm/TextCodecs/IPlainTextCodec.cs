@@ -10,12 +10,12 @@
 
 #endregion
 
-namespace Librame.Algorithm.Codecs
+namespace Librame.Algorithm.TextCodecs
 {
     /// <summary>
-    /// 密文编解码器接口。
+    /// 明文编解码器接口。
     /// </summary>
-    public interface ICipherTextCodec : ITextCodec
+    public interface IPlainTextCodec : ITextCodec
     {
     }
 }

@@ -17,7 +17,7 @@ using System.Security.Cryptography;
 
 namespace Librame.Algorithm.Symmetries
 {
-    using Codecs;
+    using TextCodecs;
     using Utility;
 
     /// <summary>

@@ -53,6 +53,15 @@ namespace Microsoft.Extensions.DependencyInjection
                 },
 
                 {
+                    AlgorithmOptions.SymmetryKeyGeneratorTypeNameKey,
+                    AlgorithmOptions.DefaultSymmetryKeyGeneratorTypeName
+                },
+                {
+                    AlgorithmOptions.SymmetryAlgorithmTypeNameKey,
+                    AlgorithmOptions.DefaultSymmetryAlgorithmTypeName
+                },
+
+                {
                     AlgorithmOptions.RsaPublicKeyStringKey,
                     AlgorithmOptions.DefaultRsaPublicKeyString
                 },
@@ -72,15 +81,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     AlgorithmOptions.HashAlgorithmTypeNameKey,
                     AlgorithmOptions.DefaultHashAlgorithmTypeName
-                },
-
-                {
-                    AlgorithmOptions.SymmetryKeyGeneratorTypeNameKey,
-                    AlgorithmOptions.DefaultSymmetryKeyGeneratorTypeName
-                },
-                {
-                    AlgorithmOptions.SymmetryAlgorithmTypeNameKey,
-                    AlgorithmOptions.DefaultSymmetryAlgorithmTypeName
                 },
 
                 // Entity

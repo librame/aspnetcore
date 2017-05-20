@@ -13,7 +13,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Librame.Algorithm.Codecs
+namespace Librame.Algorithm.TextCodecs
 {
     using Utility;
 

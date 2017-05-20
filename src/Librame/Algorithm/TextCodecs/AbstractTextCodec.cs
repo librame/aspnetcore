@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 
-namespace Librame.Algorithm.Codecs
+namespace Librame.Algorithm.TextCodecs
 {
     using Utility;
 

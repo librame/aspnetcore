@@ -28,7 +28,7 @@ namespace Librame.Algorithm
         internal static readonly string KeyPrefix = (nameof(Algorithm) + ":");
 
 
-        #region Codecs
+        #region TextCodecs
 
         /// <summary>
         /// 明文编解码器类型名键。
@@ -40,7 +40,7 @@ namespace Librame.Algorithm
         /// 默认明文编解码器类型名。
         /// </summary>
         public static readonly string DefaultPlainTextCodecTypeName
-            = typeof(Codecs.PlainTextCodec).AssemblyQualifiedNameWithoutVcp();
+            = typeof(TextCodecs.PlainTextCodec).AssemblyQualifiedNameWithoutVcp();
 
         /// <summary>
         /// 明文编解码器类型名。
@@ -61,7 +61,7 @@ namespace Librame.Algorithm
         /// 默认密文编解码器类型名。
         /// </summary>
         public static readonly string DefaultCipherTextCodecTypeName
-            = typeof(Codecs.Base64CipherTextCodec).AssemblyQualifiedNameWithoutVcp();
+            = typeof(TextCodecs.Base64CipherTextCodec).AssemblyQualifiedNameWithoutVcp();
 
         /// <summary>
         /// 密文编解码器类型名。
@@ -70,6 +70,52 @@ namespace Librame.Algorithm
         /// 默认为 <see cref="DefaultCipherTextCodecTypeName"/>。
         /// </value>
         public string CipherTextCodecTypeName { get; set; } = DefaultCipherTextCodecTypeName;
+
+        #endregion
+
+
+        #region Symmetries
+
+        /// <summary>
+        /// 对称算法密钥生成器类型名键。
+        /// </summary>
+        public static readonly string SymmetryKeyGeneratorTypeNameKey
+            = (KeyPrefix + nameof(SymmetryKeyGeneratorTypeName));
+
+        /// <summary>
+        /// 默认对称算法密钥生成器类型名。
+        /// </summary>
+        public static readonly string DefaultSymmetryKeyGeneratorTypeName
+            = typeof(Symmetries.AuthIdSymmetryKeyGenerator).AssemblyQualifiedNameWithoutVcp();
+
+        /// <summary>
+        /// 对称算法密钥生成器类型名。
+        /// </summary>
+        /// <value>
+        /// 默认为 <see cref="DefaultSymmetryKeyGeneratorTypeName"/>。
+        /// </value>
+        public string SymmetryKeyGeneratorTypeName { get; set; } = DefaultSymmetryKeyGeneratorTypeName;
+
+
+        /// <summary>
+        /// 对称算法类型名键。
+        /// </summary>
+        public static readonly string SymmetryAlgorithmTypeNameKey
+            = (KeyPrefix + nameof(SymmetryAlgorithmTypeName));
+
+        /// <summary>
+        /// 默认对称算法类型名。
+        /// </summary>
+        public static readonly string DefaultSymmetryAlgorithmTypeName
+            = typeof(Symmetries.SymmetryAlgorithm).AssemblyQualifiedNameWithoutVcp();
+
+        /// <summary>
+        /// 对称算法类型名。
+        /// </summary>
+        /// <value>
+        /// 默认为 <see cref="DefaultSymmetryAlgorithmTypeName"/>。
+        /// </value>
+        public string SymmetryAlgorithmTypeName { get; set; } = DefaultSymmetryAlgorithmTypeName;
 
         #endregion
 
@@ -177,52 +223,6 @@ namespace Librame.Algorithm
         /// 默认为 <see cref="DefaultHashAlgorithmTypeName"/>。
         /// </value>
         public string HashAlgorithmTypeName { get; set; } = DefaultHashAlgorithmTypeName;
-
-        #endregion
-
-
-        #region Symmetries
-
-        /// <summary>
-        /// 对称算法密钥生成器类型名键。
-        /// </summary>
-        public static readonly string SymmetryKeyGeneratorTypeNameKey
-            = (KeyPrefix + nameof(SymmetryKeyGeneratorTypeName));
-
-        /// <summary>
-        /// 默认对称算法密钥生成器类型名。
-        /// </summary>
-        public static readonly string DefaultSymmetryKeyGeneratorTypeName
-            = typeof(Symmetries.AuthIdSymmetryKeyGenerator).AssemblyQualifiedNameWithoutVcp();
-
-        /// <summary>
-        /// 对称算法密钥生成器类型名。
-        /// </summary>
-        /// <value>
-        /// 默认为 <see cref="DefaultSymmetryKeyGeneratorTypeName"/>。
-        /// </value>
-        public string SymmetryKeyGeneratorTypeName { get; set; } = DefaultSymmetryKeyGeneratorTypeName;
-        
-
-        /// <summary>
-        /// 对称算法类型名键。
-        /// </summary>
-        public static readonly string SymmetryAlgorithmTypeNameKey
-            = (KeyPrefix + nameof(SymmetryAlgorithmTypeName));
-
-        /// <summary>
-        /// 默认对称算法类型名。
-        /// </summary>
-        public static readonly string DefaultSymmetryAlgorithmTypeName
-            = typeof(Symmetries.SymmetryAlgorithm).AssemblyQualifiedNameWithoutVcp();
-
-        /// <summary>
-        /// 对称算法类型名。
-        /// </summary>
-        /// <value>
-        /// 默认为 <see cref="DefaultSymmetryAlgorithmTypeName"/>。
-        /// </value>
-        public string SymmetryAlgorithmTypeName { get; set; } = DefaultSymmetryAlgorithmTypeName;
 
         #endregion
 

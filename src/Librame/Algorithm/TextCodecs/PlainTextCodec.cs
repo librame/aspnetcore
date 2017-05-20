@@ -13,21 +13,21 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Librame.Algorithm.Codecs
+namespace Librame.Algorithm.TextCodecs
 {
     using Utility;
 
     /// <summary>
-    /// BASE64 密文编解码器。
+    /// 明文编解码器。
     /// </summary>
-    public class Base64CipherTextCodec : AbstractTextCodec, ICipherTextCodec
+    public class PlainTextCodec : AbstractTextCodec, IPlainTextCodec
     {
         /// <summary>
-        /// 构造一个抽象文本编解码器。
+        /// 构造一个明文编解码器。
         /// </summary>
         /// <param name="logger">给定的记录器。</param>
         /// <param name="options">给定的选择项。</param>
-        public Base64CipherTextCodec(ILogger<Base64CipherTextCodec> logger, IOptions<LibrameOptions> options)
+        public PlainTextCodec(ILogger<IPlainTextCodec> logger, IOptions<LibrameOptions> options)
             : base(logger, options.Value.Encoding.AsEncoding())
         {
         }
@@ -40,7 +40,7 @@ namespace Librame.Algorithm.Codecs
         /// <returns>返回字节数组。</returns>
         protected override byte[] EncodeBytesCore(string str)
         {
-            return str.FromBase64();
+            return str.NotEmpty(nameof(str)).EncodeBytes(Encoding);
         }
 
 
@@ -51,7 +51,7 @@ namespace Librame.Algorithm.Codecs
         /// <returns>返回字符串。</returns>
         protected override string DecodeBytesCore(byte[] buffer)
         {
-            return buffer.AsBase64();
+            return buffer.NotNull(nameof(buffer)).DecodeBytes(Encoding);
         }
 
     }

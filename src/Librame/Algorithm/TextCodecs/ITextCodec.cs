@@ -13,7 +13,7 @@
 using Microsoft.Extensions.Logging;
 using System.Text;
 
-namespace Librame.Algorithm.Codecs
+namespace Librame.Algorithm.TextCodecs
 {
     /// <summary>
     /// 文本编解码器接口。

@@ -17,7 +17,7 @@ using System.Linq;
 
 namespace Librame.Algorithm.Symmetries
 {
-    using Codecs;
+    using TextCodecs;
     using Utility;
 
     /// <summary>

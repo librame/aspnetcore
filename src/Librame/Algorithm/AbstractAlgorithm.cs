@@ -16,7 +16,7 @@ using System.Text;
 
 namespace Librame.Algorithm
 {
-    using Codecs;
+    using TextCodecs;
     using Utility;
 
     /// <summary>

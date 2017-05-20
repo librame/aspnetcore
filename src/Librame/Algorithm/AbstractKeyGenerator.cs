@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 
 namespace Librame.Algorithm
 {
-    using Codecs;
+    using TextCodecs;
 
     /// <summary>
     /// 抽象密钥生成器。
