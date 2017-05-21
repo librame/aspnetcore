@@ -37,8 +37,8 @@ namespace Librame.Algorithm
             Options = options.NotNull(nameof(options)).Value;
             Logger = logger.NotNull(nameof(logger));
 
-            PlainText = plainText.NotNull(nameof(plainText));
-            CipherText = cipherText.NotNull(nameof(cipherText));
+            Plain = plainText.NotNull(nameof(plainText));
+            Cipher = cipherText.NotNull(nameof(cipherText));
         }
 
 
@@ -55,12 +55,12 @@ namespace Librame.Algorithm
         /// <summary>
         /// 密文编解码器。
         /// </summary>
-        public ITextCodec CipherText { get; }
+        public ITextCodec Cipher { get; }
 
         /// <summary>
         /// 明文编解码器。
         /// </summary>
-        public ITextCodec PlainText { get; }
+        public ITextCodec Plain { get; }
 
 
         private Encoding _encoding;

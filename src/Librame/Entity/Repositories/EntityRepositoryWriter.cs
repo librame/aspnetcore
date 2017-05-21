@@ -17,22 +17,20 @@ using System.Linq.Expressions;
 
 namespace Librame.Entity.Repositories
 {
-    using Providers;
-
     /// <summary>
-    /// 实体框架仓库写入器。
+    /// 实体仓库写入器。
     /// </summary>
-    /// <typeparam name="TEntity">指定实现自映射接口的实体类型。</typeparam>
+    /// <typeparam name="TEntity">指定的实体类型。</typeparam>
     public abstract class EntityRepositoryWriter<TEntity> : EntityRepositoryEntry<TEntity>, IRepositoryWriter<TEntity>
         where TEntity : class
     {
         /// <summary>
-        /// 构造一个实体框架仓库写入器实例。
+        /// 构造一个实体仓库写入器实例。
         /// </summary>
-        /// <param name="provider">给定的数据库上下文提供程序。</param>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
-        public EntityRepositoryWriter(DbContextProvider provider, ILogger<AbstractRepositoryEntry<TEntity>> logger)
-            : base(provider, logger)
+        public EntityRepositoryWriter(ILibrameBuilder builder, ILogger<AbstractRepositoryEntry<TEntity>> logger)
+            : base(builder, logger)
         {
         }
         

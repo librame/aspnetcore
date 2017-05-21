@@ -24,6 +24,11 @@ namespace Librame.Entity.Repositories
         where TEntity : class
     {
         /// <summary>
+        /// Librame 构建器接口。
+        /// </summary>
+        ILibrameBuilder Builder { get; }
+
+        /// <summary>
         /// 记录器接口。
         /// </summary>
         ILogger Logger { get; }

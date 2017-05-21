@@ -67,7 +67,7 @@ namespace Librame.Algorithm.Hashes
         /// <returns>返回散列字符串。</returns>
         public virtual string ToMd5(string str, bool isSigned = false)
         {
-            var buffer = PlainText.GetBytes(str);
+            var buffer = Plain.GetBytes(str);
             
             var hash = MD5.Create();
             buffer = hash.ComputeHash(buffer);
@@ -75,7 +75,7 @@ namespace Librame.Algorithm.Hashes
             if (isSigned)
                 buffer = Sign(buffer, HashAlgorithmName.MD5);
 
-            return CipherText.GetString(buffer);
+            return Cipher.GetString(buffer);
         }
 
 
@@ -87,7 +87,7 @@ namespace Librame.Algorithm.Hashes
         /// <returns>返回散列字符串。</returns>
         public virtual string ToSha1(string str, bool isSigned = false)
         {
-            var buffer = PlainText.GetBytes(str);
+            var buffer = Plain.GetBytes(str);
 
             var hash = SHA1.Create();
             buffer = hash.ComputeHash(buffer);
@@ -95,7 +95,7 @@ namespace Librame.Algorithm.Hashes
             if (isSigned)
                 buffer = Sign(buffer, HashAlgorithmName.SHA1);
 
-            return CipherText.GetString(buffer);
+            return Cipher.GetString(buffer);
         }
 
 
@@ -107,7 +107,7 @@ namespace Librame.Algorithm.Hashes
         /// <returns>返回散列字符串。</returns>
         public virtual string ToSha256(string str, bool isSigned = false)
         {
-            var buffer = PlainText.GetBytes(str);
+            var buffer = Plain.GetBytes(str);
 
             var hash = SHA256.Create();
             buffer = hash.ComputeHash(buffer);
@@ -115,7 +115,7 @@ namespace Librame.Algorithm.Hashes
             if (isSigned)
                 buffer = Sign(buffer, HashAlgorithmName.SHA256);
 
-            return CipherText.GetString(buffer);
+            return Cipher.GetString(buffer);
         }
 
 
@@ -127,7 +127,7 @@ namespace Librame.Algorithm.Hashes
         /// <returns>返回散列字符串。</returns>
         public virtual string ToSha384(string str, bool isSigned = false)
         {
-            var buffer = PlainText.GetBytes(str);
+            var buffer = Plain.GetBytes(str);
 
             var hash = SHA384.Create();
             buffer = hash.ComputeHash(buffer);
@@ -135,7 +135,7 @@ namespace Librame.Algorithm.Hashes
             if (isSigned)
                 buffer = Sign(buffer, HashAlgorithmName.SHA384);
 
-            return CipherText.GetString(buffer);
+            return Cipher.GetString(buffer);
         }
 
 
@@ -147,7 +147,7 @@ namespace Librame.Algorithm.Hashes
         /// <returns>返回散列字符串。</returns>
         public virtual string ToSha512(string str, bool isSigned = false)
         {
-            var buffer = PlainText.GetBytes(str);
+            var buffer = Plain.GetBytes(str);
 
             var hash = SHA512.Create();
             buffer = hash.ComputeHash(buffer);
@@ -155,7 +155,7 @@ namespace Librame.Algorithm.Hashes
             if (isSigned)
                 buffer = Sign(buffer, HashAlgorithmName.SHA512);
 
-            return CipherText.GetString(buffer);
+            return Cipher.GetString(buffer);
         }
 
     }

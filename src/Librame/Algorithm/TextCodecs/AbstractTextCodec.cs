@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.Extensions.Logging;
-using System;
 using System.Text;
 
 namespace Librame.Algorithm.TextCodecs
@@ -51,24 +50,7 @@ namespace Librame.Algorithm.TextCodecs
         /// </summary>
         /// <param name="str">给定的字符串。</param>
         /// <returns>返回字节数组。</returns>
-        public virtual byte[] GetBytes(string str)
-        {
-            try
-            {
-                return EncodeBytesCore(str);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        /// <summary>
-        /// 将字符串编码为字节序列。
-        /// </summary>
-        /// <param name="str">给定的字符串。</param>
-        /// <returns>返回字节数组。</returns>
-        protected abstract byte[] EncodeBytesCore(string str);
+        public abstract byte[] GetBytes(string str);
 
 
         /// <summary>
@@ -76,26 +58,7 @@ namespace Librame.Algorithm.TextCodecs
         /// </summary>
         /// <param name="buffer">给定的字节序列。</param>
         /// <returns>返回字符串。</returns>
-        public virtual string GetString(byte[] buffer)
-        {
-            buffer.NotNull(nameof(buffer));
-
-            try
-            {
-                return DecodeBytesCore(buffer);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        /// <summary>
-        /// 将字节序列解码为字符串。
-        /// </summary>
-        /// <param name="buffer">给定的字节序列。</param>
-        /// <returns>返回字符串。</returns>
-        protected abstract string DecodeBytesCore(byte[] buffer);
+        public abstract string GetString(byte[] buffer);
 
     }
 }

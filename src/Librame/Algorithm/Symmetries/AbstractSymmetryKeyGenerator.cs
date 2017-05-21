@@ -67,7 +67,7 @@ namespace Librame.Algorithm.Symmetries
         /// <returns>返回基础字节数组。</returns>
         protected virtual byte[] ParseBaseBytes(string keyString)
         {
-            return CipherText.GetBytes(keyString);
+            return Cipher.GetBytes(keyString);
         }
 
         /// <summary>

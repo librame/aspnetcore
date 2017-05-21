@@ -41,11 +41,11 @@ namespace Librame.Algorithm
         /// <summary>
         /// 密文编解码器。
         /// </summary>
-        ITextCodec CipherText { get; }
+        ITextCodec Cipher { get; }
 
         /// <summary>
         /// 明文编解码器。
         /// </summary>
-        ITextCodec PlainText { get; }
+        ITextCodec Plain { get; }
     }
 }

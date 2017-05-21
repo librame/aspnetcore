@@ -23,7 +23,7 @@ namespace Librame.Entity.Providers
     using Utility;
 
     /// <summary>
-    /// 实体框架提供程序。
+    /// 数据库上下文提供程序。
     /// </summary>
     public class DbContextProvider : DbContext
     {
@@ -106,7 +106,7 @@ namespace Librame.Entity.Providers
                 _logger.LogDebug("Register assembly: " + a.FullName);
 
                 // 提取要映射的实体类型集合
-                var types = TypeUtil.EnumerableAssignableTypes<IAutomapping>(a);
+                var types = TypeUtil.EnumerableTypesByAssignableFrom<IAutomapping>(a);
                 types.NotNull(nameof(types)).Invoke((t) =>
                 {
                     _logger.LogDebug("Register entity type: " + t.FullName);

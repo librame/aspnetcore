@@ -48,9 +48,7 @@ namespace Librame.Website
             //});
 
             // Librame
-            services.AddLibrame(Configuration.GetSection("Librame"))
-                .UseAlgorithm()
-                .UseEntity(connectionString: Configuration.GetConnectionString("SqlServer")); // 使用内部集成 SQLSERVER 数据源的实体框架模块
+            services.AddLibrame(Configuration.GetSection("Librame")); // 使用内部集成 SQLSERVER 数据源的实体框架模块
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

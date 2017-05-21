@@ -31,10 +31,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// 注册 Librame 服务（通过配置内存源）。
         /// </summary>
         /// <param name="services">给定的服务集合。</param>
-        /// <param name="dictAction">给定的键值对字典集合动作（可选）。</param>
+        /// <param name="optionsAction">给定的键值对字典选项集合动作（可选）。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
         public static ILibrameBuilder AddLibrameByMemory(this IServiceCollection services,
-            Action<Dictionary<string, string>> dictAction = null)
+            Action<Dictionary<string, string>> optionsAction = null)
         {
             var configurationSource = new Dictionary<string, string>
             {
@@ -93,13 +93,17 @@ namespace Microsoft.Extensions.DependencyInjection
                     EntityOptions.DefaultEnableAutomapping.ToString()
                 },
                 {
+                    EntityOptions.EntityProviderTypeNameKey,
+                    EntityOptions.DefaultEntityProviderTypeName
+                },
+                {
                     EntityOptions.RepositoryTypeNameKey,
                     EntityOptions.DefaultRepositoryTypeName
                 }
             };
 
-            if (dictAction != null)
-                dictAction.Invoke(configurationSource);
+            if (optionsAction != null)
+                optionsAction.Invoke(configurationSource);
 
             return services.AddLibrame(config =>
             {
@@ -168,11 +172,18 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Configure<LibrameOptions>(configuration); // options => configuration.Bind(options)
             
             // 构造并注入 LibrameBuilder
-            var builder = new LibrameBuilder(services);
+            var builder = new LibrameBuilder(services)
+            {
+                // 绑定配置，以便集成注入实体模块的连接字符串
+                Configuration = configuration
+            };
 
             // 如果还未注册记录器
-            if (!builder.ContainsService(typeof(ILogger<>)))
+            if (!builder.ContainsService<ILogger<ILibrameBuilder>>())
                 builder.Services.AddLogging();
+
+            // 添加适配器模块（默认添加当前程序集的所有适配器模块）
+            builder.TryAddAdaptation(AssemblyUtil.CurrentAssembly);
 
             return builder;
         }

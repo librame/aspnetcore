@@ -51,51 +51,53 @@ namespace Librame.Algorithm.Symmetries
         /// <summary>
         /// 加密字符串。
         /// </summary>
-        /// <param name="sa">给定的对称算法。</param>
+        /// <param name="sym">给定的对称算法。</param>
         /// <param name="str">给定的字符串。</param>
         /// <returns>返回加密字符串。</returns>
-        protected virtual string Encrypt(SymmetricAlgorithm sa, string str)
+        protected virtual string Encrypt(SymmetricAlgorithm sym, string str)
         {
+            var buffer = Plain.GetBytes(str);
+
             try
             {
-                var buffer = PlainText.GetBytes(str);
+                var ct = sym.CreateEncryptor();
 
-                var ct = sa.CreateEncryptor();
                 buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);
-
-                return CipherText.GetString(buffer);
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.AsInnerMessage());
+                Logger.LogError(ex.AsInnerMessage());
 
-                return str;
+                throw ex;
             }
+
+            return Cipher.GetString(buffer);
         }
 
         /// <summary>
         /// 解密字符串。
         /// </summary>
-        /// <param name="sa">给定的对称算法。</param>
+        /// <param name="sym">给定的对称算法。</param>
         /// <param name="encrypt">给定的加密字符串。</param>
         /// <returns>返回原始字符串。</returns>
-        protected virtual string Decrypt(SymmetricAlgorithm sa, string encrypt)
+        protected virtual string Decrypt(SymmetricAlgorithm sym, string encrypt)
         {
+            var buffer = Cipher.GetBytes(encrypt);
+
             try
             {
-                var buffer = CipherText.GetBytes(encrypt);
+                var ct = sym.CreateDecryptor();
 
-                var ct = sa.CreateDecryptor();
                 buffer = ct.TransformFinalBlock(buffer, 0, buffer.Length);
-
-                return PlainText.GetString(buffer);
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.AsInnerMessage());
+                Logger.LogError(ex.AsInnerMessage());
 
-                return encrypt;
+                throw ex;
             }
+
+            return Plain.GetString(buffer);
         }
 
 
@@ -107,15 +109,15 @@ namespace Librame.Algorithm.Symmetries
         /// <returns>返回加密字符串。</returns>
         public virtual string ToAes(string str, string keyString = null)
         {
-            var sa = Aes.Create();
+            var sym = Aes.Create();
 
-            sa.Key = KeyGenerator.GenerateAesKey(keyString);
-            sa.IV = KeyGenerator.GenerateAesIv(sa.Key);
+            sym.Key = KeyGenerator.GenerateAesKey(keyString);
+            sym.IV = KeyGenerator.GenerateAesIv(sym.Key);
 
-            sa.Mode = CipherMode.ECB;
-            sa.Padding = PaddingMode.PKCS7;
+            sym.Mode = CipherMode.ECB;
+            sym.Padding = PaddingMode.PKCS7;
 
-            return Encrypt(sa, str);
+            return Encrypt(sym, str);
         }
 
         /// <summary>
@@ -126,15 +128,15 @@ namespace Librame.Algorithm.Symmetries
         /// <returns>返回原始字符串。</returns>
         public virtual string FromAes(string encrypt, string keyString = null)
         {
-            var sa = Aes.Create();
+            var sym = Aes.Create();
 
-            sa.Key = KeyGenerator.GenerateAesKey(keyString);
-            sa.IV = KeyGenerator.GenerateAesIv(sa.Key);
+            sym.Key = KeyGenerator.GenerateAesKey(keyString);
+            sym.IV = KeyGenerator.GenerateAesIv(sym.Key);
 
-            sa.Mode = CipherMode.ECB;
-            sa.Padding = PaddingMode.PKCS7;
+            sym.Mode = CipherMode.ECB;
+            sym.Padding = PaddingMode.PKCS7;
 
-            return Decrypt(sa, encrypt);
+            return Decrypt(sym, encrypt);
         }
 
     }

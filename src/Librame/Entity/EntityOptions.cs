@@ -78,6 +78,31 @@ namespace Librame.Entity
         #endregion
 
 
+        #region EntityProviderTypeName
+
+        /// <summary>
+        /// 实体提供程序类型名键。
+        /// </summary>
+        public static readonly string EntityProviderTypeNameKey
+            = (KeyPrefix + nameof(EntityProviderTypeName));
+
+        /// <summary>
+        /// 默认实体提供程序类型名。
+        /// </summary>
+        public static readonly string DefaultEntityProviderTypeName
+            = typeof(Providers.DbContextProvider).AssemblyQualifiedNameWithoutVcp();
+
+        /// <summary>
+        /// 实体提供程序类型名。
+        /// </summary>
+        /// <value>
+        /// 默认为 <see cref="DefaultEntityProviderTypeName"/>。
+        /// </value>
+        public string EntityProviderTypeName { get; set; } = DefaultEntityProviderTypeName;
+
+        #endregion
+
+
         #region RepositoryTypeName
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Security.Cryptography;
 using Xunit;
 
 namespace Librame.Tests.Algorightm
@@ -11,39 +12,51 @@ namespace Librame.Tests.Algorightm
             var services = new ServiceCollection();
 
             // 注册 Librame （默认使用内存配置源）
-            var builder = services.AddLibrameByMemory()
-                .UseAlgorithm(); // 使用算法模块
+            var builder = services.AddLibrameByMemory();
+
+            // 获取算法适配器
+            var algo = builder.GetAlgorithmAdapter();
+            Assert.NotNull(algo);
 
             var test = "向前跑，迎着冷眼和嘲笑";
 
             // HashAlgorithm
-            var ha = builder.GetHashAlgorithm();
-            Assert.NotNull(ha);
+            Assert.NotNull(algo.Hash);
 
-            Assert.NotEmpty(ha.ToMd5(test));
-            Assert.NotEmpty(ha.ToSha1(test));
-            Assert.NotEmpty(ha.ToSha256(test));
-            Assert.NotEmpty(ha.ToSha384(test));
-            Assert.NotEmpty(ha.ToSha512(test));
+            Assert.NotEmpty(algo.Hash.ToMd5(test));
+            Assert.NotEmpty(algo.Hash.ToSha1(test));
+            Assert.NotEmpty(algo.Hash.ToSha256(test));
+            Assert.NotEmpty(algo.Hash.ToSha384(test));
+            Assert.NotEmpty(algo.Hash.ToSha512(test));
 
             // SymmetryAlgorithm
-            var sa = builder.GetSymmetryAlgorithm();
-            Assert.NotNull(sa);
+            Assert.NotNull(algo.Symmetry);
 
-            var aes = sa.ToAes(test);
-            Assert.NotEqual(test, aes);
-            Assert.Equal(test, sa.FromAes(aes));
+            var aesString = algo.Symmetry.ToAes(test);
+            Assert.NotEqual(test, aesString);
+            Assert.Equal(test, algo.Symmetry.FromAes(aesString));
 
             // RsaAsymmetryAlgorithm
-            var aa = builder.GetRsaAsymmetryAlgorithm();
-            Assert.NotNull(aa);
+            Assert.NotNull(algo.Asymmetry);
 
-            var publicKeyString = aa.KeyGenerator.ToPublicKeyString();
-            var privateKeyString = aa.KeyGenerator.ToPrivateKeyString();
+            //// 使用新生成的公私钥参数进行运算
+            //var parameters = algo.Asymmetry.KeyGenerator.GenerateParameters();
 
-            var rsa = aa.ToRsa(test);
-            Assert.NotEqual(test, rsa);
-            Assert.Equal(test, aa.FromRsa(rsa));
+            //// 方法一
+            //var rsaString = algo.Asymmetry.ToRsa(test, parameters);
+            //var rawString = algo.Asymmetry.FromRsa(rsaString, parameters);
+
+            //// 方法二
+            //var pairString = algo.Asymmetry.KeyGenerator.ToParametersPairString(parameters);
+            //var rsaString = algo.Asymmetry.ToRsa(test, publicKeyString: pairString.Key);
+            //var rawString = algo.Asymmetry.FromRsa(rsaString, privateKeyString: pairString.Value);
+
+            // 使用系统集成的默认公私钥参数
+            var rsaString = algo.Asymmetry.ToRsa(test);
+            var rawString = algo.Asymmetry.FromRsa(rsaString);
+
+            Assert.NotEqual(test, rsaString);
+            Assert.Equal(test, rawString);
         }
 
     }

@@ -17,42 +17,56 @@ using System.Linq;
 
 namespace Librame.Entity.Repositories
 {
-    using Providers;
     using Utility;
 
     /// <summary>
-    /// 实体框架仓库入口。
+    /// 实体仓库入口。
     /// </summary>
-    /// <typeparam name="TEntity">指定实现自映射接口的实体类型。</typeparam>
+    /// <typeparam name="TEntity">指定的实体类型。</typeparam>
     public class EntityRepositoryEntry<TEntity> : AbstractRepositoryEntry<TEntity>, IRepositoryEntry<TEntity>
         where TEntity : class
     {
         /// <summary>
         /// 构造一个实体框架仓库入口实例。
         /// </summary>
-        /// <param name="provider">给定的数据库上下文提供程序。</param>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
-        public EntityRepositoryEntry(DbContextProvider provider, ILogger<AbstractRepositoryEntry<TEntity>> logger)
-            : base(logger)
+        public EntityRepositoryEntry(ILibrameBuilder builder, ILogger<AbstractRepositoryEntry<TEntity>> logger)
+            : base(builder, logger)
         {
-            Provider = provider.NotNull(nameof(provider));
+            Provider = GetProvider();
         }
-        
+
+
         /// <summary>
-        /// 数据上下文提供程序。
+        /// 数据库上下文。
         /// </summary>
-        protected DbContextProvider Provider { get; }
+        protected DbContext Provider { get; }
 
         /// <summary>
         /// 实体集。
         /// </summary>
         protected DbSet<TEntity> DbSet => Provider.Set<TEntity>();
-        
+
+
+        /// <summary>
+        /// 获取数据库上下文提供程序。
+        /// </summary>
+        /// <returns>返回提供程序。</returns>
+        protected virtual DbContext GetProvider()
+        {
+            var providerType = Type.GetType(Builder.Options.Entity.EntityProviderTypeName, throwOnError: true);
+            typeof(DbContext).CanAssignableFromType(providerType);
+
+            return (DbContext)Builder.GetService(providerType).NotNull(nameof(providerType));
+        }
+
+
         /// <summary>
         /// 准备管道动作方法。
         /// </summary>
         /// <param name="action">给定的动作。</param>
-        protected virtual void ReadyProvider(Action<DbContextProvider, DbSet<TEntity>> action)
+        protected virtual void ReadyProvider(Action<DbContext, DbSet<TEntity>> action)
         {
             try
             {
@@ -72,7 +86,7 @@ namespace Librame.Entity.Repositories
         /// <typeparam name="TValue">指定的值类型。</typeparam>
         /// <param name="factory">给定的工厂方法。</param>
         /// <returns>返回值类型实例。</returns>
-        protected virtual TValue ReadyProvider<TValue>(Func<DbContextProvider, DbSet<TEntity>, TValue> factory)
+        protected virtual TValue ReadyProvider<TValue>(Func<DbContext, DbSet<TEntity>, TValue> factory)
         {
             try
             {

@@ -10,6 +10,7 @@
 
 #endregion
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
@@ -40,17 +41,9 @@ namespace Librame
 
 
         /// <summary>
-        /// 是否包含指定服务。
+        /// 配置接口。
         /// </summary>
-        /// <typeparam name="TService">指定的服务类型。</typeparam>
-        /// <returns>返回布尔值。</returns>
-        bool ContainsService<TService>();
-        /// <summary>
-        /// 是否包含指定服务。
-        /// </summary>
-        /// <param name="serviceType">给定的服务类型。</param>
-        /// <returns>返回布尔值。</returns>
-        bool ContainsService(Type serviceType);
+        IConfiguration Configuration { get; set; }
 
 
         /// <summary>
@@ -96,23 +89,9 @@ namespace Librame
 
 
         /// <summary>
-        /// 是否包含指定服务。
+        /// 配置接口。
         /// </summary>
-        /// <typeparam name="TService">指定的服务类型。</typeparam>
-        /// <returns>返回布尔值。</returns>
-        public virtual bool ContainsService<TService>()
-        {
-            return ContainsService(typeof(TService));
-        }
-        /// <summary>
-        /// 是否包含指定服务。
-        /// </summary>
-        /// <param name="serviceType">给定的服务类型。</param>
-        /// <returns>返回布尔值。</returns>
-        public virtual bool ContainsService(Type serviceType)
-        {
-            return (ServiceProvider.GetService(serviceType) != null);
-        }
+        public IConfiguration Configuration { get; set; }
 
 
         /// <summary>

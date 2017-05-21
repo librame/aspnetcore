@@ -28,12 +28,19 @@ namespace Librame.Entity.Repositories
         /// <summary>
         /// 构造一个抽象仓库入口实例。
         /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
         /// <param name="logger">给定的记录器接口。</param>
-        public AbstractRepositoryEntry(ILogger<AbstractRepositoryEntry<TEntity>> logger)
+        public AbstractRepositoryEntry(ILibrameBuilder builder, ILogger<AbstractRepositoryEntry<TEntity>> logger)
         {
+            Builder = builder.NotNull(nameof(builder));
             Logger = logger.NotNull(nameof(logger));
         }
 
+
+        /// <summary>
+        /// Librame 构建器接口。
+        /// </summary>
+        public ILibrameBuilder Builder { get; }
 
         /// <summary>
         /// 记录器接口。

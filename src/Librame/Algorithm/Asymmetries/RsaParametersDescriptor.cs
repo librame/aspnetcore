@@ -23,27 +23,27 @@ namespace Librame.Algorithm.Asymmetries
     public class RsaParametersDescriptor
     {
         /// <summary>
-        /// 表示 RSA 算法的 D 参数。
+        /// 表示 RSA 算法的私钥指数。
         /// </summary>
         public string D { get; set; } = string.Empty;
 
         /// <summary>
-        /// 表示 RSA 算法的 DP 参数。
+        /// 表示 RSA 算法的私钥指数模数（P-1）。
         /// </summary>
         public string DP { get; set; } = string.Empty;
 
         /// <summary>
-        /// 表示 RSA 算法的 DQ 参数。
+        /// 表示 RSA 算法的私钥指数模数（Q-1）。
         /// </summary>
         public string DQ { get; set; } = string.Empty;
 
         /// <summary>
-        /// 表示 RSA 算法的 Exponent 参数。
+        /// 表示 RSA 算法的公钥指数。
         /// </summary>
         public string Exponent { get; set; } = string.Empty;
 
         /// <summary>
-        /// 表示 RSA 算法的 InverseQ 参数。
+        /// 表示 RSA 算法的私钥指数模数反转（1-Q）。
         /// </summary>
         public string InverseQ { get; set; } = string.Empty;
 

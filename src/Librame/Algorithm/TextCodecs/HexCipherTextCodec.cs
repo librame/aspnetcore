@@ -12,6 +12,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace Librame.Algorithm.TextCodecs
 {
@@ -38,9 +39,18 @@ namespace Librame.Algorithm.TextCodecs
         /// </summary>
         /// <param name="str">给定的字符串。</param>
         /// <returns>返回字节数组。</returns>
-        protected override byte[] EncodeBytesCore(string str)
+        public override byte[] GetBytes(string str)
         {
-            return str.FromHex();
+            try
+            {
+                return str.NotEmpty(nameof(str)).FromHex();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.AsInnerMessage());
+
+                throw ex;
+            }
         }
 
 
@@ -49,9 +59,18 @@ namespace Librame.Algorithm.TextCodecs
         /// </summary>
         /// <param name="buffer">给定的字节序列。</param>
         /// <returns>返回字符串。</returns>
-        protected override string DecodeBytesCore(byte[] buffer)
+        public override string GetString(byte[] buffer)
         {
-            return buffer.AsHex();
+            try
+            {
+                return buffer.NotNull(nameof(buffer)).AsHex();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.AsInnerMessage());
+
+                throw ex;
+            }
         }
 
     }

@@ -48,6 +48,7 @@ namespace Librame.Algorithm.Symmetries
             return keyString.FromHex();
         }
 
+
         /// <summary>
         /// 转换基础字节数组为所需的密钥字节数组。
         /// </summary>
@@ -69,6 +70,7 @@ namespace Librame.Algorithm.Symmetries
         {
             return ConvertCore(key.Reverse().ToArray(), bytesLength);
         }
+
 
         /// <summary>
         /// 转换核心。

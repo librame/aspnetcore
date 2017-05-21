@@ -10,12 +10,8 @@
 
 #endregion
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace Librame
 {
@@ -27,264 +23,159 @@ namespace Librame
     public static class LibrameBuilderExtensions
     {
 
-        #region Adaptation
-
         /// <summary>
-        /// 使用适配模块（注册指定程序集数组包含的所有适配器）。
+        /// 是否包含指定服务。
+        /// </summary>
+        /// <typeparam name="TService">指定的服务类型。</typeparam>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool ContainsService<TService>(this ILibrameBuilder builder)
+        {
+            return builder.ContainsService(typeof(TService));
+        }
+        /// <summary>
+        /// 是否包含指定服务。
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <param name="assemblies">给定的程序集数组。</param>
-        /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder UseAdaptation(this ILibrameBuilder builder, params Assembly[] assemblies)
+        /// <param name="serviceType">给定的服务类型。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool ContainsService(this ILibrameBuilder builder, Type serviceType)
         {
-            if (assemblies == null || assemblies.Length < 1)
-                return builder;
+            return (builder.GetService(serviceType) != null);
+        }
 
-            assemblies.Invoke(a =>
-            {
-                var types = TypeUtil.EnumerableAssignableTypes<Adaptation.IAdapter>(a);
 
-                builder.UseAdaptation(types);
-            });
+        /// <summary>
+        /// 获取指定类型的服务。
+        /// </summary>
+        /// <typeparam name="TService">指定的服务类型。</typeparam>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <returns>返回服务实例。</returns>
+        public static TService GetService<TService>(this ILibrameBuilder builder)
+        {
+            return (TService)builder.ServiceProvider.GetService(typeof(TService));
+        }
+        /// <summary>
+        /// 获取指定类型的服务。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <param name="serviceType">给定的服务类型。</param>
+        /// <returns>返回服务对象。</returns>
+        public static object GetService(this ILibrameBuilder builder, Type serviceType)
+        {
+            return builder.ServiceProvider.GetService(serviceType);
+        }
+
+
+        /// <summary>
+        /// 尝试添加域例服务。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <typeparam name="TService">给定的服务类型。</typeparam>
+        /// <typeparam name="TImplementation">给定的实现类型。</typeparam>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddScopedService<TService, TImplementation>(this ILibrameBuilder builder)
+            where TService : class
+            where TImplementation : class, TService
+        {
+            var serviceType = typeof(TService);
+
+            if (!builder.ContainsService(serviceType))
+                builder.Services.AddScoped(serviceType, typeof(TImplementation));
 
             return builder;
         }
-
         /// <summary>
-        /// 使用适配功能（注册指定的自定义适配器类型数组）。
+        /// 尝试添加域例服务。
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <param name="types">给定的适配器类型数组。</param>
-        /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder UseAdaptation(this ILibrameBuilder builder, params Type[] types)
+        /// <param name="serviceType">给定的服务类型。</param>
+        /// <param name="implementationType">给定的实现类型。</param>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddScopedService(this ILibrameBuilder builder, Type serviceType, Type implementationType)
         {
-            builder.NotNull(nameof(builder));
-
-            if (types == null || types.Length < 1)
-                return builder;
-
-            var serviceType = typeof(Adaptation.IAdapter);
-
-            types.Invoke(t =>
+            if (!builder.ContainsService(serviceType))
             {
-                builder.Services.AddSingleton(serviceType, t);
-            });
-
-            return builder;
-        }
-
-
-        /// <summary>
-        /// 获取适配器集合。
-        /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <param name="types">用于快速注册的适配器类型数组（如果之前使用适配模块时已注册，则此参数将会被忽略）。</param>
-        /// <returns>返回集合。</returns>
-        public static IEnumerable<Adaptation.IAdapter> GetAdapters(this ILibrameBuilder builder, params Type[] types)
-        {
-            if (!builder.ContainsService<Adaptation.IAdapter>())
-                builder.UseAdaptation(types);
-
-            return builder.ServiceProvider.GetServices<Adaptation.IAdapter>();
-        }
-
-        #endregion
-
-
-        #region Algorithm
-
-        /// <summary>
-        /// 使用算法模块。
-        /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <param name="options">给定的算法选项。</param>
-        /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder UseAlgorithm(this ILibrameBuilder builder, Algorithm.AlgorithmOptions options = null)
-        {
-            builder.NotNull(nameof(builder));
-
-            if (options == null)
-                options = builder.Options.Algorithm;
-            
-            // 验证类型
-            var basePlainTextCodecType = typeof(Algorithm.TextCodecs.IPlainTextCodec);
-            var implPlainTextCodecType = Type.GetType(options.PlainTextCodecTypeName, throwOnError: true);
-            implPlainTextCodecType = basePlainTextCodecType.CanAssignableFromType(implPlainTextCodecType);
-
-            var baseCipherTextCodecType = typeof(Algorithm.TextCodecs.ICipherTextCodec);
-            var implCipherTextCodecType = Type.GetType(options.CipherTextCodecTypeName, throwOnError: true);
-            implCipherTextCodecType = baseCipherTextCodecType.CanAssignableFromType(implCipherTextCodecType);
-
-            // 对称算法
-            var baseSymmetryKeyGenerateType = typeof(Algorithm.Symmetries.ISymmetryKeyGenerator);
-            var implSymmetryKeyGenerateType = Type.GetType(options.SymmetryKeyGeneratorTypeName, throwOnError: true);
-            implSymmetryKeyGenerateType = baseSymmetryKeyGenerateType.CanAssignableFromType(implSymmetryKeyGenerateType);
-
-            var baseSymmetryAlgorithmType = typeof(Algorithm.Symmetries.ISymmetryAlgorithm);
-            var implSymmetryAlgorithmType = Type.GetType(options.SymmetryAlgorithmTypeName, throwOnError: true);
-            implSymmetryAlgorithmType = baseSymmetryAlgorithmType.CanAssignableFromType(implSymmetryAlgorithmType);
-
-            // 非对称算法
-            var baseRsaAsymmetryKeyGenerateType = typeof(Algorithm.Asymmetries.IRsaAsymmetryKeyGenerator);
-            var implRsaAsymmetryKeyGenerateType = Type.GetType(options.RsaAsymmetryKeyGeneratorTypeName, throwOnError: true);
-            implRsaAsymmetryKeyGenerateType = baseRsaAsymmetryKeyGenerateType.CanAssignableFromType(implRsaAsymmetryKeyGenerateType);
-
-            var baseRsaAsymmetryAlgorithmType = typeof(Algorithm.Asymmetries.IRsaAsymmetryAlgorithm);
-            var implRsaAsymmetryAlgorithmType = Type.GetType(options.RsaAsymmetryAlgorithmTypeName, throwOnError: true);
-            implRsaAsymmetryAlgorithmType = baseRsaAsymmetryAlgorithmType.CanAssignableFromType(implRsaAsymmetryAlgorithmType);
-
-            // 散列算法
-            var baseHashAlgorithmType = typeof(Algorithm.Hashes.IHashAlgorithm);
-            var implHashAlgorithmType = Type.GetType(options.HashAlgorithmTypeName, throwOnError: true);
-            baseHashAlgorithmType = baseHashAlgorithmType.CanAssignableFromType(baseHashAlgorithmType);
-            
-            // 注册类型
-            builder.Services.AddSingleton(basePlainTextCodecType, implPlainTextCodecType);
-            builder.Services.AddSingleton(baseCipherTextCodecType, implCipherTextCodecType);
-
-            builder.Services.AddSingleton(baseSymmetryKeyGenerateType, implSymmetryKeyGenerateType);
-            builder.Services.AddSingleton(baseSymmetryAlgorithmType, implSymmetryAlgorithmType);
-
-            builder.Services.AddSingleton(baseRsaAsymmetryKeyGenerateType, implRsaAsymmetryKeyGenerateType);
-            builder.Services.AddSingleton(baseRsaAsymmetryAlgorithmType, implRsaAsymmetryAlgorithmType);
-
-            builder.Services.AddSingleton(baseHashAlgorithmType, implHashAlgorithmType);
-            
-            return builder;
-        }
-
-
-        /// <summary>
-        /// 获取明文编解码器。
-        /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <returns>返回算法接口。</returns>
-        public static Algorithm.TextCodecs.IPlainTextCodec GetPlainTextCodec(this ILibrameBuilder builder)
-        {
-            if (!builder.ContainsService<Algorithm.TextCodecs.IPlainTextCodec>())
-                builder.UseAlgorithm();
-
-            return builder.ServiceProvider.GetService<Algorithm.TextCodecs.IPlainTextCodec>();
-        }
-
-        /// <summary>
-        /// 获取密文编解码器。
-        /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <returns>返回算法接口。</returns>
-        public static Algorithm.TextCodecs.ICipherTextCodec GetCipherTextCodec(this ILibrameBuilder builder)
-        {
-            if (!builder.ContainsService<Algorithm.TextCodecs.ICipherTextCodec>())
-                builder.UseAlgorithm();
-
-            return builder.ServiceProvider.GetService<Algorithm.TextCodecs.ICipherTextCodec>();
-        }
-
-
-        /// <summary>
-        /// 获取 RSA 非对称算法。
-        /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <returns>返回算法接口。</returns>
-        public static Algorithm.Asymmetries.IRsaAsymmetryAlgorithm GetRsaAsymmetryAlgorithm(this ILibrameBuilder builder)
-        {
-            if (!builder.ContainsService<Algorithm.Asymmetries.IRsaAsymmetryAlgorithm>())
-                builder.UseAlgorithm();
-
-            return builder.ServiceProvider.GetService<Algorithm.Asymmetries.IRsaAsymmetryAlgorithm>();
-        }
-
-
-        /// <summary>
-        /// 获取散列算法。
-        /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <returns>返回算法接口。</returns>
-        public static Algorithm.Hashes.IHashAlgorithm GetHashAlgorithm(this ILibrameBuilder builder)
-        {
-            if (!builder.ContainsService<Algorithm.Hashes.IHashAlgorithm>())
-                builder.UseAlgorithm();
-
-            return builder.ServiceProvider.GetService<Algorithm.Hashes.IHashAlgorithm>();
-        }
-
-
-        /// <summary>
-        /// 获取对称算法。
-        /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <returns>返回算法接口。</returns>
-        public static Algorithm.Symmetries.ISymmetryAlgorithm GetSymmetryAlgorithm(this ILibrameBuilder builder)
-        {
-            if (!builder.ContainsService<Algorithm.Symmetries.ISymmetryAlgorithm>())
-                builder.UseAlgorithm();
-
-            return builder.ServiceProvider.GetService<Algorithm.Symmetries.ISymmetryAlgorithm>();
-        }
-
-        #endregion
-
-
-        #region Entity
-
-        /// <summary>
-        /// 使用实体模块。
-        /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <param name="repositoryType">给定实现 <see cref="Entity.IRepository{TEntity}"/> 接口的仓库类型（可选）。</param>
-        /// <param name="connectionString">给定的数据库连接字符串（可选；如果没有在外部注册实体框架数据源，则此处为必填）。</param>
-        /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder UseEntity(this ILibrameBuilder builder, Type repositoryType = null,
-            string connectionString = null)
-        {
-            builder.NotNull(nameof(builder));
-
-            // 如果没有在外部注册实体框架数据源
-            if (!builder.ContainsService<IDatabaseProvider>())
-            {
-                builder.Services.AddEntityFrameworkSqlServer().AddDbContext<Entity.Providers.DbContextProvider>(options =>
-                {
-                    options.UseSqlServer(connectionString.NotEmpty(nameof(connectionString)), sql =>
-                    {
-                        sql.UseRowNumberForPaging();
-                        sql.MaxBatchSize(50);
-                    });
-                });
+                serviceType.CanAssignableFromType(implementationType);
+                builder.Services.AddScoped(serviceType, implementationType);
             }
 
-            if (repositoryType == null)
-                repositoryType = Type.GetType(builder.Options.Entity.RepositoryTypeName, throwOnError: true);
+            return builder;
+        }
 
-            // 验证类型
-            var baseType = typeof(Entity.IRepository<>);
-            repositoryType = baseType.CanAssignableFromType(repositoryType);
 
-            // 注册类型
-            builder.Services.AddTransient(baseType, repositoryType);
+        /// <summary>
+        /// 尝试添加单例服务。
+        /// </summary>
+        /// <typeparam name="TService">给定的服务类型。</typeparam>
+        /// <typeparam name="TImplementation">给定的实现类型。</typeparam>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddSingletonService<TService, TImplementation>(this ILibrameBuilder builder)
+            where TService : class
+            where TImplementation : class, TService
+        {
+            var serviceType = typeof(TService);
+
+            if (!builder.ContainsService(serviceType))
+                builder.Services.AddSingleton(serviceType, typeof(TImplementation));
+
+            return builder;
+        }
+        /// <summary>
+        /// 尝试添加单例服务。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <param name="serviceType">给定的服务类型。</param>
+        /// <param name="implementationType">给定的实现类型。</param>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddSingletonService(this ILibrameBuilder builder, Type serviceType, Type implementationType)
+        {
+            if (!builder.ContainsService(serviceType))
+            {
+                serviceType.CanAssignableFromType(implementationType);
+                builder.Services.AddSingleton(serviceType, implementationType);
+            }
 
             return builder;
         }
 
 
         /// <summary>
-        /// 获取实体仓库。
+        /// 尝试添加瞬例服务。
         /// </summary>
-        /// <typeparam name="TEntity">指定的实体类型。</typeparam>
+        /// <typeparam name="TService">给定的服务类型。</typeparam>
+        /// <typeparam name="TImplementation">给定的实现类型。</typeparam>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <param name="repositoryType">给定实现 <see cref="Entity.IRepository{TEntity}"/> 接口的仓库类型（如果之前使用实体模块时已注册，则此参数将会被忽略）。</param>
-        /// <param name="connectionString">给定的数据库连接字符串（如果之前使用实体模块时已注册，则此参数将会被忽略）。</param>
-        /// <returns>返回仓库实例。</returns>
-        public static Entity.IRepository<TEntity> GetRepository<TEntity>(this ILibrameBuilder builder,
-            Type repositoryType = null, string connectionString = null)
-            where TEntity : class
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddTransientService<TService, TImplementation>(this ILibrameBuilder builder)
+            where TService : class
+            where TImplementation : class, TService
         {
-            if (!builder.ContainsService(typeof(Entity.IRepository<>)))
-                builder.UseEntity(repositoryType, connectionString);
+            var serviceType = typeof(TService);
 
-            return builder.ServiceProvider.GetService<Entity.IRepository<TEntity>>();
+            if (!builder.ContainsService(serviceType))
+                builder.Services.AddTransient(serviceType, typeof(TImplementation));
+
+            return builder;
         }
+        /// <summary>
+        /// 尝试添加瞬例服务。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <param name="serviceType">给定的服务类型。</param>
+        /// <param name="implementationType">给定的实现类型。</param>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddTransientService(this ILibrameBuilder builder, Type serviceType, Type implementationType)
+        {
+            if (!builder.ContainsService(serviceType))
+            {
+                serviceType.CanAssignableFromType(implementationType);
+                builder.Services.AddTransient(serviceType, implementationType);
+            }
 
-        #endregion
+            return builder;
+        }
 
     }
 }

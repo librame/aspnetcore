@@ -12,8 +12,12 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Text;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Librame.Algorithm.Asymmetries
 {
@@ -45,9 +49,6 @@ namespace Librame.Algorithm.Asymmetries
             _defaultPrivateKeyString = Options.Algorithm.RsaPrivateKeyString.NotEmpty(nameof(AlgorithmOptions.RsaPrivateKeyString));
 
             Symmetry = symmetry.NotNull(nameof(symmetry));
-
-            // 初始化 RSA 实例
-            RegenerateRsa();
         }
 
         
@@ -56,28 +57,46 @@ namespace Librame.Algorithm.Asymmetries
         /// </summary>
         public ISymmetryAlgorithm Symmetry { get; }
 
-        /// <summary>
-        /// 默认 RSA 实例。
-        /// </summary>
-        protected RSA DefaultRsa = null;
-
 
         /// <summary>
-        /// 重新生成 RSA 实例。
+        /// 生成公私钥参数。
         /// </summary>
-        public virtual void RegenerateRsa()
+        /// <returns>返回参数。</returns>
+        public virtual RSAParameters GenerateParameters()
         {
-            DefaultRsa = RSA.Create();
+            return RSA.Create().ExportParameters(true);
+        }
+
+
+        /// <summary>
+        /// 将公私钥参数转换为字符串类型的键值对。
+        /// </summary>
+        /// <param name="parameters">给定的公私钥参数。</param>
+        /// <returns>返回键值对字符串。</returns>
+        public virtual KeyValuePair<string, string> ToParametersPairString(RSAParameters parameters)
+        {
+            var key = ToPublicKeyString(parameters);
+            var value = ToPrivateKeyString(parameters);
+
+            return new KeyValuePair<string, string>(key, value);
         }
 
         /// <summary>
         /// 转换为公钥字符串。
         /// </summary>
+        /// <param name="parameters">给定的公钥或私钥参数。</param>
         /// <returns>返回公钥字符串。</returns>
-        public virtual string ToPublicKeyString()
+        protected virtual string ToPublicKeyString(RSAParameters parameters)
         {
-            var parameters = DefaultRsa.ExportParameters(false);
-            var str = RsaParametersDescriptor.ToString(parameters, CipherText.GetString);
+            if (parameters.Exponent == null || parameters.Modulus == null)
+                throw new ArgumentException("Invalid public or private key parameters.");
+            
+            var str = RsaParametersDescriptor.ToString(new RSAParameters()
+            {
+                Exponent = parameters.Exponent,
+                Modulus = parameters.Modulus
+            },
+            Cipher.GetString);
 
             return Symmetry.ToAes(str);
         }
@@ -85,11 +104,20 @@ namespace Librame.Algorithm.Asymmetries
         /// <summary>
         /// 转换为私钥字符串。
         /// </summary>
+        /// <param name="parameters">给定的私钥参数。</param>
         /// <returns>返回私钥字符串。</returns>
-        public virtual string ToPrivateKeyString()
+        protected virtual string ToPrivateKeyString(RSAParameters parameters)
         {
-            var parameters = DefaultRsa.ExportParameters(true);
-            var str = RsaParametersDescriptor.ToString(parameters, CipherText.GetString);
+            var pis = typeof(RSAParameters).GetTypeInfo().GetProperties();
+            var values = pis.Select(pi => pi.GetValue(parameters));
+
+            foreach (var v in values)
+            {
+                if (v == null)
+                    throw new ArgumentException("Invalid private key parameters.");
+            }
+            
+            var str = RsaParametersDescriptor.ToString(parameters, Cipher.GetString);
 
             return Symmetry.ToAes(str);
         }
@@ -106,7 +134,7 @@ namespace Librame.Algorithm.Asymmetries
             var str = publicKeyString.AsOrDefault(_defaultPublicKeyString);
             str = Symmetry.FromAes(str);
 
-            return RsaParametersDescriptor.FromString(str, CipherText.GetBytes);
+            return RsaParametersDescriptor.FromString(str, Cipher.GetBytes);
         }
 
         /// <summary>
@@ -120,7 +148,7 @@ namespace Librame.Algorithm.Asymmetries
             var str = privateKeyString.AsOrDefault(_defaultPrivateKeyString);
             str = Symmetry.FromAes(str);
 
-            return RsaParametersDescriptor.FromString(str, CipherText.GetBytes);
+            return RsaParametersDescriptor.FromString(str, Cipher.GetBytes);
         }
 
     }

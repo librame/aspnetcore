@@ -11,6 +11,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -46,6 +47,11 @@ namespace Librame.Utility
         /// 分号字符串。
         /// </summary>
         public const string SEMICOLON = ";";
+
+        /// <summary>
+        /// 冒号字符串。
+        /// </summary>
+        public const string COLON = ":";
 
         /// <summary>
         /// 等号字符串。
@@ -328,6 +334,151 @@ namespace Librame.Utility
         }
 
         #endregion
+        
+
+        #region Naming Conventions
+
+        /// <summary>
+        /// 包含一到多个单词，每一个单词第一个字母大写，其余字母均小写。例如：HelloWorld 等。
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// words 为空或空字符串。
+        /// </exception>
+        /// <param name="words">给定的英文单词（多个单词以空格区分）。</param>
+        /// <returns>返回字符串。</returns>
+        public static string AsPascalCasing(this string[] words)
+        {
+            words.NotNull(nameof(words));
+
+            string str = string.Empty;
+
+            foreach (var w in words)
+            {
+                // 首字母大写，其余字母均小写
+                str += char.ToUpper(w[0]) + w.Substring(1).ToLower();
+            }
+
+            return str;
+        }
+
+
+        /// <summary>
+        /// 包含一到多个单词，第一个单词小写，其余单词中每一个单词第一个字母大写，其余字母均小写。例如：helloWorld 等。
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// words 为空或空字符串。
+        /// </exception>
+        /// <param name="words">给定的英文单词（多个单词以空格区分）。</param>
+        /// <returns>返回字符串。</returns>
+        public static string AsCamelCasing(this string[] words)
+        {
+            words.NotNull(nameof(words));
+
+            // 首单词小写
+            string str = words[0].ToLower();
+
+            if (words.Length > 1)
+            {
+                for (var i = 1; i < words.Length; i++)
+                {
+                    var w = words[i];
+
+                    // 首字母大写，其余字母均小写
+                    str += char.ToUpper(w[0]) + w.Substring(1).ToLower();
+                }
+            }
+
+            return str;
+        }
+
+        #endregion
+
+
+        #region Singular & Plural
+
+        /// <summary>
+        /// 复数单词单数化。
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// plural 为空或空字符串。
+        /// </exception>
+        /// <param name="plural">给定的复数化英文单词。</param>
+        /// <returns>返回字符串。</returns>
+        public static string AsSingularize(this string plural)
+        {
+            plural.NotEmpty(nameof(plural));
+
+            Regex plural1 = new Regex("(?<keep>[^aeiou])ies$");
+            Regex plural2 = new Regex("(?<keep>[aeiou]y)s$");
+            Regex plural3 = new Regex("(?<keep>[sxzh])es$");
+            Regex plural4 = new Regex("(?<keep>[^sxzhyu])s$");
+
+            if (plural1.IsMatch(plural))
+                return plural1.Replace(plural, "${keep}y");
+            else if (plural2.IsMatch(plural))
+                return plural2.Replace(plural, "${keep}");
+            else if (plural3.IsMatch(plural))
+                return plural3.Replace(plural, "${keep}");
+            else if (plural4.IsMatch(plural))
+                return plural4.Replace(plural, "${keep}");
+
+            return plural;
+        }
+
+
+        /// <summary>
+        /// 单数单词复数化。
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// singular 为空或空字符串。
+        /// </exception>
+        /// <param name="singular">给定的单数化英文单词。</param>
+        /// <returns>返回字符串。</returns>
+        public static string AsPluralize(this string singular)
+        {
+            singular.NotEmpty(nameof(singular));
+
+            Regex plural1 = new Regex("(?<keep>[^aeiou])y$");
+            Regex plural2 = new Regex("(?<keep>[aeiou]y)$");
+            Regex plural3 = new Regex("(?<keep>[sxzh])$");
+            Regex plural4 = new Regex("(?<keep>[^sxzhy])$");
+
+            if (plural1.IsMatch(singular))
+                return plural1.Replace(singular, "${keep}ies");
+            else if (plural2.IsMatch(singular))
+                return plural2.Replace(singular, "${keep}s");
+            else if (plural3.IsMatch(singular))
+                return plural3.Replace(singular, "${keep}es");
+            else if (plural4.IsMatch(singular))
+                return plural4.Replace(singular, "${keep}s");
+
+            return singular;
+        }
+
+        #endregion
+
+
+        #region Split
+
+        /// <summary>
+        /// 分拆键值对字符串。
+        /// </summary>
+        /// <param name="pair">给定的键值对字符串。</param>
+        /// <param name="separator">给定字符串包含的分隔符。</param>
+        /// <returns>返回键值对。</returns>
+        public static KeyValuePair<string, string> SplitPair(this string pair, string separator = EQUALITY)
+        {
+            pair.NotEmpty(nameof(pair));
+            separator.NotEmpty(nameof(separator));
+
+            var separatorIndex = pair.IndexOf(separator);
+            var name = pair.Substring(0, separatorIndex);
+            var value = pair.Substring(separatorIndex + separator.Length);
+
+            return new KeyValuePair<string, string>(name, value);
+        }
+
+        #endregion
 
 
         #region Trim
@@ -417,128 +568,6 @@ namespace Librame.Utility
                 if (loops)
                 {
                     str = TrimEnd(str, trim);
-                }
-            }
-
-            return str;
-        }
-
-        #endregion
-
-
-        #region Singular & Plural
-
-        /// <summary>
-        /// 复数单词单数化。
-        /// </summary>
-        /// <exception cref="ArgumentNullException">
-        /// plural 为空或空字符串。
-        /// </exception>
-        /// <param name="plural">给定的复数化英文单词。</param>
-        /// <returns>返回字符串。</returns>
-        public static string AsSingularize(this string plural)
-        {
-            plural.NotEmpty(nameof(plural));
-
-            Regex plural1 = new Regex("(?<keep>[^aeiou])ies$");
-            Regex plural2 = new Regex("(?<keep>[aeiou]y)s$");
-            Regex plural3 = new Regex("(?<keep>[sxzh])es$");
-            Regex plural4 = new Regex("(?<keep>[^sxzhyu])s$");
-
-            if (plural1.IsMatch(plural))
-                return plural1.Replace(plural, "${keep}y");
-            else if (plural2.IsMatch(plural))
-                return plural2.Replace(plural, "${keep}");
-            else if (plural3.IsMatch(plural))
-                return plural3.Replace(plural, "${keep}");
-            else if (plural4.IsMatch(plural))
-                return plural4.Replace(plural, "${keep}");
-
-            return plural;
-        }
-
-
-        /// <summary>
-        /// 单数单词复数化。
-        /// </summary>
-        /// <exception cref="ArgumentNullException">
-        /// singular 为空或空字符串。
-        /// </exception>
-        /// <param name="singular">给定的单数化英文单词。</param>
-        /// <returns>返回字符串。</returns>
-        public static string AsPluralize(this string singular)
-        {
-            singular.NotEmpty(nameof(singular));
-
-            Regex plural1 = new Regex("(?<keep>[^aeiou])y$");
-            Regex plural2 = new Regex("(?<keep>[aeiou]y)$");
-            Regex plural3 = new Regex("(?<keep>[sxzh])$");
-            Regex plural4 = new Regex("(?<keep>[^sxzhy])$");
-
-            if (plural1.IsMatch(singular))
-                return plural1.Replace(singular, "${keep}ies");
-            else if (plural2.IsMatch(singular))
-                return plural2.Replace(singular, "${keep}s");
-            else if (plural3.IsMatch(singular))
-                return plural3.Replace(singular, "${keep}es");
-            else if (plural4.IsMatch(singular))
-                return plural4.Replace(singular, "${keep}s");
-
-            return singular;
-        }
-
-        #endregion
-
-
-        #region Naming Conventions
-
-        /// <summary>
-        /// 包含一到多个单词，每一个单词第一个字母大写，其余字母均小写。例如：HelloWorld 等。
-        /// </summary>
-        /// <exception cref="ArgumentNullException">
-        /// words 为空或空字符串。
-        /// </exception>
-        /// <param name="words">给定的英文单词（多个单词以空格区分）。</param>
-        /// <returns>返回字符串。</returns>
-        public static string AsPascalCasing(this string[] words)
-        {
-            words.NotNull(nameof(words));
-
-            string str = string.Empty;
-
-            foreach (var w in words)
-            {
-                // 首字母大写，其余字母均小写
-                str += char.ToUpper(w[0]) + w.Substring(1).ToLower();
-            }
-
-            return str;
-        }
-
-
-        /// <summary>
-        /// 包含一到多个单词，第一个单词小写，其余单词中每一个单词第一个字母大写，其余字母均小写。例如：helloWorld 等。
-        /// </summary>
-        /// <exception cref="ArgumentNullException">
-        /// words 为空或空字符串。
-        /// </exception>
-        /// <param name="words">给定的英文单词（多个单词以空格区分）。</param>
-        /// <returns>返回字符串。</returns>
-        public static string AsCamelCasing(this string[] words)
-        {
-            words.NotNull(nameof(words));
-
-            // 首单词小写
-            string str = words[0].ToLower();
-
-            if (words.Length > 1)
-            {
-                for (var i = 1; i < words.Length; i++)
-                {
-                    var w = words[i];
-
-                    // 首字母大写，其余字母均小写
-                    str += char.ToUpper(w[0]) + w.Substring(1).ToLower();
                 }
             }
 

@@ -1,12 +1,12 @@
 ﻿using Librame.Adaptation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Linq;
+using System.Reflection;
 using Xunit;
 
 namespace Librame.Tests.Adaptation
 {
-    public class AdapterTests
+    public class AdaptationTests
     {
         [Fact]
         public void UseAdaptationTest()
@@ -15,13 +15,14 @@ namespace Librame.Tests.Adaptation
 
             // 注册 Librame （默认使用内存配置源）
             var builder = services.AddLibrameByMemory()
-                .UseAdaptation(typeof(TestAdapter)); // 使用适配模块
+                .TryAddAdaptation(typeof(TestAdapter).GetTypeInfo().Assembly);
             
-            var adapter = builder.GetAdapters().FirstOrDefault();
-            Assert.NotNull(adapter);
+            var adapters = builder.GetAllAdapters();
+            Assert.NotNull(adapters);
 
             var name = "Librame";
-            var message = (adapter as TestAdapter).GetMessage(name);
+            var testAdapter = builder.GetAdapter<ITestAdapter>();
+            var message = testAdapter.GetMessage(name);
 
             Assert.Equal(name, message);
         }
@@ -29,7 +30,12 @@ namespace Librame.Tests.Adaptation
     }
 
 
-    public class TestAdapter : AbstractAdapter, IAdapter
+    public interface ITestAdapter : IAdapter
+    {
+        string GetMessage(string name);
+    }
+
+    public class TestAdapter : AbstractAdapter, ITestAdapter
     {
         public TestAdapter(IOptions<LibrameOptions> options)
             : base("Test", options)

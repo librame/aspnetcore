@@ -78,6 +78,15 @@ namespace Librame.Algorithm.Asymmetries
         /// <param name="publicKeyString">给定的公钥字符串（可选）。</param>
         /// <returns>返回加密字符串。</returns>
         string ToRsa(string str, RSAEncryptionPadding padding = null, string publicKeyString = null);
+        /// <summary>
+        /// 转换为 RSA。
+        /// </summary>
+        /// <param name="str">给定待加密的字符串。</param>
+        /// <param name="parameters">给定的公钥参数。</param>
+        /// <param name="padding">给定的最优非对称加密填充方式（可选；默认为 Pkcs1，支持 OpenSSL）。</param>
+        /// <returns>返回加密字符串。</returns>
+        string ToRsa(string str, RSAParameters parameters, RSAEncryptionPadding padding = null);
+
 
         /// <summary>
         /// 还原 RSA。
@@ -87,5 +96,13 @@ namespace Librame.Algorithm.Asymmetries
         /// <param name="privateKeyString">给定的私钥字符串（可选）。</param>
         /// <returns>返回原始字符串。</returns>
         string FromRsa(string encrypt, RSAEncryptionPadding padding = null, string privateKeyString = null);
+        /// <summary>
+        /// 还原 RSA。
+        /// </summary>
+        /// <param name="encrypt">给定的加密字符串。</param>
+        /// <param name="parameters">给定的公钥参数。</param>
+        /// <param name="padding">给定的最优非对称加密填充方式（可选；默认为 Pkcs1，支持 OpenSSL）。</param>
+        /// <returns>返回原始字符串。</returns>
+        string FromRsa(string encrypt, RSAParameters parameters, RSAEncryptionPadding padding = null);
     }
 }

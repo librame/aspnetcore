@@ -184,7 +184,7 @@ namespace Librame.Utility
                             value = o.AsPairsString(SearchMode.Default);
                     }
 
-                    sb.AppendFormat("{0}={1}", p.Name, value);
+                    sb.AppendFormat("{0}{1}{2}", p.Name, StringUtil.EQUALITY, value);
 
                     if (p.Name != last.Name)
                         sb.Append(",");
@@ -237,19 +237,20 @@ namespace Librame.Utility
                     if (string.IsNullOrEmpty(pair))
                         continue;
 
-                    var part = pair.Split('=');
-                    if (part.Length < 1 || part.Length > 2)
-                        continue; // 不标准的键值对
+                    // 不使用 Split('=') 方法，会影响算法字符串的键值对
+                    var kv = pair.SplitPair();
+                    if (string.IsNullOrEmpty(kv.Key) || string.IsNullOrEmpty(kv.Value))
+                        continue; // 不标准的键值对或空字符串值
 
-                    var name = part[0];
-                    var value = part[1];
-                    if (string.IsNullOrEmpty(value))
-                        continue; // 空字符串值
+                    // 检索属性
+                    var pi = properties.First(p => p.Name == kv.Key);
+                    if (pi == null)
+                        continue;
 
-                    var pi = properties.First(p => p.Name == name);
-                    var o = value.AsOrDefault(pi.PropertyType);// 转换值
-                    if (o != null)
-                        pi.SetValue(obj, o); // 更新值
+                    // 还原值
+                    var rawValue = kv.Value.AsOrDefault(pi.PropertyType);
+                    if (rawValue != null)
+                        pi.SetValue(obj, rawValue);
                 }
             }
 
@@ -386,22 +387,21 @@ namespace Librame.Utility
         #endregion
 
 
-        #region Enumerable AssignableTypes
+        #region EnumerableTypes
 
         /// <summary>
         /// 枚举指定程序集中派生于基础类型的所有类型集合。
         /// </summary>
         /// <typeparam name="TBase">指定的基础类型。</typeparam>
-        /// <param name="assembly">给定的程序集。</param>
+        /// <param name="assembly">给定的程序集（可选；默认查找基础类型所在的程序集）。</param>
         /// <param name="withInstantiable">仅支持可实例化类型（可选）。</param>
         /// <param name="withoutBaseType">排除基础类型自身（可选）。</param>
         /// <returns>返回类型数组。</returns>
-        public static Type[] EnumerableAssignableTypes<TBase>(Assembly assembly = null,
+        public static Type[] EnumerableTypesByAssignableFrom<TBase>(Assembly assembly = null,
             bool withInstantiable = true, bool withoutBaseType = true)
         {
-            return typeof(TBase).EnumerableAssignableTypes(assembly, withInstantiable, withoutBaseType);
+            return typeof(TBase).EnumerableTypesByAssignableFrom(assembly, withInstantiable, withoutBaseType);
         }
-
         /// <summary>
         /// 枚举指定程序集中派生于基础类型的所有类型集合。
         /// </summary>
@@ -410,8 +410,56 @@ namespace Librame.Utility
         /// <param name="withInstantiable">仅支持可实例化类型（可选）。</param>
         /// <param name="withoutBaseType">排除基础类型自身（可选）。</param>
         /// <returns>返回类型数组。</returns>
-        public static Type[] EnumerableAssignableTypes(this Type baseType, Assembly assembly = null,
+        public static Type[] EnumerableTypesByAssignableFrom(this Type baseType, Assembly assembly = null,
             bool withInstantiable = true, bool withoutBaseType = true)
+        {
+            var types = EnumerableTypes(baseType, t => baseType.IsAssignableFrom(t),
+                assembly, withoutBaseType);
+
+            // 仅包含可实例化类（排除抽象类）
+            if (withInstantiable)
+                types = types.Where(t => !t.GetTypeInfo().IsAbstract);
+
+            return types.ToArray();
+        }
+
+
+        /// <summary>
+        /// 枚举指定程序集中派生于基础类型的所有类型集合。
+        /// </summary>
+        /// <remarks>
+        /// 此方法不能用于确定接口是否派生自另一个接口，或是否类实现的接口。仅支持确定类的继承关系。
+        /// </remarks>
+        /// <typeparam name="TBase">指定的基础类型。</typeparam>
+        /// <param name="assembly">给定的程序集（可选；默认查找基础类型所在的程序集）。</param>
+        /// <param name="withoutBaseType">排除基础类型自身（可选）。</param>
+        /// <returns>返回类型数组。</returns>
+        public static Type[] EnumerableTypesBySubclassOf<TBase>(Assembly assembly = null,
+            bool withoutBaseType = true)
+        {
+            return typeof(TBase).EnumerableTypesBySubclassOf(assembly, withoutBaseType);
+        }
+        /// <summary>
+        /// 枚举指定程序集中继承于基类型的所有类型集合。
+        /// </summary>
+        /// <remarks>
+        /// 此方法不能用于确定接口是否派生自另一个接口，或是否类实现的接口。仅支持确定类的继承关系。
+        /// </remarks>
+        /// <param name="baseType">给定的基础类型。</param>
+        /// <param name="assembly">给定的程序集（可选；默认查找基础类型所在的程序集）。</param>
+        /// <param name="withoutBaseType">排除基础类型自身（可选）。</param>
+        /// <returns>返回类型数组。</returns>
+        public static Type[] EnumerableTypesBySubclassOf(this Type baseType, Assembly assembly = null,
+            bool withoutBaseType = true)
+        {
+            var types = EnumerableTypes(baseType, t => t.GetTypeInfo().IsSubclassOf(baseType),
+                assembly, withoutBaseType);
+
+            return types.ToArray();
+        }
+
+        private static IEnumerable<Type> EnumerableTypes(Type baseType, Func<Type, bool> predicate,
+            Assembly assembly = null, bool withoutBaseType = true)
         {
             baseType.NotNull(nameof(baseType));
 
@@ -421,23 +469,14 @@ namespace Librame.Utility
                 if (assembly == null)
                     assembly = baseType.GetTypeInfo().Assembly;
 
-                // 获取定义的公共类型
-                var allTypes = assembly.GetExportedTypes();
-                if (allTypes == null || allTypes.Length < 1)
-                    return allTypes;
-
-                // 加载所有派生类型集合
-                var types = allTypes.Where(t => baseType.IsAssignableFrom(t));
-
-                // 仅包含可实例化类（排除抽象类）
-                if (withInstantiable)
-                    types = types.Where(t => !t.GetTypeInfo().IsAbstract);
+                // 筛选定义的公共类型
+                var types = assembly.ExportedTypes.Where(predicate);
 
                 // 移除自身基类
                 if (withoutBaseType)
                     types = types.Where(t => t.FullName != baseType.FullName);
 
-                return types.ToArray();
+                return types;
             }
             catch (Exception ex)
             {
@@ -447,7 +486,7 @@ namespace Librame.Utility
 
         #endregion
 
-        
+
         #region Instantiation
 
         /// <summary>

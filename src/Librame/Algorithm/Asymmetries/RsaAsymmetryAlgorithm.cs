@@ -59,11 +59,11 @@ namespace Librame.Algorithm.Asymmetries
         public virtual string Sign(string str, HashAlgorithmName hashName, RSASignaturePadding padding = null,
             string privateKeyString = null)
         {
-            var buffer = PlainText.GetBytes(str);
+            var buffer = Plain.GetBytes(str);
 
             buffer = Sign(buffer, hashName, padding, privateKeyString);
 
-            return CipherText.GetString(buffer);
+            return Cipher.GetString(buffer);
         }
         /// <summary>
         /// 对指定字节数组进行签名。
@@ -76,12 +76,12 @@ namespace Librame.Algorithm.Asymmetries
         public virtual byte[] Sign(byte[] bytes, HashAlgorithmName hashName, RSASignaturePadding padding = null,
             string privateKeyString = null)
         {
-            var aa = RSA.Create();
+            var asym = RSA.Create();
 
-            aa.ImportParameters(KeyGenerator.FromPrivateKeyString(privateKeyString,
+            asym.ImportParameters(KeyGenerator.FromPrivateKeyString(privateKeyString,
                     Options.Encoding.AsEncoding()));
 
-            return aa.SignData(bytes, hashName, padding);
+            return asym.SignData(bytes, hashName, padding);
         }
 
         /// <summary>
@@ -96,8 +96,8 @@ namespace Librame.Algorithm.Asymmetries
         public virtual bool Verify(string str, string signedString, HashAlgorithmName hashName,
             RSASignaturePadding padding = null, string publicKeyString = null)
         {
-            var buffer = PlainText.GetBytes(str);
-            var signedBuffer = CipherText.GetBytes(signedString);
+            var buffer = Plain.GetBytes(str);
+            var signedBuffer = Cipher.GetBytes(signedString);
 
             return Verify(buffer, signedBuffer, hashName, padding, publicKeyString);
         }
@@ -113,12 +113,12 @@ namespace Librame.Algorithm.Asymmetries
         public virtual bool Verify(byte[] bytes, byte[] signedBytes, HashAlgorithmName hashName,
             RSASignaturePadding padding = null, string publicKeyString = null)
         {
-            var aa = RSA.Create();
+            var asym = RSA.Create();
 
-            aa.ImportParameters(KeyGenerator.FromPublicKeyString(publicKeyString,
+            asym.ImportParameters(KeyGenerator.FromPublicKeyString(publicKeyString,
                     Options.Encoding.AsEncoding()));
 
-            return aa.VerifyData(bytes, signedBytes, hashName, padding);
+            return asym.VerifyData(bytes, signedBytes, hashName, padding);
         }
 
 
@@ -131,26 +131,39 @@ namespace Librame.Algorithm.Asymmetries
         /// <returns>返回加密字符串。</returns>
         public virtual string ToRsa(string str, RSAEncryptionPadding padding = null, string publicKeyString = null)
         {
+            var parameters = KeyGenerator.FromPublicKeyString(publicKeyString,
+                    Options.Encoding.AsEncoding());
+
+            return ToRsa(str, parameters, padding);
+        }
+        /// <summary>
+        /// 转换为 RSA。
+        /// </summary>
+        /// <param name="str">给定待加密的字符串。</param>
+        /// <param name="parameters">给定的公钥参数。</param>
+        /// <param name="padding">给定的最优非对称加密填充方式（可选；默认为 Pkcs1，支持 OpenSSL）。</param>
+        /// <returns>返回加密字符串。</returns>
+        public virtual string ToRsa(string str, RSAParameters parameters, RSAEncryptionPadding padding = null)
+        {
+            var buffer = Plain.GetBytes(str);
+
             try
             {
-                var buffer = PlainText.GetBytes(str);
+                var asym = RSA.Create();
+                asym.ImportParameters(parameters);
 
-                var aa = RSA.Create();
-                
-                aa.ImportParameters(KeyGenerator.FromPublicKeyString(publicKeyString,
-                    Options.Encoding.AsEncoding()));
-
-                aa.Encrypt(buffer, padding.AsOrDefault(RSAEncryptionPadding.Pkcs1));
-                
-                return CipherText.GetString(buffer);
+                buffer = asym.Encrypt(buffer, padding.AsOrDefault(RSAEncryptionPadding.Pkcs1));
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.AsInnerMessage());
+                Logger.LogError(ex.AsInnerMessage());
 
-                return str;
+                throw ex;
             }
+
+            return Cipher.GetString(buffer);
         }
+
 
         /// <summary>
         /// 还原 RSA。
@@ -161,25 +174,37 @@ namespace Librame.Algorithm.Asymmetries
         /// <returns>返回原始字符串。</returns>
         public virtual string FromRsa(string encrypt, RSAEncryptionPadding padding = null, string privateKeyString = null)
         {
+            var parameters = KeyGenerator.FromPrivateKeyString(privateKeyString,
+                Options.Encoding.AsEncoding());
+
+            return FromRsa(encrypt, parameters, padding);
+        }
+        /// <summary>
+        /// 还原 RSA。
+        /// </summary>
+        /// <param name="encrypt">给定的加密字符串。</param>
+        /// <param name="parameters">给定的公钥参数。</param>
+        /// <param name="padding">给定的最优非对称加密填充方式（可选；默认为 Pkcs1，支持 OpenSSL）。</param>
+        /// <returns>返回原始字符串。</returns>
+        public virtual string FromRsa(string encrypt, RSAParameters parameters, RSAEncryptionPadding padding = null)
+        {
+            var buffer = Cipher.GetBytes(encrypt);
+
             try
             {
-                var buffer = CipherText.GetBytes(encrypt);
-                
-                var aa = RSA.Create();
+                var asym = RSA.Create();
+                asym.ImportParameters(parameters);
 
-                aa.ImportParameters(KeyGenerator.FromPrivateKeyString(privateKeyString,
-                    Options.Encoding.AsEncoding()));
-
-                aa.Decrypt(buffer, padding.AsOrDefault(RSAEncryptionPadding.Pkcs1));
-
-                return PlainText.GetString(buffer);
+                buffer = asym.Decrypt(buffer, padding.AsOrDefault(RSAEncryptionPadding.Pkcs1));
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.AsInnerMessage());
+                Logger.LogError(ex.AsInnerMessage());
 
-                return encrypt;
+                throw ex;
             }
+
+            return Plain.GetString(buffer);
         }
 
     }

@@ -10,6 +10,7 @@
 
 #endregion
 
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -29,21 +30,18 @@ namespace Librame.Algorithm.Asymmetries
 
 
         /// <summary>
-        /// 重新生成 RSA 实例。
+        /// 生成公私钥参数。
         /// </summary>
-        void RegenerateRsa();
+        /// <returns>返回参数。</returns>
+        RSAParameters GenerateParameters();
+
 
         /// <summary>
-        /// 转换为公钥字符串。
+        /// 将公私钥参数转换为字符串类型的键值对。
         /// </summary>
-        /// <returns>返回公钥字符串。</returns>
-        string ToPublicKeyString();
-
-        /// <summary>
-        /// 转换为生成私钥字符串。
-        /// </summary>
-        /// <returns>返回私钥字符串。</returns>
-        string ToPrivateKeyString();
+        /// <param name="parameters">给定的公私钥参数。</param>
+        /// <returns>返回键值对字符串。</returns>
+        KeyValuePair<string, string> ToParametersPairString(RSAParameters parameters);
 
 
         /// <summary>
