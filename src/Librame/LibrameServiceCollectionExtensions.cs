@@ -16,6 +16,7 @@ using Librame.Entity;
 using Librame.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -181,6 +182,10 @@ namespace Microsoft.Extensions.DependencyInjection
             // 如果还未注册记录器
             if (!builder.ContainsService<ILogger<ILibrameBuilder>>())
                 builder.Services.AddLogging();
+
+            // 如果还未注册定位器
+            if (!builder.ContainsService<IStringLocalizer<ILibrameBuilder>>())
+                builder.Services.AddLocalization(options => options.ResourcesPath = nameof(Librame.Resources));
 
             // 添加适配器模块（默认添加当前程序集的所有适配器模块）
             builder.TryAddAdaptation(AssemblyUtil.CurrentAssembly);

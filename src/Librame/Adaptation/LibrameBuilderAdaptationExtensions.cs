@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ using System.Reflection;
 
 namespace Librame
 {
+    using Adaptation;
     using Utility;
 
     /// <summary>
@@ -41,11 +43,14 @@ namespace Librame
 
             assemblies.Invoke(a =>
             {
+                // 记录本地化调试日志
+                builder.LogLocalizerDebug(str => str.AsLocalizerAddingAdapterByAssembly(a.FullName));
+
                 // 获取所有适配器实现类型集合
-                var implementationTypes = TypeUtil.EnumerableTypesByAssignableFrom<Adaptation.IAdapter>(a);
+                var implementationTypes = TypeUtil.EnumerableTypesByAssignableFrom<IAdapter>(a);
                 if (implementationTypes.Length > 0)
                 {
-                    var baseAdapter = typeof(Adaptation.IAdapter);
+                    var baseAdapter = typeof(IAdapter);
 
                     implementationTypes.Invoke(t =>
                     {
@@ -109,7 +114,10 @@ namespace Librame
         public static ILibrameBuilder TryAddAdapter(this ILibrameBuilder builder, Type interfaceType, Type implementationType)
         {
             // 限定两者必须实现适配器接口
-            typeof(Adaptation.IAdapter).CanAssignableFromType(implementationType);
+            typeof(IAdapter).CanAssignableFromType(implementationType);
+
+            // 记录本地化调试日志
+            builder.LogLocalizerDebug(str => str.AsLocalizerAddingAdapter(interfaceType.Name, implementationType.Name));
 
             return builder.TryAddSingletonService(interfaceType, implementationType);
         }
@@ -124,9 +132,9 @@ namespace Librame
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
         /// <returns>返回集合。</returns>
-        public static IEnumerable<Adaptation.IAdapter> GetAllAdapters(this ILibrameBuilder builder)
+        public static IEnumerable<IAdapter> GetAllAdapters(this ILibrameBuilder builder)
         {
-            return builder.ServiceProvider.GetServices<Adaptation.IAdapter>();
+            return builder.ServiceProvider.GetServices<IAdapter>();
         }
 
 
@@ -137,7 +145,7 @@ namespace Librame
         /// <typeparam name="TInterface">指定的适配器接口类型。</typeparam>
         /// <returns>返回适配器。</returns>
         public static TInterface GetAdapter<TInterface>(this ILibrameBuilder builder)
-            where TInterface : Adaptation.IAdapter
+            where TInterface : IAdapter
         {
             return (TInterface)builder.GetAdapter(typeof(TInterface));
         }
@@ -147,9 +155,9 @@ namespace Librame
         /// <param name="builder">给定的 Librame 构建器接口。</param>
         /// <param name="interfaceType">给定的适配器接口类型。</param>
         /// <returns>返回适配器。</returns>
-        public static Adaptation.IAdapter GetAdapter(this ILibrameBuilder builder, Type interfaceType)
+        public static IAdapter GetAdapter(this ILibrameBuilder builder, Type interfaceType)
         {
-            return (Adaptation.IAdapter)builder.GetService(interfaceType);
+            return (IAdapter)builder.GetService(interfaceType);
         }
 
 
