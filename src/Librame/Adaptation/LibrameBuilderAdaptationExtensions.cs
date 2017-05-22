@@ -44,7 +44,7 @@ namespace Librame
             assemblies.Invoke(a =>
             {
                 // 记录本地化调试日志
-                builder.LogLocalizerDebug(str => str.AsLocalizerAddingAdapterByAssembly(a.FullName));
+                builder.Logger.LogInformation("Try adding adapter modules by {0} assembly", a.FullName);
 
                 // 获取所有适配器实现类型集合
                 var implementationTypes = TypeUtil.EnumerableTypesByAssignableFrom<IAdapter>(a);
@@ -117,7 +117,7 @@ namespace Librame
             typeof(IAdapter).CanAssignableFromType(implementationType);
 
             // 记录本地化调试日志
-            builder.LogLocalizerDebug(str => str.AsLocalizerAddingAdapter(interfaceType.Name, implementationType.Name));
+            builder.Logger.LogInformation("Try adding {0}, {1} adapter module", interfaceType.Name, implementationType.Name);
 
             return builder.TryAddSingletonService(interfaceType, implementationType);
         }

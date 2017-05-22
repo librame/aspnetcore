@@ -12,7 +12,6 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -40,11 +39,6 @@ namespace Librame
         /// 记录器。
         /// </summary>
         ILogger<ILibrameBuilder> Logger { get; }
-
-        /// <summary>
-        /// 定位器。
-        /// </summary>
-        IStringLocalizer<ILibrameBuilder> Localizer { get; }
 
         /// <summary>
         /// 选项。
@@ -98,12 +92,7 @@ namespace Librame
         /// 记录器。
         /// </summary>
         public ILogger<ILibrameBuilder> Logger => ServiceProvider.GetService<ILogger<LibrameBuilder>>();
-
-        /// <summary>
-        /// 定位器。
-        /// </summary>
-        public IStringLocalizer<ILibrameBuilder> Localizer => ServiceProvider.GetService<IStringLocalizer<ILibrameBuilder>>();
-
+        
         /// <summary>
         /// 选项。
         /// </summary>
