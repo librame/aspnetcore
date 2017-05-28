@@ -1,8 +1,6 @@
 using LibrameCore.Entity;
 using LibrameCore.Entity.Descriptors;
-using LibrameCore.Entity.Providers;
 using LibrameCore.Utility;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -16,32 +14,32 @@ namespace LibrameCore.Tests.Entity
             var services = new ServiceCollection();
 
             // 注册实体框架
-            var connectionString = "Server=(local);Database=LibrameTest;Trusted_Connection=True";
+            var connectionString = "Data Source=PC-I74910MQ\\SQLEXPRESS;Initial Catalog=librame_test;Integrated Security=True";
             
-            // 默认实体模块使用 DbContextProvider，也可更换为自己的需要，但需同时修改下面配置源
-            services.AddEntityFrameworkSqlServer().AddDbContext<DbContextProvider>(options =>
-            {
-                options.UseSqlServer(connectionString, sql =>
-                {
-                    sql.UseRowNumberForPaging();
-                    sql.MaxBatchSize(50);
-                });
-            });
+            //// 默认实体模块使用 DbContextProvider，也可更换为自己的需要，但需同时修改下面配置源
+            //services.AddEntityFrameworkSqlServer().AddDbContext<DbContextProvider>(options =>
+            //{
+            //    options.UseSqlServer(connectionString, sql =>
+            //    {
+            //        sql.UseRowNumberForPaging();
+            //        sql.MaxBatchSize(50);
+            //    });
+            //});
 
             // 注册 Librame （默认使用内存配置源）
             var builder = services.AddLibrameByMemory(source =>
             {
-                // 修改默认的 DbContextProvider
-                source[EntityOptions.EntityProviderTypeNameKey]
-                    = typeof(DbContextProvider).AssemblyQualifiedNameWithoutVcp();
+                //// 修改默认的 DbContextProvider
+                //source[EntityOptions.EntityProviderTypeNameKey]
+                //    = typeof(DbContextProvider).AssemblyQualifiedNameWithoutVcp();
 
                 // 重置实体程序集
                 source[EntityOptions.AutomappingAssembliesKey]
                     = TypeUtil.GetAssemblyName<Article>().Name;
             });
 
-            // 获取实体适配器
-            var entity = builder.GetEntityAdapter();
+            // 获取实体适配器（因外界未注册 AddEntityFrameworkSqlServer，此处使用内部集成注册，因此连接字符串不能为空）
+            var adapter = builder.GetEntityAdapter(connectionString);
             
             // 初始化文章
             var article = new Article
@@ -50,7 +48,7 @@ namespace LibrameCore.Tests.Entity
                 Descr = "Test Descr"
             };
             
-            var repository = entity.GetRepository<Article>();
+            var repository = adapter.GetRepository<Article>();
 
             // 标题不能重复
             Article dbArticle;

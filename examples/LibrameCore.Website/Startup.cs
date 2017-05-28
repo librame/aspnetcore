@@ -38,18 +38,19 @@ namespace LibrameCore.Website
             // Add framework services.
             services.AddMvc();
 
-            // Librame 实体模块默认使用 DbContextProvider，也可更换为自己的需要，但需同时修改相关配置（详情参见 tests 实体测试）
-            services.AddEntityFrameworkSqlServer().AddDbContext<DbContextProvider>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("SqlServer"), sql =>
-                {
-                    sql.UseRowNumberForPaging();
-                    sql.MaxBatchSize(50);
-                });
-            });
+            //// Librame 实体模块默认使用 DbContextProvider，也可更换为自己的需要，但需同时修改相关配置（详情参见 tests 实体测试）
+            //services.AddEntityFrameworkSqlServer().AddDbContext<DbContextProvider>(options =>
+            //{
+            //    options.UseSqlServer(Configuration.GetConnectionString("SqlServer"), sql =>
+            //    {
+            //        sql.UseRowNumberForPaging();
+            //        sql.MaxBatchSize(50);
+            //    });
+            //});
 
-            // Librame
-            services.AddLibrame(Configuration.GetSection("Librame"));
+            // Librame MVC
+            services.AddLibrameMvc(Configuration.GetSection("Librame"))
+                .GetEntityAdapter(Configuration.GetConnectionString("SqlServer")); // 因外界未注册 AddEntityFrameworkSqlServer，此处使用内部集成注册，因此连接字符串不能为空
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,7 +79,8 @@ namespace LibrameCore.Website
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            //app.UseLibrame();
+            // Librame MVC
+            app.UseLibrameMvc();
         }
     }
 }

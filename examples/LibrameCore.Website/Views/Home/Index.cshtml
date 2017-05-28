@@ -1,11 +1,11 @@
-﻿@model Librame.Entities.Article
+﻿@model LibrameCore.Entities.Article
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <div>
-    <h3>@Model.Title</h3>
+    <h3>@Model?.Title</h3>
     <p>
-        @Model.Descr
+        @Model?.Descr
     </p>
 </div>

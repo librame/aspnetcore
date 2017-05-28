@@ -101,7 +101,7 @@ namespace LibrameCore
             where TInterface : class
             where TImplementation : class, TInterface
         {
-            return builder.TryAddSingletonService<TInterface, TImplementation>();
+            return builder.TryAddSingleton<TInterface, TImplementation>();
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace LibrameCore
             // 记录本地化调试日志
             builder.Logger.LogInformation("Try adding {0}, {1} adapter module", interfaceType.Name, implementationType.Name);
 
-            return builder.TryAddSingletonService(interfaceType, implementationType);
+            return builder.TryAddSingleton(interfaceType, implementationType);
         }
 
         #endregion
@@ -175,10 +175,16 @@ namespace LibrameCore
         /// 获取实体适配器。
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <param name="connectionString">给定的数据库连接字符串（可选）。</param>
         /// <returns>返回实体适配器。</returns>
-        public static Entity.IEntityAdapter GetEntityAdapter(this ILibrameBuilder builder)
+        public static Entity.IEntityAdapter GetEntityAdapter(this ILibrameBuilder builder, string connectionString = null)
         {
-            return builder.GetAdapter<Entity.IEntityAdapter>();
+            var adapter = builder.GetAdapter<Entity.IEntityAdapter>();
+
+            // 增强基于实体框架的 SQL Server 数据库
+            adapter.BuildUpEntityFrameworkSqlServer(connectionString);
+
+            return adapter;
         }
 
         #endregion

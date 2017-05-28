@@ -71,10 +71,10 @@ namespace LibrameCore
         /// 尝试添加域例服务。
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <typeparam name="TService">给定的服务类型。</typeparam>
-        /// <typeparam name="TImplementation">给定的实现类型。</typeparam>
+        /// <typeparam name="TService">指定的服务类型。</typeparam>
+        /// <typeparam name="TImplementation">指定的实现类型。</typeparam>
         /// <returns>返回 Librame 构建器。</returns>
-        public static ILibrameBuilder TryAddScopedService<TService, TImplementation>(this ILibrameBuilder builder)
+        public static ILibrameBuilder TryAddScoped<TService, TImplementation>(this ILibrameBuilder builder)
             where TService : class
             where TImplementation : class, TService
         {
@@ -92,13 +92,38 @@ namespace LibrameCore
         /// <param name="serviceType">给定的服务类型。</param>
         /// <param name="implementationType">给定的实现类型。</param>
         /// <returns>返回 Librame 构建器。</returns>
-        public static ILibrameBuilder TryAddScopedService(this ILibrameBuilder builder, Type serviceType, Type implementationType)
+        public static ILibrameBuilder TryAddScoped(this ILibrameBuilder builder, Type serviceType, Type implementationType)
         {
             if (!builder.ContainsService(serviceType))
             {
                 serviceType.CanAssignableFromType(implementationType);
                 builder.Services.AddScoped(serviceType, implementationType);
             }
+
+            return builder;
+        }
+
+        /// <summary>
+        /// 尝试添加域例服务。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <typeparam name="TService">指定的服务类型。</typeparam>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddScoped<TService>(this ILibrameBuilder builder)
+            where TService : class
+        {
+            return builder.TryAddScoped(typeof(TService));
+        }
+        /// <summary>
+        /// 尝试添加域例服务。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <param name="serviceType">给定的服务类型。</param>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddScoped(this ILibrameBuilder builder, Type serviceType)
+        {
+            if (!builder.ContainsService(serviceType))
+                builder.Services.AddScoped(serviceType);
 
             return builder;
         }
@@ -111,7 +136,7 @@ namespace LibrameCore
         /// <typeparam name="TImplementation">给定的实现类型。</typeparam>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
         /// <returns>返回 Librame 构建器。</returns>
-        public static ILibrameBuilder TryAddSingletonService<TService, TImplementation>(this ILibrameBuilder builder)
+        public static ILibrameBuilder TryAddSingleton<TService, TImplementation>(this ILibrameBuilder builder)
             where TService : class
             where TImplementation : class, TService
         {
@@ -129,13 +154,38 @@ namespace LibrameCore
         /// <param name="serviceType">给定的服务类型。</param>
         /// <param name="implementationType">给定的实现类型。</param>
         /// <returns>返回 Librame 构建器。</returns>
-        public static ILibrameBuilder TryAddSingletonService(this ILibrameBuilder builder, Type serviceType, Type implementationType)
+        public static ILibrameBuilder TryAddSingleton(this ILibrameBuilder builder, Type serviceType, Type implementationType)
         {
             if (!builder.ContainsService(serviceType))
             {
                 serviceType.CanAssignableFromType(implementationType);
                 builder.Services.AddSingleton(serviceType, implementationType);
             }
+
+            return builder;
+        }
+
+        /// <summary>
+        /// 尝试添加单例服务。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <typeparam name="TService">指定的服务类型。</typeparam>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddSingleton<TService>(this ILibrameBuilder builder)
+            where TService : class
+        {
+            return builder.TryAddSingleton(typeof(TService));
+        }
+        /// <summary>
+        /// 尝试添加单例服务。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <param name="serviceType">给定的服务类型。</param>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddSingleton(this ILibrameBuilder builder, Type serviceType)
+        {
+            if (!builder.ContainsService(serviceType))
+                builder.Services.AddSingleton(serviceType);
 
             return builder;
         }
@@ -148,7 +198,7 @@ namespace LibrameCore
         /// <typeparam name="TImplementation">给定的实现类型。</typeparam>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
         /// <returns>返回 Librame 构建器。</returns>
-        public static ILibrameBuilder TryAddTransientService<TService, TImplementation>(this ILibrameBuilder builder)
+        public static ILibrameBuilder TryAddTransient<TService, TImplementation>(this ILibrameBuilder builder)
             where TService : class
             where TImplementation : class, TService
         {
@@ -166,13 +216,38 @@ namespace LibrameCore
         /// <param name="serviceType">给定的服务类型。</param>
         /// <param name="implementationType">给定的实现类型。</param>
         /// <returns>返回 Librame 构建器。</returns>
-        public static ILibrameBuilder TryAddTransientService(this ILibrameBuilder builder, Type serviceType, Type implementationType)
+        public static ILibrameBuilder TryAddTransient(this ILibrameBuilder builder, Type serviceType, Type implementationType)
         {
             if (!builder.ContainsService(serviceType))
             {
                 serviceType.CanAssignableFromType(implementationType);
                 builder.Services.AddTransient(serviceType, implementationType);
             }
+
+            return builder;
+        }
+
+        /// <summary>
+        /// 尝试添加瞬例服务。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <typeparam name="TService">指定的服务类型。</typeparam>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddTransient<TService>(this ILibrameBuilder builder)
+            where TService : class
+        {
+            return builder.TryAddTransient(typeof(TService));
+        }
+        /// <summary>
+        /// 尝试添加瞬例服务。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <param name="serviceType">给定的服务类型。</param>
+        /// <returns>返回 Librame 构建器。</returns>
+        public static ILibrameBuilder TryAddTransient(this ILibrameBuilder builder, Type serviceType)
+        {
+            if (!builder.ContainsService(serviceType))
+                builder.Services.AddTransient(serviceType);
 
             return builder;
         }

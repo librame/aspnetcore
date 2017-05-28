@@ -131,34 +131,34 @@ namespace LibrameCore.Algorithm
             // 文本编解码器
             var basePlainTextCodecType = typeof(TextCodecs.IPlainTextCodec);
             var implPlainTextCodecType = Type.GetType(options.PlainTextCodecTypeName, throwOnError: true);
-            Builder.TryAddSingletonService(basePlainTextCodecType, implPlainTextCodecType);
+            Builder.TryAddSingleton(basePlainTextCodecType, implPlainTextCodecType);
 
             var baseCipherTextCodecType = typeof(TextCodecs.ICipherTextCodec);
             var implCipherTextCodecType = Type.GetType(options.CipherTextCodecTypeName, throwOnError: true);
-            Builder.TryAddSingletonService(baseCipherTextCodecType, implCipherTextCodecType);
+            Builder.TryAddSingleton(baseCipherTextCodecType, implCipherTextCodecType);
 
             // 对称算法
             var baseSymmetryKeyGenerateType = typeof(Symmetries.ISymmetryKeyGenerator);
             var implSymmetryKeyGenerateType = Type.GetType(options.SymmetryKeyGeneratorTypeName, throwOnError: true);
-            Builder.TryAddSingletonService(baseSymmetryKeyGenerateType, implSymmetryKeyGenerateType);
+            Builder.TryAddSingleton(baseSymmetryKeyGenerateType, implSymmetryKeyGenerateType);
 
             var baseSymmetryAlgorithmType = typeof(Symmetries.ISymmetryAlgorithm);
             var implSymmetryAlgorithmType = Type.GetType(options.SymmetryAlgorithmTypeName, throwOnError: true);
-            Builder.TryAddSingletonService(baseSymmetryAlgorithmType, implSymmetryAlgorithmType);
+            Builder.TryAddSingleton(baseSymmetryAlgorithmType, implSymmetryAlgorithmType);
 
             // 非对称算法
             var baseRsaAsymmetryKeyGenerateType = typeof(Asymmetries.IRsaAsymmetryKeyGenerator);
             var implRsaAsymmetryKeyGenerateType = Type.GetType(options.RsaAsymmetryKeyGeneratorTypeName, throwOnError: true);
-            Builder.TryAddSingletonService(baseRsaAsymmetryKeyGenerateType, implRsaAsymmetryKeyGenerateType);
+            Builder.TryAddSingleton(baseRsaAsymmetryKeyGenerateType, implRsaAsymmetryKeyGenerateType);
 
             var baseRsaAsymmetryAlgorithmType = typeof(Asymmetries.IRsaAsymmetryAlgorithm);
             var implRsaAsymmetryAlgorithmType = Type.GetType(options.RsaAsymmetryAlgorithmTypeName, throwOnError: true);
-            Builder.TryAddSingletonService(baseRsaAsymmetryAlgorithmType, implRsaAsymmetryAlgorithmType);
+            Builder.TryAddSingleton(baseRsaAsymmetryAlgorithmType, implRsaAsymmetryAlgorithmType);
 
             // 散列算法
             var baseHashAlgorithmType = typeof(Hashes.IHashAlgorithm);
             var implHashAlgorithmType = Type.GetType(options.HashAlgorithmTypeName, throwOnError: true);
-            Builder.TryAddSingletonService(baseHashAlgorithmType, implHashAlgorithmType);
+            Builder.TryAddSingleton(baseHashAlgorithmType, implHashAlgorithmType);
 
             return Builder;
         }

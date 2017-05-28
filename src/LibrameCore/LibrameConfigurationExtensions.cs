@@ -10,8 +10,12 @@
 
 #endregion
 
+using LibrameCore;
+using LibrameCore.Algorithm;
+using LibrameCore.Entity;
 using LibrameCore.Utility;
 using System;
+using System.Collections.Generic;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -57,6 +61,80 @@ namespace Microsoft.Extensions.Configuration
                 return defaultValue.NotNull(nameof(defaultValue));
 
             return converter.NotNull(nameof(converter)).Invoke(value);
+        }
+
+
+        /// <summary>
+        /// 初始化 Librame 选项。
+        /// </summary>
+        /// <returns>返回字典接口。</returns>
+        public static IDictionary<string, string> InitialLibrameOptions()
+        {
+            return new Dictionary<string, string>
+            {
+                { LibrameOptions.AuthIdKey, LibrameOptions.DefaultAuthId },
+                { LibrameOptions.BaseDirectoryKey, LibrameOptions.DefaultBaseDirectory },
+                { LibrameOptions.EncodingKey, LibrameOptions.DefaultEncoding },
+
+                // Algorithm
+                {
+                    AlgorithmOptions.PlainTextCodecTypeNameKey,
+                    AlgorithmOptions.DefaultPlainTextCodecTypeName
+                },
+                {
+                    AlgorithmOptions.CipherTextCodecTypeNameKey,
+                    AlgorithmOptions.DefaultCipherTextCodecTypeName
+                },
+
+                {
+                    AlgorithmOptions.SymmetryKeyGeneratorTypeNameKey,
+                    AlgorithmOptions.DefaultSymmetryKeyGeneratorTypeName
+                },
+                {
+                    AlgorithmOptions.SymmetryAlgorithmTypeNameKey,
+                    AlgorithmOptions.DefaultSymmetryAlgorithmTypeName
+                },
+
+                {
+                    AlgorithmOptions.RsaPublicKeyStringKey,
+                    AlgorithmOptions.DefaultRsaPublicKeyString
+                },
+                {
+                    AlgorithmOptions.RsaPrivateKeyStringKey,
+                    AlgorithmOptions.DefaultRsaPrivateKeyString
+                },
+                {
+                    AlgorithmOptions.RsaAsymmetryKeyGeneratorTypeNameKey,
+                    AlgorithmOptions.DefaultRsaAsymmetryKeyGeneratorTypeName
+                },
+                {
+                    AlgorithmOptions.RsaAsymmetryAlgorithmTypeNameKey,
+                    AlgorithmOptions.DefaultRsaAsymmetryAlgorithmTypeName
+                },
+
+                {
+                    AlgorithmOptions.HashAlgorithmTypeNameKey,
+                    AlgorithmOptions.DefaultHashAlgorithmTypeName
+                },
+
+                // Entity
+                {
+                    EntityOptions.AutomappingAssembliesKey,
+                    EntityOptions.DefaultAutomappingAssemblies
+                },
+                {
+                    EntityOptions.EnableAutomappingKey,
+                    EntityOptions.DefaultEnableAutomapping.ToString()
+                },
+                {
+                    EntityOptions.EntityProviderTypeNameKey,
+                    EntityOptions.DefaultEntityProviderTypeName
+                },
+                {
+                    EntityOptions.RepositoryTypeNameKey,
+                    EntityOptions.DefaultRepositoryTypeName
+                }
+            };
         }
 
     }

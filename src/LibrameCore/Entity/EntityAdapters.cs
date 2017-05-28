@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 
@@ -80,17 +79,15 @@ namespace LibrameCore.Entity
         {
             var options = Options.Entity;
 
-            var providerType = Type.GetType(options.EntityProviderTypeName, throwOnError: true);
-            typeof(DbContext).CanAssignableFromType(providerType);
-
-            if (!Builder.ContainsService(providerType))
-            {
-                // DbContext 非线程安全
-                Builder.Services.AddScoped(providerType);
-            }
+            // EntityProvider as DbContext
+            var entityProviderType = Type.GetType(options.EntityProviderTypeName, throwOnError: true);
+            typeof(DbContext).CanAssignableFromType(entityProviderType);
+            // DbContext 非线程安全
+            Builder.TryAddScoped(entityProviderType);
             
+            // Repository
             var repositoryType = Type.GetType(options.RepositoryTypeName, throwOnError: true);
-            Builder.TryAddTransientService(typeof(IRepository<>), repositoryType);
+            Builder.TryAddTransient(typeof(IRepository<>), repositoryType);
 
             return Builder;
         }

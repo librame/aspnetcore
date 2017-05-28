@@ -55,8 +55,15 @@ namespace LibrameCore
         /// <summary>
         /// 生成授权标识。
         /// </summary>
-        /// <returns>返回字符串。</returns>
+        /// <returns>返回标识字符串。</returns>
         string GenerateAuthId();
+
+        /// <summary>
+        /// 还原授权标识。
+        /// </summary>
+        /// <param name="authId">给定的标识字符串（可选；默认为当前框架授权标识）。</param>
+        /// <returns>返回字节数组。</returns>
+        byte[] FromAuthId(string authId = null);
     }
 
 
@@ -108,10 +115,22 @@ namespace LibrameCore
         /// <summary>
         /// 生成授权标识。
         /// </summary>
-        /// <returns>返回字符串。</returns>
+        /// <returns>返回标识字符串。</returns>
         public virtual string GenerateAuthId()
         {
             return Guid.NewGuid().ToByteArray().AsHex();
+        }
+
+        /// <summary>
+        /// 还原授权标识。
+        /// </summary>
+        /// <param name="authId">给定的标识字符串（可选；默认为当前框架授权标识）。</param>
+        /// <returns>返回字节数组。</returns>
+        public virtual byte[] FromAuthId(string authId = null)
+        {
+            authId = authId.AsOrDefault(Options.AuthId);
+
+            return authId.FromHex();
         }
 
     }
