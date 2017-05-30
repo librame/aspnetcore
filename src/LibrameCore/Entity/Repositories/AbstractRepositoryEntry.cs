@@ -16,7 +16,7 @@ using System.Linq;
 
 namespace LibrameCore.Entity.Repositories
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 抽象仓库入口。

@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 
 namespace LibrameCore
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// Librame 选项接口。

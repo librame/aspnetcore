@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 
 namespace LibrameCore
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// Librame MVC 选项接口。

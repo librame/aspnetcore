@@ -1,11 +1,11 @@
-﻿using LibrameCore.Utility;
+﻿using LibrameCore.Utilities;
 using System.ComponentModel;
 using System.Reflection;
 using Xunit;
 
 namespace LibrameCore.Tests.Utility
 {
-    public class AttributeUtilTests
+    public class AttributeUtilityTests
     {
         internal const string DESCRIPTION = "测试属性";
         internal const int DEFAULT_VALUE = 1;
@@ -26,10 +26,10 @@ namespace LibrameCore.Tests.Utility
 
     }
 
-    [Description(AttributeUtilTests.DESCRIPTION)]
+    [Description(AttributeUtilityTests.DESCRIPTION)]
     public class TestAttribute
     {
-        [DefaultValue(AttributeUtilTests.DEFAULT_VALUE)]
+        [DefaultValue(AttributeUtilityTests.DEFAULT_VALUE)]
         public int Id { get; set; }
     }
 

@@ -14,7 +14,8 @@ using System.Runtime.InteropServices;
 
 namespace LibrameCore.Authentication
 {
-    using Utility;
+    using Managers;
+    using Utilities;
 
     /// <summary>
     /// 认证选项。
@@ -50,24 +51,45 @@ namespace LibrameCore.Authentication
 
 
         /// <summary>
-        /// 用户认证类型名键。
+        /// 令牌处理程序类型名键。
         /// </summary>
-        public static readonly string UserAuthenticationTypeNameKey
-            = (KeyPrefix + nameof(UserAuthenticationTypeName));
+        public static readonly string TokenHandlerTypeNameKey
+            = (KeyPrefix + nameof(TokenHandlerTypeName));
 
         /// <summary>
-        /// 默认用户认证类型名。
+        /// 默认令牌处理程序类型名。
         /// </summary>
-        public static readonly string DefaultUserAuthenticationTypeName
-            = typeof(UserAuthentication).AssemblyQualifiedNameWithoutVcp();
+        public static readonly string DefaultTokenHandlerTypeName
+            = typeof(TokenHandler).AssemblyQualifiedNameWithoutVcp();
 
         /// <summary>
-        /// 用户认证类型名。
+        /// 令牌处理程序类型名。
         /// </summary>
         /// <value>
-        /// 默认为 <see cref="DefaultUserAuthenticationTypeName"/>。
+        /// 默认为 <see cref="DefaultTokenHandlerTypeName"/>。
         /// </value>
-        public string UserAuthenticationTypeName { get; set; } = DefaultUserAuthenticationTypeName;
+        public string TokenHandlerTypeName { get; set; } = DefaultTokenHandlerTypeName;
+
+
+        /// <summary>
+        /// 用户管理器类型名键。
+        /// </summary>
+        public static readonly string UserManagerTypeNameKey
+            = (KeyPrefix + nameof(UserManagerTypeName));
+
+        /// <summary>
+        /// 默认用户管理器类型名。
+        /// </summary>
+        public static readonly string DefaultUserManagerTypeName
+            = typeof(UserManager).AssemblyQualifiedNameWithoutVcp();
+
+        /// <summary>
+        /// 用户管理器类型名。
+        /// </summary>
+        /// <value>
+        /// 默认为 <see cref="DefaultUserManagerTypeName"/>。
+        /// </value>
+        public string UserManagerTypeName { get; set; } = DefaultUserManagerTypeName;
 
     }
 }

@@ -12,12 +12,12 @@
 
 using System.Text;
 
-namespace LibrameCore.Utility
+namespace LibrameCore.Utilities
 {
     /// <summary>
     /// <see cref="Encoding"/> 实用工具。
     /// </summary>
-    public static class EncodingUtil
+    public static class EncodingUtility
     {
         /// <summary>
         /// 将代码页名称转换为关联的字符编码。

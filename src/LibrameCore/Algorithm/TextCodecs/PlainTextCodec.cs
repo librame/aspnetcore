@@ -16,7 +16,7 @@ using System;
 
 namespace LibrameCore.Algorithm.TextCodecs
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 明文编解码器。

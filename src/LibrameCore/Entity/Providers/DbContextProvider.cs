@@ -20,14 +20,14 @@ using System.Reflection;
 
 namespace LibrameCore.Entity.Providers
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 数据库上下文提供程序。
     /// </summary>
     public class DbContextProvider : DbContext
     {
-        private static readonly string _cacheKey = TypeUtil.AsKey<DbContextProvider>();
+        private static readonly string _cacheKey = TypeUtility.AsKey<DbContextProvider>();
 
         private readonly ILogger _logger;
         private readonly LibrameOptions _options;
@@ -106,7 +106,7 @@ namespace LibrameCore.Entity.Providers
                 _logger.LogDebug("Register assembly: " + a.FullName);
 
                 // 提取要映射的实体类型集合
-                var types = TypeUtil.EnumerableTypesByAssignableFrom<IAutomapping>(a);
+                var types = TypeUtility.EnumerableTypesByAssignableFrom<IAutomapping>(a);
                 types.NotNull(nameof(types)).Invoke((t) =>
                 {
                     _logger.LogDebug("Register entity type: " + t.FullName);
@@ -115,7 +115,7 @@ namespace LibrameCore.Entity.Providers
                     var annotations = modelBuilder.Model.AddEntityType(t).SqlServer();
 
                     // 默认表名规范，复数形式
-                    var tableName = StringUtil.AsPluralize(t.Name);
+                    var tableName = StringUtility.AsPluralize(t.Name);
 
                     // 自定义表名规范，属性特性优先
                     var tableAttribute = t.Attribute<TableAttribute>();

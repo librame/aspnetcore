@@ -10,7 +10,7 @@
 
 #endregion
 
-using LibrameCore.Utility;
+using LibrameCore.Utilities;
 
 namespace System.Collections.Generic
 {

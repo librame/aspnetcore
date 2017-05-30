@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 
 namespace LibrameCore.Algorithm.Asymmetries
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// RSA 参数描述符。

@@ -11,7 +11,7 @@
 #endregion
 
 using LibrameCore;
-using LibrameCore.Utility;
+using LibrameCore.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Logging;
@@ -25,6 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class LibrameServiceCollectionExtensions
     {
+
         /// <summary>
         /// 注册 Librame 服务（通过配置内存源）。
         /// </summary>
@@ -117,7 +118,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 builder.Services.AddLogging();
             
             // 添加适配器模块（默认添加当前程序集的所有适配器模块）
-            builder.TryAddAdaptation(AssemblyUtil.CurrentAssembly);
+            builder.TryAddAdaptation(AssemblyUtility.CurrentAssembly);
 
             return builder;
         }

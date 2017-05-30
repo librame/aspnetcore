@@ -20,7 +20,7 @@ using System.Reflection;
 namespace LibrameCore
 {
     using Adaptation;
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// Librame 构建器适配静态扩展。
@@ -47,7 +47,7 @@ namespace LibrameCore
                 builder.Logger.LogInformation("Try adding adapter modules by {0} assembly", a.FullName);
 
                 // 获取所有适配器实现类型集合
-                var implementationTypes = TypeUtil.EnumerableTypesByAssignableFrom<IAdapter>(a);
+                var implementationTypes = TypeUtility.EnumerableTypesByAssignableFrom<IAdapter>(a);
                 if (implementationTypes.Length > 0)
                 {
                     var baseAdapter = typeof(IAdapter);

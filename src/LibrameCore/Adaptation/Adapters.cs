@@ -16,7 +16,7 @@ using System.Reflection;
 
 namespace LibrameCore.Adaptation
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 适配器接口。
@@ -133,7 +133,7 @@ namespace LibrameCore.Adaptation
         /// <param name="manifestResourceName">给定的清单资源文件名（可选；默认以输出相对文件路径参考文件名）。</param>
         public virtual void ExportManifestResourceFile(string outputRelativeFilePath, string manifestResourceName = null)
         {
-            ExportManifestResourceFile(AssemblyUtil.CurrentAssembly, outputRelativeFilePath, manifestResourceName);
+            ExportManifestResourceFile(AssemblyUtility.CurrentAssembly, outputRelativeFilePath, manifestResourceName);
         }
         /// <summary>
         /// 导出指定程序集包含的嵌入资源文件到适配器配置目录。

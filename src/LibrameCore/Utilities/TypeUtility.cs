@@ -17,12 +17,38 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace LibrameCore.Utility
+namespace LibrameCore.Utilities
 {
+    /// <summary>
+    /// 搜索方式。
+    /// </summary>
+    [Description("搜索方式")]
+    public enum SearchMode
+    {
+        /// <summary>
+        /// 默认。
+        /// </summary>
+        [Description("默认")]
+        Default = 0,
+
+        /// <summary>
+        /// 包含。
+        /// </summary>
+        [Description("包含")]
+        Include = 1,
+
+        /// <summary>
+        /// 排除。
+        /// </summary>
+        [Description("排除")]
+        Exclude = 2
+    }
+
+
     /// <summary>
     /// <see cref="Type"/> 实用工具。
     /// </summary>
-    public static class TypeUtil
+    public static class TypeUtility
     {
 
         /// <summary>
@@ -184,7 +210,7 @@ namespace LibrameCore.Utility
                             value = o.AsPairsString(SearchMode.Default);
                     }
 
-                    sb.AppendFormat("{0}{1}{2}", p.Name, StringUtil.EQUALITY, value);
+                    sb.AppendFormat("{0}{1}{2}", p.Name, StringUtility.EQUALITY, value);
 
                     if (p.Name != last.Name)
                         sb.Append(",");

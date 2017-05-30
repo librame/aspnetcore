@@ -15,7 +15,7 @@ using System.Text;
 
 namespace LibrameCore.Algorithm.TextCodecs
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 抽象文本编解码器。

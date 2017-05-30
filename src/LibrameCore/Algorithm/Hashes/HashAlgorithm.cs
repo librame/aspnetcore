@@ -18,7 +18,7 @@ namespace LibrameCore.Algorithm.Hashes
 {
     using Asymmetries;
     using TextCodecs;
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 散列算法。

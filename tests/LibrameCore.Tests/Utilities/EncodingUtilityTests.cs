@@ -1,9 +1,9 @@
-﻿using LibrameCore.Utility;
+﻿using LibrameCore.Utilities;
 using Xunit;
 
 namespace LibrameCore.Tests.Utility
 {
-    public class EncodingUtilTests
+    public class EncodingUtilityTests
     {
         private readonly string _encodingName = "utf-8";
 

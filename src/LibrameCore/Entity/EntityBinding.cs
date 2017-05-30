@@ -17,7 +17,7 @@ using System.Linq.Expressions;
 
 namespace LibrameCore.Entity
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 实体绑定。
@@ -47,7 +47,7 @@ namespace LibrameCore.Entity
         public virtual IEntityBinding<TEntity> Property<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression,
             BindingMarkup markup = BindingMarkup.All)
         {
-            var propertyName = ExpressionUtil.AsPropertyName(propertyExpression);
+            var propertyName = ExpressionUtility.AsPropertyName(propertyExpression);
             _properties.AddOrUpdate(propertyName, markup, (key, value) => value);
 
             return this;

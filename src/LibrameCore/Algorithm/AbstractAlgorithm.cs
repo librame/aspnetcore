@@ -17,7 +17,7 @@ using System.Text;
 namespace LibrameCore.Algorithm
 {
     using TextCodecs;
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 抽象算法。

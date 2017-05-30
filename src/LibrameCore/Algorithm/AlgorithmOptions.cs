@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 
 namespace LibrameCore.Algorithm
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 算法选项。

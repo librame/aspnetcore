@@ -9,11 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Utility\AssemblyUtilTestResource.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Utility\AssemblyUtilTestResource.txt" />
+    <EmbeddedResource Include="Utilities\AssemblyUtilityTestResource.txt" />
   </ItemGroup>
 
   <ItemGroup>

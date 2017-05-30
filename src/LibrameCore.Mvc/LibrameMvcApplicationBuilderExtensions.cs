@@ -12,28 +12,17 @@
 
 using LibrameCore;
 using LibrameCore.Authentication;
-using LibrameCore.Utility;
-using Microsoft.AspNetCore.Http;
+using LibrameCore.Utilities;
 
 namespace Microsoft.AspNetCore.Builder
 {
+    using Http;
+
     /// <summary>
     /// Librame MVC 应用构建器静态扩展。
     /// </summary>
     public static class LibrameMvcApplicationBuilderExtensions
     {
-        /// <summary>
-        /// 获取 Librame 构建器接口。
-        /// </summary>
-        /// <param name="app">给定的应用构建器接口。</param>
-        /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder GetLibrameBuilder(this IApplicationBuilder app)
-        {
-            var builder = app.ApplicationServices.GetService(typeof(ILibrameBuilder));
-
-            return (builder.NotNull(nameof(builder)) as ILibrameBuilder);
-        }
-
 
         /// <summary>
         /// 使用 Librame 应用。
@@ -42,23 +31,70 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="tokenGenerate">给定的令牌生成选项（可选）。</param>
         /// <returns>返回应用构建器接口。</returns>
         public static IApplicationBuilder UseLibrameMvc(this IApplicationBuilder app,
-            TokenGenerateOptions tokenGenerate = null)
+            TokenOptions tokenGenerate = null)
         {
             app.NotNull(nameof(app));
 
             // 取得 Librame 构建器
             var builder = app.GetLibrameBuilder();
 
-            // 运行认证适配器
-            var authAdapter = builder.GetAuthenticationAdapter();
-            var tokenOptions = authAdapter.TokenGenerator.Options;
-            app.Map(tokenOptions.Path, authAdapter.TokenGenerator.Generate);
-            app.Run(async context =>
-            {
-                await context.Response.WriteAsync("This Service only use for authentication! ");
-            });
+            // 使用 HTTP 上下文
+            app.UseHttpContext(builder);
+
+            // 运行认证令牌
+            app.UseLibrameAuthenticationToken(tokenGenerate, builder);
 
             return app;
+        }
+
+
+        /// <summary>
+        /// 使用 HTTP 上下文。
+        /// </summary>
+        /// <param name="app">给定的应用构建器接口。</param>
+        /// <param name="builder">给定的 Librame 构建器（可选）。</param>
+        /// <returns>返回应用构建器接口。</returns>
+        public static IApplicationBuilder UseHttpContext(this IApplicationBuilder app,
+            ILibrameBuilder builder = null)
+        {
+            app.NotNull(nameof(app));
+
+            if (builder == null)
+                builder = app.GetLibrameBuilder();
+
+            // 注入 HttpContext 访问器
+            builder.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            return app;
+        }
+
+
+        /// <summary>
+        /// 获取 Librame 构建器接口。
+        /// </summary>
+        /// <param name="app">给定的应用构建器接口。</param>
+        /// <returns>返回 Librame 构建器接口。</returns>
+        public static ILibrameBuilder GetLibrameBuilder(this IApplicationBuilder app)
+        {
+            app.NotNull(nameof(app));
+
+            var builder = app.ApplicationServices.GetService(typeof(ILibrameBuilder));
+
+            return (builder.NotNull(nameof(builder)) as ILibrameBuilder);
+        }
+
+
+        /// <summary>
+        /// 获取应用构建器的 HTTP 上下文。
+        /// </summary>
+        /// <param name="app">给定的应用构建器接口。</param>
+        /// <returns>返回 HTTP 上下文。</returns>
+        public static HttpContext GetHttpContext(this IApplicationBuilder app)
+        {
+            app.NotNull(nameof(app));
+
+            var accessor = app.GetLibrameBuilder().GetService<IHttpContextAccessor>();
+            return accessor.HttpContext;
         }
 
     }

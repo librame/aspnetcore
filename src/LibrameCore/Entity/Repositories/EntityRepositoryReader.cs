@@ -18,7 +18,7 @@ using System.Linq.Expressions;
 
 namespace LibrameCore.Entity.Repositories
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 实体仓库读取器。

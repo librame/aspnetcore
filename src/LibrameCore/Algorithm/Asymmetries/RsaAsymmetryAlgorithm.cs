@@ -18,7 +18,7 @@ using System.Security.Cryptography;
 namespace LibrameCore.Algorithm.Asymmetries
 {
     using TextCodecs;
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// RSA 非对称算法。

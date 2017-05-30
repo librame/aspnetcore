@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using LibrameCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LibrameCore.Mvc.Tests.Authentication
@@ -14,10 +15,12 @@ namespace LibrameCore.Mvc.Tests.Authentication
             var builder = services.AddLibrameMvcByMemory();
 
             // 获取认证适配器
-            var adapter = builder.GetAuthenticationAdapter();
+            var tokenGenerate = new TokenOptions();
+
+            var adapter = builder.GetAuthenticationAdapter(tokenGenerate);
             Assert.NotNull(adapter);
             Assert.NotNull(adapter.TokenGenerator);
-            Assert.NotNull(adapter.UserAuthentication);
+            Assert.NotNull(adapter.UserManager);
 
             var tokenGenerateOptions = adapter.TokenGenerator.Options;
             Assert.NotNull(tokenGenerateOptions);

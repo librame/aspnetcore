@@ -18,7 +18,7 @@ using System.Security.Cryptography;
 namespace LibrameCore.Algorithm.Symmetries
 {
     using TextCodecs;
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 对称算法。

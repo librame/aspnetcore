@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LibrameCore
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 实体适配器静态扩展。

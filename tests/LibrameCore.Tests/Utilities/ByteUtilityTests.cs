@@ -1,11 +1,11 @@
-﻿using LibrameCore.Utility;
+﻿using LibrameCore.Utilities;
 using System;
 using System.Text;
 using Xunit;
 
 namespace LibrameCore.Tests.Utility
 {
-    public class ByteUtilTests
+    public class ByteUtilityTests
     {
         private readonly Encoding _encoding = Encoding.UTF8;
         private readonly string _text = "别人笑我太疯癫，我笑他人看不穿；不见五陵豪杰墓，无花无酒锄作田。";

@@ -50,7 +50,7 @@ namespace LibrameCore.Website
 
             // Librame MVC
             services.AddLibrameMvc(Configuration.GetSection("Librame"))
-                .GetEntityAdapter(Configuration.GetConnectionString("SqlServer")); // 因外界未注册 AddEntityFrameworkSqlServer，此处使用内部集成注册，因此连接字符串不能为空
+                .GetEntityAdapter(Configuration.GetConnectionString("SqlServer")); // 因之前未注册 AddEntityFrameworkSqlServer，此处使用内部集成注册，因此连接字符串不能为空
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -23,7 +23,7 @@ namespace LibrameCore.Algorithm.Asymmetries
 {
     using TextCodecs;
     using Symmetries;
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// RSA 非对称算法密钥生成器。

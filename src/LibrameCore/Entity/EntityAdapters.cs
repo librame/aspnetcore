@@ -17,7 +17,7 @@ using System;
 namespace LibrameCore.Entity
 {
     using Adaptation;
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 实体适配器接口。

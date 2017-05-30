@@ -12,7 +12,7 @@
 
 using LibrameCore;
 using LibrameCore.Authentication;
-using LibrameCore.Utility;
+using LibrameCore.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Logging;
@@ -38,8 +38,12 @@ namespace Microsoft.Extensions.DependencyInjection
             var configurationSource = LibrameConfigurationExtensions.InitialLibrameOptions();
 
             // Authentication
-            configurationSource.Add(AuthenticationOptions.UserAuthenticationTypeNameKey,
-                AuthenticationOptions.DefaultUserAuthenticationTypeName);
+            configurationSource.Add(AuthenticationOptions.TokenGeneratorTypeNameKey,
+                AuthenticationOptions.DefaultTokenGeneratorTypeName);
+            configurationSource.Add(AuthenticationOptions.TokenHandlerTypeNameKey,
+                AuthenticationOptions.DefaultTokenHandlerTypeName);
+            configurationSource.Add(AuthenticationOptions.UserManagerTypeNameKey,
+                AuthenticationOptions.DefaultUserManagerTypeName);
 
             if (optionsAction != null)
                 optionsAction.Invoke(configurationSource);
@@ -122,8 +126,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 builder.Services.AddLogging();
 
             // 添加适配器模块（默认添加当前程序集的所有适配器模块）
-            builder.TryAddAdaptation(AssemblyUtil.CurrentAssembly,
-                TypeUtil.GetAssembly<LibrameMvcOptions>());
+            builder.TryAddAdaptation(AssemblyUtility.CurrentAssembly,
+                TypeUtility.GetAssembly<LibrameMvcOptions>());
             
             return builder;
         }

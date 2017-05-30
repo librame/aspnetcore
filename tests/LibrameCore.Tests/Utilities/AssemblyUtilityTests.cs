@@ -1,4 +1,4 @@
-﻿using LibrameCore.Utility;
+﻿using LibrameCore.Utilities;
 using System;
 using System.IO;
 using System.Reflection;
@@ -6,9 +6,9 @@ using Xunit;
 
 namespace LibrameCore.Tests.Utility
 {
-    public class AssemblyUtilTests
+    public class AssemblyUtilityTests
     {
-        private readonly Assembly _assembly = typeof(AssemblyUtilTests).GetTypeInfo().Assembly;
+        private readonly Assembly _assembly = typeof(AssemblyUtilityTests).GetTypeInfo().Assembly;
 
         [Fact]
         public void GetAssemblyNameTest()
@@ -21,8 +21,8 @@ namespace LibrameCore.Tests.Utility
         [Fact]
         public void ManifestResourceSaveAsTest()
         {
-            var outputFilePath = AppContext.BaseDirectory.AppendPath("AssemblyUtilTestResource.txt");
-            var manifestResourceName = typeof(AssemblyUtilTests).Namespace + ".AssemblyUtilTestResource.txt";
+            var outputFilePath = AppContext.BaseDirectory.AppendPath("AssemblyUtilityTestResource.txt");
+            var manifestResourceName = typeof(AssemblyUtilityTests).Namespace + ".AssemblyUtilityTestResource.txt";
 
             _assembly.ManifestResourceSaveAs(manifestResourceName, outputFilePath);
             Assert.True(File.Exists(outputFilePath));

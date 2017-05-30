@@ -14,12 +14,12 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace LibrameCore.Utility
+namespace LibrameCore.Utilities
 {
     /// <summary>
     /// <see cref="Exception"/> 实用工具。
     /// </summary>
-    public static class ExceptionUtil
+    public static class ExceptionUtility
     {
         /// <summary>
         /// 得到内部异常消息。

@@ -14,12 +14,12 @@ using System;
 using System.Reflection;
 using System.Linq;
 
-namespace LibrameCore.Utility
+namespace LibrameCore.Utilities
 {
     /// <summary>
     /// <see cref="System.Attribute"/> 实用工具。
     /// </summary>
-    public static class AttributeUtil
+    public static class AttributeUtility
     {
         /// <summary>
         /// 获取类属性。

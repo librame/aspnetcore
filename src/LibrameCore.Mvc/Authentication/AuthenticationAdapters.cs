@@ -16,7 +16,8 @@ using System;
 namespace LibrameCore.Authentication
 {
     using Adaptation;
-    using Utility;
+    using Managers;
+    using Utilities;
 
     /// <summary>
     /// 认证适配器接口。
@@ -35,9 +36,14 @@ namespace LibrameCore.Authentication
         ITokenGenerator TokenGenerator { get; }
 
         /// <summary>
-        /// 用户认证。
+        /// 用户管理器。
         /// </summary>
-        IUserAuthentication UserAuthentication { get; }
+        IUserManager UserManager { get; }
+
+        /// <summary>
+        /// 令牌处理程序。
+        /// </summary>
+        ITokenHandler TokenHandler { get; }
 
 
         /// <summary>
@@ -79,9 +85,14 @@ namespace LibrameCore.Authentication
         public ITokenGenerator TokenGenerator => Builder.GetService<ITokenGenerator>();
 
         /// <summary>
-        /// 用户认证。
+        /// 令牌处理程序。
         /// </summary>
-        public IUserAuthentication UserAuthentication => Builder.GetService<IUserAuthentication>();
+        public ITokenHandler TokenHandler => Builder.GetService<ITokenHandler>();
+
+        /// <summary>
+        /// 用户管理器。
+        /// </summary>
+        public IUserManager UserManager => Builder.GetService<IUserManager>();
 
 
         /// <summary>
@@ -92,15 +103,20 @@ namespace LibrameCore.Authentication
         {
             var options = (Options as LibrameMvcOptions).Authentication;
 
+            // 用户管理器
+            var userManagerType = Type.GetType(options.UserManagerTypeName, throwOnError: true);
+            typeof(IUserManager).CanAssignableFromType(userManagerType);
+            Builder.TryAddTransient(typeof(IUserManager), userManagerType);
+
             // 令牌生成器
             var tokenGeneratorType = Type.GetType(options.TokenGeneratorTypeName, throwOnError: true);
             typeof(ITokenGenerator).CanAssignableFromType(tokenGeneratorType);
             Builder.TryAddTransient(typeof(ITokenGenerator), tokenGeneratorType);
-
-            // 用户认证
-            var userAuthenticationType = Type.GetType(options.UserAuthenticationTypeName, throwOnError: true);
-            typeof(IUserAuthentication).CanAssignableFromType(userAuthenticationType);
-            Builder.TryAddTransient(typeof(IUserAuthentication), userAuthenticationType);
+            
+            // 令牌处理程序
+            var tokenHandlerType = Type.GetType(options.TokenHandlerTypeName, throwOnError: true);
+            typeof(ITokenHandler).CanAssignableFromType(tokenHandlerType);
+            Builder.TryAddTransient(typeof(ITokenHandler), tokenHandlerType);
 
             return Builder;
         }

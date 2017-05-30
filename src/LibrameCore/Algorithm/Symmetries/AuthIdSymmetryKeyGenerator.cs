@@ -17,7 +17,7 @@ using System.Linq;
 namespace LibrameCore.Algorithm.Symmetries
 {
     using TextCodecs;
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 授权标识对称算法密钥生成器。

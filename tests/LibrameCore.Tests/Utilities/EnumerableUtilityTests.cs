@@ -1,10 +1,10 @@
-﻿using LibrameCore.Utility;
+﻿using LibrameCore.Utilities;
 using System;
 using Xunit;
 
 namespace LibrameCore.Tests.Utility
 {
-    public class EnumerableUtilTests
+    public class EnumerableUtilityTests
     {
         [Fact]
         public void JoinStringTest()

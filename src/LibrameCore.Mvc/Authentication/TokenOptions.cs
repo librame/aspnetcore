@@ -15,25 +15,31 @@ using System;
 
 namespace LibrameCore.Authentication
 {
+    using Handlers;
+
     /// <summary>
-    /// 令牌生成选项。
+    /// 令牌选项。
     /// </summary>
-    public class TokenGenerateOptions
+    public class TokenOptions : HandlerOptions
     {
         /// <summary>
-        /// 认证路径。
+        /// 构造一个令牌选项。
         /// </summary>
-        public string Path { get; set; } = "/token";
+        public TokenOptions()
+            : base("/token")
+        {
+        }
+
 
         /// <summary>
         /// 认证方信息。
         /// </summary>
-        public string Issuer { get; set; } = "http://server.librame.net";
+        public string Issuer { get; set; } = "http://localhost:10768/";
 
         /// <summary>
         /// 使用方信息。
         /// </summary>
-        public string Audience { get; set; } = "http://client.librame.net";
+        public string Audience { get; set; } = "http://localhost:10768/";
 
         /// <summary>
         /// 过期时间间隔。

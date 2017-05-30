@@ -15,22 +15,22 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace LibrameCore.Utility
+namespace LibrameCore.Utilities
 {
     /// <summary>
-    /// <see cref="Type"/> 实用工具。
+    /// <see cref="Assembly"/> 实用工具。
     /// </summary>
-    public static class AssemblyUtil
+    public static class AssemblyUtility
     {
         /// <summary>
         /// 当前程序集。
         /// </summary>
         public readonly static Assembly CurrentAssembly = null;
 
-        static AssemblyUtil()
+        static AssemblyUtility()
         {
             if (CurrentAssembly == null)
-                CurrentAssembly = TypeUtil.GetAssembly<ILibrameBuilder>();
+                CurrentAssembly = TypeUtility.GetAssembly<ILibrameBuilder>();
         }
 
         

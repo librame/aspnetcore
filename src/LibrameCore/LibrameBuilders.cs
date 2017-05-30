@@ -18,7 +18,7 @@ using System;
 
 namespace LibrameCore
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// Librame 构建器接口。

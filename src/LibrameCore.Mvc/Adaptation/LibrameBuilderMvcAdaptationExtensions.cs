@@ -12,24 +12,26 @@
 
 namespace LibrameCore
 {
+    using Authentication;
+
     /// <summary>
-    /// Librame MVC 构建器适配静态扩展。
+    /// Librame 构建器 MVC 适配静态扩展。
     /// </summary>
-    public static class LibrameMvcBuilderAdaptationExtensions
+    public static class LibrameBuilderMvcAdaptationExtensions
     {
         /// <summary>
         /// 获取认证适配器。
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <param name="tokenGenerate">给定的令牌生成选项（可选）。</param>
+        /// <param name="tokenOptions">给定的令牌选项（可选）。</param>
         /// <returns>返回认证适配器。</returns>
-        public static Authentication.IAuthenticationAdapter GetAuthenticationAdapter(this ILibrameBuilder builder,
-            Authentication.TokenGenerateOptions tokenGenerate = null)
+        public static IAuthenticationAdapter GetAuthenticationAdapter(this ILibrameBuilder builder,
+            TokenOptions tokenOptions = null)
         {
-            var adapter = builder.GetAdapter<Authentication.IAuthenticationAdapter>();
+            var adapter = builder.GetAdapter<IAuthenticationAdapter>();
 
-            // 增强令牌生成器
-            adapter.BuildUpTokenGenerator(tokenGenerate);
+            // 增强令牌
+            adapter.BuildUpToken(tokenOptions);
 
             return adapter;
         }

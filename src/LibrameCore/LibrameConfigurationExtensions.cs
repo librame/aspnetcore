@@ -13,7 +13,7 @@
 using LibrameCore;
 using LibrameCore.Algorithm;
 using LibrameCore.Entity;
-using LibrameCore.Utility;
+using LibrameCore.Utilities;
 using System;
 using System.Collections.Generic;
 
@@ -24,6 +24,7 @@ namespace Microsoft.Extensions.Configuration
     /// </summary>
     public static class LibrameConfigurationExtensions
     {
+
         /// <summary>
         /// 尝试获取指定键名的值。
         /// </summary>

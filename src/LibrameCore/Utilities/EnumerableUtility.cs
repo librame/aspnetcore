@@ -15,12 +15,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LibrameCore.Utility
+namespace LibrameCore.Utilities
 {
     /// <summary>
     /// <see cref="Enumerable"/> 实用工具。
     /// </summary>
-    public static class EnumerableUtil
+    public static class EnumerableUtility
     {
 
         #region JoinString
@@ -31,7 +31,7 @@ namespace LibrameCore.Utility
         /// <param name="items">给定的集合。</param>
         /// <param name="connector">给定的连接符（默认为空）。</param>
         /// <returns>返回连接字符串。</returns>
-        public static string JoinString(this IEnumerable<string> items, string connector = StringUtil.EMPTY)
+        public static string JoinString(this IEnumerable<string> items, string connector = StringUtility.EMPTY)
         {
             if (items == null)
                 return string.Empty;
@@ -59,7 +59,7 @@ namespace LibrameCore.Utility
         /// <param name="connector">给定的连接符（默认为空）。</param>
         /// <returns>返回连接字符串。</returns>
         public static string JoinString<T>(this IEnumerable<T> items, Func<T, string> factory,
-            string connector = StringUtil.EMPTY)
+            string connector = StringUtility.EMPTY)
         {
             if (items == null)
                 return string.Empty;

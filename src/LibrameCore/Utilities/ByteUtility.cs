@@ -14,12 +14,12 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace LibrameCore.Utility
+namespace LibrameCore.Utilities
 {
     /// <summary>
     /// <see cref="Byte"/> 实用工具。
     /// </summary>
-    public static class ByteUtil
+    public static class ByteUtility
     {
 
         #region Encoding

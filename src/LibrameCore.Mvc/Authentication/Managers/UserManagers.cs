@@ -10,13 +10,21 @@
 
 #endregion
 
-namespace LibrameCore.Authentication
+namespace LibrameCore.Authentication.Managers
 {
+    using Utilities;
+
     /// <summary>
-    /// 用户认证接口。
+    /// 用户管理器接口。
     /// </summary>
-    public interface IUserAuthentication
+    public interface IUserManager
     {
+        /// <summary>
+        /// Librame 构建器。
+        /// </summary>
+        ILibrameBuilder Builder { get; }
+
+
         /// <summary>
         /// 验证用户。
         /// </summary>
@@ -29,10 +37,26 @@ namespace LibrameCore.Authentication
 
 
     /// <summary>
-    /// 用户认证。
+    /// 用户管理器。
     /// </summary>
-    public class UserAuthentication : IUserAuthentication
+    public class UserManager : IUserManager
     {
+        /// <summary>
+        /// 构造一个用户管理器实例。
+        /// </summary>
+        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        public UserManager(ILibrameBuilder builder)
+        {
+            Builder = builder.NotNull(nameof(builder));
+        }
+
+
+        /// <summary>
+        /// Librame 构建器。
+        /// </summary>
+        public ILibrameBuilder Builder { get; }
+
+
         /// <summary>
         /// 验证用户。
         /// </summary>

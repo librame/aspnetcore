@@ -16,12 +16,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace LibrameCore.Utility
+namespace LibrameCore.Utilities
 {
     /// <summary>
     /// <see cref="string"/> 实用工具。
     /// </summary>
-    public static class StringUtil
+    public static class StringUtility
     {
         /// <summary>
         /// 空字符串。

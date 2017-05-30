@@ -1,6 +1,6 @@
 using LibrameCore.Entity;
 using LibrameCore.Entity.Descriptors;
-using LibrameCore.Utility;
+using LibrameCore.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -35,10 +35,10 @@ namespace LibrameCore.Tests.Entity
 
                 // 重置实体程序集
                 source[EntityOptions.AutomappingAssembliesKey]
-                    = TypeUtil.GetAssemblyName<Article>().Name;
+                    = TypeUtility.GetAssemblyName<Article>().Name;
             });
 
-            // 获取实体适配器（因外界未注册 AddEntityFrameworkSqlServer，此处使用内部集成注册，因此连接字符串不能为空）
+            // 获取实体适配器（因之前未注册 AddEntityFrameworkSqlServer，此处使用内部集成注册，因此连接字符串不能为空）
             var adapter = builder.GetEntityAdapter(connectionString);
             
             // 初始化文章

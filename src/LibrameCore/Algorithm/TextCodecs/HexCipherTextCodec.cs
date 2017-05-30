@@ -16,7 +16,7 @@ using System;
 
 namespace LibrameCore.Algorithm.TextCodecs
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 十六进制密文编解码器。

@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 
 namespace LibrameCore.Entity
 {
-    using Utility;
+    using Utilities;
 
     /// <summary>
     /// 实体选项。
@@ -40,7 +40,7 @@ namespace LibrameCore.Entity
         /// 默认自映射程序集。
         /// </summary>
         public static readonly string DefaultAutomappingAssemblies
-            = TypeUtil.GetAssemblyName<EntityOptions>().Name;
+            = TypeUtility.GetAssemblyName<EntityOptions>().Name;
 
         /// <summary>
         /// 自映射程序集集合。

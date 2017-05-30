@@ -12,12 +12,12 @@
 
 using System.IO;
 
-namespace LibrameCore.Utility
+namespace LibrameCore.Utilities
 {
     /// <summary>
     /// <see cref="Path"/> 实用工具。
     /// </summary>
-    public static class PathUtil
+    public static class PathUtility
     {
         /// <summary>
         /// 将指定相对路径附加到当前基础路径。

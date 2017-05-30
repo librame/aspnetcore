@@ -16,7 +16,7 @@ using System;
 namespace LibrameCore.Algorithm
 {
     using Adaptation;
-    using Utility;
+    using Utilities;
     
     /// <summary>
     /// 算法适配器接口。

@@ -10,7 +10,7 @@
 
 #endregion
 
-using LibrameCore.Utility;
+using LibrameCore.Utilities;
 using System.Linq.Expressions;
 
 namespace System.Linq

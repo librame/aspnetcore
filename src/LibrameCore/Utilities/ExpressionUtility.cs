@@ -14,12 +14,12 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace LibrameCore.Utility
+namespace LibrameCore.Utilities
 {
     /// <summary>
     /// <see cref="Expression"/> 实用工具。
     /// </summary>
-    public static class ExpressionUtil
+    public static class ExpressionUtility
     {
         /// <summary>
         /// 解析指定属性表达式对应的名称。
