@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace LibrameCore.Website
+namespace LibrameStandard.Website
 {
     using Entity.Providers;
     

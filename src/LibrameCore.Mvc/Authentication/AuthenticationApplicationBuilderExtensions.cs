@@ -12,7 +12,7 @@
 
 using Microsoft.AspNetCore.Builder;
 
-namespace LibrameCore.Authentication
+namespace LibrameStandard.Authentication
 {
     using Utilities;
 
@@ -29,7 +29,7 @@ namespace LibrameCore.Authentication
         /// <param name="options">给定的令牌选项（可选）。</param>
         /// <param name="builder">给定的 Librame 构建器（可选）。</param>
         public static void UseLibrameAuthenticationToken(this IApplicationBuilder app,
-            TokenOptions options = null, ILibrameBuilder builder = null)
+            TokenHandlerSettings options = null, ILibrameBuilder builder = null)
         {
             app.NotNull(nameof(app));
 

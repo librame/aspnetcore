@@ -9,10 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Utilities\AssemblyUtilityTestResource.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="LibrameStandard" Version="1.4.1706.21" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="1.1.2" />

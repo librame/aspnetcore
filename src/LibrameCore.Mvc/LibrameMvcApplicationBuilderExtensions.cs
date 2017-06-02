@@ -10,9 +10,9 @@
 
 #endregion
 
-using LibrameCore;
-using LibrameCore.Authentication;
-using LibrameCore.Utilities;
+using LibrameStandard;
+using LibrameStandard.Authentication;
+using LibrameStandard.Utilities;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -31,7 +31,7 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="tokenGenerate">给定的令牌生成选项（可选）。</param>
         /// <returns>返回应用构建器接口。</returns>
         public static IApplicationBuilder UseLibrameMvc(this IApplicationBuilder app,
-            TokenOptions tokenGenerate = null)
+            TokenHandlerSettings tokenGenerate = null)
         {
             app.NotNull(nameof(app));
 

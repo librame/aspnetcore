@@ -10,11 +10,11 @@
 
 #endregion
 
-using LibrameCore.Entity;
+using LibrameStandard.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace LibrameCore.Website.Controllers
+namespace LibrameStandard.Website.Controllers
 {
     using Entities;
 

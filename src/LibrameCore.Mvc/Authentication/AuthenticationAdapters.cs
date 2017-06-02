@@ -13,7 +13,7 @@
 using Microsoft.Extensions.Options;
 using System;
 
-namespace LibrameCore.Authentication
+namespace LibrameStandard.Authentication
 {
     using Adaptation;
     using Managers;

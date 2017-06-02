@@ -12,16 +12,17 @@
 
 using System.Runtime.InteropServices;
 
-namespace LibrameCore.Authentication
+namespace LibrameStandard.Authentication
 {
+    using Adaptation;
     using Managers;
     using Utilities;
 
     /// <summary>
-    /// 认证选项。
+    /// 认证适配器设置。
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public class AuthenticationOptions : ILibrameOptions
+    public class AuthenticationAdapterSettings : IAdapterSettings
     {
         /// <summary>
         /// 键名前缀。
@@ -39,7 +40,7 @@ namespace LibrameCore.Authentication
         /// 默认令牌生成器类型名。
         /// </summary>
         public static readonly string DefaultTokenGeneratorTypeName
-            = typeof(TokenGenerator).AssemblyQualifiedNameWithoutVcp();
+            = typeof(TokenGenerator).AsAssemblyQualifiedNameWithoutVCP();
 
         /// <summary>
         /// 令牌生成器类型名。
@@ -60,7 +61,7 @@ namespace LibrameCore.Authentication
         /// 默认令牌处理程序类型名。
         /// </summary>
         public static readonly string DefaultTokenHandlerTypeName
-            = typeof(TokenHandler).AssemblyQualifiedNameWithoutVcp();
+            = typeof(TokenHandler).AsAssemblyQualifiedNameWithoutVCP();
 
         /// <summary>
         /// 令牌处理程序类型名。
@@ -81,7 +82,7 @@ namespace LibrameCore.Authentication
         /// 默认用户管理器类型名。
         /// </summary>
         public static readonly string DefaultUserManagerTypeName
-            = typeof(UserManager).AssemblyQualifiedNameWithoutVcp();
+            = typeof(UserManager).AsAssemblyQualifiedNameWithoutVCP();
 
         /// <summary>
         /// 用户管理器类型名。

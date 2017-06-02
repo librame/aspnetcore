@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LibrameStandard" Version="1.4.1706.21" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\LibrameCore\LibrameCore.csproj" />
   </ItemGroup>
 

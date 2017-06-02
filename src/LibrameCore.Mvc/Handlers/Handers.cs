@@ -12,16 +12,16 @@
 
 using Microsoft.AspNetCore.Builder;
 
-namespace LibrameCore.Handlers
+namespace LibrameStandard.Handlers
 {
     using Utilities;
-    
+
     /// <summary>
     /// 泛型处理程序接口。
     /// </summary>
-    /// <typeparam name="TOptions">指定的选项类型。</typeparam>
-    public interface IHander<TOptions>
-        where TOptions : HandlerOptions
+    /// <typeparam name="THandlerSettings">指定的处理程序设置类型。</typeparam>
+    public interface IHander<THandlerSettings>
+        where THandlerSettings : HandlerSettings
     {
         /// <summary>
         /// Librame 构建器。
@@ -30,9 +30,9 @@ namespace LibrameCore.Handlers
 
 
         /// <summary>
-        /// 选项。
+        /// 处理程序设置。
         /// </summary>
-        TOptions Options { get; }
+        THandlerSettings Settings { get; }
 
 
         /// <summary>
@@ -46,9 +46,9 @@ namespace LibrameCore.Handlers
     /// <summary>
     /// 抽象泛型处理程序。
     /// </summary>
-    /// <typeparam name="TOptions">指定的选项类型。</typeparam>
-    public abstract class AbstractHander<TOptions> : IHander<TOptions>
-        where TOptions : HandlerOptions
+    /// <typeparam name="THandlerSettings">指定的处理程序设置类型。</typeparam>
+    public abstract class AbstractHander<THandlerSettings> : IHander<THandlerSettings>
+        where THandlerSettings : HandlerSettings
     {
         /// <summary>
         /// 构建一个默认处理程序实例。
@@ -67,9 +67,9 @@ namespace LibrameCore.Handlers
 
 
         /// <summary>
-        /// 选项。
+        /// 处理程序设置。
         /// </summary>
-        public TOptions Options => Builder.GetService<TOptions>();
+        public THandlerSettings Settings => Builder.GetService<THandlerSettings>();
 
 
         /// <summary>

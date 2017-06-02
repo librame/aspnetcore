@@ -12,34 +12,41 @@
 
 using Microsoft.AspNetCore.Http;
 
-namespace LibrameCore.Handlers
+namespace LibrameStandard.Handlers
 {
     using Utilities;
 
     /// <summary>
-    /// 处理程序选项。
+    /// 处理程序设置接口。
     /// </summary>
-    public class HandlerOptions : ILibrameOptions
+    public interface IHandlerSettings
+    {
+    }
+
+    /// <summary>
+    /// 处理程序设置。
+    /// </summary>
+    public class HandlerSettings : IHandlerSettings
     {
         /// <summary>
-        /// 构造一个默认处理程序选项。
+        /// 构造一个默认处理程序适配器设置。
         /// </summary>
-        public HandlerOptions()
+        public HandlerSettings()
         {
         }
         /// <summary>
-        /// 构造一个处理程序选项。
+        /// 构造一个处理程序适配器设置。
         /// </summary>
         /// <param name="path">给定的路径字符串。</param>
-        public HandlerOptions(string path)
+        public HandlerSettings(string path)
             : this(new PathString(path))
         {
         }
         /// <summary>
-        /// 构造一个处理程序选项。
+        /// 构造一个处理程序适配器设置。
         /// </summary>
         /// <param name="path">给定的路径字符串。</param>
-        public HandlerOptions(PathString path)
+        public HandlerSettings(PathString path)
         {
             Path = path.NotNull(nameof(path));
         }
@@ -49,10 +56,5 @@ namespace LibrameCore.Handlers
         /// 映射路径。
         /// </summary>
         public PathString Path { get; set; }
-
-        ///// <summary>
-        ///// 映射操作。
-        ///// </summary>
-        //public Action<IApplicationBuilder> Handle { get; set; }
     }
 }

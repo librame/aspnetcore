@@ -14,7 +14,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace LibrameCore.Authentication
+namespace LibrameStandard.Authentication
 {
     using Utilities;
 
@@ -26,7 +26,7 @@ namespace LibrameCore.Authentication
         /// <summary>
         /// 令牌生成选项。
         /// </summary>
-        TokenOptions Options { get; }
+        TokenHandlerSettings Options { get; }
 
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace LibrameCore.Authentication
         /// 构造一个令牌生成器。
         /// </summary>
         /// <param name="option">给定的令牌生成器选项。</param>
-        public TokenGenerator(TokenOptions option)
+        public TokenGenerator(TokenHandlerSettings option)
         {
             Options = option.NotNull(nameof(option));
         }
@@ -56,7 +56,7 @@ namespace LibrameCore.Authentication
         /// <summary>
         /// 令牌生成选项。
         /// </summary>
-        public TokenOptions Options { get; }
+        public TokenHandlerSettings Options { get; }
 
 
         /// <summary>

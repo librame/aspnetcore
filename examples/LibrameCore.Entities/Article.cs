@@ -10,11 +10,11 @@
 
 #endregion
 
-using LibrameCore.Entity.Descriptors;
+using LibrameStandard.Entity.Descriptors;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace LibrameCore.Entities
+namespace LibrameStandard.Entities
 {
     /// <summary>
     /// 文章。

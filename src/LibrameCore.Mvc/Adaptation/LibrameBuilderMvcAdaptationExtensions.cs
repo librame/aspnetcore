@@ -10,7 +10,7 @@
 
 #endregion
 
-namespace LibrameCore
+namespace LibrameStandard
 {
     using Authentication;
 
@@ -26,7 +26,7 @@ namespace LibrameCore
         /// <param name="tokenOptions">给定的令牌选项（可选）。</param>
         /// <returns>返回认证适配器。</returns>
         public static IAuthenticationAdapter GetAuthenticationAdapter(this ILibrameBuilder builder,
-            TokenOptions tokenOptions = null)
+            TokenHandlerSettings tokenOptions = null)
         {
             var adapter = builder.GetAdapter<IAuthenticationAdapter>();
 

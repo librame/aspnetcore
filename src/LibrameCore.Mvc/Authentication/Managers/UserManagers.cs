@@ -10,7 +10,7 @@
 
 #endregion
 
-namespace LibrameCore.Authentication.Managers
+namespace LibrameStandard.Authentication.Managers
 {
     using Utilities;
 

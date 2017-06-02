@@ -1,10 +1,10 @@
-using LibrameCore.Entity;
-using LibrameCore.Entity.Descriptors;
-using LibrameCore.Utilities;
+using LibrameStandard.Entity;
+using LibrameStandard.Entity.Descriptors;
+using LibrameStandard.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace LibrameCore.Tests.Entity
+namespace LibrameStandard.Tests.Entity
 {
     public class EntityTests
     {
@@ -15,7 +15,7 @@ namespace LibrameCore.Tests.Entity
 
             // 注册实体框架
             var connectionString = "Data Source=PC-I74910MQ\\SQLEXPRESS;Initial Catalog=librame_test;Integrated Security=True";
-            
+
             //// 默认实体模块使用 DbContextProvider，也可更换为自己的需要，但需同时修改下面配置源
             //services.AddEntityFrameworkSqlServer().AddDbContext<DbContextProvider>(options =>
             //{
@@ -27,15 +27,15 @@ namespace LibrameCore.Tests.Entity
             //});
 
             // 注册 Librame （默认使用内存配置源）
-            var builder = services.AddLibrameByMemory(source =>
+            var builder = services.AddLibrameMvcByMemory(source =>
             {
                 //// 修改默认的 DbContextProvider
                 //source[EntityOptions.EntityProviderTypeNameKey]
                 //    = typeof(DbContextProvider).AssemblyQualifiedNameWithoutVcp();
 
                 // 重置实体程序集
-                source[EntityOptions.AutomappingAssembliesKey]
-                    = TypeUtility.GetAssemblyName<Article>().Name;
+                source[EntityAdapterSettings.AutomappingAssembliesKey]
+                    = TypeUtility.AsAssemblyName<Article>().Name;
             });
 
             // 获取实体适配器（因之前未注册 AddEntityFrameworkSqlServer，此处使用内部集成注册，因此连接字符串不能为空）

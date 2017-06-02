@@ -12,7 +12,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace LibrameCore
+namespace LibrameStandard
 {
     using Utilities;
 
@@ -22,16 +22,16 @@ namespace LibrameCore
     [StructLayout(LayoutKind.Sequential)]
     public class LibrameMvcOptions : LibrameOptions
     {
-        private Authentication.AuthenticationOptions _authentication;
+        private Authentication.AuthenticationAdapterSettings _authentication;
         /// <summary>
         /// 认证选项。
         /// </summary>
-        public Authentication.AuthenticationOptions Authentication
+        public Authentication.AuthenticationAdapterSettings Authentication
         {
             get
             {
                 if (_authentication == null)
-                    _authentication = new Authentication.AuthenticationOptions();
+                    _authentication = new Authentication.AuthenticationAdapterSettings();
 
                 return _authentication;
             }

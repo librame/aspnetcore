@@ -13,19 +13,19 @@
 using Microsoft.IdentityModel.Tokens;
 using System;
 
-namespace LibrameCore.Authentication
+namespace LibrameStandard.Authentication
 {
     using Handlers;
 
     /// <summary>
-    /// 令牌选项。
+    /// 令牌处理程序设置。
     /// </summary>
-    public class TokenOptions : HandlerOptions
+    public class TokenHandlerSettings : HandlerSettings
     {
         /// <summary>
-        /// 构造一个令牌选项。
+        /// 构造一个令牌处理程序设置。
         /// </summary>
-        public TokenOptions()
+        public TokenHandlerSettings()
             : base("/token")
         {
         }

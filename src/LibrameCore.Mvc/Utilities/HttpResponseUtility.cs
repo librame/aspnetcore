@@ -17,7 +17,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LibrameCore.Utilities
+namespace LibrameStandard.Utilities
 {
     /// <summary>
     /// <see cref="HttpResponse"/> 实用工具。

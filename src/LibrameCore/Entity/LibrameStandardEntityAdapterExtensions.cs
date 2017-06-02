@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LibrameCore
+namespace LibrameStandard.Entity
 {
     using Utilities;
 
@@ -29,7 +29,7 @@ namespace LibrameCore
         /// <param name="adapter">给定的实体适配器接口。</param>
         /// <param name="connectionString">给定的数据库连接字符串（可选）。</param>
         /// <returns>返回实体适配器。</returns>
-        public static Entity.IEntityAdapter BuildUpEntityFrameworkSqlServer(this Entity.IEntityAdapter adapter,
+        public static IEntityAdapter BuildUpEntityFrameworkSqlServer(this IEntityAdapter adapter,
             string connectionString = null)
         {
             adapter.NotNull(nameof(adapter));
@@ -37,7 +37,7 @@ namespace LibrameCore
             // 如果没有注册数据库提供程序
             if (!adapter.Builder.ContainsService<IDatabaseProvider>())
             {
-                adapter.Builder.Services.AddEntityFrameworkSqlServer().AddDbContext<Entity.Providers.DbContextProvider>(options =>
+                adapter.Builder.Services.AddEntityFrameworkSqlServer().AddDbContext<Providers.DbContextProvider>(options =>
                 {
                     // 注入连接字符串
                     options.UseSqlServer(connectionString, sql =>

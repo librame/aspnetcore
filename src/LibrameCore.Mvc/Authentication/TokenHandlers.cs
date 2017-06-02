@@ -13,7 +13,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace LibrameCore.Authentication
+namespace LibrameStandard.Authentication
 {
     using Managers;
     using Handlers;
@@ -22,7 +22,7 @@ namespace LibrameCore.Authentication
     /// <summary>
     /// 令牌处理程序接口。
     /// </summary>
-    public interface ITokenHandler : IHander<TokenOptions>
+    public interface ITokenHandler : IHander<TokenHandlerSettings>
     {
         /// <summary>
         /// 令牌生成器。
@@ -39,7 +39,7 @@ namespace LibrameCore.Authentication
     /// <summary>
     /// 令牌处理程序。
     /// </summary>
-    public class TokenHandler : AbstractHander<TokenOptions>, ITokenHandler
+    public class TokenHandler : AbstractHander<TokenHandlerSettings>, ITokenHandler
     {
         /// <summary>
         /// 构建一个默认处理程序实例。
@@ -87,7 +87,7 @@ namespace LibrameCore.Authentication
                 var result = new
                 {
                     access_token = token,
-                    expires_in = (int)Options.Expiration.TotalSeconds,
+                    expires_in = (int)Settings.Expiration.TotalSeconds,
                 };
 
                 // Serialize and return the response

@@ -12,7 +12,7 @@
 
 using System;
 
-namespace LibrameCore.Authentication
+namespace LibrameStandard.Authentication
 {
     /// <summary>
     /// 用户模型接口。
