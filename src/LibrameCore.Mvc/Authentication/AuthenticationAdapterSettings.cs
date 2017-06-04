@@ -30,25 +30,27 @@ namespace LibrameStandard.Authentication
         internal static readonly string KeyPrefix = (nameof(Authentication) + ":");
 
 
-        /// <summary>
-        /// 令牌生成器类型名键。
-        /// </summary>
-        public static readonly string TokenGeneratorTypeNameKey
-            = (KeyPrefix + nameof(TokenGeneratorTypeName));
+        #region Token
 
         /// <summary>
-        /// 默认令牌生成器类型名。
+        /// 令牌编解码器类型名键。
         /// </summary>
-        public static readonly string DefaultTokenGeneratorTypeName
-            = typeof(TokenGenerator).AsAssemblyQualifiedNameWithoutVCP();
+        public static readonly string TokenCodecTypeNameKey
+            = (KeyPrefix + nameof(TokenCodecTypeName));
 
         /// <summary>
-        /// 令牌生成器类型名。
+        /// 默认令牌编解码器类型名。
+        /// </summary>
+        public static readonly string DefaultTokenCodecTypeName
+            = typeof(TokenCodec).AsAssemblyQualifiedNameWithoutVCP();
+
+        /// <summary>
+        /// 令牌编解码器类型名。
         /// </summary>
         /// <value>
-        /// 默认为 <see cref="DefaultTokenGeneratorTypeName"/>。
+        /// 默认为 <see cref="DefaultTokenCodecTypeName"/>。
         /// </value>
-        public string TokenGeneratorTypeName { get; set; } = DefaultTokenGeneratorTypeName;
+        public string TokenCodecTypeName { get; set; } = DefaultTokenCodecTypeName;
 
 
         /// <summary>
@@ -73,6 +75,31 @@ namespace LibrameStandard.Authentication
 
 
         /// <summary>
+        /// 令牌管理器类型名键。
+        /// </summary>
+        public static readonly string TokenManagerTypeNameKey
+            = (KeyPrefix + nameof(TokenManagerTypeName));
+
+        /// <summary>
+        /// 默认令牌管理器类型名。
+        /// </summary>
+        public static readonly string DefaultTokenManagerTypeName
+            = typeof(TokenManager).AsAssemblyQualifiedNameWithoutVCP();
+
+        /// <summary>
+        /// 令牌管理器类型名。
+        /// </summary>
+        /// <value>
+        /// 默认为 <see cref="DefaultTokenManagerTypeName"/>。
+        /// </value>
+        public string TokenManagerTypeName { get; set; } = DefaultTokenManagerTypeName;
+
+        #endregion
+
+
+        #region User
+
+        /// <summary>
         /// 用户管理器类型名键。
         /// </summary>
         public static readonly string UserManagerTypeNameKey
@@ -91,6 +118,8 @@ namespace LibrameStandard.Authentication
         /// 默认为 <see cref="DefaultUserManagerTypeName"/>。
         /// </value>
         public string UserManagerTypeName { get; set; } = DefaultUserManagerTypeName;
+
+        #endregion
 
     }
 }

@@ -10,14 +10,12 @@
 
 #endregion
 
-using Microsoft.Extensions.Options;
 using System;
 
 namespace LibrameStandard.Authentication
 {
     using Adaptation;
     using Managers;
-    using Utilities;
 
     /// <summary>
     /// 认证适配器接口。
@@ -25,25 +23,24 @@ namespace LibrameStandard.Authentication
     public interface IAuthenticationAdapter : IAdapter
     {
         /// <summary>
-        /// Librame 构建器。
-        /// </summary>
-        ILibrameBuilder Builder { get; }
-
-
-        /// <summary>
         /// 令牌生成器。
         /// </summary>
-        ITokenGenerator TokenGenerator { get; }
+        ITokenCodec TokenCodec { get; }
+        
+        /// <summary>
+        /// 令牌处理程序。
+        /// </summary>
+        ITokenHandler TokenHandler { get; }
+
+        /// <summary>
+        /// 令牌管理器。
+        /// </summary>
+        ITokenManager TokenManager { get; }
 
         /// <summary>
         /// 用户管理器。
         /// </summary>
         IUserManager UserManager { get; }
-
-        /// <summary>
-        /// 令牌处理程序。
-        /// </summary>
-        ITokenHandler TokenHandler { get; }
 
 
         /// <summary>
@@ -63,26 +60,17 @@ namespace LibrameStandard.Authentication
         /// 构造一个算法适配器实例。
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
-        /// <param name="options">给定的选择项。</param>
-        public AuthenticationAdapter(ILibrameBuilder builder, IOptions<LibrameMvcOptions> options)
-            : base(nameof(Authentication), options)
+        public AuthenticationAdapter(ILibrameBuilder builder)
+            : base(nameof(Authentication), builder)
         {
-            Builder = builder.NotNull(nameof(builder));
-
             TryAddAuthentication();
         }
 
 
         /// <summary>
-        /// Librame 构建器。
+        /// 令牌编解码器。
         /// </summary>
-        public ILibrameBuilder Builder { get; }
-
-
-        /// <summary>
-        /// 令牌生成器。
-        /// </summary>
-        public ITokenGenerator TokenGenerator => Builder.GetService<ITokenGenerator>();
+        public ITokenCodec TokenCodec => TokenHandler.TokenManager.Codec;
 
         /// <summary>
         /// 令牌处理程序。
@@ -90,9 +78,14 @@ namespace LibrameStandard.Authentication
         public ITokenHandler TokenHandler => Builder.GetService<ITokenHandler>();
 
         /// <summary>
+        /// 令牌管理器。
+        /// </summary>
+        public ITokenManager TokenManager => TokenHandler.TokenManager;
+
+        /// <summary>
         /// 用户管理器。
         /// </summary>
-        public IUserManager UserManager => Builder.GetService<IUserManager>();
+        public IUserManager UserManager => TokenHandler.UserManager;
 
 
         /// <summary>
@@ -101,22 +94,23 @@ namespace LibrameStandard.Authentication
         /// <returns>返回 Librame 构建器。</returns>
         public virtual ILibrameBuilder TryAddAuthentication()
         {
-            var options = (Options as LibrameMvcOptions).Authentication;
+            var options = (Builder.Options as LibrameMvcOptions).Authentication;
 
             // 用户管理器
             var userManagerType = Type.GetType(options.UserManagerTypeName, throwOnError: true);
-            typeof(IUserManager).CanAssignableFromType(userManagerType);
             Builder.TryAddTransient(typeof(IUserManager), userManagerType);
 
-            // 令牌生成器
-            var tokenGeneratorType = Type.GetType(options.TokenGeneratorTypeName, throwOnError: true);
-            typeof(ITokenGenerator).CanAssignableFromType(tokenGeneratorType);
-            Builder.TryAddTransient(typeof(ITokenGenerator), tokenGeneratorType);
+            // 令牌编解码器
+            var tokenCodecType = Type.GetType(options.TokenCodecTypeName, throwOnError: true);
+            Builder.TryAddTransient(typeof(ITokenCodec), tokenCodecType);
             
             // 令牌处理程序
             var tokenHandlerType = Type.GetType(options.TokenHandlerTypeName, throwOnError: true);
-            typeof(ITokenHandler).CanAssignableFromType(tokenHandlerType);
             Builder.TryAddTransient(typeof(ITokenHandler), tokenHandlerType);
+
+            // 令牌管理器
+            var tokenManagerType = Type.GetType(options.TokenManagerTypeName, throwOnError: true);
+            Builder.TryAddTransient(typeof(ITokenManager), tokenManagerType);
 
             return Builder;
         }

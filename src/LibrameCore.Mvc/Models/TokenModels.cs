@@ -10,29 +10,29 @@
 
 #endregion
 
-using LibrameStandard.Entity.Descriptors;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-
-namespace LibrameCore.Entities
+namespace LibrameStandard.Authentication.Models
 {
     /// <summary>
-    /// 文章。
+    /// 令牌模型接口。
     /// </summary>
-    [Description("文章")]
-    public class Article : AbstractCreateDataIdDescriptor<int>
+    public interface ITokenModel
     {
         /// <summary>
-        /// 标题。
+        /// 名称。
         /// </summary>
-        [DisplayName("标题")]
-        public virtual string Title { get; set; }
-
-        /// <summary>
-        /// 内容。
-        /// </summary>
-        [DisplayName("内容")]
-        [DataType(DataType.MultilineText)]
-        public virtual string Descr { get; set; }
+        string Name { get; }
     }
+
+
+    /// <summary>
+    /// 令牌模型。
+    /// </summary>
+    public class TokenModel : ITokenModel
+    {
+        /// <summary>
+        /// 名称。
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+    }
+
 }

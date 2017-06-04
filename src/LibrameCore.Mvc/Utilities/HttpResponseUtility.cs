@@ -70,7 +70,7 @@ namespace LibrameStandard.Utilities
             response.StatusCode = (int)statusCode;
 
             var typeInfo = value.GetType().GetTypeInfo();
-            if (typeInfo.IsValueType || typeInfo.IsAnsiClass)
+            if (typeInfo.IsValueType || typeInfo.IsString())
             {
                 // 值类型和字符串类型直接写入
                 await response.WriteAsync(value.ToString(), encoding, cancellationToken);

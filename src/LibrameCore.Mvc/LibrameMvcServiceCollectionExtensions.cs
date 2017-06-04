@@ -12,6 +12,8 @@
 
 using LibrameStandard;
 using LibrameStandard.Authentication;
+using LibrameStandard.Entity;
+using LibrameStandard.Handlers;
 using LibrameStandard.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
@@ -48,22 +50,26 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<IDictionary<string, string>> initialDataAction = null)
             where TLibrameOptions : class, ILibrameOptions, new()
         {
-            var configurationSource = LibrameConfigurationExtensions.InitialLibrameOptions();
+            var initialData = LibrameConfigurationExtensions.InitialLibrameOptions();
+
+            // 修改默认的数据库上下文类型名
+            initialData[EntityAutomappingSetting.DbContextTypeNameKey]
+                = typeof(SqlServerDbContext).AsAssemblyQualifiedNameWithoutVCP();
 
             // Authentication
-            configurationSource.Add(AuthenticationAdapterSettings.TokenGeneratorTypeNameKey,
-                AuthenticationAdapterSettings.DefaultTokenGeneratorTypeName);
-            configurationSource.Add(AuthenticationAdapterSettings.TokenHandlerTypeNameKey,
+            initialData.Add(AuthenticationAdapterSettings.TokenCodecTypeNameKey,
+                AuthenticationAdapterSettings.DefaultTokenCodecTypeName);
+            initialData.Add(AuthenticationAdapterSettings.TokenHandlerTypeNameKey,
                 AuthenticationAdapterSettings.DefaultTokenHandlerTypeName);
-            configurationSource.Add(AuthenticationAdapterSettings.UserManagerTypeNameKey,
+            initialData.Add(AuthenticationAdapterSettings.UserManagerTypeNameKey,
                 AuthenticationAdapterSettings.DefaultUserManagerTypeName);
 
             if (initialDataAction != null)
-                initialDataAction.Invoke(configurationSource);
+                initialDataAction.Invoke(initialData);
 
             return services.AddLibrameMvc(config =>
             {
-                var builder = config.Add(new MemoryConfigurationSource { InitialData = configurationSource });
+                var builder = config.Add(new MemoryConfigurationSource { InitialData = initialData });
 
                 return builder.Build();
             });
@@ -169,7 +175,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var builder = services.AddLibrame<TLibrameOptions>(configuration);
 
             // 添加 MVC 程序集的所有适配器模块
-            builder.TryAddAdaptation(typeof(LibrameStandard.Handlers.HandlerSettings).AsAssembly());
+            builder.TryAddAdaptation(typeof(HandlerSettings).AsAssembly());
             
             return builder;
         }

@@ -13,18 +13,16 @@ namespace LibrameStandard.Mvc.Tests.Authentication
 
             // 注册 Librame MVC （默认使用内存配置源）
             var builder = services.AddLibrameMvcByMemory();
-
+            
             // 获取认证适配器
-            var tokenGenerate = new TokenHandlerSettings();
-
-            var adapter = builder.GetAuthenticationAdapter(tokenGenerate);
+            var adapter = builder.GetAuthenticationAdapter(new TokenHandlerSettings());
             Assert.NotNull(adapter);
-            Assert.NotNull(adapter.TokenGenerator);
+            Assert.NotNull(adapter.TokenCodec);
             Assert.NotNull(adapter.UserManager);
 
-            var tokenGenerateOptions = adapter.TokenGenerator.Options;
-            Assert.NotNull(tokenGenerateOptions);
-            Assert.NotNull(tokenGenerateOptions.SigningCredentials);
+            var settings = adapter.TokenCodec.Settings;
+            Assert.NotNull(settings);
+            Assert.NotNull(settings.SigningCredentials);
         }
 
     }

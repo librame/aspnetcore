@@ -23,6 +23,7 @@ namespace LibrameStandard
     /// </summary>
     public static class AuthenticationAdapterExtensions
     {
+
         /// <summary>
         /// 增强令牌。
         /// </summary>
@@ -33,8 +34,7 @@ namespace LibrameStandard
             TokenHandlerSettings settings = null)
         {
             adapter.NotNull(nameof(adapter));
-
-            // 令牌生成选项
+            
             if (settings == null)
                 settings = new TokenHandlerSettings();
 
@@ -49,7 +49,7 @@ namespace LibrameStandard
                     SecurityAlgorithms.HmacSha256);
             }
 
-            // 注入令牌生成选项
+            // 注入令牌处理程序设置
             adapter.Builder.Services.AddSingleton(settings);
 
             return adapter;

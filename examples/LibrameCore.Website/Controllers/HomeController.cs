@@ -14,15 +14,15 @@ using LibrameStandard.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace LibrameStandard.Website.Controllers
+namespace LibrameCore.Website.Controllers
 {
     using Entities;
 
     public class HomeController : Controller
     {
-        private readonly IRepository<Article> _repository;
+        private readonly IRepository<SqlServerDbContext, Article> _repository;
 
-        public HomeController(IRepository<Article> repository)
+        public HomeController(IRepository<SqlServerDbContext, Article> repository)
         {
             _repository = repository;
         }

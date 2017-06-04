@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibrameStandard.Entity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace LibrameStandard.Website
+namespace LibrameCore.Website
 {
-    using Entity.Providers;
-    
+
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -38,19 +38,18 @@ namespace LibrameStandard.Website
             // Add framework services.
             services.AddMvc();
 
-            //// Librame 实体模块默认使用 DbContextProvider，也可更换为自己的需要，但需同时修改相关配置（详情参见 tests 实体测试）
-            //services.AddEntityFrameworkSqlServer().AddDbContext<DbContextProvider>(options =>
-            //{
-            //    options.UseSqlServer(Configuration.GetConnectionString("SqlServer"), sql =>
-            //    {
-            //        sql.UseRowNumberForPaging();
-            //        sql.MaxBatchSize(50);
-            //    });
-            //});
+            // 默认使用 SqlServerDbContext
+            services.AddEntityFrameworkSqlServer().AddDbContext<SqlServerDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("SqlServer"), sql =>
+                {
+                    sql.UseRowNumberForPaging();
+                    sql.MaxBatchSize(50);
+                });
+            });
 
             // Librame MVC
-            services.AddLibrameMvc(Configuration.GetSection("Librame"))
-                .GetEntityAdapter(Configuration.GetConnectionString("SqlServer")); // 因之前未注册 AddEntityFrameworkSqlServer，此处使用内部集成注册，因此连接字符串不能为空
+            services.AddLibrameMvc(Configuration.GetSection("Librame"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

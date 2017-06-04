@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 
 namespace LibrameStandard
 {
-    using Utilities;
+    using Authentication;
 
     /// <summary>
     /// Librame MVC 选项接口。
@@ -22,24 +22,12 @@ namespace LibrameStandard
     [StructLayout(LayoutKind.Sequential)]
     public class LibrameMvcOptions : LibrameOptions
     {
-        private Authentication.AuthenticationAdapterSettings _authentication;
+
         /// <summary>
         /// 认证选项。
         /// </summary>
-        public Authentication.AuthenticationAdapterSettings Authentication
-        {
-            get
-            {
-                if (_authentication == null)
-                    _authentication = new Authentication.AuthenticationAdapterSettings();
-
-                return _authentication;
-            }
-            set
-            {
-                _authentication = value.NotNull(nameof(value));
-            }
-        }
+        public AuthenticationAdapterSettings Authentication { get; set; }
+            = new AuthenticationAdapterSettings();
 
     }
 }

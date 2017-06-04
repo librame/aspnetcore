@@ -28,10 +28,10 @@ namespace Microsoft.AspNetCore.Builder
         /// 使用 Librame 应用。
         /// </summary>
         /// <param name="app">给定的应用构建器接口。</param>
-        /// <param name="tokenGenerate">给定的令牌生成选项（可选）。</param>
+        /// <param name="tokenSettings">给定的令牌处理程序设置（可选）。</param>
         /// <returns>返回应用构建器接口。</returns>
         public static IApplicationBuilder UseLibrameMvc(this IApplicationBuilder app,
-            TokenHandlerSettings tokenGenerate = null)
+            TokenHandlerSettings tokenSettings = null)
         {
             app.NotNull(nameof(app));
 
@@ -42,7 +42,7 @@ namespace Microsoft.AspNetCore.Builder
             app.UseHttpContext(builder);
 
             // 运行认证令牌
-            app.UseLibrameAuthenticationToken(tokenGenerate, builder);
+            app.UseLibrameAuthenticationToken(tokenSettings, builder);
 
             return app;
         }

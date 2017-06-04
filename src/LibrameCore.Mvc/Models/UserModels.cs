@@ -12,7 +12,7 @@
 
 using System;
 
-namespace LibrameStandard.Authentication
+namespace LibrameStandard.Authentication.Models
 {
     /// <summary>
     /// 用户模型接口。
@@ -60,7 +60,7 @@ namespace LibrameStandard.Authentication
         /// <summary>
         /// 密码。
         /// </summary>
-        public string Passwd { get; set; } = DEFAULT_PASSWD;
+        public string Passwd { get; set; } = string.Empty;
     }
 
 }

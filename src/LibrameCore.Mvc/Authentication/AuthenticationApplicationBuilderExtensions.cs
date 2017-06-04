@@ -26,10 +26,10 @@ namespace LibrameStandard.Authentication
         /// 使用 Librame 认证令牌。
         /// </summary>
         /// <param name="app">给定的应用构建器接口。</param>
-        /// <param name="options">给定的令牌选项（可选）。</param>
+        /// <param name="settings">给定的令牌处理程序设置（可选）。</param>
         /// <param name="builder">给定的 Librame 构建器（可选）。</param>
         public static void UseLibrameAuthenticationToken(this IApplicationBuilder app,
-            TokenHandlerSettings options = null, ILibrameBuilder builder = null)
+            TokenHandlerSettings settings = null, ILibrameBuilder builder = null)
         {
             app.NotNull(nameof(app));
 
@@ -37,10 +37,10 @@ namespace LibrameStandard.Authentication
                 builder = app.GetLibrameBuilder();
 
             // 运行认证适配器
-            var adapter = builder.GetAuthenticationAdapter(options);
+            var adapter = builder.GetAuthenticationAdapter(settings);
 
-            var tokenOptions = adapter.TokenGenerator.Options;
-            app.Map(tokenOptions.Path, adapter.TokenHandler.OnHandling);
+            settings = adapter.TokenCodec.Settings;
+            app.Map(settings.Path, adapter.TokenHandler.OnHandling);
         }
 
     }
