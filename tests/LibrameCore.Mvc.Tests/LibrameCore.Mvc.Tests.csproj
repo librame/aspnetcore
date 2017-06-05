@@ -12,6 +12,7 @@
     <PackageReference Include="LibrameStandard" Version="1.4.1706.51" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="1.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="1.1.1" />
