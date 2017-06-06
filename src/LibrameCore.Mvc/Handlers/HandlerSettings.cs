@@ -39,7 +39,7 @@ namespace LibrameStandard.Handlers
         /// </summary>
         /// <param name="path">给定的路径字符串。</param>
         public HandlerSettings(string path)
-            : this(new PathString(path))
+            : this(new PathString("/handler" + path))
         {
         }
         /// <summary>

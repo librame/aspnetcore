@@ -13,6 +13,7 @@
 using LibrameStandard;
 using LibrameStandard.Authentication;
 using LibrameStandard.Entity;
+using LibrameStandard.Entity.DbContexts;
 using LibrameStandard.Handlers;
 using LibrameStandard.Utilities;
 using Microsoft.Extensions.Configuration;
@@ -53,14 +54,18 @@ namespace Microsoft.Extensions.DependencyInjection
             var initialData = LibrameConfigurationExtensions.InitialLibrameOptions();
 
             // 修改默认的数据库上下文类型名
-            initialData[EntityAutomappingSetting.DbContextTypeNameKey]
-                = typeof(SqlServerDbContext).AsAssemblyQualifiedNameWithoutVCP();
+            initialData[EntityAutomappingSetting.GetAutomappingDbContextTypeNameKey(0)]
+                = typeof(SqlServerDbContextReader).AsAssemblyQualifiedNameWithoutVCP();
+            initialData[EntityAutomappingSetting.GetAutomappingDbContextTypeNameKey(1)]
+                = typeof(SqlServerDbContextWriter).AsAssemblyQualifiedNameWithoutVCP();
 
             // Authentication
             initialData.Add(AuthenticationAdapterSettings.TokenCodecTypeNameKey,
                 AuthenticationAdapterSettings.DefaultTokenCodecTypeName);
             initialData.Add(AuthenticationAdapterSettings.TokenHandlerTypeNameKey,
                 AuthenticationAdapterSettings.DefaultTokenHandlerTypeName);
+            initialData.Add(AuthenticationAdapterSettings.TokenManagerTypeNameKey,
+                AuthenticationAdapterSettings.DefaultTokenManagerTypeName);
             initialData.Add(AuthenticationAdapterSettings.UserManagerTypeNameKey,
                 AuthenticationAdapterSettings.DefaultUserManagerTypeName);
 

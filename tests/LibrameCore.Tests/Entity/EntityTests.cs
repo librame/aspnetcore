@@ -1,4 +1,5 @@
 using LibrameStandard.Entity;
+using LibrameStandard.Entity.DbContexts;
 using LibrameStandard.Entity.Descriptors;
 using LibrameStandard.Utilities;
 using Microsoft.EntityFrameworkCore;
@@ -17,25 +18,45 @@ namespace LibrameStandard.Tests.Entity
             var connectionString = "Data Source=PC-I74910MQ\\SQLEXPRESS;Initial Catalog=librame_test;Integrated Security=True";
 
             // 默认使用 SqlServerDbContext
-            services.AddEntityFrameworkSqlServer().AddDbContext<SqlServerDbContext>(options =>
-            {
-                options.UseSqlServer(connectionString, sql =>
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<SqlServerDbContextReader>(options =>
                 {
-                    sql.UseRowNumberForPaging();
-                    sql.MaxBatchSize(50);
+                    options.UseSqlServer(connectionString, sql =>
+                    {
+                        sql.UseRowNumberForPaging();
+                        sql.MaxBatchSize(50);
+                    });
                 });
-            });
+                //.AddDbContext<SqlServerDbContextWriter>(options =>
+                //{
+                //    options.UseSqlServer(connectionString, sql =>
+                //    {
+                //        sql.UseRowNumberForPaging();
+                //        sql.MaxBatchSize(50);
+                //    });
+                //});
+
+            // 默认实体程序集
+            var defaultAssemblies = TypeUtility.AsAssemblyName<Article>().Name;
 
             // 注册 Librame （非 MVC；默认使用内存配置源）
             var builder = services.AddLibrameByMemory(options =>
             {
                 // 修改默认的数据库上下文类型名
-                options[EntityAutomappingSetting.DbContextTypeNameKey]
-                    = typeof(SqlServerDbContext).AsAssemblyQualifiedNameWithoutVCP();
+                options[EntityAutomappingSetting.GetAutomappingDbContextTypeNameKey(0)]
+                    = typeof(SqlServerDbContextReader).AsAssemblyQualifiedNameWithoutVCP();
+                options[EntityAutomappingSetting.GetAutomappingDbContextTypeNameKey(1)]
+                    = typeof(SqlServerDbContextWriter).AsAssemblyQualifiedNameWithoutVCP();
 
-                // 修改默认的实体映射程序集
-                options[EntityAutomappingSetting.AssembliesKey]
-                    = TypeUtility.AsAssemblyName<Article>().Name;
+                //// 默认不启用读写分离
+                //options[EntityAdapterSettings.EnableReadWriteSeparationKey]
+                //    = false.ToString();
+
+                // 修改默认的实体程序集（读写）
+                options[EntityAutomappingSetting.GetAutomappingAssembliesKey(0)]
+                    = defaultAssemblies;
+                //options[EntityAutomappingSetting.GetAutomappingAssembliesKey(1)]
+                //    = defaultAssemblies;
             });
 
             // 获取实体适配器

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LibrameStandard.Entity;
+using LibrameStandard.Entity.DbContexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -39,14 +39,23 @@ namespace LibrameCore.Website
             services.AddMvc();
 
             // 默认使用 SqlServerDbContext
-            services.AddEntityFrameworkSqlServer().AddDbContext<SqlServerDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("SqlServer"), sql =>
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<SqlServerDbContextReader>(options =>
                 {
-                    sql.UseRowNumberForPaging();
-                    sql.MaxBatchSize(50);
+                    options.UseSqlServer(Configuration.GetConnectionString("SqlServerReader"), sql =>
+                    {
+                        sql.UseRowNumberForPaging();
+                        sql.MaxBatchSize(50);
+                    });
                 });
-            });
+                //.AddDbContext<SqlServerDbContextWriter>(options =>
+                //{
+                //    options.UseSqlServer(Configuration.GetConnectionString("SqlServerWriter"), sql =>
+                //    {
+                //        sql.UseRowNumberForPaging();
+                //        sql.MaxBatchSize(50);
+                //    });
+                //});
 
             // Librame MVC
             services.AddLibrameMvc(Configuration.GetSection("Librame"));

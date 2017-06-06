@@ -15,32 +15,21 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LibrameStandard.Entity
+namespace LibrameStandard.Entity.DbContexts
 {
     using Utilities;
 
     /// <summary>
-    /// SQLServer 数据库上下文。
+    /// <see cref="IMutableEntityType"/> 静态扩展。
     /// </summary>
-    public class SqlServerDbContext : AbstarctDbContext<SqlServerDbContext>
+    internal static class MutableEntityTypeExtensions
     {
-        /// <summary>
-        /// 构造一个数据库上下文提供程序实例。
-        /// </summary>
-        /// <param name="dbContextOptions">给定的数据上下文选择项。</param>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        public SqlServerDbContext(DbContextOptions<SqlServerDbContext> dbContextOptions,
-            ILibrameBuilder builder)
-            : base(dbContextOptions, builder)
-        {
-        }
-
-
         /// <summary>
         /// 自映射表名。
         /// </summary>
         /// <param name="entityType">给定可变的实体类型。</param>
-        protected override void MappingTableName(IMutableEntityType entityType)
+        /// <param name="logger">给定的记录器。</param>
+        public static void MappingTableName(this IMutableEntityType entityType, ILogger logger)
         {
             // 自映射实体类型名的复数形式（仅支持 SQL Server）
             var annotations = entityType.SqlServer();
@@ -58,8 +47,11 @@ namespace LibrameStandard.Entity
                     annotations.Schema = tableAttribute.Schema;
             }
 
-            Logger.LogDebug("Mapping entity type {0} to table {1}.{2}.",
-                entityType.ClrType.FullName, annotations.Schema, annotations.TableName);
+            if (logger != null)
+            {
+                logger.LogDebug("Mapping entity type {0} to table {1}.{2}.",
+                    entityType.ClrType.FullName, annotations.Schema, annotations.TableName);
+            }
 
             // 设定表名
             annotations.TableName = tableName;
