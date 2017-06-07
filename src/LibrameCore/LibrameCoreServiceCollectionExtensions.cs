@@ -24,30 +24,30 @@ using System.Collections.Generic;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Librame MVC 服务集合静态扩展。
+    /// Librame 核心服务集合静态扩展。
     /// </summary>
-    public static class LibrameMvcServiceCollectionExtensions
+    public static class LibrameCoreServiceCollectionExtensions
     {
 
         /// <summary>
-        /// 注册 Librame MVC 服务（通过配置内存源）。
+        /// 注册 Librame 核心服务（通过配置内存源）。
         /// </summary>
         /// <param name="services">给定的服务集合。</param>
         /// <param name="initialDataAction">给定的初始化选项数据动作（可选）。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder AddLibrameMvcByMemory(this IServiceCollection services,
+        public static ILibrameBuilder AddLibrameCoreByMemory(this IServiceCollection services,
             Action<IDictionary<string, string>> initialDataAction = null)
         {
-            return services.AddLibrameMvcByMemory<LibrameMvcOptions>(initialDataAction);
+            return services.AddLibrameCoreByMemory<LibrameCoreOptions>(initialDataAction);
         }
         /// <summary>
-        /// 注册 Librame MVC 服务（通过配置内存源）。
+        /// 注册 Librame 核心服务（通过配置内存源）。
         /// </summary>
         /// <typeparam name="TLibrameOptions">指定的 Librame 选项类型。</typeparam>
         /// <param name="services">给定的服务集合。</param>
         /// <param name="initialDataAction">给定的初始化选项数据动作（可选）。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder AddLibrameMvcByMemory<TLibrameOptions>(this IServiceCollection services,
+        public static ILibrameBuilder AddLibrameCoreByMemory<TLibrameOptions>(this IServiceCollection services,
             Action<IDictionary<string, string>> initialDataAction = null)
             where TLibrameOptions : class, ILibrameOptions, new()
         {
@@ -72,7 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (initialDataAction != null)
                 initialDataAction.Invoke(initialData);
 
-            return services.AddLibrameMvc(config =>
+            return services.AddLibrameCore(config =>
             {
                 var builder = config.Add(new MemoryConfigurationSource { InitialData = initialData });
 
@@ -81,32 +81,32 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 注册 Librame MVC 服务（通过配置 JSON 文件源）。
+        /// 注册 Librame 核心服务（通过配置 JSON 文件源）。
         /// </summary>
         /// <param name="services">给定的服务集合。</param>
         /// <param name="fileName">给定的 JSON 文件名。</param>
         /// <param name="basePath">给定的基础路径（可选；默认为 <see cref="PathUtility.BaseDirectory"/>）。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder AddLibrameMvcByJson(this IServiceCollection services,
+        public static ILibrameBuilder AddLibrameCoreByJson(this IServiceCollection services,
             string fileName, string basePath = null)
         {
-            return services.AddLibrameMvcByJson<LibrameMvcOptions>(fileName, basePath);
+            return services.AddLibrameCoreByJson<LibrameCoreOptions>(fileName, basePath);
         }
         /// <summary>
-        /// 注册 Librame MVC 服务（通过配置 JSON 文件源）。
+        /// 注册 Librame 核心服务（通过配置 JSON 文件源）。
         /// </summary>
         /// <typeparam name="TLibrameOptions">指定的 Librame 选项类型。</typeparam>
         /// <param name="services">给定的服务集合。</param>
         /// <param name="fileName">给定的 JSON 文件名。</param>
         /// <param name="basePath">给定的基础路径（可选；默认为 <see cref="PathUtility.BaseDirectory"/>）。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder AddLibrameMvcByJson<TLibrameOptions>(this IServiceCollection services,
+        public static ILibrameBuilder AddLibrameCoreByJson<TLibrameOptions>(this IServiceCollection services,
             string fileName, string basePath = null)
             where TLibrameOptions : class, ILibrameOptions, new()
         {
             basePath = basePath.AsOrDefault(PathUtility.BaseDirectory);
 
-            return services.AddLibrameMvc<TLibrameOptions>(config =>
+            return services.AddLibrameCore<TLibrameOptions>(config =>
             {
                 var builder = config.SetBasePath(basePath)
                     .AddJsonFile(fileName, optional: false, reloadOnChange: true);
@@ -118,24 +118,24 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 注册 Librame MVC 服务。
+        /// 注册 Librame 核心服务。
         /// </summary>
         /// <param name="services">给定的服务集合。</param>
         /// <param name="configFactory">配置构建器工厂方法。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder AddLibrameMvc(this IServiceCollection services,
+        public static ILibrameBuilder AddLibrameCore(this IServiceCollection services,
             Func<IConfigurationBuilder, IConfiguration> configFactory)
         {
-            return services.AddLibrameMvc<LibrameMvcOptions>(configFactory);
+            return services.AddLibrameCore<LibrameCoreOptions>(configFactory);
         }
         /// <summary>
-        /// 注册 Librame MVC 服务。
+        /// 注册 Librame 核心服务。
         /// </summary>
         /// <typeparam name="TLibrameOptions">指定的 Librame 选项类型。</typeparam>
         /// <param name="services">给定的服务集合。</param>
         /// <param name="configFactory">配置构建器工厂方法。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder AddLibrameMvc<TLibrameOptions>(this IServiceCollection services,
+        public static ILibrameBuilder AddLibrameCore<TLibrameOptions>(this IServiceCollection services,
             Func<IConfigurationBuilder, IConfiguration> configFactory)
             where TLibrameOptions : class, ILibrameOptions, new()
         {
@@ -147,7 +147,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 var configuration = configFactory.Invoke(configurationBuilder);
 
-                return services.AddLibrameMvc(configuration);
+                return services.AddLibrameCore(configuration);
             }
             catch (Exception ex)
             {
@@ -156,30 +156,30 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 注册 Librame MVC 服务。
+        /// 注册 Librame 核心服务。
         /// </summary>
         /// <param name="services">给定的服务集合。</param>
         /// <param name="configuration">给定的 Librame 配置接口。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder AddLibrameMvc(this IServiceCollection services,
+        public static ILibrameBuilder AddLibrameCore(this IServiceCollection services,
             IConfiguration configuration)
         {
-            return services.AddLibrameMvc<LibrameMvcOptions>(configuration);
+            return services.AddLibrameCore<LibrameCoreOptions>(configuration);
         }
         /// <summary>
-        /// 注册 Librame MVC 服务。
+        /// 注册 Librame 核心服务。
         /// </summary>
         /// <typeparam name="TLibrameOptions">指定的 Librame 选项类型。</typeparam>
         /// <param name="services">给定的服务集合。</param>
         /// <param name="configuration">给定的 Librame 配置接口。</param>
         /// <returns>返回 Librame 构建器接口。</returns>
-        public static ILibrameBuilder AddLibrameMvc<TLibrameOptions>(this IServiceCollection services,
+        public static ILibrameBuilder AddLibrameCore<TLibrameOptions>(this IServiceCollection services,
             IConfiguration configuration)
             where TLibrameOptions : class, ILibrameOptions, new()
         {
             var builder = services.AddLibrame<TLibrameOptions>(configuration);
 
-            // 添加 MVC 程序集的所有适配器模块
+            // 添加核心程序集的所有适配器模块
             builder.TryAddAdaptation(typeof(HandlerSettings).AsAssembly());
             
             return builder;

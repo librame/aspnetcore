@@ -94,7 +94,7 @@ namespace LibrameStandard.Authentication
         /// <returns>返回 Librame 构建器。</returns>
         public virtual ILibrameBuilder TryAddAuthentication()
         {
-            var options = (Builder.Options as LibrameMvcOptions).Authentication;
+            var options = (Builder.Options as LibrameCoreOptions).Authentication;
 
             // 用户管理器
             var userManagerType = Type.GetType(options.UserManagerTypeName, throwOnError: true);

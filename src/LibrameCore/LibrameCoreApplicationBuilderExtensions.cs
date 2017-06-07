@@ -19,9 +19,9 @@ namespace Microsoft.AspNetCore.Builder
     using Http;
 
     /// <summary>
-    /// Librame MVC 应用构建器静态扩展。
+    /// Librame 核心应用构建器静态扩展。
     /// </summary>
-    public static class LibrameMvcApplicationBuilderExtensions
+    public static class LibrameCoreApplicationBuilderExtensions
     {
 
         /// <summary>

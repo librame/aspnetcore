@@ -12,7 +12,7 @@ namespace LibrameStandard.Mvc.Tests.Authentication
             var services = new ServiceCollection();
 
             // 注册 Librame MVC （默认使用内存配置源）
-            var builder = services.AddLibrameMvcByMemory();
+            var builder = services.AddLibrameCoreByMemory();
             
             // 获取认证适配器
             var adapter = builder.GetAuthenticationAdapter(new TokenHandlerSettings());

@@ -15,9 +15,9 @@ namespace LibrameStandard
     using Authentication;
 
     /// <summary>
-    /// Librame 构建器 MVC 适配静态扩展。
+    /// Librame 构建器核心适配静态扩展。
     /// </summary>
-    public static class LibrameBuilderMvcAdaptationExtensions
+    public static class LibrameBuilderCoreAdaptationExtensions
     {
         /// <summary>
         /// 获取认证适配器。

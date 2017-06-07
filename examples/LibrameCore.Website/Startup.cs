@@ -58,7 +58,7 @@ namespace LibrameCore.Website
                 //});
 
             // Librame MVC
-            services.AddLibrameMvc(Configuration.GetSection("Librame"));
+            services.AddLibrameCore(Configuration.GetSection("Librame"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

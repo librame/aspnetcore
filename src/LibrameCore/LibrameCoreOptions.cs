@@ -17,10 +17,10 @@ namespace LibrameStandard
     using Authentication;
 
     /// <summary>
-    /// Librame MVC 选项接口。
+    /// Librame 核心选项接口。
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public class LibrameMvcOptions : LibrameOptions
+    public class LibrameCoreOptions : LibrameOptions
     {
 
         /// <summary>

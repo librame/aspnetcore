@@ -44,7 +44,6 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\LibrameCore.Mvc\LibrameCore.Mvc.csproj" />
     <ProjectReference Include="..\..\src\LibrameCore\LibrameCore.csproj" />
     <ProjectReference Include="..\LibrameCore.Entities\LibrameCore.Entities.csproj" />
   </ItemGroup>
