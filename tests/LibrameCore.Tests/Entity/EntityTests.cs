@@ -55,8 +55,8 @@ namespace LibrameStandard.Tests.Entity
                 // 修改默认的实体程序集（读写）
                 options[EntityAutomappingSetting.GetAutomappingAssembliesKey(0)]
                     = defaultAssemblies;
-                //options[EntityAutomappingSetting.GetAutomappingAssembliesKey(1)]
-                //    = defaultAssemblies;
+                options[EntityAutomappingSetting.GetAutomappingAssembliesKey(1)]
+                    = defaultAssemblies;
             });
 
             // 获取实体适配器
@@ -68,8 +68,9 @@ namespace LibrameStandard.Tests.Entity
                 Title = "Test Title",
                 Descr = "Test Descr"
             };
-            
-            var repository = adapter.GetSqlServerRepository<Article>();
+
+            //var repository = adapter.GetRepository<SqlServerDbContextReader, Article>();
+            var repository = adapter.GetRepositoryReader<Article>();
 
             // 标题不能重复
             Article dbArticle;

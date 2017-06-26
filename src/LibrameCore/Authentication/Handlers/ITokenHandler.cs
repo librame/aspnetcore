@@ -10,24 +10,25 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
+using LibrameStandard.Handlers;
 
-namespace LibrameStandard
+namespace LibrameStandard.Authentication.Handlers
 {
-    using Authentication;
+    using Managers;
 
     /// <summary>
-    /// Librame 核心选项接口。
+    /// 令牌处理程序接口。
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class LibrameCoreOptions : LibrameOptions
+    public interface ITokenHandler : IHander<TokenHandlerSettings>
     {
+        /// <summary>
+        /// 令牌管理器。
+        /// </summary>
+        ITokenManager TokenManager { get; }
 
         /// <summary>
-        /// 认证选项。
+        /// 用户管理器。
         /// </summary>
-        public AuthenticationSettings Authentication { get; set; }
-            = new AuthenticationSettings();
-
+        IUserManager UserManager { get; }
     }
 }

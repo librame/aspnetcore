@@ -78,7 +78,7 @@ namespace LibrameStandard.Utilities
             else
             {
                 // JSON 序列化
-                string json = value.AsJson(Newtonsoft.Json.Formatting.Indented);
+                string json = value.AsJson(false, Newtonsoft.Json.Formatting.Indented);
 
                 response.ContentType = JsonConvertUtility.CONTENT_TYPE;
                 await response.WriteAsync(json, encoding, cancellationToken);

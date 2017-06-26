@@ -12,6 +12,7 @@
 
 using LibrameStandard;
 using LibrameStandard.Authentication;
+using LibrameStandard.Authentication.Handlers;
 using LibrameStandard.Utilities;
 
 namespace Microsoft.AspNetCore.Builder

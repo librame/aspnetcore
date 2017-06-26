@@ -10,24 +10,31 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
-
-namespace LibrameStandard
+namespace LibrameStandard.Authentication.Models
 {
-    using Authentication;
-
     /// <summary>
-    /// Librame 核心选项接口。
+    /// 用户模型接口。
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class LibrameCoreOptions : LibrameOptions
+    public interface IUserModel
     {
+        /// <summary>
+        /// 唯一标识。
+        /// </summary>
+        string UniqueId { get; }
 
         /// <summary>
-        /// 认证选项。
+        /// 邮箱。
         /// </summary>
-        public AuthenticationSettings Authentication { get; set; }
-            = new AuthenticationSettings();
+        string Email { get; }
 
+        /// <summary>
+        /// 名称。
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// 密码。
+        /// </summary>
+        string Passwd { get; }
     }
 }

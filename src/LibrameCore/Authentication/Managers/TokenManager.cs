@@ -10,73 +10,37 @@
 
 #endregion
 
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
-namespace LibrameStandard.Authentication
+namespace LibrameStandard.Authentication.Managers
 {
     using Models;
-    using Utilities;
+    using Handlers;
 
     /// <summary>
-    /// 令牌编解码器接口。
+    /// 令牌管理器。
     /// </summary>
-    public interface ITokenCodec
+    public class TokenManager : AbstractManager, ITokenManager
     {
         /// <summary>
-        /// Librame 构建器。
-        /// </summary>
-        ILibrameBuilder Builder { get; }
-
-        /// <summary>
-        /// 令牌处理程序设置。
-        /// </summary>
-        TokenHandlerSettings Settings { get; }
-
-
-        /// <summary>
-        /// 编码令牌。
-        /// </summary>
-        /// <param name="user">给定的用户模型。</param>
-        /// <returns>返回令牌字符串。</returns>
-        string Encode(IUserModel user);
-
-
-        /// <summary>
-        /// 解码令牌。
-        /// </summary>
-        /// <param name="token">给定的令牌字符串。</param>
-        /// <returns>返回用户模型。</returns>
-        IUserModel Decode(string token);
-    }
-
-
-    /// <summary>
-    /// 令牌编解码器。
-    /// </summary>
-    public class TokenCodec : ITokenCodec
-    {
-        /// <summary>
-        /// 构造一个令牌编解码器实例。
+        /// 构造一个用户管理器实例。
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器接口。</param>
-        public TokenCodec(ILibrameBuilder builder)
+        public TokenManager(ILibrameBuilder builder)
+            : base(builder)
         {
-            Builder = builder.NotNull(nameof(builder));
         }
 
 
         /// <summary>
-        /// Librame 构建器。
-        /// </summary>
-        public ILibrameBuilder Builder { get; }
-
-        /// <summary>
         /// 令牌处理程序设置。
         /// </summary>
-        public TokenHandlerSettings Settings => Builder.GetService<TokenHandlerSettings>();
+        public TokenHandlerSettings HandlerSettings => Builder.GetService<TokenHandlerSettings>();
 
 
         /// <summary>
@@ -96,12 +60,12 @@ namespace LibrameStandard.Authentication
             };
 
             var jwt = new JwtSecurityToken(
-                Settings.Issuer,
-                Settings.Audience,
+                HandlerSettings.Issuer,
+                HandlerSettings.Audience,
                 claims,
                 now,
-                now.Add(Settings.Expiration),
-                Settings.SigningCredentials);
+                now.Add(HandlerSettings.Expiration),
+                HandlerSettings.SigningCredentials);
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
             return token;
@@ -127,6 +91,25 @@ namespace LibrameStandard.Authentication
                 UniqueId = jwt.Claims.FirstOrDefault(p => p.Type == JwtRegisteredClaimNames.Sub)?.Value,
                 Name = jwt.Claims.FirstOrDefault(p => p.Type == JwtRegisteredClaimNames.UniqueName)?.Value
             };
+        }
+
+
+        /// <summary>
+        /// 异步验证令牌。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <returns>返回用户身份结果。</returns>
+        public virtual Task<UserIdentityResult> ValidateAsync(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return null;
+            
+            // 解码令牌代替数据库验证
+            var user = Decode(name);
+
+            var identityResult = (user == null) ? IdentityResult.Failed(UserIdentityErrors.TokenInvalid) : IdentityResult.Success;
+
+            return Task.FromResult(new UserIdentityResult(identityResult, user));
         }
 
     }

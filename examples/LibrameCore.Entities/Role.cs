@@ -11,28 +11,32 @@
 #endregion
 
 using LibrameStandard.Entity.Descriptors;
+using LibrameStandard.Authentication.Models;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace LibrameCore.Entities
 {
     /// <summary>
-    /// 文章。
+    /// 角色。
     /// </summary>
-    [Description("文章")]
-    public class Article : AbstractCreateDataIdDescriptor<int>
+    [Description("角色")]
+    public class Role : AbstractCreateDataIdDescriptor<int>, IRoleModel
     {
         /// <summary>
-        /// 标题。
+        /// 名称。
         /// </summary>
-        [DisplayName("标题")]
-        public virtual string Title { get; set; }
+        [DisplayName("名称")]
+        [Required]
+        [StringLength(50)]
+        public string Name { get; set; }
 
         /// <summary>
-        /// 内容。
+        /// 说明。
         /// </summary>
+        [DisplayName("说明")]
         [DataType(DataType.MultilineText)]
-        [DisplayName("内容")]
-        public virtual string Descr { get; set; }
+        [StringLength(200)]
+        public string Descr { get; set; }
     }
 }

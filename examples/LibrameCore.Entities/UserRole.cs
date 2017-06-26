@@ -10,24 +10,26 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
+using LibrameStandard.Entity.Descriptors;
+using System.ComponentModel.DataAnnotations;
 
-namespace LibrameStandard
+namespace LibrameCore.Entities
 {
-    using Authentication;
-
     /// <summary>
-    /// Librame 核心选项接口。
+    /// 用户角色。
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class LibrameCoreOptions : LibrameOptions
+    public class UserRole : AbstractCreateDataIdDescriptor<int>
     {
+        /// <summary>
+        /// 用户编号。
+        /// </summary>
+        [Required]
+        public int UserId { get; set; }
 
         /// <summary>
-        /// 认证选项。
+        /// 角色编号。
         /// </summary>
-        public AuthenticationSettings Authentication { get; set; }
-            = new AuthenticationSettings();
-
+        [Required]
+        public int RoleId { get; set; }
     }
 }

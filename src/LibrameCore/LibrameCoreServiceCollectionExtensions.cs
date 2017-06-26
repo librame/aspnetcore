@@ -60,14 +60,29 @@ namespace Microsoft.Extensions.DependencyInjection
                 = typeof(SqlServerDbContextWriter).AsAssemblyQualifiedNameWithoutVCP();
 
             // Authentication
-            initialData.Add(AuthenticationAdapterSettings.TokenCodecTypeNameKey,
-                AuthenticationAdapterSettings.DefaultTokenCodecTypeName);
-            initialData.Add(AuthenticationAdapterSettings.TokenHandlerTypeNameKey,
-                AuthenticationAdapterSettings.DefaultTokenHandlerTypeName);
-            initialData.Add(AuthenticationAdapterSettings.TokenManagerTypeNameKey,
-                AuthenticationAdapterSettings.DefaultTokenManagerTypeName);
-            initialData.Add(AuthenticationAdapterSettings.UserManagerTypeNameKey,
-                AuthenticationAdapterSettings.DefaultUserManagerTypeName);
+            initialData.Add(AuthenticationHandlersSetting.TokenHandlerTypeNameKey,
+                AuthenticationHandlersSetting.DefaultTokenHandlerTypeName);
+
+            initialData.Add(AuthenticationManagersSetting.PasswordManagerTypeNameKey,
+                AuthenticationManagersSetting.DefaultPasswordManagerTypeName);
+            initialData.Add(AuthenticationManagersSetting.RoleManagerTypeNameKey,
+                AuthenticationManagersSetting.DefaultRoleManagerTypeName);
+            initialData.Add(AuthenticationManagersSetting.TokenManagerTypeNameKey,
+                AuthenticationManagersSetting.DefaultTokenManagerTypeName);
+            initialData.Add(AuthenticationManagersSetting.UserManagerTypeNameKey,
+                AuthenticationManagersSetting.DefaultUserManagerTypeName);
+
+            initialData.Add(AuthenticationModelsSetting.RoleModelTypeNameKey,
+                AuthenticationModelsSetting.DefaultRoleModelTypeName);
+            initialData.Add(AuthenticationModelsSetting.TokenModelTypeNameKey,
+                AuthenticationModelsSetting.DefaultTokenModelTypeName);
+            initialData.Add(AuthenticationModelsSetting.UserModelTypeNameKey,
+                AuthenticationModelsSetting.DefaultUserModelTypeName);
+
+            initialData.Add(AuthenticationSendersSetting.EmailSenderTypeNameKey,
+                AuthenticationSendersSetting.DefaultEmailSenderTypeName);
+            initialData.Add(AuthenticationSendersSetting.SmsSenderTypeNameKey,
+                AuthenticationSendersSetting.DefaultSmsSenderTypeName);
 
             if (initialDataAction != null)
                 initialDataAction.Invoke(initialData);
@@ -178,7 +193,7 @@ namespace Microsoft.Extensions.DependencyInjection
             where TLibrameOptions : class, ILibrameOptions, new()
         {
             var builder = services.AddLibrame<TLibrameOptions>(configuration);
-
+            
             // 添加核心程序集的所有适配器模块
             builder.TryAddAdaptation(typeof(HandlerSettings).AsAssembly());
             

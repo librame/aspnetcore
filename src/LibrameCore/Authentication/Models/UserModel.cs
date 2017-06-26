@@ -15,29 +15,17 @@ using System;
 namespace LibrameStandard.Authentication.Models
 {
     /// <summary>
-    /// 用户模型接口。
-    /// </summary>
-    public interface IUserModel
-    {
-        /// <summary>
-        /// 唯一标识。
-        /// </summary>
-        string UniqueId { get; }
-
-        /// <summary>
-        /// 名称。
-        /// </summary>
-        string Name { get; }
-    }
-
-
-    /// <summary>
     /// 用户模型。
     /// </summary>
     public class UserModel : IUserModel
     {
         /// <summary>
-        /// 默认用户名。
+        /// 默认邮箱。
+        /// </summary>
+        internal const string DEFAULT_EMAIL = "admin@librame.net";
+
+        /// <summary>
+        /// 默认名称。
         /// </summary>
         internal const string DEFAULT_NAME = "LibrameUser";
 
@@ -53,6 +41,11 @@ namespace LibrameStandard.Authentication.Models
         public string UniqueId { get; set; } = Guid.Empty.ToString();
 
         /// <summary>
+        /// 邮箱。
+        /// </summary>
+        public string Email { get; set; } = DEFAULT_EMAIL;
+
+        /// <summary>
         /// 名称。
         /// </summary>
         public string Name { get; set; } = DEFAULT_NAME;
@@ -62,5 +55,4 @@ namespace LibrameStandard.Authentication.Models
         /// </summary>
         public string Passwd { get; set; } = string.Empty;
     }
-
 }

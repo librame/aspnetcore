@@ -10,24 +10,21 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
-
-namespace LibrameStandard
+namespace LibrameStandard.Authentication.Managers
 {
-    using Authentication;
-
     /// <summary>
-    /// Librame 核心选项接口。
+    /// 管理器接口。
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class LibrameCoreOptions : LibrameOptions
+    public interface IManager
     {
+        /// <summary>
+        /// Librame 构建器。
+        /// </summary>
+        ILibrameBuilder Builder { get; }
 
         /// <summary>
-        /// 认证选项。
+        /// 认证设置。
         /// </summary>
-        public AuthenticationSettings Authentication { get; set; }
-            = new AuthenticationSettings();
-
+        AuthenticationSettings Settings { get; }
     }
 }

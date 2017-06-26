@@ -1,4 +1,4 @@
-﻿using LibrameStandard.Authentication;
+﻿using LibrameStandard.Authentication.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -17,10 +17,9 @@ namespace LibrameStandard.Mvc.Tests.Authentication
             // 获取认证适配器
             var adapter = builder.GetAuthenticationAdapter(new TokenHandlerSettings());
             Assert.NotNull(adapter);
-            Assert.NotNull(adapter.TokenCodec);
             Assert.NotNull(adapter.UserManager);
 
-            var settings = adapter.TokenCodec.Settings;
+            var settings = adapter.TokenManager.HandlerSettings;
             Assert.NotNull(settings);
             Assert.NotNull(settings.SigningCredentials);
         }

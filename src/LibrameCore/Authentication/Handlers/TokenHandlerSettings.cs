@@ -10,13 +10,12 @@
 
 #endregion
 
+using LibrameStandard.Handlers;
 using Microsoft.IdentityModel.Tokens;
 using System;
 
-namespace LibrameStandard.Authentication
+namespace LibrameStandard.Authentication.Handlers
 {
-    using Handlers;
-
     /// <summary>
     /// 令牌处理程序设置。
     /// </summary>

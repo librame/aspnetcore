@@ -13,6 +13,7 @@
 namespace LibrameStandard
 {
     using Authentication;
+    using Authentication.Handlers;
 
     /// <summary>
     /// Librame 构建器核心适配静态扩展。

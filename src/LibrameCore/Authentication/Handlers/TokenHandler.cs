@@ -12,30 +12,16 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using LibrameStandard.Handlers;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace LibrameStandard.Authentication
+namespace LibrameStandard.Authentication.Handlers
 {
     using Managers;
     using Models;
-    using Handlers;
     using Utilities;
-
-    /// <summary>
-    /// 令牌处理程序接口。
-    /// </summary>
-    public interface ITokenHandler : IHander<TokenHandlerSettings>
-    {
-        /// <summary>
-        /// 令牌管理器。
-        /// </summary>
-        ITokenManager TokenManager { get; }
-
-        /// <summary>
-        /// 用户管理器。
-        /// </summary>
-        IUserManager UserManager { get; }
-    }
-
 
     /// <summary>
     /// 令牌处理程序。
@@ -75,14 +61,14 @@ namespace LibrameStandard.Authentication
                 {
                     case "get":
                         {
-                            IUserModel user;
-                            if (!TryValidateToken(context, out user))
+                            var userResult = await ValidateToken(context);
+                            if (userResult == null)
                             {
                                 await context.Response.WriteBadRequestAsync("Invalid token.");
                                 return;
                             }
 
-                            await context.Response.WriteJsonAsync(user);
+                            await context.Response.WriteJsonAsync(userResult.User);
                             return;
                         }
 
@@ -94,20 +80,27 @@ namespace LibrameStandard.Authentication
                                 return;
                             }
 
-                            IUserModel user;
-                            if (!TryValidateUser(context, out user))
+                            var userResult = await ValidateUser(context);
+                            if (userResult == null)
                             {
-                                await context.Response.WriteBadRequestAsync("Invalid username or password.");
+                                await context.Response.WriteBadRequestAsync("Username or password is empty.");
                                 return;
                             }
 
-                            var token = TokenManager.Codec.Encode(user);
+                            if (!userResult.IdentityResult.Succeeded)
+                            {
+                                var message = userResult.IdentityResult.Errors.FirstOrDefault()?.Description;
+                                await context.Response.WriteBadRequestAsync(message.AsOrDefault("Invalid username or password."));
+                                return;
+                            }
+
+                            var token = TokenManager.Encode(userResult.User);
                             var result = new
                             {
                                 access_token = token,
                                 expires_in = (int)Settings.Expiration.TotalSeconds,
                             };
-                            
+
                             await context.Response.WriteJsonAsync(result);
                             return;
                         }
@@ -122,33 +115,31 @@ namespace LibrameStandard.Authentication
         }
 
         /// <summary>
-        /// 尝试根据 HTTP 上下文信息认证令牌。
+        /// 根据 HTTP 上下文信息异步认证令牌。
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
-        /// <param name="user">输出用户模型接口。</param>
-        /// <returns>返回是否通过验证的布尔值。</returns>
-        protected virtual bool TryValidateToken(HttpContext context, out IUserModel user)
+        /// <returns>返回用户身份结果。</returns>
+        protected virtual Task<UserIdentityResult> ValidateToken(HttpContext context)
         {
             var name = context.Request.Query["name"];
 
             if (string.IsNullOrEmpty(name))
                 name = context.Request.Headers["Authentication"];
 
-            return TokenManager.Validate(name, out user);
+            return TokenManager.ValidateAsync(name);
         }
-        
+
         /// <summary>
-        /// 尝试根据 HTTP 上下文信息认证用户。
+        /// 根据 HTTP 上下文信息异步认证用户。
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
-        /// <param name="user">输出用户模型接口。</param>
-        /// <returns>返回是否通过验证的布尔值。</returns>
-        protected virtual bool TryValidateUser(HttpContext context, out IUserModel user)
+        /// <returns>返回用户身份结果。</returns>
+        protected virtual Task<UserIdentityResult> ValidateUser(HttpContext context)
         {
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
 
-            return UserManager.Validate(username, password, out user);
+            return UserManager.ValidateAsync(username, password);
         }
 
     }

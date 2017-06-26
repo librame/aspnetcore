@@ -10,24 +10,22 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
-
-namespace LibrameStandard
+namespace LibrameStandard.Authentication.Models
 {
-    using Authentication;
-
     /// <summary>
-    /// Librame 核心选项接口。
+    /// 角色模型。
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class LibrameCoreOptions : LibrameOptions
+    public class RoleModel : IRoleModel
     {
+        /// <summary>
+        /// 默认名称。
+        /// </summary>
+        internal const string DEFAULT_NAME = "Administrator";
+
 
         /// <summary>
-        /// 认证选项。
+        /// 名称。
         /// </summary>
-        public AuthenticationSettings Authentication { get; set; }
-            = new AuthenticationSettings();
-
+        public string Name { get; set; } = DEFAULT_NAME;
     }
 }

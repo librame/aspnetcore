@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace LibrameCore.Website
+namespace LibrameStandard.Website
 {
 
     public class Startup
@@ -48,14 +48,37 @@ namespace LibrameCore.Website
                         sql.MaxBatchSize(50);
                     });
                 });
-                //.AddDbContext<SqlServerDbContextWriter>(options =>
-                //{
-                //    options.UseSqlServer(Configuration.GetConnectionString("SqlServerWriter"), sql =>
-                //    {
-                //        sql.UseRowNumberForPaging();
-                //        sql.MaxBatchSize(50);
-                //    });
-                //});
+            //.AddDbContext<SqlServerDbContextWriter>(options =>
+            //{
+            //    options.UseSqlServer(Configuration.GetConnectionString("SqlServerWriter"), sql =>
+            //    {
+            //        sql.UseRowNumberForPaging();
+            //        sql.MaxBatchSize(50);
+            //    });
+            //});
+
+            // Add IdentityOptions
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequiredLength = 8;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = false;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+
+                // Cookie settings
+                options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(1);
+                options.Cookies.ApplicationCookie.LoginPath = "/User/Login";
+                options.Cookies.ApplicationCookie.LogoutPath = "/User/Logout";
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            });
 
             // Librame MVC
             services.AddLibrameCore(Configuration.GetSection("Librame"));

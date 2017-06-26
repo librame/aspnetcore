@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace LibrameStandard
 {
     using Authentication;
+    using Authentication.Handlers;
     using Utilities;
 
     /// <summary>
@@ -42,7 +43,7 @@ namespace LibrameStandard
             if (settings.SigningCredentials == null)
             {
                 // 默认以授权编号为密钥
-                var key = adapter.Builder.FromAuthId();
+                var key = adapter.Builder.FromAuthId().ToByteArray();
                 var securityKey = new SymmetricSecurityKey(key);
 
                 settings.SigningCredentials = new SigningCredentials(securityKey,

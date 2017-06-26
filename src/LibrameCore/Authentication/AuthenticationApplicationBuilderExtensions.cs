@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Builder;
 
 namespace LibrameStandard.Authentication
 {
+    using Handlers;
     using Utilities;
 
     /// <summary>
@@ -39,7 +40,7 @@ namespace LibrameStandard.Authentication
             // 运行认证适配器
             var adapter = builder.GetAuthenticationAdapter(settings);
 
-            settings = adapter.TokenCodec.Settings;
+            settings = adapter.TokenManager.HandlerSettings;
             app.Map(settings.Path, adapter.TokenHandler.OnHandling);
         }
 

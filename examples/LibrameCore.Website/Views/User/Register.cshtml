@@ -1,0 +1,139 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Register";
+}
+<h2>User Register</h2>
+<hr />
+
+<div class="form-horizontal">
+    <form id="form1" method="post">
+        <fieldset>
+            <h3 class="col-sm-offset-1">User Info</h3>
+        </fieldset>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name, new { @class = "control-label col-sm-1" })
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "xlarge" } })
+                @Html.ValidationMessageFor(m => m.Name, "*")
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = "control-label col-sm-1" })
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "xlarge" } })
+                @Html.ValidationMessageFor(m => m.Email, "*")
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Phone, new { @class = "control-label col-sm-1" })
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.Phone, new { htmlAttributes = new { @class = "xlarge" } })
+                @Html.ValidationMessageFor(m => m.Phone, "*")
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Passwd, new { @class = "control-label col-sm-1" })
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.Passwd, new { htmlAttributes = new { @class = "xlarge" } })
+                @Html.ValidationMessageFor(m => m.Passwd, "*")
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="RePasswd" class="control-label col-sm-1">重复密码</label>
+            <div class="col-sm-6">
+                <input id="RePasswd" name="RePasswd" type="password" class="xlarge" />
+                <span class="field-validation-valid" data-valmsg-for="RePasswd" data-valmsg-replace="true">*</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-1 col-sm-6">
+                <button type="submit" class="btn btn-default">注册</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var isValidated = false;
+        var colorRed = "red";
+        var colorGreen = "green";
+
+        function validateUniqueness(obj, minLength, maxLength) {
+            var $obj = $(obj);
+            var $span = $obj.next();
+            var length = $obj.val().length;
+
+            isValidated = false;
+
+            if (length < minLength || length > maxLength) {
+                $span.html("长度控制在" + minLength + "~" + maxLength + "位");
+                return isValidated;
+            }
+
+            $.ajax({
+                url: '@Url.Action("ValidateRegister")',
+                data: { field: $obj.attr('name'), value: $obj.val() },
+                success: function (result) {
+                    if (result == "true") {
+                        isValidated = true;
+                        $span.css("color", colorGreen);
+                        $span.html("可用");
+                    } else {
+                        $span.css("color", colorRed);
+                        $span.html("不可用");
+                    }
+                }
+            });
+
+            return isValidated;
+        }
+
+        $('#Name').focusout(function () {
+            validateUniqueness(this, 1, 50);
+        });
+        $('#Email').focusout(function () {
+            validateUniqueness(this, 1, 50);
+        });
+        $('#Phone').focusout(function () {
+            validateUniqueness(this, 1, 50);
+        });
+
+        $('#Passwd').focusout(function () {
+            var $obj = $(this);
+            var length = $obj.val().length;
+
+            isValidated = false;
+
+            if (length < 6 || length > 16)
+                $obj.next().html("长度控制在6~16位");
+            else
+                isValidated = true;
+        });
+
+        $('#RePasswd').focusout(function () {
+            var $obj = $(this);
+            var $passwd = $("#Passwd");
+            var passwdValue = $passwd.val();
+
+            isValidated = false;
+
+            if (passwdValue.length < 1)
+                $passwd.next().html("长度控制在6~16位");
+            else if ($obj.val() != passwdValue)
+                $obj.next().html("两次密码不一致");
+            else
+                isValidated = true;
+        });
+
+        $('#form1').bind('submit', function () {
+            return isValidated;
+        });
+    </script>
+}

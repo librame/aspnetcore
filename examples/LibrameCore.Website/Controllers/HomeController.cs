@@ -11,7 +11,6 @@
 #endregion
 
 using LibrameStandard.Entity;
-using LibrameStandard.Entity.DbContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -21,19 +20,20 @@ namespace LibrameCore.Website.Controllers
 
     public class HomeController : Controller
     {
-        private readonly IRepository<SqlServerDbContextReader, SqlServerDbContextWriter, Article> _repository;
+        private readonly IEntityAdapter _adapter;
 
-        public HomeController(IRepository<SqlServerDbContextReader, SqlServerDbContextWriter, Article> repository)
+        public HomeController(IEntityAdapter adapter)
         {
-            _repository = repository;
+            _adapter = adapter;
         }
 
 
         public IActionResult Index()
         {
-            var model = _repository.Get(1);
+            var repository = _adapter.GetRepositoryReaderWriter<Article>();
+            var model = repository.Get(1);
 
-            _repository.Logger.LogInformation("Read single article.");
+            _adapter.Logger.LogInformation("Read single article.");
 
             return View(model);
         }

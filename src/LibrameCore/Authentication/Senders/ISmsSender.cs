@@ -10,24 +10,12 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
-
-namespace LibrameStandard
+namespace LibrameStandard.Authentication.Senders
 {
-    using Authentication;
-
     /// <summary>
-    /// Librame 核心选项接口。
+    /// 短信发送器接口。
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class LibrameCoreOptions : LibrameOptions
+    public interface ISmsSender
     {
-
-        /// <summary>
-        /// 认证选项。
-        /// </summary>
-        public AuthenticationSettings Authentication { get; set; }
-            = new AuthenticationSettings();
-
     }
 }

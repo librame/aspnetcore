@@ -10,24 +10,19 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
+using LibrameStandard.Entity.Descriptors;
+using LibrameStandard.Authentication.Models;
 
-namespace LibrameStandard
+namespace LibrameCore.Entities
 {
-    using Authentication;
-
     /// <summary>
-    /// Librame 核心选项接口。
+    /// 令牌。
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class LibrameCoreOptions : LibrameOptions
+    public class Token : AbstractCreateIdDescriptor<int>, ITokenModel
     {
-
         /// <summary>
-        /// 认证选项。
+        /// 名称。
         /// </summary>
-        public AuthenticationSettings Authentication { get; set; }
-            = new AuthenticationSettings();
-
+        public string Name { get; set; }
     }
 }

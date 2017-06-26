@@ -10,24 +10,23 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace LibrameStandard
+namespace LibrameStandard.Authentication.Managers
 {
-    using Authentication;
+    using Models;
 
     /// <summary>
-    /// Librame 核心选项接口。
+    /// 角色管理器接口。
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class LibrameCoreOptions : LibrameOptions
+    public interface IRoleManager : IManager
     {
-
         /// <summary>
-        /// 认证选项。
+        /// 异步获取指定用户的角色集合。
         /// </summary>
-        public AuthenticationSettings Authentication { get; set; }
-            = new AuthenticationSettings();
-
+        /// <param name="user">给定的用户模型。</param>
+        /// <returns>返回角色模型集合。</returns>
+        Task<IEnumerable<IRoleModel>> GetRoles(IUserModel user);
     }
 }

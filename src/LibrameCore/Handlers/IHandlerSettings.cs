@@ -10,24 +10,18 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Http;
 
-namespace LibrameStandard
+namespace LibrameStandard.Handlers
 {
-    using Authentication;
-
     /// <summary>
-    /// Librame 核心选项接口。
+    /// 处理程序设置接口。
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class LibrameCoreOptions : LibrameOptions
+    public interface IHandlerSettings : ILibrameSettings
     {
-
         /// <summary>
-        /// 认证选项。
+        /// 映射路径。
         /// </summary>
-        public AuthenticationSettings Authentication { get; set; }
-            = new AuthenticationSettings();
-
+        PathString Path { get; set; }
     }
 }
