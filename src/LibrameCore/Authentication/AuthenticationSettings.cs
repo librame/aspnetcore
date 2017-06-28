@@ -16,7 +16,6 @@ namespace LibrameStandard.Authentication
 {
     using Handlers;
     using Managers;
-    using Models;
     using Senders;
     using Utilities;
 
@@ -44,13 +43,6 @@ namespace LibrameStandard.Authentication
         /// </summary>
         public AuthenticationManagersSetting Managers { get; set; }
             = new AuthenticationManagersSetting();
-
-
-        /// <summary>
-        /// 模型集合。
-        /// </summary>
-        public AuthenticationModelsSetting Models { get; set; }
-            = new AuthenticationModelsSetting();
 
 
         /// <summary>
@@ -201,7 +193,7 @@ namespace LibrameStandard.Authentication
         /// 默认用户管理器类型名。
         /// </summary>
         public static readonly string DefaultUserManagerTypeName
-            = typeof(UserManager).AsAssemblyQualifiedNameWithoutVCP();
+            = typeof(UserManager<>).AsAssemblyQualifiedNameWithoutVCP();
 
         /// <summary>
         /// 用户管理器类型名。
@@ -210,96 +202,6 @@ namespace LibrameStandard.Authentication
         /// 默认为 <see cref="DefaultUserManagerTypeName"/>。
         /// </value>
         public string UserManagerTypeName { get; set; } = DefaultUserManagerTypeName;
-
-        #endregion
-
-    }
-
-
-    /// <summary>
-    /// 认证模型设置。
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class AuthenticationModelsSetting
-    {
-        /// <summary>
-        /// 键名前缀。
-        /// </summary>
-        internal static readonly string KeyPrefix
-            = (AuthenticationSettings.KeyPrefix + nameof(AuthenticationSettings.Models) + ":");
-
-
-        #region RoleModelTypeName
-
-        /// <summary>
-        /// 角色模型类型名键。
-        /// </summary>
-        public static readonly string RoleModelTypeNameKey
-            = (KeyPrefix + nameof(RoleModelTypeName));
-
-        /// <summary>
-        /// 默认角色模型类型名。
-        /// </summary>
-        public static readonly string DefaultRoleModelTypeName
-            = typeof(RoleModel).AsAssemblyQualifiedNameWithoutVCP();
-
-        /// <summary>
-        /// 角色模型类型名。
-        /// </summary>
-        /// <value>
-        /// 默认为 <see cref="DefaultRoleModelTypeName"/>。
-        /// </value>
-        public string RoleModelTypeName { get; set; } = DefaultRoleModelTypeName;
-
-        #endregion
-
-
-        #region TokenModelTypeName
-
-        /// <summary>
-        /// 令牌模型类型名键。
-        /// </summary>
-        public static readonly string TokenModelTypeNameKey
-            = (KeyPrefix + nameof(TokenModelTypeName));
-
-        /// <summary>
-        /// 默认令牌模型类型名。
-        /// </summary>
-        public static readonly string DefaultTokenModelTypeName
-            = typeof(TokenModel).AsAssemblyQualifiedNameWithoutVCP();
-
-        /// <summary>
-        /// 令牌模型类型名。
-        /// </summary>
-        /// <value>
-        /// 默认为 <see cref="DefaultTokenModelTypeName"/>。
-        /// </value>
-        public string TokenModelTypeName { get; set; } = DefaultTokenModelTypeName;
-
-        #endregion
-
-
-        #region UserModel
-
-        /// <summary>
-        /// 用户模型类型名键。
-        /// </summary>
-        public static readonly string UserModelTypeNameKey
-            = (KeyPrefix + nameof(UserModelTypeName));
-
-        /// <summary>
-        /// 默认用户模型类型名。
-        /// </summary>
-        public static readonly string DefaultUserModelTypeName
-            = typeof(UserModel).AsAssemblyQualifiedNameWithoutVCP();
-
-        /// <summary>
-        /// 用户模型类型名。
-        /// </summary>
-        /// <value>
-        /// 默认为 <see cref="DefaultUserModelTypeName"/>。
-        /// </value>
-        public string UserModelTypeName { get; set; } = DefaultUserModelTypeName;
 
         #endregion
 

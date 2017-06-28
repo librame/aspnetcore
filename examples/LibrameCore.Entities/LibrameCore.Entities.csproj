@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibrameStandard" Version="1.6.1706.222" />
+    <PackageReference Include="LibrameStandard" Version="1.6.1706.281" />
   </ItemGroup>
 
   <ItemGroup>

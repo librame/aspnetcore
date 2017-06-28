@@ -23,7 +23,9 @@ namespace LibrameStandard.Authentication.Managers
     /// <summary>
     /// 用户管理器。
     /// </summary>
-    public class UserManager : AbstractManager, IUserManager
+    /// <typeparam name="TUserModel">指定的用户模型类型。</typeparam>
+    public class UserManager<TUserModel> : AbstractManager, IUserManager<TUserModel>
+        where TUserModel : class, IUserModel
     {
         /// <summary>
         /// 构造一个用户管理器实例。
@@ -44,11 +46,11 @@ namespace LibrameStandard.Authentication.Managers
         /// <summary>
         /// 异步创建用户。
         /// </summary>
-        /// <param name="model">给定的用户模型接口。</param>
+        /// <param name="model">给定的用户模型。</param>
         /// <returns>返回用户身份结果。</returns>
-        public virtual async Task<UserIdentityResult> CreateAsync(IUserModel model)
+        public virtual async Task<UserIdentityResult> CreateAsync(TUserModel model)
         {
-            var repository = Builder.GetRepositoryReaderWriter<IUserModel>(model.GetType());
+            var repository = Builder.GetRepositoryReaderWriter<TUserModel>();
 
             try
             {
@@ -75,19 +77,18 @@ namespace LibrameStandard.Authentication.Managers
                 return null;
 
             // 获取用户仓库
-            var user = Builder.GetService<IUserModel>();
-            var repository = Builder.GetRepositoryReaderWriter<IUserModel>(user.GetType());
+            var repository = Builder.GetRepositoryReaderWriter<TUserModel>();
 
             // 查找用户名称
-            user = await repository.GetAsync(p => p.Name == name);
+            var model = await repository.GetAsync(p => p.Name == name);
 
-            if (user == null)
+            if (model == null)
                 return new UserIdentityResult(IdentityResult.Failed(UserIdentityErrors.NameNotExists));
 
-            if (!PasswordManager.Validate(user.Passwd, passwd))
+            if (!PasswordManager.Validate(model.Passwd, passwd))
                 return new UserIdentityResult(IdentityResult.Failed(UserIdentityErrors.PasswordError));
 
-            return new UserIdentityResult(IdentityResult.Success, user);
+            return new UserIdentityResult(IdentityResult.Success, model);
         }
 
 
@@ -103,11 +104,10 @@ namespace LibrameStandard.Authentication.Managers
                 return false;
 
             // 获取用户仓库
-            var user = Builder.GetService<IUserModel>();
-            var repository = Builder.GetRepositoryReaderWriter<IUserModel>(user.GetType());
+            var repository = Builder.GetRepositoryReaderWriter<TUserModel>();
 
             // 查找用户
-            var predicate = field.AsEqualPropertyExpression<IUserModel>(value, typeof(string));
+            var predicate = field.AsEqualPropertyExpression<TUserModel>(value, typeof(string));
             var exists = await repository.ExistsAsync(predicate);
 
             // 不存在表示唯一

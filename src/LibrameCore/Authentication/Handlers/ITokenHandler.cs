@@ -25,10 +25,5 @@ namespace LibrameStandard.Authentication.Handlers
         /// 令牌管理器。
         /// </summary>
         ITokenManager TokenManager { get; }
-
-        /// <summary>
-        /// 用户管理器。
-        /// </summary>
-        IUserManager UserManager { get; }
     }
 }

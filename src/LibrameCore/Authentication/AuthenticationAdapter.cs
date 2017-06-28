@@ -10,7 +10,6 @@
 
 #endregion
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace LibrameStandard.Authentication
@@ -45,7 +44,7 @@ namespace LibrameStandard.Authentication
         /// <summary>
         /// 密码管理器。
         /// </summary>
-        public IPasswordManager PasswordManager => UserManager.PasswordManager;
+        public IPasswordManager PasswordManager => Builder.GetService<IPasswordManager>();
 
         /// <summary>
         /// 角色管理器。
@@ -57,11 +56,6 @@ namespace LibrameStandard.Authentication
         /// </summary>
         public ITokenManager TokenManager => TokenHandler.TokenManager;
 
-        /// <summary>
-        /// 用户管理器。
-        /// </summary>
-        public IUserManager UserManager => TokenHandler.UserManager;
-
 
         /// <summary>
         /// 邮箱发送器。
@@ -72,6 +66,18 @@ namespace LibrameStandard.Authentication
         /// 短信发送器。
         /// </summary>
         public ISmsSender SmsSender => Builder.GetService<ISmsSender>();
+
+
+        /// <summary>
+        /// 获取用户管理器。
+        /// </summary>
+        /// <typeparam name="TUserModel">指定的用户模型类型。</typeparam>
+        /// <returns>返回用户管理器。</returns>
+        public IUserManager<TUserModel> GetUserManager<TUserModel>()
+            where TUserModel : class, IUserModel
+        {
+            return Builder.GetService<IUserManager<TUserModel>>();
+        }
 
 
         /// <summary>
@@ -97,17 +103,7 @@ namespace LibrameStandard.Authentication
             Builder.TryAddTransient(typeof(ITokenManager), tokenManagerType);
 
             var userManagerType = Type.GetType(options.Managers.UserManagerTypeName, throwOnError: true);
-            Builder.TryAddTransient(typeof(IUserManager), userManagerType);
-            
-            // 模型
-            var roleModelType = Type.GetType(options.Models.RoleModelTypeName, throwOnError: true);
-            Builder.TryAddTransient(typeof(IRoleModel), roleModelType);
-
-            var tokenModelType = Type.GetType(options.Models.TokenModelTypeName, throwOnError: true);
-            Builder.TryAddTransient(typeof(ITokenModel), tokenModelType);
-
-            var userModelType = Type.GetType(options.Models.UserModelTypeName, throwOnError: true);
-            Builder.TryAddTransient(typeof(IUserModel), userModelType);
+            Builder.TryAddTransient(typeof(IUserManager<>), userManagerType);
 
             // 发送器
             var emailSenderType = Type.GetType(options.Senders.EmailSenderTypeName, throwOnError: true);

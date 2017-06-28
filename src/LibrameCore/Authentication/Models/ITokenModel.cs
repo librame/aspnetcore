@@ -12,14 +12,14 @@
 
 namespace LibrameStandard.Authentication.Models
 {
-    /// <summary>
-    /// 令牌模型接口。
-    /// </summary>
-    public interface ITokenModel
-    {
-        /// <summary>
-        /// 名称。
-        /// </summary>
-        string Name { get; }
-    }
+    ///// <summary>
+    ///// 令牌模型接口。
+    ///// </summary>
+    //public interface ITokenModel
+    //{
+    //    /// <summary>
+    //    /// 名称。
+    //    /// </summary>
+    //    string Name { get; }
+    //}
 }

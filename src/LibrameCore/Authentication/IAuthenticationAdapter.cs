@@ -15,6 +15,7 @@ namespace LibrameStandard.Authentication
     using Adaptation;
     using Handlers;
     using Managers;
+    using Models;
     using Senders;
 
     /// <summary>
@@ -42,11 +43,6 @@ namespace LibrameStandard.Authentication
         /// </summary>
         ITokenManager TokenManager { get; }
 
-        /// <summary>
-        /// 用户管理器。
-        /// </summary>
-        IUserManager UserManager { get; }
-
 
         /// <summary>
         /// 邮箱发送器。
@@ -57,6 +53,15 @@ namespace LibrameStandard.Authentication
         /// 短信发送器。
         /// </summary>
         ISmsSender SmsSender { get; }
+
+
+        /// <summary>
+        /// 获取用户管理器。
+        /// </summary>
+        /// <typeparam name="TUserModel">指定的用户模型类型。</typeparam>
+        /// <returns>返回用户管理器。</returns>
+        IUserManager<TUserModel> GetUserManager<TUserModel>()
+            where TUserModel : class, IUserModel;
 
 
         /// <summary>

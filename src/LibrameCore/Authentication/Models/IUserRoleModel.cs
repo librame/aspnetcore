@@ -10,16 +10,15 @@
 
 #endregion
 
-namespace LibrameStandard.Authentication.Models
+namespace LibrameCore.Authentication.Models
 {
     ///// <summary>
-    ///// 令牌模型。
+    ///// 用户角色模型接口。
     ///// </summary>
-    //public class TokenModel : ITokenModel
+    //public interface IUserRoleModel
     //{
-    //    /// <summary>
-    //    /// 名称。
-    //    /// </summary>
-    //    public string Name { get; set; } = string.Empty;
+    //    public int UserId { get; set; }
+
+    //    public int RoleId { get; set; }
     //}
 }

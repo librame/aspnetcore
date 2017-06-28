@@ -43,11 +43,6 @@ namespace LibrameStandard.Authentication.Handlers
         /// </summary>
         public ITokenManager TokenManager => Builder.GetService<ITokenManager>();
 
-        /// <summary>
-        /// 用户管理器。
-        /// </summary>
-        public IUserManager UserManager => Builder.GetService<IUserManager>();
-
 
         /// <summary>
         /// 开始处理令牌。
@@ -72,38 +67,38 @@ namespace LibrameStandard.Authentication.Handlers
                             return;
                         }
 
-                    case "post":
-                        {
-                            if (!context.Request.HasFormContentType)
-                            {
-                                await context.Response.WriteBadRequestAsync("Invalid request.");
-                                return;
-                            }
+                    //case "post":
+                    //    {
+                    //        if (!context.Request.HasFormContentType)
+                    //        {
+                    //            await context.Response.WriteBadRequestAsync("Invalid request.");
+                    //            return;
+                    //        }
 
-                            var userResult = await ValidateUser(context);
-                            if (userResult == null)
-                            {
-                                await context.Response.WriteBadRequestAsync("Username or password is empty.");
-                                return;
-                            }
+                    //        var userResult = await ValidateUser(context);
+                    //        if (userResult == null)
+                    //        {
+                    //            await context.Response.WriteBadRequestAsync("Username or password is empty.");
+                    //            return;
+                    //        }
 
-                            if (!userResult.IdentityResult.Succeeded)
-                            {
-                                var message = userResult.IdentityResult.Errors.FirstOrDefault()?.Description;
-                                await context.Response.WriteBadRequestAsync(message.AsOrDefault("Invalid username or password."));
-                                return;
-                            }
+                    //        if (!userResult.IdentityResult.Succeeded)
+                    //        {
+                    //            var message = userResult.IdentityResult.Errors.FirstOrDefault()?.Description;
+                    //            await context.Response.WriteBadRequestAsync(message.AsOrDefault("Invalid username or password."));
+                    //            return;
+                    //        }
 
-                            var token = TokenManager.Encode(userResult.User);
-                            var result = new
-                            {
-                                access_token = token,
-                                expires_in = (int)Settings.Expiration.TotalSeconds,
-                            };
+                    //        var token = TokenManager.Encode(userResult.User);
+                    //        var result = new
+                    //        {
+                    //            access_token = token,
+                    //            expires_in = (int)Settings.Expiration.TotalSeconds,
+                    //        };
 
-                            await context.Response.WriteJsonAsync(result);
-                            return;
-                        }
+                    //        await context.Response.WriteJsonAsync(result);
+                    //        return;
+                    //    }
 
                     default:
                         {
@@ -129,18 +124,18 @@ namespace LibrameStandard.Authentication.Handlers
             return TokenManager.ValidateAsync(name);
         }
 
-        /// <summary>
-        /// 根据 HTTP 上下文信息异步认证用户。
-        /// </summary>
-        /// <param name="context">给定的 HTTP 上下文。</param>
-        /// <returns>返回用户身份结果。</returns>
-        protected virtual Task<UserIdentityResult> ValidateUser(HttpContext context)
-        {
-            var username = context.Request.Form["username"];
-            var password = context.Request.Form["password"];
+        ///// <summary>
+        ///// 根据 HTTP 上下文信息异步认证用户。
+        ///// </summary>
+        ///// <param name="context">给定的 HTTP 上下文。</param>
+        ///// <returns>返回用户身份结果。</returns>
+        //protected virtual Task<UserIdentityResult> ValidateUser(HttpContext context)
+        //{
+        //    var username = context.Request.Form["username"];
+        //    var password = context.Request.Form["password"];
 
-            return UserManager.ValidateAsync(username, password);
-        }
+        //    return UserManager.ValidateAsync(username, password);
+        //}
 
     }
 }

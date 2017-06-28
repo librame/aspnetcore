@@ -72,13 +72,6 @@ namespace Microsoft.Extensions.DependencyInjection
             initialData.Add(AuthenticationManagersSetting.UserManagerTypeNameKey,
                 AuthenticationManagersSetting.DefaultUserManagerTypeName);
 
-            initialData.Add(AuthenticationModelsSetting.RoleModelTypeNameKey,
-                AuthenticationModelsSetting.DefaultRoleModelTypeName);
-            initialData.Add(AuthenticationModelsSetting.TokenModelTypeNameKey,
-                AuthenticationModelsSetting.DefaultTokenModelTypeName);
-            initialData.Add(AuthenticationModelsSetting.UserModelTypeNameKey,
-                AuthenticationModelsSetting.DefaultUserModelTypeName);
-
             initialData.Add(AuthenticationSendersSetting.EmailSenderTypeNameKey,
                 AuthenticationSendersSetting.DefaultEmailSenderTypeName);
             initialData.Add(AuthenticationSendersSetting.SmsSenderTypeNameKey,

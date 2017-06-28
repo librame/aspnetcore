@@ -8,20 +8,24 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using LibrameStandard.Authentication;
+using LibrameStandard.Authentication.Managers;
 using LibrameStandard.Authentication.Models;
+using LibrameStandard.Utilities;
 
 namespace LibrameCore.Website.Controllers
 {
     using Entities;
-
+    
     public class UserController : Controller
     {
         private readonly IAuthenticationAdapter _adapter = null;
+        private readonly IUserManager<UserModel> _userManager = null;
 
 
         public UserController(IAuthenticationAdapter adapter)
         {
-            _adapter = adapter;
+            _adapter = adapter.NotNull(nameof(adapter));
+            _userManager = adapter.GetUserManager<UserModel>();
         }
 
 
@@ -96,7 +100,7 @@ namespace LibrameCore.Website.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userResult = await _adapter.UserManager.CreateAsync(model);
+                var userResult = await _userManager.CreateAsync(model);
 
                 if (userResult.IdentityResult.Succeeded)
                 {
@@ -134,7 +138,7 @@ namespace LibrameCore.Website.Controllers
         [AllowAnonymous]
         public async Task<bool> ValidateRegister(string field, string value)
         {
-            return await _adapter.UserManager.ValidateUniquenessAsync(field, value);
+            return await _userManager.ValidateUniquenessAsync(field, value);
         }
 
 

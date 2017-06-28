@@ -16,11 +16,13 @@ using System.Threading.Tasks;
 namespace LibrameStandard.Authentication.Managers
 {
     using Models;
-    
+
     /// <summary>
     /// 用户管理器接口。
     /// </summary>
-    public interface IUserManager : IManager
+    /// <typeparam name="TUserModel">指定的用户模型类型。</typeparam>
+    public interface IUserManager<TUserModel> : IManager
+        where TUserModel : class, IUserModel
     {
         /// <summary>
         /// 密码管理器。
@@ -31,9 +33,9 @@ namespace LibrameStandard.Authentication.Managers
         /// <summary>
         /// 异步创建用户。
         /// </summary>
-        /// <param name="model">给定的用户模型接口。</param>
+        /// <param name="model">给定的用户模型。</param>
         /// <returns>返回用户身份结果。</returns>
-        Task<UserIdentityResult> CreateAsync(IUserModel model);
+        Task<UserIdentityResult> CreateAsync(TUserModel model);
 
 
         /// <summary>
