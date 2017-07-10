@@ -10,7 +10,7 @@
 
 #endregion
 
-namespace LibrameStandard.Authentication.Managers
+namespace LibrameCore.Authentication.Managers
 {
     /// <summary>
     /// 管理器接口。
@@ -18,13 +18,8 @@ namespace LibrameStandard.Authentication.Managers
     public interface IManager
     {
         /// <summary>
-        /// Librame 构建器。
-        /// </summary>
-        ILibrameBuilder Builder { get; }
-
-        /// <summary>
         /// 认证设置。
         /// </summary>
-        AuthenticationSettings Settings { get; }
+        AuthenticationOptions Options { get; }
     }
 }

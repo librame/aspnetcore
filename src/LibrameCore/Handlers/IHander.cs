@@ -12,30 +12,17 @@
 
 using Microsoft.AspNetCore.Builder;
 
-namespace LibrameStandard.Handlers
+namespace LibrameCore.Handlers
 {
     /// <summary>
-    /// 泛型处理程序接口。
+    /// 处理程序接口。
     /// </summary>
-    /// <typeparam name="THandlerSettings">指定的处理程序设置类型。</typeparam>
-    public interface IHander<THandlerSettings>
-        where THandlerSettings : HandlerSettings
+    public interface IHander
     {
         /// <summary>
-        /// Librame 构建器。
-        /// </summary>
-        ILibrameBuilder Builder { get; }
-        
-        /// <summary>
-        /// 处理程序设置。
-        /// </summary>
-        THandlerSettings Settings { get; }
-
-
-        /// <summary>
-        /// 开始处理。
+        /// 配置处理程序。
         /// </summary>
         /// <param name="app">给定的应用构建器接口。</param>
-        void OnHandling(IApplicationBuilder app);
+        void Configure(IApplicationBuilder app);
     }
 }

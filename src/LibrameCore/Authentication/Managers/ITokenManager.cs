@@ -10,12 +10,16 @@
 
 #endregion
 
+using LibrameStandard.Algorithm;
 using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace LibrameStandard.Authentication.Managers
+namespace LibrameCore.Authentication.Managers
 {
-    using Handlers;
     using Models;
 
     /// <summary>
@@ -24,32 +28,37 @@ namespace LibrameStandard.Authentication.Managers
     public interface ITokenManager : IManager
     {
         /// <summary>
-        /// 令牌处理程序设置。
+        /// 算法选项。
         /// </summary>
-        TokenHandlerSettings HandlerSettings { get; }
+        AlgorithmOptions AlgorithmOptions { get; }
 
 
         /// <summary>
         /// 编码令牌。
         /// </summary>
-        /// <param name="user">给定的用户模型。</param>
+        /// <param name="identity">给定的用户身份标识。</param>
         /// <returns>返回令牌字符串。</returns>
-        string Encode(IUserModel user);
+        string Encode(ClaimsIdentity identity);
 
 
         /// <summary>
         /// 解码令牌。
         /// </summary>
         /// <param name="token">给定的令牌字符串。</param>
-        /// <returns>返回用户模型。</returns>
-        IUserModel Decode(string token);
+        /// <param name="parseUserRolesFactory">给定的解析用户与角色集合工厂方法。</param>
+        /// <returns>返回用户模型与角色集合。</returns>
+        (IUserModel User, IEnumerable<string> Roles) Decode(string token,
+            Func<JwtSecurityToken, (IUserModel User, IEnumerable<string> Roles)> parseUserRolesFactory);
 
 
         /// <summary>
         /// 异步验证令牌。
         /// </summary>
-        /// <param name="name">给定的名称。</param>
+        /// <param name="token">给定的令牌字符串。</param>
+        /// <param name="requiredRoles">需要的角色集合。</param>
+        /// <param name="parseUserRolesFactory">给定的解析用户与角色集合工厂方法。</param>
         /// <returns>返回用户身份结果。</returns>
-        Task<UserIdentityResult> ValidateAsync(string name);
+        Task<LibrameIdentityResult> ValidateAsync(string token, IEnumerable<string> requiredRoles,
+            Func<JwtSecurityToken, (IUserModel User, IEnumerable<string> Roles)> parseUserRolesFactory);
     }
 }

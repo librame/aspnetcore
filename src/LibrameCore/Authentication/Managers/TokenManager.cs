@@ -10,17 +10,20 @@
 
 #endregion
 
+using LibrameStandard.Algorithm;
+using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace LibrameStandard.Authentication.Managers
+namespace LibrameCore.Authentication.Managers
 {
     using Models;
-    using Handlers;
 
     /// <summary>
     /// 令牌管理器。
@@ -30,42 +33,49 @@ namespace LibrameStandard.Authentication.Managers
         /// <summary>
         /// 构造一个用户管理器实例。
         /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        public TokenManager(ILibrameBuilder builder)
-            : base(builder)
+        /// <param name="options">给定的认证选项。</param>
+        /// <param name="algorithmOptions">给定的算法选项。</param>
+        public TokenManager(IOptions<AuthenticationOptions> options, IOptions<AlgorithmOptions> algorithmOptions)
+            : base(options)
         {
+            AlgorithmOptions = algorithmOptions.NotNull(nameof(algorithmOptions)).Value;
         }
 
 
         /// <summary>
-        /// 令牌处理程序设置。
+        /// 算法选项。
         /// </summary>
-        public TokenHandlerSettings HandlerSettings => Builder.GetService<TokenHandlerSettings>();
+        public AlgorithmOptions AlgorithmOptions { get; }
 
 
         /// <summary>
         /// 编码令牌。
         /// </summary>
-        /// <param name="user">给定的用户模型。</param>
+        /// <param name="identity">给定的用户身份标识。</param>
         /// <returns>返回令牌字符串。</returns>
-        public virtual string Encode(IUserModel user)
+        public virtual string Encode(ClaimsIdentity identity)
         {
-            var now = DateTime.UtcNow;
-            var claims = new Claim[]
-            {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UniqueId),
-                    new Claim(JwtRegisteredClaimNames.UniqueName, user.Name),
-                    new Claim(JwtRegisteredClaimNames.Jti, user.UniqueId), // Guid.NewGuid().ToString()
-                    new Claim(JwtRegisteredClaimNames.Iat, now.ToString(), ClaimValueTypes.Integer64)
-            };
+            var settings = Options.TokenHandler;
 
+            // 默认令牌签名证书
+            if (settings.SigningCredentials == null)
+            {
+                // 默认以授权编号为密钥
+                var key = AlgorithmOptions.FromAuthIdAsBytes();
+                var securityKey = new SymmetricSecurityKey(key);
+
+                settings.SigningCredentials = new SigningCredentials(securityKey,
+                    SecurityAlgorithms.HmacSha384);
+            }
+
+            var now = DateTime.UtcNow;
             var jwt = new JwtSecurityToken(
-                HandlerSettings.Issuer,
-                HandlerSettings.Audience,
-                claims,
+                settings.Issuer,
+                settings.Audience,
+                identity.Claims,
                 now,
-                now.Add(HandlerSettings.Expiration),
-                HandlerSettings.SigningCredentials);
+                now.Add(settings.Expiration),
+                settings.SigningCredentials);
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
             return token;
@@ -76,40 +86,78 @@ namespace LibrameStandard.Authentication.Managers
         /// 解码令牌。
         /// </summary>
         /// <param name="token">给定的令牌字符串。</param>
-        /// <returns>返回用户模型。</returns>
-        public virtual IUserModel Decode(string token)
+        /// <param name="parseUserRolesFactory">给定的解析用户与角色集合工厂方法。</param>
+        /// <returns>返回用户模型与角色集合。</returns>
+        public virtual (IUserModel User, IEnumerable<string> Roles) Decode(string token,
+            Func<JwtSecurityToken, (IUserModel User, IEnumerable<string> Roles)> parseUserRolesFactory)
         {
+            parseUserRolesFactory.NotNull(nameof(parseUserRolesFactory));
+
             var handler = new JwtSecurityTokenHandler();
 
             if (!handler.CanReadToken(token))
-                return null;
+                return (null, null);
 
             var jwt = handler.ReadJwtToken(token);
-
-            return new UserModel()
-            {
-                UniqueId = jwt.Claims.FirstOrDefault(p => p.Type == JwtRegisteredClaimNames.Sub)?.Value,
-                Name = jwt.Claims.FirstOrDefault(p => p.Type == JwtRegisteredClaimNames.UniqueName)?.Value
-            };
+            return parseUserRolesFactory.Invoke(jwt);
         }
 
 
         /// <summary>
         /// 异步验证令牌。
         /// </summary>
-        /// <param name="name">给定的名称。</param>
+        /// <param name="token">给定的令牌字符串。</param>
+        /// <param name="requiredRoles">需要的角色集合。</param>
+        /// <param name="parseUserRolesFactory">给定的解析用户与角色集合工厂方法。</param>
         /// <returns>返回用户身份结果。</returns>
-        public virtual Task<UserIdentityResult> ValidateAsync(string name)
+        public virtual Task<LibrameIdentityResult> ValidateAsync(string token, IEnumerable<string> requiredRoles,
+            Func<JwtSecurityToken, (IUserModel User, IEnumerable<string> Roles)> parseUserRolesFactory)
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(token))
                 return null;
             
             // 解码令牌代替数据库验证
-            var user = Decode(name);
+            var userRoles = Decode(token, parseUserRolesFactory);
 
-            var identityResult = (user == null) ? IdentityResult.Failed(UserIdentityErrors.TokenInvalid) : IdentityResult.Success;
+            if (userRoles.User == null)
+                return Task.FromResult(LibrameIdentityResult.TokenInvalid);
 
-            return Task.FromResult(new UserIdentityResult(identityResult, user));
+            // 验证角色
+            if (requiredRoles != null)
+            {
+                var hasRole = false;
+
+                foreach (var rr in requiredRoles)
+                {
+                    foreach (var r in userRoles.Roles)
+                    {
+                        // 忽略大小写
+                        if (rr.Equals(r, StringComparison.OrdinalIgnoreCase))
+                        {
+                            hasRole = true;
+                            break;
+                        }
+                    }
+
+                    if (hasRole)
+                        break;
+                }
+
+                if (!hasRole)
+                {
+                    return Task.FromResult(new LibrameIdentityResult
+                    {
+                        IdentityResult = LibrameIdentityResult.RoleDenied,
+                        User = userRoles.User
+                    });
+                }
+            }
+
+            return Task.FromResult(new LibrameIdentityResult
+            {
+                IdentityResult = IdentityResult.Success,
+                User = userRoles.User
+            });
         }
 
     }

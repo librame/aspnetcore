@@ -10,7 +10,7 @@
 
 #endregion
 
-namespace LibrameStandard.Authentication.Senders
+namespace LibrameCore.Authentication.Senders
 {
     /// <summary>
     /// 邮箱发送器。

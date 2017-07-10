@@ -10,10 +10,13 @@
 
 #endregion
 
-namespace LibrameStandard.Authentication.Managers
-{
-    using Algorithm;
+using LibrameStandard.Algorithm.Hashes;
+using LibrameStandard.Algorithm.Symmetries;
+using LibrameStandard.Utilities;
+using Microsoft.Extensions.Options;
 
+namespace LibrameCore.Authentication.Managers
+{
     /// <summary>
     /// 密码管理器。
     /// </summary>
@@ -22,17 +25,27 @@ namespace LibrameStandard.Authentication.Managers
         /// <summary>
         /// 构造一个密码管理器实例。
         /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        public PasswordManager(ILibrameBuilder builder)
-            : base(builder)
+        /// <param name="hash">给定的散列算法。</param>
+        /// <param name="symmetry">给定的对称算法。</param>
+        /// <param name="options">给定的认证选项。</param>
+        public PasswordManager(IHashAlgorithm hash, ISymmetryAlgorithm symmetry,
+            IOptions<AuthenticationOptions> options)
+            : base(options)
         {
+            Hash = hash.NotNull(nameof(hash));
+            Symmetry = symmetry.NotNull(nameof(symmetry));
         }
 
 
         /// <summary>
-        /// 算法适配器。
+        /// 哈希算法。
         /// </summary>
-        public IAlgorithmAdapter Algorithm => Builder.GetAlgorithmAdapter();
+        public IHashAlgorithm Hash { get; }
+
+        /// <summary>
+        /// 对称算法。
+        /// </summary>
+        public ISymmetryAlgorithm Symmetry { get; }
 
 
         /// <summary>
@@ -46,10 +59,10 @@ namespace LibrameStandard.Authentication.Managers
                 return string.Empty;
 
             // SHA384散列算法（64位长度）
-            var encode = Algorithm.Hash.ToSha384(original);
+            var encode = Hash.ToSha384(original);
 
             // AES动态加密（防撞库）
-            encode = Algorithm.Symmetry.ToAes(encode);
+            encode = Symmetry.ToAes(encode);
 
             return encode;
         }
@@ -67,10 +80,10 @@ namespace LibrameStandard.Authentication.Managers
                 return false;
 
             // AES动态解密
-            encode = Algorithm.Symmetry.FromAes(encode);
+            encode = Symmetry.FromAes(encode);
 
             // SHA384散列算法（64位长度）
-            var compare = Algorithm.Hash.ToSha384(original);
+            var compare = Hash.ToSha384(original);
 
             return (encode == compare);
         }

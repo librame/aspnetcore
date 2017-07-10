@@ -12,12 +12,12 @@
 
 using Microsoft.AspNetCore.Http;
 
-namespace LibrameStandard.Handlers
+namespace LibrameCore.Handlers
 {
     /// <summary>
     /// 处理程序设置接口。
     /// </summary>
-    public interface IHandlerSettings : ILibrameSettings
+    public interface IHandlerSettings
     {
         /// <summary>
         /// 映射路径。

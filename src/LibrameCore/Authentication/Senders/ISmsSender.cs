@@ -10,7 +10,7 @@
 
 #endregion
 
-namespace LibrameStandard.Authentication.Senders
+namespace LibrameCore.Authentication.Senders
 {
     /// <summary>
     /// 短信发送器接口。

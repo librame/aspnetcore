@@ -49,8 +49,10 @@ namespace LibrameStandard.Entity.DbContexts
 
             if (logger != null)
             {
-                logger.LogDebug("Mapping entity type {0} to table {1}.{2}.",
-                    entityType.ClrType.FullName, annotations.Schema, annotations.TableName);
+                var schemaName = (string.IsNullOrEmpty(annotations.Schema) ? "dbo" : annotations.Schema);
+
+                logger.LogDebug("Mapping entity type {0} to table {1}.{2}",
+                    entityType.ClrType.FullName, schemaName, tableName);
             }
 
             // 设定表名

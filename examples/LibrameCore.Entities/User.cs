@@ -11,8 +11,7 @@
 #endregion
 
 using LibrameStandard.Entity.Descriptors;
-using LibrameStandard.Authentication.Models;
-using System;
+using LibrameCore.Authentication.Models;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -25,28 +24,12 @@ namespace LibrameCore.Entities
     public class User : AbstractCreateDataIdDescriptor<int>, IUserModel
     {
         /// <summary>
-        /// 唯一标识。
+        /// 名称。
         /// </summary>
+        [DisplayName("名称")]
         [Required]
         [StringLength(50)]
-        public string UniqueId { get; set; } = Guid.Empty.ToString();
-
-        /// <summary>
-        /// 邮箱。
-        /// </summary>
-        [DataType(DataType.EmailAddress)]
-        [DisplayName("邮箱")]
-        [Required]
-        [StringLength(50)]
-        public string Email { get; set; }
-
-        /// <summary>
-        /// 电话。
-        /// </summary>
-        [DisplayName("手机")]
-        [Required]
-        [StringLength(50)]
-        public string Phone { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 密码。
@@ -55,13 +38,5 @@ namespace LibrameCore.Entities
         [DisplayName("密码")]
         [StringLength(500)]
         public string Passwd { get; set; }
-
-        /// <summary>
-        /// 名称。
-        /// </summary>
-        [DisplayName("名称")]
-        [Required]
-        [StringLength(50)]
-        public string Name { get; set; }
     }
 }

@@ -12,42 +12,17 @@
 
 using Microsoft.AspNetCore.Builder;
 
-namespace LibrameStandard.Handlers
+namespace LibrameCore.Handlers
 {
-    using Utilities;
-
     /// <summary>
-    /// 抽象泛型处理程序。
+    /// 抽象处理程序。
     /// </summary>
-    /// <typeparam name="THandlerSettings">指定的处理程序设置类型。</typeparam>
-    public abstract class AbstractHander<THandlerSettings> : IHander<THandlerSettings>
-        where THandlerSettings : HandlerSettings
+    public abstract class AbstractHander : IHander
     {
         /// <summary>
-        /// 构建一个默认处理程序实例。
-        /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        public AbstractHander(ILibrameBuilder builder)
-        {
-            Builder = builder.NotNull(nameof(builder));
-        }
-
-
-        /// <summary>
-        /// Librame 构建器。
-        /// </summary>
-        public ILibrameBuilder Builder { get; }
-        
-        /// <summary>
-        /// 处理程序设置。
-        /// </summary>
-        public THandlerSettings Settings => Builder.GetService<THandlerSettings>();
-
-
-        /// <summary>
-        /// 开始处理。
+        /// 配置处理程序。
         /// </summary>
         /// <param name="app">给定的应用构建器接口。</param>
-        public abstract void OnHandling(IApplicationBuilder app);
+        public abstract void Configure(IApplicationBuilder app);
     }
 }

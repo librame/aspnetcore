@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using LibrameCore.Entities;
 using LibrameStandard.Entity.DbContexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace LibrameStandard.Website
+namespace LibrameCore.Website
 {
 
     public class Startup
@@ -47,41 +45,21 @@ namespace LibrameStandard.Website
                         sql.UseRowNumberForPaging();
                         sql.MaxBatchSize(50);
                     });
+                })
+                .AddDbContext<SqlServerDbContextWriter>(options =>
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("SqlServerWriter"), sql =>
+                    {
+                        sql.UseRowNumberForPaging();
+                        sql.MaxBatchSize(50);
+                    });
                 });
-            //.AddDbContext<SqlServerDbContextWriter>(options =>
-            //{
-            //    options.UseSqlServer(Configuration.GetConnectionString("SqlServerWriter"), sql =>
-            //    {
-            //        sql.UseRowNumberForPaging();
-            //        sql.MaxBatchSize(50);
-            //    });
-            //});
 
-            // Add IdentityOptions
-            services.Configure<IdentityOptions>(options =>
+            // Add LibrameCore
+            services.AddLibrameCore(Configuration.GetSection("Librame"), authenticationAction: opts =>
             {
-                // Password settings
-                options.Password.RequiredLength = 8;
-                options.Password.RequireDigit = true;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = false;
-
-                // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-                options.Lockout.MaxFailedAccessAttempts = 10;
-
-                // Cookie settings
-                options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(1);
-                options.Cookies.ApplicationCookie.LoginPath = "/User/Login";
-                options.Cookies.ApplicationCookie.LogoutPath = "/User/Logout";
-
-                // User settings
-                options.User.RequireUniqueEmail = true;
+                opts.TokenHandler.Expiration = TimeSpan.FromHours(1);
             });
-
-            // Librame MVC
-            services.AddLibrameCore(Configuration.GetSection("Librame"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,8 +88,16 @@ namespace LibrameStandard.Website
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            // Librame MVC
-            app.UseLibrameMvc();
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = Authentication.AuthenticationOptions.DEFAULT_SCHEME,
+                // 是否自动启用验证，如果不启用，则即便客服端传输了Cookie信息，服务端也不会主动解析。除了明确配置了 [Authorize(ActiveAuthenticationSchemes = "上面的方案名")] 属性的地方，才会解析，此功能一般用在需要在同一应用中启用多种验证方案的时候。比如分Area.
+                AutomaticAuthenticate = true,
+                LoginPath = "/User/Login"
+            });
+
+            // Use LibrameCore
+            app.UseLibrameAuthentication<User>();
         }
     }
 }

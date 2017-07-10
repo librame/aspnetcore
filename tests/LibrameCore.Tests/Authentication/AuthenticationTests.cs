@@ -1,8 +1,9 @@
-﻿using LibrameStandard.Authentication.Handlers;
+﻿using LibrameCore.Authentication;
+using LibrameStandard;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace LibrameStandard.Tests.Authentication
+namespace LibrameCore.Tests.Authentication
 {
     public class AuthenticationTests
     {
@@ -12,15 +13,14 @@ namespace LibrameStandard.Tests.Authentication
             var services = new ServiceCollection();
 
             // 注册 Librame MVC （默认使用内存配置源）
-            var builder = services.AddLibrameCoreByMemory();
-            
-            // 获取认证适配器
-            var adapter = builder.GetAuthenticationAdapter(new TokenHandlerSettings());
-            Assert.NotNull(adapter);
+            services.AddLibrameCoreByMemory();
 
-            var settings = adapter.TokenManager.HandlerSettings;
-            Assert.NotNull(settings);
-            Assert.NotNull(settings.SigningCredentials);
+            var serviceProvider = services.BuildServiceProvider();
+            
+            // 获取认证选项
+            var options = serviceProvider.GetOptions<AuthenticationOptions>();
+            Assert.NotNull(options);
+            Assert.NotNull(options.TokenHandler);
         }
 
     }

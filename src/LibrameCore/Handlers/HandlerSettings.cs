@@ -10,12 +10,11 @@
 
 #endregion
 
+using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Http;
 
-namespace LibrameStandard.Handlers
+namespace LibrameCore.Handlers
 {
-    using Utilities;
-
     /// <summary>
     /// 处理程序设置。
     /// </summary>

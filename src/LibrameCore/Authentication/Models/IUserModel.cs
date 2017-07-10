@@ -10,23 +10,13 @@
 
 #endregion
 
-namespace LibrameStandard.Authentication.Models
+namespace LibrameCore.Authentication.Models
 {
     /// <summary>
     /// 用户模型接口。
     /// </summary>
     public interface IUserModel
     {
-        /// <summary>
-        /// 唯一标识。
-        /// </summary>
-        string UniqueId { get; }
-
-        /// <summary>
-        /// 邮箱。
-        /// </summary>
-        string Email { get; }
-
         /// <summary>
         /// 名称。
         /// </summary>

@@ -10,20 +10,13 @@
 
 #endregion
 
-using System;
-
-namespace LibrameStandard.Authentication.Models
+namespace LibrameCore.Authentication.Models
 {
     /// <summary>
     /// 用户模型。
     /// </summary>
-    public class UserModel : IUserModel
+    class UserModel : IUserModel
     {
-        /// <summary>
-        /// 默认邮箱。
-        /// </summary>
-        internal const string DEFAULT_EMAIL = "admin@librame.net";
-
         /// <summary>
         /// 默认名称。
         /// </summary>
@@ -34,17 +27,7 @@ namespace LibrameStandard.Authentication.Models
         /// </summary>
         internal const string DEFAULT_PASSWD = "123456";
 
-
-        /// <summary>
-        /// 唯一标识。
-        /// </summary>
-        public string UniqueId { get; set; } = Guid.Empty.ToString();
-
-        /// <summary>
-        /// 邮箱。
-        /// </summary>
-        public string Email { get; set; } = DEFAULT_EMAIL;
-
+        
         /// <summary>
         /// 名称。
         /// </summary>

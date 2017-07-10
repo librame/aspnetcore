@@ -10,13 +10,15 @@
 
 #endregion
 
+using LibrameStandard.Entity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
-namespace LibrameStandard.Authentication.Managers
+namespace LibrameCore.Authentication.Managers
 {
     using Models;
-
+    
     /// <summary>
     /// 用户管理器接口。
     /// </summary>
@@ -24,6 +26,11 @@ namespace LibrameStandard.Authentication.Managers
     public interface IUserManager<TUserModel> : IManager
         where TUserModel : class, IUserModel
     {
+        /// <summary>
+        /// 用户仓库。
+        /// </summary>
+        IRepository<DbContext, DbContext, TUserModel> Repository { get; }
+
         /// <summary>
         /// 密码管理器。
         /// </summary>
@@ -33,9 +40,9 @@ namespace LibrameStandard.Authentication.Managers
         /// <summary>
         /// 异步创建用户。
         /// </summary>
-        /// <param name="model">给定的用户模型。</param>
+        /// <param name="user">给定的用户模型。</param>
         /// <returns>返回用户身份结果。</returns>
-        Task<UserIdentityResult> CreateAsync(TUserModel model);
+        Task<LibrameIdentityResult> CreateAsync(TUserModel user);
 
 
         /// <summary>
@@ -44,7 +51,7 @@ namespace LibrameStandard.Authentication.Managers
         /// <param name="name">给定的名称。</param>
         /// <param name="passwd">给定的密码。</param>
         /// <returns>返回用户身份结果。</returns>
-        Task<UserIdentityResult> ValidateAsync(string name, string passwd);
+        Task<LibrameIdentityResult> ValidateAsync(string name, string passwd);
 
 
         /// <summary>

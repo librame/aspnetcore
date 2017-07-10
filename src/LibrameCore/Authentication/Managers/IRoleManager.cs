@@ -13,7 +13,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace LibrameStandard.Authentication.Managers
+namespace LibrameCore.Authentication.Managers
 {
     using Models;
 
@@ -26,7 +26,7 @@ namespace LibrameStandard.Authentication.Managers
         /// 异步获取指定用户的角色集合。
         /// </summary>
         /// <param name="user">给定的用户模型。</param>
-        /// <returns>返回角色模型集合。</returns>
-        Task<IEnumerable<IRoleModel>> GetRoles(IUserModel user);
+        /// <returns>返回角色集合。</returns>
+        Task<IEnumerable<string>> GetRoles(IUserModel user);
     }
 }

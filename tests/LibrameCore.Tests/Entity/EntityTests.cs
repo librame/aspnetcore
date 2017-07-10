@@ -40,12 +40,12 @@ namespace LibrameStandard.Tests.Entity
             var defaultAssemblies = TypeUtility.AsAssemblyName<Article>().Name;
 
             // 注册 Librame （非 MVC；默认使用内存配置源）
-            var builder = services.AddLibrameByMemory(options =>
+            services.AddLibrameByMemory(entityOptionsAction: opts =>
             {
                 // 修改默认的数据库上下文类型名
-                options[EntityAutomappingSetting.GetAutomappingDbContextTypeNameKey(0)]
+                opts.Automappings[0].DbContextTypeName
                     = typeof(SqlServerDbContextReader).AsAssemblyQualifiedNameWithoutVCP();
-                options[EntityAutomappingSetting.GetAutomappingDbContextTypeNameKey(1)]
+                opts.Automappings[1].DbContextTypeName
                     = typeof(SqlServerDbContextWriter).AsAssemblyQualifiedNameWithoutVCP();
 
                 //// 默认不启用读写分离
@@ -53,15 +53,12 @@ namespace LibrameStandard.Tests.Entity
                 //    = false.ToString();
 
                 // 修改默认的实体程序集（读写）
-                options[EntityAutomappingSetting.GetAutomappingAssembliesKey(0)]
-                    = defaultAssemblies;
-                options[EntityAutomappingSetting.GetAutomappingAssembliesKey(1)]
-                    = defaultAssemblies;
+                opts.Automappings[0].Assemblies = defaultAssemblies;
+                opts.Automappings[1].Assemblies = defaultAssemblies;
             });
 
-            // 获取实体适配器
-            var adapter = builder.GetEntityAdapter();
-            
+            var serviceProvider = services.BuildServiceProvider();
+
             // 初始化文章
             var article = new Article
             {
@@ -69,8 +66,8 @@ namespace LibrameStandard.Tests.Entity
                 Descr = "Test Descr"
             };
 
-            //var repository = adapter.GetRepository<SqlServerDbContextReader, Article>();
-            var repository = adapter.GetRepositoryReader<Article>();
+            //var repository = serviceProvider.GetLibrameRepository<SqlServerDbContextReader, Article>();
+            var repository = serviceProvider.GetLibrameRepositoryReader<Article>();
 
             // 标题不能重复
             Article dbArticle;

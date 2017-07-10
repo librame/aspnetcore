@@ -1,21 +1,20 @@
 ﻿@{
     ViewData["Title"] = "Login";
-
-    var handlerPath = "/handler/token";
 }
 <h2>User Login</h2>
 <hr />
 
 <div class="form-horizontal">
-    <form action="@handlerPath" method="post">
+    <form action="/handler/token" method="post">
         <fieldset>
             <h3 class="col-sm-offset-1">User Info</h3>
         </fieldset>
 
         <div class="form-group">
-            <label for="username" class="control-label col-sm-1">帐户</label>
+            <label for="username" class="control-label col-sm-1">用户</label>
             <div class="col-sm-6">
                 <input id="username" name="username" type="text" value="LibrameUser" />
+                <span style="color:red;">*</span>
             </div>
         </div>
 
@@ -23,6 +22,7 @@
             <label for="password" class="control-label col-sm-1">密码</label>
             <div class="col-sm-6">
                 <input id="password" name="password" type="password" />
+                <span style="color:red;">*</span>
             </div>
         </div>
 

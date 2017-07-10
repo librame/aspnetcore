@@ -12,6 +12,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace LibrameStandard.Entity.DbContexts
 {
@@ -24,10 +26,11 @@ namespace LibrameStandard.Entity.DbContexts
         /// 构造一个数据库上下文读取器实例。
         /// </summary>
         /// <param name="dbContextOptions">给定的数据上下文选择项。</param>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
+        /// <param name="options">给定的实体选项。</param>
+        /// <param name="logger">给定的记录器。</param>
         public SqlServerDbContextReader(DbContextOptions<SqlServerDbContextReader> dbContextOptions,
-            ILibrameBuilder builder)
-            : base(dbContextOptions, builder)
+            IOptions<EntityOptions> options, ILogger<SqlServerDbContextReader> logger)
+            : base(dbContextOptions, options, logger)
         {
         }
 

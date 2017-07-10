@@ -10,16 +10,16 @@
 
 #endregion
 
-namespace LibrameStandard.Authentication.Models
+namespace Microsoft.AspNetCore.Identity
 {
-    ///// <summary>
-    ///// 令牌模型。
-    ///// </summary>
-    //public class TokenModel : ITokenModel
-    //{
-    //    /// <summary>
-    //    /// 名称。
-    //    /// </summary>
-    //    public string Name { get; set; } = string.Empty;
-    //}
+    /// <summary>
+    /// Librame 身份错误。
+    /// </summary>
+    public class LibrameIdentityError : IdentityError
+    {
+        /// <summary>
+        /// 获取或设置键名。
+        /// </summary>
+        public string Key { get; set; }
+    }
 }

@@ -10,33 +10,29 @@
 
 #endregion
 
-namespace LibrameStandard.Authentication.Managers
-{
-    using Utilities;
+using LibrameStandard.Utilities;
+using Microsoft.Extensions.Options;
 
+namespace LibrameCore.Authentication.Managers
+{
     /// <summary>
     /// 抽象管理器。
     /// </summary>
     public class AbstractManager : IManager
     {
         /// <summary>
-        /// 构造一个用户管理器实例。
+        /// 构造一个抽象管理器实例。
         /// </summary>
-        /// <param name="builder">给定的 Librame 构建器接口。</param>
-        public AbstractManager(ILibrameBuilder builder)
+        /// <param name="options">给定的认证选项。</param>
+        public AbstractManager(IOptions<AuthenticationOptions> options)
         {
-            Builder = builder.NotNull(nameof(builder));
+            Options = options.NotNull(nameof(options)).Value;
         }
 
-
-        /// <summary>
-        /// Librame 构建器。
-        /// </summary>
-        public ILibrameBuilder Builder { get; }
-
+        
         /// <summary>
         /// 认证设置。
         /// </summary>
-        public AuthenticationSettings Settings => (Builder.Options as LibrameCoreOptions).Authentication;
+        public AuthenticationOptions Options { get; }
     }
 }

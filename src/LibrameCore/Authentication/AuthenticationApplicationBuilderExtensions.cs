@@ -10,12 +10,15 @@
 
 #endregion
 
+using LibrameStandard;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace LibrameStandard.Authentication
+namespace LibrameCore
 {
-    using Handlers;
-    using Utilities;
+    using Authentication;
+    using Authentication.Handlers;
+    using Authentication.Models;
 
     /// <summary>
     /// 认证应用构建器静态扩展。
@@ -24,24 +27,28 @@ namespace LibrameStandard.Authentication
     {
 
         /// <summary>
-        /// 使用 Librame 认证令牌。
+        /// 使用 Librame 认证。
         /// </summary>
+        /// <typeparam name="TUserModel">指定的用户模型类型。</typeparam>
         /// <param name="app">给定的应用构建器接口。</param>
-        /// <param name="settings">给定的令牌处理程序设置（可选）。</param>
-        /// <param name="builder">给定的 Librame 构建器（可选）。</param>
-        public static void UseLibrameAuthenticationToken(this IApplicationBuilder app,
-            TokenHandlerSettings settings = null, ILibrameBuilder builder = null)
+        public static void UseLibrameAuthentication<TUserModel>(this IApplicationBuilder app)
+            where TUserModel : class, IUserModel
         {
-            app.NotNull(nameof(app));
+            var options = app.ApplicationServices.GetOptions<AuthenticationOptions>();
 
-            if (builder == null)
-                builder = app.GetLibrameBuilder();
+            // Use TokenHandler
+            app.UseLibrameAuthenticationTokenHandler<TUserModel>(options.TokenHandler);
+        }
 
-            // 运行认证适配器
-            var adapter = builder.GetAuthenticationAdapter(settings);
 
-            settings = adapter.TokenManager.HandlerSettings;
-            app.Map(settings.Path, adapter.TokenHandler.OnHandling);
+        private static void UseLibrameAuthenticationTokenHandler<TUserModel>(this IApplicationBuilder app,
+            TokenHandlerSettings settings)
+            where TUserModel : class, IUserModel
+        {
+            // 调用令牌处理程序
+            var tokenHandler = app.ApplicationServices.GetService<ITokenHandler<TUserModel>>();
+
+            app.Map(settings.Path, tokenHandler.Configure);
         }
 
     }

@@ -1,22 +1,27 @@
 ﻿@{ 
     ViewData["Title"] = "Validate";
-
-    var handlerPath = "/handler/token";
-    var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDAiLCJ1bmlxdWVfbmFtZSI6IkxpYnJhbWVVc2VyIiwianRpIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwIiwiaWF0IjoiMjAxNy82LzQgMTU6MzA6MjgiLCJuYmYiOjE0OTY1OTAyMjgsImV4cCI6MTQ5NjU5MjAyOCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDoxMDc2OC8iLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjEwNzY4LyJ9.xKLRlvzDZi3jaI9WB1s_op0LK4BKt9AneRFnY8bth44";
 }
 <h2>Token Validate</h2>
 <hr />
 
 <div class="form-horizontal">
-    <form action="@handlerPath" method="get">
+    <form action="/handler/token" method="get">
         <fieldset>
             <h3 class="col-sm-offset-1">Token Info</h3>
         </fieldset>
 
         <div class="form-group">
-            <label for="name" class="control-label col-sm-1">令牌</label>
+            <label for="token" class="control-label col-sm-1">令牌</label>
             <div class="col-sm-6">
-                <textarea id="name" name="name" class="form-control" rows="10">@token</textarea>
+                <textarea id="token" name="token" class="form-control" rows="10">@ViewBag.Token</textarea>
+                <span style="color:red;">*</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="name" class="control-label col-sm-1">需要的角色</label>
+            <div class="col-sm-6">
+                <textarea id="required_roles" name="required_roles" class="form-control" rows="3"></textarea>
             </div>
         </div>
 

@@ -10,19 +10,25 @@
 
 #endregion
 
-namespace LibrameStandard.Authentication.Managers
-{
-    using Algorithm;
+using LibrameStandard.Algorithm.Hashes;
+using LibrameStandard.Algorithm.Symmetries;
 
+namespace LibrameCore.Authentication.Managers
+{
     /// <summary>
     /// 密码管理器接口。
     /// </summary>
     public interface IPasswordManager : IManager
     {
         /// <summary>
-        /// 算法适配器。
+        /// 哈希算法。
         /// </summary>
-        IAlgorithmAdapter Algorithm { get; }
+        IHashAlgorithm Hash { get; }
+
+        /// <summary>
+        /// 对称算法。
+        /// </summary>
+        ISymmetryAlgorithm Symmetry { get; }
 
 
         /// <summary>
