@@ -25,7 +25,7 @@ namespace LibrameCore.Website.Controllers
 
         public HomeController(IRepository<SqlServerDbContextReader, SqlServerDbContextWriter, Article> repository)
         {
-            _repository = repository;
+            _repository = repository.NotNull(nameof(repository));
         }
 
 
