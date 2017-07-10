@@ -7,8 +7,8 @@
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
     <Description>LibrameCore Framework for .NET Core 1.1 (Upgrade C# 7.0)</Description>
-    <AssemblyVersion>1.1.1707.101</AssemblyVersion>
-    <FileVersion>1.1.1707.101</FileVersion>
+    <AssemblyVersion>1.1.1707.102</AssemblyVersion>
+    <FileVersion>1.1.1707.102</FileVersion>
     <Copyright>Copyright © 2012-2017</Copyright>
     <PackageLicenseUrl>https://github.com/librame/LibrameCore/blob/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
@@ -19,7 +19,7 @@
     <ApplicationIcon>..\..\resource\LibrameCore.ico</ApplicationIcon>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\resource\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.1.1707.101</Version>
+    <Version>1.1.1707.102</Version>
     <AssemblyName>LibrameCore</AssemblyName>
     <RootNamespace>LibrameCore</RootNamespace>
     <PackageId>LibrameCore</PackageId>
@@ -36,21 +36,9 @@
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="1.1.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.0.0-rtm-beta4" />
     <PackageReference Include="System.ValueTuple" Version="4.3.1" />
   </ItemGroup>
 
