@@ -1,21 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{61B5AF69-7E52-40DE-9A3B-3FD7734F5B95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrameCore", "src\LibrameCore\LibrameCore.csproj", "{B32B5F72-72B0-4FFE-9B64-ACC137E983A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibrameCore", "src\LibrameCore\LibrameCore.csproj", "{B32B5F72-72B0-4FFE-9B64-ACC137E983A3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{775C4C4F-F1AA-4ED4-B121-7049B14CC041}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrameCore.Tests", "tests\LibrameCore.Tests\LibrameCore.Tests.csproj", "{4C890962-6986-4816-8E08-2FD448E63561}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibrameCore.Tests", "tests\LibrameCore.Tests\LibrameCore.Tests.csproj", "{4C890962-6986-4816-8E08-2FD448E63561}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{48F3C71C-5FAD-4097-A3E9-2F01A1578D24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrameCore.Entities", "examples\LibrameCore.Entities\LibrameCore.Entities.csproj", "{801BEF78-C1CF-4FE2-9F7F-F64A60FD5B09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibrameCore.Entities", "examples\LibrameCore.Entities\LibrameCore.Entities.csproj", "{801BEF78-C1CF-4FE2-9F7F-F64A60FD5B09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrameCore.Website", "examples\LibrameCore.Website\LibrameCore.Website.csproj", "{1298072C-DD56-479A-838E-EF2B38F342DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibrameCore.Website", "examples\LibrameCore.Website\LibrameCore.Website.csproj", "{1298072C-DD56-479A-838E-EF2B38F342DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
