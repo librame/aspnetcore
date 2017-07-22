@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LibrameCore.Authentication.Managers
@@ -55,6 +56,30 @@ namespace LibrameCore.Authentication.Managers
         /// </summary>
         public IPasswordManager PasswordManager { get; }
 
+        /// <summary>
+        /// 受保护的用户名集合。
+        /// </summary>
+        public IEnumerable<string> ProtectedUsernames => Options.ProtectedUsernames.Split(',').Invoke(n => n.ToLower());
+
+
+        /// <summary>
+        /// 检测是否包含受保护的用户名。
+        /// </summary>
+        /// <param name="name">给定的用户名。</param>
+        /// <returns>返回布尔值。</returns>
+        protected virtual bool ContainsProtectedUsernames(string name)
+        {
+            var lower = name.ToLower();
+
+            foreach (var n in ProtectedUsernames)
+            {
+                if (lower.Contains(n))
+                    return true;
+            }
+
+            return false;
+        }
+
 
         /// <summary>
         /// 异步创建用户。
@@ -65,8 +90,7 @@ namespace LibrameCore.Authentication.Managers
         {
             try
             {
-                string name = user.Name.ToLower();
-                if (name.Contains("admin") || name.Contains("librame"))
+                if (ContainsProtectedUsernames(user.Name))
                     return LibrameIdentityResult.NameInvalid;
 
                 if (await Repository.ExistsAsync(p => p.Name == user.Name))
@@ -125,6 +149,9 @@ namespace LibrameCore.Authentication.Managers
         public virtual async Task<bool> ValidateUniquenessAsync(string field, string value)
         {
             if (string.IsNullOrEmpty(field) || string.IsNullOrEmpty(value))
+                return false;
+
+            if (ContainsProtectedUsernames(value))
                 return false;
             
             // 建立表达式

@@ -55,6 +55,8 @@ namespace LibrameCore.Website
                     });
                 });
 
+            services.AddIdentity<User, Role>();
+
             // Add LibrameCore
             services.AddLibrameCore(Configuration.GetSection("Librame"), authenticationAction: opts =>
             {
@@ -88,16 +90,11 @@ namespace LibrameCore.Website
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AuthenticationScheme = Authentication.AuthenticationOptions.DEFAULT_SCHEME,
-                // 是否自动启用验证，如果不启用，则即便客服端传输了Cookie信息，服务端也不会主动解析。除了明确配置了 [Authorize(ActiveAuthenticationSchemes = "上面的方案名")] 属性的地方，才会解析，此功能一般用在需要在同一应用中启用多种验证方案的时候。比如分Area.
-                AutomaticAuthenticate = true,
-                LoginPath = "/User/Login"
-            });
-
             // Use LibrameCore
-            app.UseLibrameAuthentication<User>();
+            app.UseLibrameAuthentication<User>(cookieOptions =>
+            {
+                cookieOptions.LoginPath = "/Account/Login";
+            });
         }
     }
 }

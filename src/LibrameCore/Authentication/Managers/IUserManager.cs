@@ -13,6 +13,7 @@
 using LibrameStandard.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LibrameCore.Authentication.Managers
@@ -35,6 +36,11 @@ namespace LibrameCore.Authentication.Managers
         /// 密码管理器。
         /// </summary>
         IPasswordManager PasswordManager { get; }
+
+        /// <summary>
+        /// 受保护的用户名集合。
+        /// </summary>
+        IEnumerable<string> ProtectedUsernames { get; }
 
 
         /// <summary>

@@ -11,14 +11,21 @@ namespace LibrameCore.Website.Controllers
 {
     using Entities;
 
-    public class UserController : Controller
+    public class AccountController : Controller
     {
         private readonly IUserManager<User> _userManager = null;
 
 
-        public UserController(IUserManager<User> userManager)
+        public AccountController(IUserManager<User> userManager)
         {
             _userManager = userManager.NotNull(nameof(userManager));
+        }
+
+
+        [LibrameAuthorize]
+        public IActionResult Admin()
+        {
+            return View();
         }
 
 
@@ -72,7 +79,7 @@ namespace LibrameCore.Website.Controllers
                 return View(user);
             }
 
-            return RedirectToAction(nameof(UserController.Login));
+            return RedirectToAction(nameof(AccountController.Login));
 
             //        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
             //        // Send an email with this link

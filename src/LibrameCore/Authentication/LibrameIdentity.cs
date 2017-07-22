@@ -27,12 +27,6 @@ namespace LibrameCore.Authentication
     public class LibrameIdentity : ClaimsIdentity
     {
         /// <summary>
-        /// 角色集合声明名称。
-        /// </summary>
-        public const string ROLES_CLAIM_NAME = "roles";
-
-
-        /// <summary>
         /// 构造一个 Librame 身份标识实例。
         /// </summary>
         /// <param name="jwt">给定的 JSON Web 令牌。</param>
@@ -53,8 +47,8 @@ namespace LibrameCore.Authentication
             settings.NotNull(nameof(settings));
 
             var now = DateTime.UtcNow;
-
-            var claims = new Claim[]
+            
+            var claims = new List<Claim>
             {
                 // 用户（如名称、邮箱等）
                 new Claim(JwtRegisteredClaimNames.Sub, user.Name),
@@ -66,15 +60,15 @@ namespace LibrameCore.Authentication
                 new Claim(JwtRegisteredClaimNames.Iss, settings.Issuer),
                 // 接收者
                 new Claim(JwtRegisteredClaimNames.Aud, settings.Audience),
-
-                // 角色集合
-                new Claim(ROLES_CLAIM_NAME, roles.JoinString(",")),
-
+                
                 // 唯一名称
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.Name),
                 // 唯一标识符
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+
+            // 角色集合
+            roles.Invoke(r => claims.Add(new Claim(ClaimTypes.Role, r)));
 
             AddClaims(claims);
         }
@@ -94,12 +88,9 @@ namespace LibrameCore.Authentication
                 Name = jwt.Subject
             };
 
-            var roles = jwt.Claims.FirstOrDefault(p => p.Type == ROLES_CLAIM_NAME)?.Value;
+            var roles = jwt.Claims.Where(p => p.Type == ClaimTypes.Role).Select(s => s.Value);
 
-            if (!string.IsNullOrEmpty(roles))
-                return (user, roles.Split(','));
-            else
-                return (user, null);
+            return (user, roles);
         }
 
     }

@@ -40,7 +40,28 @@ namespace LibrameCore.Authentication
         /// </summary>
         internal static readonly string KeyPrefix = (Key + ":");
 
-        
+
+        #region ProtectedUsernames
+
+        /// <summary>
+        /// 受保护用户名集合键。
+        /// </summary>
+        public static readonly string ProtectedUsernamesKey
+            = KeyPrefix + nameof(ProtectedUsernames);
+
+        /// <summary>
+        /// 默认受保护用户名集合。
+        /// </summary>
+        public static readonly string DefaultProtectedUsernames = "librame,admin";
+
+        /// <summary>
+        /// 受保护用户名集合。
+        /// </summary>
+        public string ProtectedUsernames { get; set; } = DefaultProtectedUsernames;
+
+        #endregion
+
+
         /// <summary>
         /// 令牌处理程序。
         /// </summary>
