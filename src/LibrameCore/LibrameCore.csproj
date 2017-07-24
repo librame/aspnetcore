@@ -7,8 +7,8 @@
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
     <Description>LibrameCore Framework for .NET Core 1.1 (Upgrade C# 7.0)</Description>
-    <AssemblyVersion>1.1.1707.121</AssemblyVersion>
-    <FileVersion>1.1.1707.121</FileVersion>
+    <AssemblyVersion>1.1.1707.241</AssemblyVersion>
+    <FileVersion>1.1.1707.241</FileVersion>
     <Copyright>Copyright © 2012-2017</Copyright>
     <PackageLicenseUrl>https://github.com/librame/LibrameCore/blob/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
@@ -19,7 +19,7 @@
     <ApplicationIcon>..\..\resource\LibrameCore.ico</ApplicationIcon>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\resource\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.1.1707.121</Version>
+    <Version>1.1.1707.241</Version>
     <AssemblyName>LibrameCore</AssemblyName>
     <RootNamespace>LibrameCore</RootNamespace>
     <PackageId>LibrameCore</PackageId>
@@ -40,6 +40,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="1.1.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.2" />
+    <PackageReference Include="NETCore.MailKit" Version="1.1.1" />
     <PackageReference Include="System.ValueTuple" Version="4.3.1" />
   </ItemGroup>
 

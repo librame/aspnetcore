@@ -1,4 +1,17 @@
-﻿@{
+﻿@using LibrameCore.Authentication;
+@model AuthenticationOptions
+@{
     ViewData["Title"] = "Admin";
 }
-<h2>Admin Page</h2>
+@if (User.Identities.Any(u => u.IsAuthenticated))
+{
+    var identity = User.AsLibrameIdentity(Model.TokenProvider);
+
+    <h1>欢迎登陆 @identity.Name</h1>
+    <hr />
+
+    <h2>当前角色：@identity.Roles.JoinString(",")</h2>
+    <h2>验证类型：@identity.AuthenticationType</h2>
+    <h2>签发时间：@identity.UtcIssuedTime.ToLocalTime().ToString()</h2>
+    <h2>过期时间：@identity.UtcExpirationTime.ToLocalTime().ToString()</h2>
+}

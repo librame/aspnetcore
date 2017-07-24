@@ -11,7 +11,7 @@
 #endregion
 
 using LibrameStandard;
-using LibrameCore.Handlers;
+using MailKit.Security;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Runtime.InteropServices;
@@ -28,6 +28,16 @@ namespace LibrameCore.Authentication
         /// 默认认证方案。
         /// </summary>
         public const string DEFAULT_SCHEME = "LibrameAuthentication";
+
+        /// <summary>
+        /// 默认 COOKIE 名称。
+        /// </summary>
+        public const string DEFAULT_COOKIE_NAME = "LibrameAuthenticationCookie";
+
+        /// <summary>
+        /// 默认登录路径。
+        /// </summary>
+        public const string DEFAULT_LOGIN_PATH = "/Account/Login";
 
 
         /// <summary>
@@ -63,31 +73,176 @@ namespace LibrameCore.Authentication
 
 
         /// <summary>
-        /// 令牌处理程序。
+        /// SMTP。
         /// </summary>
-        public TokenHandlerSettings TokenHandler { get; set; }
-            = new TokenHandlerSettings();
+        public SmtpOptions Smtp { get; set; }
+            = new SmtpOptions();
+
+
+        /// <summary>
+        /// 令牌提供程序。
+        /// </summary>
+        public TokenProviderOptions TokenProvider { get; set; }
+            = new TokenProviderOptions();
     }
 
 
     /// <summary>
-    /// 令牌处理程序设置。
+    /// SMTP 选项。
     /// </summary>
-    public class TokenHandlerSettings : HandlerSettings
+    public class SmtpOptions
     {
         /// <summary>
         /// 键名前缀。
         /// </summary>
-        internal static readonly string KeyPrefix = (nameof(AuthenticationOptions.TokenHandler) + ":");
+        internal static readonly string KeyPrefix
+            = (nameof(AuthenticationOptions.Smtp) + ":");
+
+
+        #region Server
+
+        /// <summary>
+        /// 服务器键。
+        /// </summary>
+        public static readonly string ServerKey
+            = KeyPrefix + nameof(Server);
+
+        /// <summary>
+        /// 默认服务器。
+        /// </summary>
+        public static readonly string DefaultServer = "smtp.qq.com";
+
+        /// <summary>
+        /// 服务器。
+        /// </summary>
+        public string Server { get; set; } = DefaultServer;
+
+        #endregion
+
+
+        #region Port
+
+        /// <summary>
+        /// 端口键。
+        /// </summary>
+        public static readonly string PortKey
+            = KeyPrefix + nameof(Port);
+
+        /// <summary>
+        /// 默认端口。
+        /// </summary>
+        public static readonly int DefaultPort = 25;
+
+        /// <summary>
+        /// 端口。
+        /// </summary>
+        public int Port { get; set; } = DefaultPort;
+
+        #endregion
+
+
+        #region Nickname
+
+        /// <summary>
+        /// 昵称键。
+        /// </summary>
+        public static readonly string NicknameKey
+            = KeyPrefix + nameof(Nickname);
+
+        /// <summary>
+        /// 默认昵称。
+        /// </summary>
+        public static readonly string DefaultNickname = "Librame Pang";
+
+        /// <summary>
+        /// 昵称。
+        /// </summary>
+        public string Nickname { get; set; } = DefaultNickname;
+
+        #endregion
+
+
+        #region Username
+
+        /// <summary>
+        /// 用户键。
+        /// </summary>
+        public static readonly string UsernameKey
+            = KeyPrefix + nameof(Username);
+
+        /// <summary>
+        /// 默认用户。
+        /// </summary>
+        public static readonly string DefaultUsername = "test@qq.com";
+
+        /// <summary>
+        /// 用户。
+        /// </summary>
+        public string Username { get; set; } = DefaultUsername;
+
+        #endregion
+
+
+        #region Password
+
+        /// <summary>
+        /// 密码键。
+        /// </summary>
+        public static readonly string PasswordKey
+            = KeyPrefix + nameof(Password);
+
+        /// <summary>
+        /// 默认密码。
+        /// </summary>
+        public static readonly string DefaultPassword = "test";
+
+        /// <summary>
+        /// 密码。
+        /// </summary>
+        public string Password { get; set; } = DefaultPassword;
+
+        #endregion
 
 
         /// <summary>
-        /// 构造一个令牌处理程序设置。
+        /// 安全套接字。
         /// </summary>
-        public TokenHandlerSettings()
-            : base("/token")
-        {
-        }
+        public SecureSocketOptions SecureSocket { get; set; }
+            = SecureSocketOptions.None;
+    }
+
+
+    /// <summary>
+    /// 令牌提供程序选项。
+    /// </summary>
+    public class TokenProviderOptions
+    {
+        /// <summary>
+        /// 键名前缀。
+        /// </summary>
+        internal static readonly string KeyPrefix
+            = (nameof(AuthenticationOptions.TokenProvider) + ":");
+
+        
+        #region Path
+
+        /// <summary>
+        /// 路径键。
+        /// </summary>
+        public static readonly string PathKey
+            = KeyPrefix + nameof(Path);
+
+        /// <summary>
+        /// 默认路径。
+        /// </summary>
+        public static readonly string DefaultPath = "/token";
+
+        /// <summary>
+        /// 路径。
+        /// </summary>
+        public string Path { get; set; } = DefaultPath;
+
+        #endregion
 
 
         #region Issuer
@@ -143,20 +298,20 @@ namespace LibrameCore.Authentication
         /// <summary>
         /// 默认登录成功后转向。
         /// </summary>
-        public static readonly string DefaultLoginSuccessful = "http://localhost:10768/User/Validate";
+        public static readonly string DefaultLoginSuccessful = "http://localhost:10768/Account/Validate";
 
         /// <summary>
         /// 登录成功后转向。
         /// </summary>
-        public string LoginSuccessful { get; set; } = "http://localhost:10768/User/Validate";
+        public string LoginSuccessful { get; set; } = "http://localhost:10768/Account/Validate";
 
         #endregion
 
 
         /// <summary>
-        /// 过期时间间隔。
+        /// 过期时间间隔（默认1小时后过期）。
         /// </summary>
-        public TimeSpan Expiration { get; set; } = TimeSpan.FromMinutes(30);
+        public TimeSpan Expiration { get; set; } = TimeSpan.FromMinutes(60);
 
         /// <summary>
         /// 签名证书。

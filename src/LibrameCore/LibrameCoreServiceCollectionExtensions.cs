@@ -49,11 +49,11 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<Dictionary<string, string>> coreInitialDataAction = initialData =>
             {
                 // Authentication
-                initialData.Add(authenticationKeyPrefix + TokenHandlerSettings.IssuerKey,
-                    TokenHandlerSettings.DefaultIssuer);
+                initialData.Add(authenticationKeyPrefix + TokenProviderOptions.IssuerKey,
+                    TokenProviderOptions.DefaultIssuer);
 
-                initialData.Add(authenticationKeyPrefix + TokenHandlerSettings.AudienceKey,
-                    TokenHandlerSettings.DefaultAudience);
+                initialData.Add(authenticationKeyPrefix + TokenProviderOptions.AudienceKey,
+                    TokenProviderOptions.DefaultAudience);
 
                 initialDataAction?.Invoke(initialData);
             };
@@ -62,7 +62,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 algorithmOptionsAction, entityOptionsAction, builder =>
                 {
                     // Add Authentication Services
-                    builder.AddAuthenticationServices(authenticationAction);
+                    builder.AddAuthentication(authenticationAction);
 
                     builderAction?.Invoke(builder);
                 });
@@ -93,7 +93,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddLibrameByJsonFile(fileName, basePath, key, algorithmOptionsAction, entityOptionsAction, builder =>
             {
                 // Add Authentication Services
-                builder.AddAuthenticationServices(authenticationAction);
+                builder.AddAuthentication(authenticationAction);
 
                 builderAction?.Invoke(builder);
             });
@@ -123,7 +123,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddLibrameByFile(source, basePath, key, algorithmOptionsAction, entityOptionsAction, builder =>
             {
                 // Add Authentication Services
-                builder.AddAuthenticationServices(authenticationAction);
+                builder.AddAuthentication(authenticationAction);
 
                 builderAction?.Invoke(builder);
             });
@@ -147,10 +147,14 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<AuthenticationOptions> authenticationAction = null,
             Action<ILibrameBuilder> builderAction = null)
         {
+            //services.AddCookieAuthentication();
+            services.AddAuthorization();
+            //services.AddIdentity<User, Role>();
+
             return services.AddLibrame(configuration, algorithmOptionsAction, entityOptionsAction, builder =>
             {
-                // Add Authentication Services
-                builder.AddAuthenticationServices(authenticationAction);
+                // Add Authentication
+                builder.AddAuthentication(authenticationAction);
 
                 builderAction?.Invoke(builder);
             });

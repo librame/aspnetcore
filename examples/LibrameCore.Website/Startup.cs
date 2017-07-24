@@ -1,5 +1,4 @@
-﻿using System;
-using LibrameCore.Entities;
+﻿using LibrameCore.Entities;
 using LibrameStandard.Entity.DbContexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using System;
 
 namespace LibrameCore.Website
 {
@@ -55,12 +55,10 @@ namespace LibrameCore.Website
                     });
                 });
 
-            services.AddIdentity<User, Role>();
-
             // Add LibrameCore
             services.AddLibrameCore(Configuration.GetSection("Librame"), authenticationAction: opts =>
             {
-                opts.TokenHandler.Expiration = TimeSpan.FromHours(1);
+                opts.TokenProvider.Expiration = TimeSpan.FromHours(1);
             });
         }
 
@@ -83,17 +81,22 @@ namespace LibrameCore.Website
 
             app.UseStaticFiles();
 
+            // Use LibrameCore
+            app.UseLibrameAuthentication<User>(jwtBearerOptionsAction: jwtBearerOptions =>
+            {
+                jwtBearerOptions.TokenValidationParameters.ValidIssuer = "http://localhost:10768/";
+                jwtBearerOptions.TokenValidationParameters.ValidAudience = "http://localhost:10768/";
+            },
+            cookieOptionsAction: cookieOptions =>
+            {
+                cookieOptions.LoginPath = "/Account/Login";
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-            });
-
-            // Use LibrameCore
-            app.UseLibrameAuthentication<User>(cookieOptions =>
-            {
-                cookieOptions.LoginPath = "/Account/Login";
             });
         }
     }

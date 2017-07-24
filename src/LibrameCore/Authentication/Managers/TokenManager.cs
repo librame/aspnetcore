@@ -55,27 +55,27 @@ namespace LibrameCore.Authentication.Managers
         /// <returns>返回令牌字符串。</returns>
         public virtual string Encode(ClaimsIdentity identity)
         {
-            var settings = Options.TokenHandler;
+            var options = Options.TokenProvider;
 
             // 默认令牌签名证书
-            if (settings.SigningCredentials == null)
+            if (options.SigningCredentials == null)
             {
                 // 默认以授权编号为密钥
                 var key = AlgorithmOptions.FromAuthIdAsBytes();
                 var securityKey = new SymmetricSecurityKey(key);
 
-                settings.SigningCredentials = new SigningCredentials(securityKey,
+                options.SigningCredentials = new SigningCredentials(securityKey,
                     SecurityAlgorithms.HmacSha384);
             }
 
-            var now = DateTime.UtcNow;
+            var utcNow = DateTime.UtcNow;
             var jwt = new JwtSecurityToken(
-                settings.Issuer,
-                settings.Audience,
+                options.Issuer,
+                options.Audience,
                 identity.Claims,
-                now,
-                now.Add(settings.Expiration),
-                settings.SigningCredentials);
+                utcNow,
+                utcNow.Add(options.Expiration),
+                options.SigningCredentials);
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
             return token;

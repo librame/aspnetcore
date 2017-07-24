@@ -11,7 +11,6 @@
 #endregion
 
 using LibrameCore.Authentication;
-using LibrameCore.Authentication.Handlers;
 using LibrameCore.Authentication.Managers;
 using LibrameCore.Authentication.Senders;
 using Microsoft.AspNetCore.Http;
@@ -32,7 +31,7 @@ namespace LibrameStandard
         /// <param name="builder">给定的 Librame 构建器。</param>
         /// <param name="optionsAction">给定的认证选项动作方法（可选）。</param>
         /// <returns>返回 Librame 构建器。</returns>
-        public static ILibrameBuilder AddAuthenticationServices(this ILibrameBuilder builder,
+        public static ILibrameBuilder AddAuthentication(this ILibrameBuilder builder,
             Action<AuthenticationOptions> optionsAction = null)
         {
             // AddOptions
@@ -40,9 +39,6 @@ namespace LibrameStandard
 
             // HttpContext 访问器
             builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
-
-            // 处理程序
-            builder.Services.AddTransient(typeof(ITokenHandler<>), typeof(TokenHandler<>));
 
             // 管理器
             builder.Services.AddTransient<IPasswordManager, PasswordManager>();

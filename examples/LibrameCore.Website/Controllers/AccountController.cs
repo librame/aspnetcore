@@ -1,5 +1,6 @@
 ﻿using LibrameCore.Authentication;
 using LibrameCore.Authentication.Managers;
+using LibrameStandard;
 using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,36 +23,23 @@ namespace LibrameCore.Website.Controllers
         }
 
 
-        [LibrameAuthorize]
-        public IActionResult Admin()
+        public IActionResult Login(string returnUrl)
         {
-            return View();
-        }
+            if (User.Identity.IsAuthenticated)
+                ViewBag.Options = HttpContext.RequestServices.GetOptions<AuthenticationOptions>();
+            else
+                ViewBag.ReturnUrl = returnUrl;
 
-
-        public IActionResult Login()
-        {
             // 由 TokenHandler 实现
             return View();
         }
 
 
-        public IActionResult Logout()
-        {
-            return View();
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogOut()
-        {
-            await HttpContext.Authentication.SignOutAsync(AuthenticationOptions.DEFAULT_SCHEME);
-            
-            return RedirectToAction(nameof(HomeController.Index), "Home");
-        }
-
-
         public IActionResult Register()
         {
+            if (User.Identity.IsAuthenticated)
+                ViewBag.Options = HttpContext.RequestServices.GetOptions<AuthenticationOptions>();
+
             return View(new User());
         }
         [AllowAnonymous]
@@ -79,8 +67,6 @@ namespace LibrameCore.Website.Controllers
                 return View(user);
             }
 
-            return RedirectToAction(nameof(AccountController.Login));
-
             //        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
             //        // Send an email with this link
             //        //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -90,6 +76,8 @@ namespace LibrameCore.Website.Controllers
             //        await _signInManager.SignInAsync(user, isPersistent: false);
             //        _logger.LogInformation(3, "User created a new account with password.");
             //        return RedirectToAction(nameof(HomeController.Index), "Home");
+
+            return RedirectToAction(nameof(AccountController.Login));
         }
 
 
@@ -106,6 +94,24 @@ namespace LibrameCore.Website.Controllers
             ViewBag.Token = token;
 
             return View();
+        }
+
+
+        [LibrameAuthorize(Roles = "Administrator")]
+        public IActionResult Admin()
+        {
+            var options = HttpContext.RequestServices.GetOptions<AuthenticationOptions>();
+
+            return View(options);
+        }
+
+
+        [LibrameAuthorize]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.Authentication.SignOutAsync();
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
     }
