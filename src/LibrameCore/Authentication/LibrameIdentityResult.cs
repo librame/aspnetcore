@@ -37,41 +37,41 @@ namespace Microsoft.AspNetCore.Identity
         /// <summary>
         /// 名称为空。
         /// </summary>
-        public static readonly LibrameIdentityResult NameIsEmpty = BuildAuthenticationFailed("011", "Name is empty", "Name");
+        public static readonly LibrameIdentityResult NameIsEmpty = BuildAuthenticationFailed("011", LibrameCore.Resources.IdentityResult.NameIsEmpty, "Name");
         /// <summary>
         /// 名称已存在（唯一性验证）。
         /// </summary>
-        public static readonly LibrameIdentityResult NameExists = BuildAuthenticationFailed("012", "Name exist", "Name");
-        /// <summary>
-        /// 名称无效。
-        /// </summary>
-        public static readonly LibrameIdentityResult NameInvalid = BuildAuthenticationFailed("013", "Name invalid", "Name");
+        public static readonly LibrameIdentityResult NameExists = BuildAuthenticationFailed("012", LibrameCore.Resources.IdentityResult.NameExists, "Name");
         /// <summary>
         /// 名称不存在（查询用户）。
         /// </summary>
-        public static readonly LibrameIdentityResult NameNotExists = BuildAuthenticationFailed("014", "Name not exist", "Name");
+        public static readonly LibrameIdentityResult NameNotExists = BuildAuthenticationFailed("013", LibrameCore.Resources.IdentityResult.NameNotExists, "Name");
+        /// <summary>
+        /// 无效的名称。
+        /// </summary>
+        public static readonly LibrameIdentityResult InvalidName = BuildAuthenticationFailed("014", LibrameCore.Resources.IdentityResult.InvalidName, "Name");
 
 
         /// <summary>
         /// 密码为空。
         /// </summary>
-        public static readonly LibrameIdentityResult PasswordIsEmpty = BuildAuthenticationFailed("021", "Password is empty", "Password");
+        public static readonly LibrameIdentityResult PasswordIsEmpty = BuildAuthenticationFailed("021", LibrameCore.Resources.IdentityResult.PasswordIsEmpty, "Password");
         /// <summary>
         /// 密码不正确。
         /// </summary>
-        public static readonly LibrameIdentityResult PasswordError = BuildAuthenticationFailed("022", "Password error", "Password");
+        public static readonly LibrameIdentityResult PasswordError = BuildAuthenticationFailed("022", LibrameCore.Resources.IdentityResult.PasswordError, "Password");
 
 
         /// <summary>
-        /// 令牌无效。
+        /// 无效的令牌。
         /// </summary>
-        public static readonly LibrameIdentityResult TokenInvalid = BuildAuthenticationFailed("031", "Token invalid");
+        public static readonly LibrameIdentityResult InvalidToken = BuildAuthenticationFailed("031", LibrameCore.Resources.IdentityResult.InvalidToken);
 
 
         /// <summary>
-        /// 角色拒绝。
+        /// 无效的角色。
         /// </summary>
-        public static readonly LibrameIdentityResult RoleDenied = BuildAuthenticationFailed("041", "Role denied");
+        public static readonly LibrameIdentityResult InvalidRole = BuildAuthenticationFailed("041", LibrameCore.Resources.IdentityResult.InvalidRole);
 
 
         /// <summary>

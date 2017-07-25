@@ -31,7 +31,7 @@ namespace LibrameStandard.Utilities
         /// <param name="response">给定的 HTTP 响应。</param>
         /// <param name="message">给定的消息内容。</param>
         /// <returns>返回一个异步操作。</returns>
-        public static async Task WriteBadRequestAsync(this HttpResponse response, string message)
+        public static async Task WriteErrorRequestAsync(this HttpResponse response, string message)
         {
             await response.WriteMessageAsync(message, HttpStatusCode.BadRequest);
         }
@@ -73,15 +73,16 @@ namespace LibrameStandard.Utilities
             if (typeInfo.IsValueType || typeInfo.IsString())
             {
                 // 值类型和字符串类型直接写入
-                await response.WriteAsync(value.ToString(), encoding, cancellationToken);
+                response.ContentType = "text/plain;charset=" + encoding.AsName();
+                await response.WriteAsync(value.ToString(), cancellationToken);
             }
             else
             {
                 // JSON 序列化
                 string json = value.AsJson(false, Newtonsoft.Json.Formatting.Indented);
 
-                response.ContentType = JsonConvertUtility.CONTENT_TYPE;
-                await response.WriteAsync(json, encoding, cancellationToken);
+                response.ContentType = JsonConvertUtility.CONTENT_TYPE + ";charset=" + encoding.AsName();
+                await response.WriteAsync(json, cancellationToken);
             }
         }
 

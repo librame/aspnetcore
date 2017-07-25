@@ -51,7 +51,7 @@ namespace LibrameStandard.Entity.DbContexts
             {
                 var schemaName = (string.IsNullOrEmpty(annotations.Schema) ? "dbo" : annotations.Schema);
 
-                logger.LogDebug("Mapping entity type {0} to table {1}.{2}",
+                logger.LogDebug(LibrameCore.Resources.Core.MappingEntityType,
                     entityType.ClrType.FullName, schemaName, tableName);
             }
 

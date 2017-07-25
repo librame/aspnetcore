@@ -120,7 +120,7 @@ namespace LibrameCore.Authentication.Managers
             var userRoles = Decode(token, parseUserRolesFactory);
 
             if (userRoles.User == null)
-                return Task.FromResult(LibrameIdentityResult.TokenInvalid);
+                return Task.FromResult(LibrameIdentityResult.InvalidToken);
 
             // 验证角色
             if (requiredRoles != null)
@@ -147,7 +147,7 @@ namespace LibrameCore.Authentication.Managers
                 {
                     return Task.FromResult(new LibrameIdentityResult
                     {
-                        IdentityResult = LibrameIdentityResult.RoleDenied,
+                        IdentityResult = LibrameIdentityResult.InvalidRole,
                         User = userRoles.User
                     });
                 }

@@ -90,7 +90,7 @@ namespace LibrameCore.Authentication
 
                 default:
                     {
-                        return context.Response.WriteBadRequestAsync("Invalid request.");
+                        return context.Response.WriteErrorRequestAsync(Resources.Core.InvalidRequest);
                     }
             }
         }
@@ -101,7 +101,7 @@ namespace LibrameCore.Authentication
             var userResult = await ValidateToken(context);
             if (userResult == null)
             {
-                await context.Response.WriteBadRequestAsync("Invalid token.");
+                await context.Response.WriteErrorRequestAsync(Resources.Core.InvalidToken);
                 return;
             }
 
@@ -125,21 +125,23 @@ namespace LibrameCore.Authentication
         {
             if (!context.Request.HasFormContentType)
             {
-                await context.Response.WriteBadRequestAsync("Invalid request.");
+                await context.Response.WriteErrorRequestAsync(Resources.Core.InvalidRequest);
                 return;
             }
 
             var userResult = await ValidateUser(context);
             if (userResult == null)
             {
-                await context.Response.WriteBadRequestAsync("Username or password is empty.");
+                await context.Response.WriteErrorRequestAsync(Resources.Core.UsernameOrPasswordIsEmpty);
                 return;
             }
 
             if (!userResult.IdentityResult.Succeeded)
             {
                 var message = userResult.IdentityResult.Errors.FirstOrDefault()?.Description;
-                await context.Response.WriteBadRequestAsync(message.AsOrDefault("Invalid username or password."));
+                message = message.AsOrDefault(Resources.Core.InvalidUsernameOrPassword);
+
+                await context.Response.WriteErrorRequestAsync(message);
                 return;
             }
 

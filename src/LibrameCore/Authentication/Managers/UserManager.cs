@@ -91,7 +91,7 @@ namespace LibrameCore.Authentication.Managers
             try
             {
                 if (ContainsProtectedUsernames(user.Name))
-                    return LibrameIdentityResult.NameInvalid;
+                    return LibrameIdentityResult.InvalidName;
 
                 if (await Repository.ExistsAsync(p => p.Name == user.Name))
                     return LibrameIdentityResult.NameExists;
