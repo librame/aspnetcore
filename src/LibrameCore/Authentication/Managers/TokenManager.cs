@@ -18,13 +18,10 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace LibrameCore.Authentication.Managers
 {
-    using Models;
-
     /// <summary>
     /// 令牌管理器。
     /// </summary>
@@ -51,9 +48,9 @@ namespace LibrameCore.Authentication.Managers
         /// <summary>
         /// 编码令牌。
         /// </summary>
-        /// <param name="identity">给定的用户身份标识。</param>
+        /// <param name="identity">给定的 Librame 身份标识。</param>
         /// <returns>返回令牌字符串。</returns>
-        public virtual string Encode(ClaimsIdentity identity)
+        public virtual string Encode(LibrameIdentity identity)
         {
             var options = Options.TokenProvider;
 
@@ -67,15 +64,12 @@ namespace LibrameCore.Authentication.Managers
                 options.SigningCredentials = new SigningCredentials(securityKey,
                     SecurityAlgorithms.HmacSha384);
             }
-
-            var utcNow = DateTime.UtcNow;
+            
             var jwt = new JwtSecurityToken(
-                options.Issuer,
-                options.Audience,
+                identity.Issuer,
+                identity.Audience,
                 identity.Claims,
-                utcNow,
-                utcNow.Add(options.Expiration),
-                options.SigningCredentials);
+                signingCredentials: options.SigningCredentials);
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
             return token;
@@ -86,20 +80,16 @@ namespace LibrameCore.Authentication.Managers
         /// 解码令牌。
         /// </summary>
         /// <param name="token">给定的令牌字符串。</param>
-        /// <param name="parseUserRolesFactory">给定的解析用户与角色集合工厂方法。</param>
-        /// <returns>返回用户模型与角色集合。</returns>
-        public virtual (IUserModel User, IEnumerable<string> Roles) Decode(string token,
-            Func<JwtSecurityToken, (IUserModel User, IEnumerable<string> Roles)> parseUserRolesFactory)
+        /// <returns>返回 Librame 身份标识。</returns>
+        public virtual LibrameIdentity Decode(string token)
         {
-            parseUserRolesFactory.NotNull(nameof(parseUserRolesFactory));
-
             var handler = new JwtSecurityTokenHandler();
 
             if (!handler.CanReadToken(token))
-                return (null, null);
+                return null;
 
             var jwt = handler.ReadJwtToken(token);
-            return parseUserRolesFactory.Invoke(jwt);
+            return new LibrameIdentity(jwt, Options.TokenProvider);
         }
 
 
@@ -108,19 +98,18 @@ namespace LibrameCore.Authentication.Managers
         /// </summary>
         /// <param name="token">给定的令牌字符串。</param>
         /// <param name="requiredRoles">需要的角色集合。</param>
-        /// <param name="parseUserRolesFactory">给定的解析用户与角色集合工厂方法。</param>
-        /// <returns>返回用户身份结果。</returns>
-        public virtual Task<LibrameIdentityResult> ValidateAsync(string token, IEnumerable<string> requiredRoles,
-            Func<JwtSecurityToken, (IUserModel User, IEnumerable<string> Roles)> parseUserRolesFactory)
+        /// <returns>返回 Librame 身份结果与标识。</returns>
+        public virtual Task<(IdentityResult identityResult, LibrameIdentity identity)> ValidateAsync(string token,
+            IEnumerable<string> requiredRoles)
         {
             if (string.IsNullOrEmpty(token))
-                return null;
-            
-            // 解码令牌代替数据库验证
-            var userRoles = Decode(token, parseUserRolesFactory);
+                return Task.FromResult((IdentityResultHelper.InvalidToken, (LibrameIdentity)null));
 
-            if (userRoles.User == null)
-                return Task.FromResult(LibrameIdentityResult.InvalidToken);
+            // 解码令牌代替数据库验证
+            var identity = Decode(token);
+
+            if (identity == null)
+                return Task.FromResult((IdentityResultHelper.InvalidToken, identity));
 
             // 验证角色
             if (requiredRoles != null)
@@ -129,7 +118,7 @@ namespace LibrameCore.Authentication.Managers
 
                 foreach (var rr in requiredRoles)
                 {
-                    foreach (var r in userRoles.Roles)
+                    foreach (var r in identity.Roles)
                     {
                         // 忽略大小写
                         if (rr.Equals(r, StringComparison.OrdinalIgnoreCase))
@@ -145,19 +134,11 @@ namespace LibrameCore.Authentication.Managers
 
                 if (!hasRole)
                 {
-                    return Task.FromResult(new LibrameIdentityResult
-                    {
-                        IdentityResult = LibrameIdentityResult.InvalidRole,
-                        User = userRoles.User
-                    });
+                    return Task.FromResult((IdentityResultHelper.InvalidRole, identity));
                 }
             }
 
-            return Task.FromResult(new LibrameIdentityResult
-            {
-                IdentityResult = IdentityResult.Success,
-                User = userRoles.User
-            });
+            return Task.FromResult((IdentityResult.Success, identity));
         }
 
     }

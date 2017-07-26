@@ -12,16 +12,11 @@
 
 using LibrameStandard.Algorithm;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace LibrameCore.Authentication.Managers
 {
-    using Models;
-
     /// <summary>
     /// 令牌管理器接口。
     /// </summary>
@@ -36,19 +31,17 @@ namespace LibrameCore.Authentication.Managers
         /// <summary>
         /// 编码令牌。
         /// </summary>
-        /// <param name="identity">给定的用户身份标识。</param>
+        /// <param name="identity">给定的 Librame 身份标识。</param>
         /// <returns>返回令牌字符串。</returns>
-        string Encode(ClaimsIdentity identity);
+        string Encode(LibrameIdentity identity);
 
 
         /// <summary>
         /// 解码令牌。
         /// </summary>
         /// <param name="token">给定的令牌字符串。</param>
-        /// <param name="parseUserRolesFactory">给定的解析用户与角色集合工厂方法。</param>
-        /// <returns>返回用户模型与角色集合。</returns>
-        (IUserModel User, IEnumerable<string> Roles) Decode(string token,
-            Func<JwtSecurityToken, (IUserModel User, IEnumerable<string> Roles)> parseUserRolesFactory);
+        /// <returns>返回 Librame 身份标识。</returns>
+        LibrameIdentity Decode(string token);
 
 
         /// <summary>
@@ -56,9 +49,8 @@ namespace LibrameCore.Authentication.Managers
         /// </summary>
         /// <param name="token">给定的令牌字符串。</param>
         /// <param name="requiredRoles">需要的角色集合。</param>
-        /// <param name="parseUserRolesFactory">给定的解析用户与角色集合工厂方法。</param>
-        /// <returns>返回用户身份结果。</returns>
-        Task<LibrameIdentityResult> ValidateAsync(string token, IEnumerable<string> requiredRoles,
-            Func<JwtSecurityToken, (IUserModel User, IEnumerable<string> Roles)> parseUserRolesFactory);
+        /// <returns>返回 Librame 身份结果与标识。</returns>
+        Task<(IdentityResult identityResult, LibrameIdentity identity)> ValidateAsync(string token,
+            IEnumerable<string> requiredRoles);
     }
 }

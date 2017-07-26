@@ -45,26 +45,26 @@ namespace LibrameCore.Website.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterAsync(User user)
+        public async Task<IActionResult> RegisterAsync(User model)
         {
             if (!ModelState.IsValid)
-                return View(user);
+                return View(model);
 
             // 编码存储
-            user.Passwd = _userManager.PasswordManager.Encode(user.Passwd);
+            model.Passwd = _userManager.PasswordManager.Encode(model.Passwd);
 
-            var userResult = await _userManager.CreateAsync(user);
+            var user = await _userManager.CreateAsync(model);
 
-            if (!userResult.IdentityResult.Succeeded)
+            if (!user.identity.Succeeded)
             {
-                var firstError = userResult.IdentityResult.Errors.FirstOrDefault();
+                var firstError = user.identity.Errors.FirstOrDefault();
 
                 if (firstError is LibrameIdentityError)
                     ModelState.AddModelError((firstError as LibrameIdentityError).Key, firstError.Description);
                 else
                     ModelState.AddModelError(string.Empty, firstError.Description);
 
-                return View(user);
+                return View(model);
             }
 
             //        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713

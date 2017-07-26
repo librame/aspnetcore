@@ -157,10 +157,10 @@ namespace LibrameCore.Authentication
 
                 // 主题（如名称、邮箱等）
                 new Claim(JwtRegisteredClaimNames.Sub, user.Name),
-                // 过期时间
-                new Claim(JwtRegisteredClaimNames.Exp, utcExpiration.Ticks.ToString(), ClaimValueTypes.Integer64),
                 // 签发时间
                 new Claim(JwtRegisteredClaimNames.Iat, utcNow.Ticks.ToString(), ClaimValueTypes.Integer64),
+                // 过期时间
+                new Claim(JwtRegisteredClaimNames.Exp, utcExpiration.Ticks.ToString(), ClaimValueTypes.Integer64),
                 // 签发者
                 new Claim(JwtRegisteredClaimNames.Iss, options.Issuer),
                 // 接收者
@@ -176,26 +176,6 @@ namespace LibrameCore.Authentication
             roles.Invoke(r => claims.Add(new Claim(DefaultRoleClaimType, r)));
 
             return claims;
-        }
-
-
-        /// <summary>
-        /// 解析用户模型与角色集合。
-        /// </summary>
-        /// <param name="jwt">给定的 JSON Web 令牌。</param>
-        /// <returns>返回用户模型与角色集合。</returns>
-        public static (IUserModel User, IEnumerable<string> Roles) ParseUserRoles(JwtSecurityToken jwt)
-        {
-            jwt.NotNull(nameof(jwt));
-
-            var user = new UserModel()
-            {
-                Name = jwt.Subject
-            };
-
-            var roles = jwt.Claims.Where(p => p.Type == ClaimTypes.Role).Select(s => s.Value);
-
-            return (user, roles);
         }
 
     }

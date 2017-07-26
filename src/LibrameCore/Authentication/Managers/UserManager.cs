@@ -85,28 +85,24 @@ namespace LibrameCore.Authentication.Managers
         /// 异步创建用户。
         /// </summary>
         /// <param name="user">给定的用户模型。</param>
-        /// <returns>返回用户身份结果。</returns>
-        public virtual async Task<LibrameIdentityResult> CreateAsync(TUserModel user)
+        /// <returns>返回用户身份结果和用户模型。</returns>
+        public virtual async Task<(IdentityResult identity, TUserModel model)> CreateAsync(TUserModel user)
         {
             try
             {
                 if (ContainsProtectedUsernames(user.Name))
-                    return LibrameIdentityResult.InvalidName;
+                    return (IdentityResultHelper.InvalidName, user);
 
                 if (await Repository.ExistsAsync(p => p.Name == user.Name))
-                    return LibrameIdentityResult.NameExists;
+                    return (IdentityResultHelper.NameExists, user);
 
                 await Repository.Writer.CreateAsync(user);
 
-                return new LibrameIdentityResult
-                {
-                    IdentityResult = IdentityResult.Success,
-                    User = user
-                };
+                return (IdentityResult.Success, user);
             }
             catch (Exception ex)
             {
-                return LibrameIdentityResult.CreateAuthenticationFailed(ex, user);
+                return (IdentityResultHelper.CreateFailed(ex), user);
             }
         }
 
@@ -116,27 +112,23 @@ namespace LibrameCore.Authentication.Managers
         /// </summary>
         /// <param name="name">给定的名称。</param>
         /// <param name="passwd">给定的密码。</param>
-        /// <returns>返回用户身份结果。</returns>
-        public virtual async Task<LibrameIdentityResult> ValidateAsync(string name, string passwd)
+        /// <returns>返回用户身份结果和用户模型。</returns>
+        public virtual async Task<(IdentityResult identity, TUserModel model)> ValidateAsync(string name, string passwd)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(passwd))
-                return null;
+                return (IdentityResultHelper.InvalidName, null);
             
             // 查找用户
             var user = await Repository.GetAsync(p => p.Name == name);
 
             if (user == null)
-                return LibrameIdentityResult.NameNotExists;
+                return (IdentityResultHelper.NameNotExists, user);
 
             // 验证密码是否正确
             if (!PasswordManager.Validate(user.Passwd, passwd))
-                return LibrameIdentityResult.PasswordError;
+                return (IdentityResultHelper.PasswordError, user);
 
-            return new LibrameIdentityResult
-            {
-                IdentityResult = IdentityResult.Success,
-                User = user
-            };
+            return (IdentityResult.Success, user);
         }
 
 

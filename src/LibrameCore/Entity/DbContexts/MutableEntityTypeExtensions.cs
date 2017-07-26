@@ -12,7 +12,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibrameStandard.Entity.DbContexts
@@ -24,12 +23,13 @@ namespace LibrameStandard.Entity.DbContexts
     /// </summary>
     internal static class MutableEntityTypeExtensions
     {
+
         /// <summary>
         /// 自映射表名。
         /// </summary>
         /// <param name="entityType">给定可变的实体类型。</param>
-        /// <param name="logger">给定的记录器。</param>
-        public static void MappingTableName(this IMutableEntityType entityType, ILogger logger)
+        /// <returns>返回结构与表名。</returns>
+        public static (string schema, string table) MappingTableName(this IMutableEntityType entityType)
         {
             // 自映射实体类型名的复数形式（仅支持 SQL Server）
             var annotations = entityType.SqlServer();
@@ -46,17 +46,11 @@ namespace LibrameStandard.Entity.DbContexts
                 if (!string.IsNullOrEmpty(tableAttribute.Schema))
                     annotations.Schema = tableAttribute.Schema;
             }
-
-            if (logger != null)
-            {
-                var schemaName = (string.IsNullOrEmpty(annotations.Schema) ? "dbo" : annotations.Schema);
-
-                logger.LogDebug(LibrameCore.Resources.Core.MappingEntityType,
-                    entityType.ClrType.FullName, schemaName, tableName);
-            }
-
+            
             // 设定表名
             annotations.TableName = tableName;
+
+            return (annotations.Schema.AsOrDefault("dbo"), tableName);
         }
 
     }

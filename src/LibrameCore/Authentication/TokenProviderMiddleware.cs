@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -98,8 +97,8 @@ namespace LibrameCore.Authentication
 
         private async Task InvokeValidateToken(HttpContext context)
         {
-            var userResult = await ValidateToken(context);
-            if (userResult == null)
+            var token = await ValidateToken(context);
+            if (token.identity == null)
             {
                 await context.Response.WriteErrorRequestAsync(Resources.Core.InvalidToken);
                 return;
@@ -107,8 +106,19 @@ namespace LibrameCore.Authentication
 
             var result = new
             {
-                username = userResult.User?.Name,
-                succeeded = userResult.IdentityResult.Succeeded,
+                authentication_type = token.identity.AuthenticationType,
+                is_authenticated = token.identity.IsAuthenticated,
+                name = token.identity.Name,
+                issuer = token.identity.Issuer,
+                audience = token.identity.Audience,
+                issued_time = token.identity.UtcIssuedTime.ToLocalTime().ToString(),
+                expiration_time = token.identity.UtcExpirationTime.ToLocalTime().ToString(),
+                id = token.identity.JwtId,
+                subject = token.identity.Subject,
+                uniqueName = token.identity.UniqueName,
+                roles = token.identity.Roles.JoinString(","),
+                // 支持角色验证
+                succeeded = token.identityResult.Succeeded,
             };
 
             await context.Response.WriteJsonAsync(result);
@@ -129,16 +139,19 @@ namespace LibrameCore.Authentication
                 return;
             }
 
-            var userResult = await ValidateUser(context);
-            if (userResult == null)
+            var user = await ValidateUser(context);
+            if (user.model == null)
             {
-                await context.Response.WriteErrorRequestAsync(Resources.Core.UsernameOrPasswordIsEmpty);
+                var message = user.identity.Errors.FirstOrDefault()?.Description;
+                message = message.AsOrDefault(Resources.Core.UsernameOrPasswordIsEmpty);
+                
+                await context.Response.WriteErrorRequestAsync(message);
                 return;
             }
 
-            if (!userResult.IdentityResult.Succeeded)
+            if (!user.identity.Succeeded)
             {
-                var message = userResult.IdentityResult.Errors.FirstOrDefault()?.Description;
+                var message = user.identity.Errors.FirstOrDefault()?.Description;
                 message = message.AsOrDefault(Resources.Core.InvalidUsernameOrPassword);
 
                 await context.Response.WriteErrorRequestAsync(message);
@@ -146,8 +159,8 @@ namespace LibrameCore.Authentication
             }
 
             // Cookie
-            var roles = await _roleManager.GetRoles(userResult.User);
-            var identity = CreateIdentity(userResult.User, roles);
+            var roles = await _roleManager.GetRoles(user.model);
+            var identity = CreateIdentity(user.model, roles);
             
             await context.Authentication.SignInAsync(AuthenticationOptions.DEFAULT_SCHEME,
                 new ClaimsPrincipal(identity),
@@ -179,7 +192,7 @@ namespace LibrameCore.Authentication
                 var result = new
                 {
                     access_token = token,
-                    expires_in = (int)_options.TokenProvider.Expiration.TotalSeconds,
+                    expires_in_seconds = (int)_options.TokenProvider.Expiration.TotalSeconds,
                 };
 
                 await context.Response.WriteJsonAsync(result);
@@ -199,16 +212,6 @@ namespace LibrameCore.Authentication
             return new LibrameIdentity(user, roles, _options.TokenProvider);
         }
 
-        /// <summary>
-        /// 解析用户模型。
-        /// </summary>
-        /// <param name="jwt">给定的 JSON Web 令牌。</param>
-        /// <returns>返回用户模型与角色集合。</returns>
-        private (IUserModel User, IEnumerable<string> Roles) ParseUserRoles(JwtSecurityToken jwt)
-        {
-            return LibrameIdentity.ParseUserRoles(jwt);
-        }
-
 
         private string AppendUrlToken(string url, string token)
         {
@@ -223,7 +226,7 @@ namespace LibrameCore.Authentication
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <returns>返回用户身份结果。</returns>
-        private Task<LibrameIdentityResult> ValidateToken(HttpContext context)
+        private Task<(IdentityResult identityResult, LibrameIdentity identity)> ValidateToken(HttpContext context)
         {
             var token = context.Request.Query["token"].ToString();
             var requiredRolesString = context.Request.Query["required_roles"].ToString();
@@ -237,7 +240,7 @@ namespace LibrameCore.Authentication
             var requiredRoles = (!string.IsNullOrEmpty(requiredRolesString)
                 ? requiredRolesString.ToString().Split(',') : null);
 
-            return _tokenManager.ValidateAsync(token, requiredRoles, ParseUserRoles);
+            return _tokenManager.ValidateAsync(token, requiredRoles);
         }
 
 
@@ -245,8 +248,8 @@ namespace LibrameCore.Authentication
         /// 根据 HTTP 上下文信息异步认证用户。
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
-        /// <returns>返回用户身份结果。</returns>
-        private Task<LibrameIdentityResult> ValidateUser(HttpContext context)
+        /// <returns>返回用户身份结果和用户模型。</returns>
+        private Task<(IdentityResult identity, TUserModel model)> ValidateUser(HttpContext context)
         {
             var username = context.Request.Form["username"].ToString();
             var password = context.Request.Form["password"].ToString();

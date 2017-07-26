@@ -43,6 +43,16 @@ namespace LibrameCore.Authentication.Managers
         /// <summary>
         /// 异步获取指定用户的角色集合。
         /// </summary>
+        /// <param name="username">给定的用户名称。</param>
+        /// <returns>返回角色集合。</returns>
+        public virtual Task<IEnumerable<string>> GetRoles(string username)
+        {
+            return Task.FromResult(DEFAULT_NAME.AsEnumerable());
+        }
+
+        /// <summary>
+        /// 异步获取指定用户的角色集合。
+        /// </summary>
         /// <param name="user">给定的用户模型。</param>
         /// <returns>返回角色集合。</returns>
         public virtual Task<IEnumerable<string>> GetRoles(IUserModel user)

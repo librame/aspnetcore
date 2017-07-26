@@ -47,8 +47,8 @@ namespace LibrameCore.Authentication.Managers
         /// 异步创建用户。
         /// </summary>
         /// <param name="user">给定的用户模型。</param>
-        /// <returns>返回用户身份结果。</returns>
-        Task<LibrameIdentityResult> CreateAsync(TUserModel user);
+        /// <returns>返回用户身份结果和用户模型。</returns>
+        Task<(IdentityResult identity, TUserModel model)> CreateAsync(TUserModel user);
 
 
         /// <summary>
@@ -56,8 +56,8 @@ namespace LibrameCore.Authentication.Managers
         /// </summary>
         /// <param name="name">给定的名称。</param>
         /// <param name="passwd">给定的密码。</param>
-        /// <returns>返回用户身份结果。</returns>
-        Task<LibrameIdentityResult> ValidateAsync(string name, string passwd);
+        /// <returns>返回用户身份结果和用户模型。</returns>
+        Task<(IdentityResult identity, TUserModel model)> ValidateAsync(string name, string passwd);
 
 
         /// <summary>

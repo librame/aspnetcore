@@ -11,9 +11,9 @@
 #endregion
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace LibrameStandard.Entity.DbContexts
 {
@@ -36,12 +36,18 @@ namespace LibrameStandard.Entity.DbContexts
 
 
         /// <summary>
-        /// 自映射表名。
+        /// 映射实体类型。
         /// </summary>
-        /// <param name="entityType">给定可变的实体类型。</param>
-        protected override void MappingTableName(IMutableEntityType entityType)
+        /// <param name="modelBuilder">给定的模型构建器。</param>
+        /// <param name="mappingType">给定的映射实体类型。</param>
+        protected override void MappingEntityType(ModelBuilder modelBuilder, Type mappingType)
         {
-            entityType.MappingTableName(Logger);
+            var entityType = modelBuilder.Model.AddEntityType(mappingType);
+
+            var entity = entityType.MappingTableName();
+
+            Logger.LogDebug(LibrameCore.Resources.Core.MappingEntityType,
+                entityType.ClrType.FullName, entity.schema, entity.table);
         }
 
     }
