@@ -5,6 +5,7 @@ using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -89,8 +90,16 @@ namespace LibrameCore.Website.Controllers
         }
 
 
+        [LibrameAuthorize]
         public IActionResult Validate(string token)
         {
+            if (string.IsNullOrEmpty(token) && User.Identity.IsAuthenticated)
+            {
+                var identity = User.AsLibrameIdentity(HttpContext.RequestServices);
+                var manager = HttpContext.RequestServices.GetService<ITokenManager>();
+                token = manager.Encode(identity);
+            }
+
             ViewBag.Token = token;
 
             return View();

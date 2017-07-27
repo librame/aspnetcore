@@ -168,7 +168,7 @@ namespace LibrameCore.Authentication
                 {
                     IsPersistent = true
                 });
-
+            
             // Redirect ReturnUrl
             var returnUrl = context.Request.Form["returnUrl"].ToString();
             if (!string.IsNullOrEmpty(returnUrl))
@@ -182,7 +182,7 @@ namespace LibrameCore.Authentication
             // Redirect LoginSuccessful
             if (!string.IsNullOrEmpty(_options.TokenProvider.LoginSuccessful))
             {
-                var location = AppendUrlToken(_options.TokenProvider.LoginSuccessful, token);
+                var location = FormatUrlToken(_options.TokenProvider.LoginSuccessful, token);
 
                 context.Response.Redirect(location);
                 return;
@@ -213,9 +213,16 @@ namespace LibrameCore.Authentication
         }
 
 
-        private string AppendUrlToken(string url, string token)
+        /// <summary>
+        /// 格式 URL 令牌。
+        /// </summary>
+        /// <param name="url">给定的 URL。</param>
+        /// <param name="token">给定的令牌。</param>
+        /// <returns>返回字符串。</returns>
+        private string FormatUrlToken(string url, string token)
         {
-            url += (url.IndexOf('?') > 0 ? "&" : "?") + "token=" + token;
+            if (url.Contains("{token}"))
+                return url.Replace("{token}", token);
 
             return url;
         }
@@ -228,9 +235,11 @@ namespace LibrameCore.Authentication
         /// <returns>返回用户身份结果。</returns>
         private Task<(IdentityResult identityResult, LibrameIdentity identity)> ValidateToken(HttpContext context)
         {
+            // 优先支持查询参数
             var token = context.Request.Query["token"].ToString();
             var requiredRolesString = context.Request.Query["required_roles"].ToString();
 
+            // 其次支持请求头部信息
             if (string.IsNullOrEmpty(token))
                 token = context.Request.Headers["Authentication"].ToString();
 
