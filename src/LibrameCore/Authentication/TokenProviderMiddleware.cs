@@ -111,8 +111,8 @@ namespace LibrameCore.Authentication
                 name = token.identity.Name,
                 issuer = token.identity.Issuer,
                 audience = token.identity.Audience,
-                issued_time = token.identity.UtcIssuedTime.ToLocalTime().ToString(),
-                expiration_time = token.identity.UtcExpirationTime.ToLocalTime().ToString(),
+                issued_time = token.identity.IssuedTimeUtc.ToLocalTime().ToString(),
+                expiration_time = token.identity.ExpirationTimeUtc.ToLocalTime().ToString(),
                 id = token.identity.JwtId,
                 subject = token.identity.Subject,
                 uniqueName = token.identity.UniqueName,
@@ -157,26 +157,32 @@ namespace LibrameCore.Authentication
                 await context.Response.WriteErrorRequestAsync(message);
                 return;
             }
-
-            // Cookie
+            
+            // Identity
             var roles = await _roleManager.GetRoles(user.model);
             var identity = CreateIdentity(user.model, roles);
-            
+
+            // SignIn
+            var utcNow = DateTimeOffset.UtcNow;
             await context.Authentication.SignInAsync(AuthenticationOptions.DEFAULT_SCHEME,
                 new ClaimsPrincipal(identity),
                 new AuthenticationProperties
                 {
-                    IsPersistent = true
+                    IssuedUtc = utcNow,
+                    ExpiresUtc = utcNow.Add(_options.TokenProvider.Expiration)
                 });
-            
+
             // Redirect ReturnUrl
             var returnUrl = context.Request.Form["returnUrl"].ToString();
+            returnUrl = returnUrl.AsOrDefault(context.Request.Query["returnUrl"].ToString());
+
             if (!string.IsNullOrEmpty(returnUrl))
             {
                 context.Response.Redirect(returnUrl);
                 return;
             }
 
+            // Token
             var token = _tokenManager.Encode(identity);
 
             // Redirect LoginSuccessful
@@ -192,6 +198,7 @@ namespace LibrameCore.Authentication
                 var result = new
                 {
                     access_token = token,
+                    token_type = "bearer",
                     expires_in_seconds = (int)_options.TokenProvider.Expiration.TotalSeconds,
                 };
 

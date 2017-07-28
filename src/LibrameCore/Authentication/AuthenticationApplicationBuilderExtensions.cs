@@ -14,6 +14,7 @@ using LibrameStandard;
 using LibrameStandard.Algorithm;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
 
@@ -21,7 +22,8 @@ namespace LibrameCore
 {
     using Authentication;
     using Authentication.Models;
-    
+    using Authentication.Managers;
+
     /// <summary>
     /// 认证应用构建器静态扩展。
     /// </summary>
@@ -43,10 +45,10 @@ namespace LibrameCore
             var options = app.ApplicationServices.GetOptions<AuthenticationOptions>();
 
             // Use JWT
-            app.UseLibrameJwtBearerAuthentication(jwtBearerOptionsAction);
+            app.UseLibrameJwtBearerAuthentication(options, jwtBearerOptionsAction);
 
             // Use Cookie
-            app.UseLibrameCookieAuthentication(cookieOptionsAction);
+            app.UseLibrameCookieAuthentication(options, cookieOptionsAction);
 
             // Use Middleware
             app.UseMiddleware<TokenProviderMiddleware<TUserModel>>();
@@ -54,7 +56,7 @@ namespace LibrameCore
 
 
         private static void UseLibrameJwtBearerAuthentication(this IApplicationBuilder app,
-            Action<JwtBearerOptions> jwtBearerOptionsAction = null)
+            AuthenticationOptions options, Action<JwtBearerOptions> jwtBearerOptionsAction = null)
         {
             // 默认以授权编号为密钥
             var algorithmOptions = app.ApplicationServices.GetOptions<AlgorithmOptions>();
@@ -62,15 +64,14 @@ namespace LibrameCore
 
             var parameters = new TokenValidationParameters
             {
-                // The signing key must match!
+                AuthenticationType = AuthenticationOptions.DEFAULT_SCHEME,
+
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
-
-                // Validate the JWT Issuer (iss) claim
+                
                 ValidateIssuer = true,
                 ValidIssuer = TokenProviderOptions.DefaultIssuer,
-
-                // Validate the JWT Audience (aud) claim
+                
                 ValidateAudience = true,
                 ValidAudience = TokenProviderOptions.DefaultAudience,
 
@@ -81,7 +82,7 @@ namespace LibrameCore
                 ClockSkew = TimeSpan.Zero
             };
 
-            var options = new JwtBearerOptions
+            var jwtBearerOptions = new JwtBearerOptions
             {
                 AuthenticationScheme = AuthenticationOptions.DEFAULT_SCHEME,
                 // 是否自动启用验证，如果不启用，则即便客服端传输了Cookie信息，服务端也不会主动解析。
@@ -92,17 +93,17 @@ namespace LibrameCore
             };
 
             // Custom Configure Options
-            jwtBearerOptionsAction?.Invoke(options);
+            jwtBearerOptionsAction?.Invoke(jwtBearerOptions);
 
             // Use Options
-            app.UseJwtBearerAuthentication(options);
+            app.UseJwtBearerAuthentication(jwtBearerOptions);
         }
 
 
         private static void UseLibrameCookieAuthentication(this IApplicationBuilder app,
-            Action<CookieAuthenticationOptions> cookieOptionsAction = null)
+            AuthenticationOptions options, Action<CookieAuthenticationOptions> cookieOptionsAction = null)
         {
-            var options = new CookieAuthenticationOptions
+            var cookieOptions = new CookieAuthenticationOptions
             {
                 AuthenticationScheme = AuthenticationOptions.DEFAULT_SCHEME,
                 // 是否自动启用验证，如果不启用，则即便客服端传输了 Cookie 信息，服务端也不会主动解析。
@@ -110,14 +111,15 @@ namespace LibrameCore
                 //AutomaticAuthenticate = true,
                 //AutomaticChallenge = true,
                 CookieName = AuthenticationOptions.DEFAULT_COOKIE_NAME,
-                LoginPath = new PathString(AuthenticationOptions.DEFAULT_LOGIN_PATH)
+                LoginPath = new PathString(AuthenticationOptions.DEFAULT_LOGIN_PATH),
+                ExpireTimeSpan = options.TokenProvider.Expiration,
             };
 
             // Custom Configure Options
-            cookieOptionsAction?.Invoke(options);
+            cookieOptionsAction?.Invoke(cookieOptions);
 
             // Use Options
-            app.UseCookieAuthentication(options);
+            app.UseCookieAuthentication(cookieOptions);
         }
 
     }

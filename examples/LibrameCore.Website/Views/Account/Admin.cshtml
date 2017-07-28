@@ -12,6 +12,6 @@
 
     <h2>当前角色：@identity.Roles.JoinString(",")</h2>
     <h2>验证类型：@identity.AuthenticationType</h2>
-    <h2>签发时间：@identity.UtcIssuedTime.ToLocalTime().ToString()</h2>
-    <h2>过期时间：@identity.UtcExpirationTime.ToLocalTime().ToString()</h2>
+    <h2>签发时间：@identity.IssuedTimeUtc.ToLocalTime().ToString()</h2>
+    <h2>过期时间：@identity.ExpirationTimeUtc.ToLocalTime().ToString()</h2>
 }

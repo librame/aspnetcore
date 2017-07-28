@@ -82,7 +82,7 @@ namespace LibrameCore.Authentication
                 if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(JwtId))
                     return false;
 
-                if (DateTime.UtcNow > UtcExpirationTime)
+                if (DateTime.UtcNow > ExpirationTimeUtc)
                     return false;
 
                 if (Issuer != _options.Issuer || Audience != _options.Audience)
@@ -108,13 +108,13 @@ namespace LibrameCore.Authentication
         /// <summary>
         /// UTC 签发时间。
         /// </summary>
-        public virtual DateTime UtcIssuedTime
+        public virtual DateTime IssuedTimeUtc
             => new DateTime(FindFirst(JwtRegisteredClaimNames.Iat).Value.AsLong());
 
         /// <summary>
         /// UTC 过期时间。
         /// </summary>
-        public virtual DateTime UtcExpirationTime
+        public virtual DateTime ExpirationTimeUtc
             => new DateTime(FindFirst(JwtRegisteredClaimNames.Exp).Value.AsLong());
 
 
@@ -148,8 +148,8 @@ namespace LibrameCore.Authentication
             user.NotNull(nameof(user));
             options.NotNull(nameof(options));
 
-            var utcNow = DateTime.UtcNow;
-            var utcExpiration = utcNow.Add(options.Expiration);
+            var issuedTimeUtc = DateTime.UtcNow;
+            var expirationTimeUtc = issuedTimeUtc.Add(options.Expiration);
 
             var claims = new List<Claim>
             {
@@ -158,9 +158,9 @@ namespace LibrameCore.Authentication
                 // 主题（如名称、邮箱等）
                 new Claim(JwtRegisteredClaimNames.Sub, user.Name),
                 // 签发时间
-                new Claim(JwtRegisteredClaimNames.Iat, utcNow.Ticks.ToString(), ClaimValueTypes.Integer64),
+                new Claim(JwtRegisteredClaimNames.Iat, issuedTimeUtc.Ticks.ToString(), ClaimValueTypes.Integer64),
                 // 过期时间
-                new Claim(JwtRegisteredClaimNames.Exp, utcExpiration.Ticks.ToString(), ClaimValueTypes.Integer64),
+                new Claim(JwtRegisteredClaimNames.Exp, expirationTimeUtc.Ticks.ToString(), ClaimValueTypes.Integer64),
                 // 签发者
                 new Claim(JwtRegisteredClaimNames.Iss, options.Issuer),
                 // 接收者

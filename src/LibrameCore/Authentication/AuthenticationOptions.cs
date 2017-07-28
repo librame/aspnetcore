@@ -282,7 +282,7 @@ namespace LibrameCore.Authentication
         /// <summary>
         /// 接收者。
         /// </summary>
-        public string Audience { get; set; } = "http://localhost:10768/";
+        public string Audience { get; set; } = DefaultAudience;
 
         #endregion
 
@@ -298,20 +298,20 @@ namespace LibrameCore.Authentication
         /// <summary>
         /// 默认登录成功后转向。
         /// </summary>
-        public static readonly string DefaultLoginSuccessful = "http://localhost:10768/Account/Validate";
+        public static readonly string DefaultLoginSuccessful = "http://localhost:10768/Account/Validate?token={token}";
 
         /// <summary>
         /// 登录成功后转向。
         /// </summary>
-        public string LoginSuccessful { get; set; } = "http://localhost:10768/Account/Validate";
+        public string LoginSuccessful { get; set; } = DefaultLoginSuccessful;
 
         #endregion
 
 
         /// <summary>
-        /// 过期时间间隔（默认1小时后过期）。
+        /// 过期时间间隔（默认1天后过期）。
         /// </summary>
-        public TimeSpan Expiration { get; set; } = TimeSpan.FromMinutes(60);
+        public TimeSpan Expiration { get; set; } = TimeSpan.FromDays(1);
 
         /// <summary>
         /// 签名证书。
