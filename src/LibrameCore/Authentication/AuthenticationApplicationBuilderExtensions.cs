@@ -14,15 +14,12 @@ using LibrameStandard;
 using LibrameStandard.Algorithm;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
 
 namespace LibrameCore
 {
     using Authentication;
-    using Authentication.Models;
-    using Authentication.Managers;
 
     /// <summary>
     /// 认证应用构建器静态扩展。
@@ -33,14 +30,12 @@ namespace LibrameCore
         /// <summary>
         /// 使用 Librame 认证。
         /// </summary>
-        /// <typeparam name="TUserModel">指定的用户模型类型。</typeparam>
         /// <param name="app">给定的应用构建器接口。</param>
         /// <param name="jwtBearerOptionsAction">给定的 JWT 选项方法。</param>
         /// <param name="cookieOptionsAction">给定的 Cookie 认证选项方法。</param>
-        public static void UseLibrameAuthentication<TUserModel>(this IApplicationBuilder app,
+        public static void UseLibrameAuthentication(this IApplicationBuilder app,
             Action<JwtBearerOptions> jwtBearerOptionsAction = null,
             Action<CookieAuthenticationOptions> cookieOptionsAction = null)
-            where TUserModel : class, IUserModel
         {
             var options = app.ApplicationServices.GetOptions<AuthenticationOptions>();
 
@@ -49,9 +44,6 @@ namespace LibrameCore
 
             // Use Cookie
             app.UseLibrameCookieAuthentication(options, cookieOptionsAction);
-
-            // Use Middleware
-            app.UseMiddleware<TokenProviderMiddleware<TUserModel>>();
         }
 
 
@@ -70,10 +62,10 @@ namespace LibrameCore
                 IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
                 
                 ValidateIssuer = true,
-                ValidIssuer = TokenProviderOptions.DefaultIssuer,
+                ValidIssuer = TokenOptions.DefaultIssuer,
                 
                 ValidateAudience = true,
-                ValidAudience = TokenProviderOptions.DefaultAudience,
+                ValidAudience = TokenOptions.DefaultAudience,
 
                 // Validate the token expiry
                 ValidateLifetime = true,
@@ -112,7 +104,7 @@ namespace LibrameCore
                 //AutomaticChallenge = true,
                 CookieName = AuthenticationOptions.DEFAULT_COOKIE_NAME,
                 LoginPath = new PathString(AuthenticationOptions.DEFAULT_LOGIN_PATH),
-                ExpireTimeSpan = options.TokenProvider.Expiration,
+                ExpireTimeSpan = options.Token.Expiration,
             };
 
             // Custom Configure Options

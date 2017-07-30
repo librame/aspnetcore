@@ -73,17 +73,17 @@ namespace LibrameCore.Authentication
 
 
         /// <summary>
-        /// SMTP。
+        /// SMTP 选项。
         /// </summary>
         public SmtpOptions Smtp { get; set; }
             = new SmtpOptions();
 
 
         /// <summary>
-        /// 令牌提供程序。
+        /// 令牌选项。
         /// </summary>
-        public TokenProviderOptions TokenProvider { get; set; }
-            = new TokenProviderOptions();
+        public TokenOptions Token { get; set; }
+            = new TokenOptions();
     }
 
 
@@ -213,15 +213,15 @@ namespace LibrameCore.Authentication
 
 
     /// <summary>
-    /// 令牌提供程序选项。
+    /// 令牌选项。
     /// </summary>
-    public class TokenProviderOptions
+    public class TokenOptions
     {
         /// <summary>
         /// 键名前缀。
         /// </summary>
         internal static readonly string KeyPrefix
-            = (nameof(AuthenticationOptions.TokenProvider) + ":");
+            = (nameof(AuthenticationOptions.Token) + ":");
 
         
         #region Path

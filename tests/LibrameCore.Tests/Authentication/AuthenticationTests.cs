@@ -20,7 +20,7 @@ namespace LibrameCore.Tests.Authentication
             // 获取认证选项
             var options = serviceProvider.GetOptions<AuthenticationOptions>();
             Assert.NotNull(options);
-            Assert.NotNull(options.TokenProvider);
+            Assert.NotNull(options.Token);
         }
 
     }

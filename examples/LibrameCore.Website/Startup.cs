@@ -1,4 +1,5 @@
-﻿using LibrameCore.Entities;
+﻿using LibrameCore.Authentication.Middlewares;
+using LibrameCore.Entities;
 using LibrameStandard.Entity.DbContexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -58,7 +59,7 @@ namespace LibrameCore.Website
             // Add LibrameCore
             services.AddLibrameCore(Configuration.GetSection("Librame"), authenticationAction: opts =>
             {
-                opts.TokenProvider.Expiration = TimeSpan.FromMinutes(2);
+                opts.Token.Expiration = TimeSpan.FromMinutes(5);
             });
         }
 
@@ -82,7 +83,7 @@ namespace LibrameCore.Website
             app.UseStaticFiles();
 
             // Use LibrameCore
-            app.UseLibrameAuthentication<User>(jwtBearerOptionsAction: jwtBearerOptions =>
+            app.UseLibrameAuthentication(jwtBearerOptionsAction: jwtBearerOptions =>
             {
                 jwtBearerOptions.TokenValidationParameters.ValidIssuer = "http://localhost:10768/";
                 jwtBearerOptions.TokenValidationParameters.ValidAudience = "http://localhost:10768/";
@@ -91,6 +92,9 @@ namespace LibrameCore.Website
             {
                 cookieOptions.LoginPath = "/Account/Login";
             });
+
+            // Use Middleware
+            app.UseMiddleware<TokenMiddleware<User>>();
 
             app.UseMvc(routes =>
             {

@@ -45,7 +45,7 @@ namespace LibrameCore.Authentication.Managers
         /// </summary>
         /// <param name="username">给定的用户名称。</param>
         /// <returns>返回角色集合。</returns>
-        public virtual Task<IEnumerable<string>> GetRoles(string username)
+        public virtual Task<IEnumerable<string>> GetRolesAsync(string username)
         {
             return Task.FromResult(DEFAULT_NAME.AsEnumerable());
         }
@@ -55,7 +55,7 @@ namespace LibrameCore.Authentication.Managers
         /// </summary>
         /// <param name="user">给定的用户模型。</param>
         /// <returns>返回角色集合。</returns>
-        public virtual Task<IEnumerable<string>> GetRoles(IUserModel user)
+        public virtual Task<IEnumerable<string>> GetRolesAsync(IUserModel user)
         {
             return Task.FromResult(DEFAULT_NAME.AsEnumerable());
         }

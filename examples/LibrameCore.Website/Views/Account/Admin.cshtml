@@ -5,7 +5,7 @@
 }
 @if (User.Identities.Any(u => u.IsAuthenticated))
 {
-    var identity = User.AsLibrameIdentity(Model.TokenProvider);
+    var identity = User.AsLibrameIdentity(Model.Token);
 
     <h1>欢迎登陆 @identity.Name</h1>
     <hr />

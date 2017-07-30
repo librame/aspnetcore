@@ -32,7 +32,7 @@ namespace LibrameCore.Authentication
         {
             var options = serviceProvider.GetOptions<AuthenticationOptions>();
 
-            return principal.AsLibrameIdentity(options.TokenProvider);
+            return principal.AsLibrameIdentity(options.Token);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace LibrameCore.Authentication
         /// <param name="principal">给定的声明当事人。</param>
         /// <param name="options">给定的令牌提供程序选项。</param>
         /// <returns>返回 Librame 身份标识。</returns>
-        public static LibrameIdentity AsLibrameIdentity(this ClaimsPrincipal principal, TokenProviderOptions options)
+        public static LibrameIdentity AsLibrameIdentity(this ClaimsPrincipal principal, TokenOptions options)
         {
             return new LibrameIdentity(principal.Claims, options);
         }

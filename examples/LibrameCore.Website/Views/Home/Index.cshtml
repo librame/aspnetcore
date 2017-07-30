@@ -1,10 +1,10 @@
-﻿@model Article
+﻿@model User
 @{
     ViewData["Title"] = "Home";
 }
 <div>
-    <h3>@Model?.Title</h3>
+    <h3>@Model?.Name</h3>
     <p>
-        @Model?.Descr
+        @Model?.CreateTime.ToString()
     </p>
 </div>

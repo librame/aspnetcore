@@ -21,25 +21,18 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace LibrameCore.Authentication
+namespace LibrameCore.Authentication.Middlewares
 {
     using Managers;
     using Models;
 
     /// <summary>
-    /// 令牌提供程序中间件。
+    /// 令牌中间件。
     /// </summary>
     /// <typeparam name="TUserModel">指定的用户模型类型。</typeparam>
-    public class TokenProviderMiddleware<TUserModel>
+    public class TokenMiddleware<TUserModel> : AbstractMiddleware
         where TUserModel : class, IUserModel
     {
-        private readonly RequestDelegate _next;
-        private readonly AuthenticationOptions _options;
-        private readonly ITokenManager _tokenManager;
-        private readonly IUserManager<TUserModel> _userManager;
-        private readonly IRoleManager _roleManager;
-
-
         /// <summary>
         /// 构造一个令牌提供程序中间件实例。
         /// </summary>
@@ -48,16 +41,30 @@ namespace LibrameCore.Authentication
         /// <param name="tokenManager">给定的令牌管理器。</param>
         /// <param name="userManager">给定的用户管理器。</param>
         /// <param name="roleManager">给定的角色管理器。</param>
-        public TokenProviderMiddleware(RequestDelegate next, IOptions<AuthenticationOptions> options,
+        public TokenMiddleware(RequestDelegate next, IOptions<AuthenticationOptions> options,
             ITokenManager tokenManager, IUserManager<TUserModel> userManager, IRoleManager roleManager)
+            : base(next, options)
         {
-            _next = next.NotNull(nameof(next));
-            _options = options.NotNull(nameof(options)).Value;
-
-            _tokenManager = tokenManager.NotNull(nameof(tokenManager));
-            _userManager = userManager.NotNull(nameof(userManager));
-            _roleManager = roleManager.NotNull(nameof(roleManager));
+            TokenManager = tokenManager.NotNull(nameof(tokenManager));
+            UserManager = userManager.NotNull(nameof(userManager));
+            RoleManager = roleManager.NotNull(nameof(roleManager));
         }
+
+
+        /// <summary>
+        /// 令牌管理器。
+        /// </summary>
+        protected ITokenManager TokenManager { get; private set; }
+
+        /// <summary>
+        /// 用户管理器。
+        /// </summary>
+        protected IUserManager<TUserModel> UserManager { get; private set; }
+
+        /// <summary>
+        /// 角色管理器。
+        /// </summary>
+        protected IRoleManager RoleManager { get; private set; }
 
 
         /// <summary>
@@ -65,12 +72,12 @@ namespace LibrameCore.Authentication
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <returns>返回异步操作。</returns>
-        public Task Invoke(HttpContext context)
+        public virtual Task Invoke(HttpContext context)
         {
             // If the request path doesn't match, skip
-            if (!context.Request.Path.Equals(_options.TokenProvider.Path, StringComparison.Ordinal))
+            if (!context.Request.Path.Equals(Options.Token.Path, StringComparison.Ordinal))
             {
-                return _next.Invoke(context);
+                return Next.Invoke(context);
             }
 
             switch (context.Request.Method.ToLower())
@@ -95,7 +102,12 @@ namespace LibrameCore.Authentication
         }
 
 
-        private async Task InvokeValidateToken(HttpContext context)
+        /// <summary>
+        /// 异步验证令牌。
+        /// </summary>
+        /// <param name="context">给定的 HTTP 上下文。</param>
+        /// <returns>返回异步操作。</returns>
+        protected virtual async Task InvokeValidateToken(HttpContext context)
         {
             var token = await ValidateToken(context);
             if (token.identity == null)
@@ -127,11 +139,11 @@ namespace LibrameCore.Authentication
 
 
         /// <summary>
-        /// 异步执行生成令牌。
+        /// 异步生成令牌。
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <returns>返回异步操作。</returns>
-        private async Task InvokeGenerateToken(HttpContext context)
+        protected virtual async Task InvokeGenerateToken(HttpContext context)
         {
             if (!context.Request.HasFormContentType)
             {
@@ -139,6 +151,7 @@ namespace LibrameCore.Authentication
                 return;
             }
 
+            // Login
             var user = await ValidateUser(context);
             if (user.model == null)
             {
@@ -149,6 +162,7 @@ namespace LibrameCore.Authentication
                 return;
             }
 
+            // Login Failed
             if (!user.identity.Succeeded)
             {
                 var message = user.identity.Errors.FirstOrDefault()?.Description;
@@ -157,9 +171,12 @@ namespace LibrameCore.Authentication
                 await context.Response.WriteErrorRequestAsync(message);
                 return;
             }
-            
+
+            // Login Successed
+            await LoginSuccessed(context, user);
+
             // Identity
-            var roles = await _roleManager.GetRoles(user.model);
+            var roles = await RoleManager.GetRolesAsync(user.model);
             var identity = CreateIdentity(user.model, roles);
 
             // SignIn
@@ -169,7 +186,7 @@ namespace LibrameCore.Authentication
                 new AuthenticationProperties
                 {
                     IssuedUtc = utcNow,
-                    ExpiresUtc = utcNow.Add(_options.TokenProvider.Expiration)
+                    ExpiresUtc = utcNow.Add(Options.Token.Expiration)
                 });
 
             // Redirect ReturnUrl
@@ -183,12 +200,12 @@ namespace LibrameCore.Authentication
             }
 
             // Token
-            var token = _tokenManager.Encode(identity);
+            var token = TokenManager.Encode(identity);
 
             // Redirect LoginSuccessful
-            if (!string.IsNullOrEmpty(_options.TokenProvider.LoginSuccessful))
+            if (!string.IsNullOrEmpty(Options.Token.LoginSuccessful))
             {
-                var location = FormatUrlToken(_options.TokenProvider.LoginSuccessful, token);
+                var location = FormatUrlToken(Options.Token.LoginSuccessful, token);
 
                 context.Response.Redirect(location);
                 return;
@@ -199,7 +216,7 @@ namespace LibrameCore.Authentication
                 {
                     access_token = token,
                     token_type = "bearer",
-                    expires_in_seconds = (int)_options.TokenProvider.Expiration.TotalSeconds,
+                    expires_in_seconds = (int)Options.Token.Expiration.TotalSeconds,
                 };
 
                 await context.Response.WriteJsonAsync(result);
@@ -209,14 +226,26 @@ namespace LibrameCore.Authentication
 
 
         /// <summary>
+        /// 登录成功处理。
+        /// </summary>
+        /// <param name="context">给定的 HTTP 上下文。</param>
+        /// <param name="user">给定的用户。</param>
+        /// <returns>返回一个异步操作。</returns>
+        protected virtual Task LoginSuccessed(HttpContext context, (IdentityResult identity, TUserModel model) user)
+        {
+            return Task.CompletedTask;
+        }
+
+
+        /// <summary>
         /// 创建 Librame 身份标识。
         /// </summary>
         /// <param name="user">给定的用户模型。</param>
         /// <param name="roles">给定的用户角色集合。</param>
         /// <returns>返回 Librame 身份标识。</returns>
-        private LibrameIdentity CreateIdentity(IUserModel user, IEnumerable<string> roles)
+        protected virtual LibrameIdentity CreateIdentity(IUserModel user, IEnumerable<string> roles)
         {
-            return new LibrameIdentity(user, roles, _options.TokenProvider);
+            return new LibrameIdentity(user, roles, Options.Token);
         }
 
 
@@ -226,7 +255,7 @@ namespace LibrameCore.Authentication
         /// <param name="url">给定的 URL。</param>
         /// <param name="token">给定的令牌。</param>
         /// <returns>返回字符串。</returns>
-        private string FormatUrlToken(string url, string token)
+        protected virtual string FormatUrlToken(string url, string token)
         {
             if (url.Contains("{token}"))
                 return url.Replace("{token}", token);
@@ -240,7 +269,7 @@ namespace LibrameCore.Authentication
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <returns>返回用户身份结果。</returns>
-        private Task<(IdentityResult identityResult, LibrameIdentity identity)> ValidateToken(HttpContext context)
+        protected virtual Task<(IdentityResult identityResult, LibrameIdentity identity)> ValidateToken(HttpContext context)
         {
             // 优先支持查询参数
             var token = context.Request.Query["token"].ToString();
@@ -256,7 +285,7 @@ namespace LibrameCore.Authentication
             var requiredRoles = (!string.IsNullOrEmpty(requiredRolesString)
                 ? requiredRolesString.ToString().Split(',') : null);
 
-            return _tokenManager.ValidateAsync(token, requiredRoles);
+            return TokenManager.ValidateAsync(token, requiredRoles);
         }
 
 
@@ -265,12 +294,12 @@ namespace LibrameCore.Authentication
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <returns>返回用户身份结果和用户模型。</returns>
-        private Task<(IdentityResult identity, TUserModel model)> ValidateUser(HttpContext context)
+        protected virtual Task<(IdentityResult identity, TUserModel model)> ValidateUser(HttpContext context)
         {
             var username = context.Request.Form["username"].ToString();
             var password = context.Request.Form["password"].ToString();
 
-            return _userManager.ValidateAsync(username, password);
+            return UserManager.ValidateAsync(username, password);
         }
 
     }

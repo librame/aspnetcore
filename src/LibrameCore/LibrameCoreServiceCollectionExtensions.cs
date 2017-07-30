@@ -49,11 +49,11 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<Dictionary<string, string>> coreInitialDataAction = initialData =>
             {
                 // Authentication
-                initialData.Add(authenticationKeyPrefix + TokenProviderOptions.IssuerKey,
-                    TokenProviderOptions.DefaultIssuer);
+                initialData.Add(authenticationKeyPrefix + TokenOptions.IssuerKey,
+                    TokenOptions.DefaultIssuer);
 
-                initialData.Add(authenticationKeyPrefix + TokenProviderOptions.AudienceKey,
-                    TokenProviderOptions.DefaultAudience);
+                initialData.Add(authenticationKeyPrefix + TokenOptions.AudienceKey,
+                    TokenOptions.DefaultAudience);
 
                 initialDataAction?.Invoke(initialData);
             };
@@ -147,9 +147,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<AuthenticationOptions> authenticationAction = null,
             Action<ILibrameBuilder> builderAction = null)
         {
-            //services.AddCookieAuthentication();
             services.AddAuthorization();
-            //services.AddIdentity<User, Role>();
 
             return services.AddLibrame(configuration, algorithmOptionsAction, entityOptionsAction, builder =>
             {

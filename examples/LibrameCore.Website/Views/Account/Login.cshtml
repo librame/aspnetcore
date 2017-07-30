@@ -9,7 +9,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         var options = (ViewBag.Options as AuthenticationOptions);
-        var identity = User.AsLibrameIdentity(options.TokenProvider);
+        var identity = User.AsLibrameIdentity(options.Token);
 
         <h3>当前已登陆 @identity.Name</h3>
     }
@@ -23,7 +23,7 @@
             <div class="form-group">
                 <label for="username" class="control-label col-sm-1">用户</label>
                 <div class="col-sm-6">
-                    <input id="username" name="username" type="text" value="LibrameUser" />
+                    <input id="username" name="username" type="text" value="sanjin" />
                     <span style="color:red;">*</span>
                 </div>
             </div>

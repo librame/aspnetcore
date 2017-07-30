@@ -14,7 +14,6 @@ using LibrameStandard.Entity;
 using LibrameStandard.Entity.DbContexts;
 using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace LibrameCore.Website.Controllers
 {
@@ -22,9 +21,9 @@ namespace LibrameCore.Website.Controllers
     
     public class HomeController : Controller
     {
-        private readonly IRepository<SqlServerDbContextReader, SqlServerDbContextWriter, Article> _repository;
+        private readonly IRepository<SqlServerDbContextReader, SqlServerDbContextWriter, User> _repository;
 
-        public HomeController(IRepository<SqlServerDbContextReader, SqlServerDbContextWriter, Article> repository)
+        public HomeController(IRepository<SqlServerDbContextReader, SqlServerDbContextWriter, User> repository)
         {
             _repository = repository.NotNull(nameof(repository));
         }
@@ -33,9 +32,7 @@ namespace LibrameCore.Website.Controllers
         public IActionResult Index()
         {
             var model = _repository.Get(1);
-
-            _repository.Logger.LogInformation("Read single article.");
-
+            
             return View(model);
         }
 

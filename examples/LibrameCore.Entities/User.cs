@@ -20,7 +20,7 @@ namespace LibrameCore.Entities
     /// <summary>
     /// 用户。
     /// </summary>
-    [Description("用户")]
+    [DisplayName("用户")]
     public class User : AbstractCreateDataIdDescriptor<int>, IUserModel
     {
         /// <summary>

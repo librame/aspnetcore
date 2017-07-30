@@ -52,7 +52,7 @@ namespace LibrameCore.Authentication.Managers
         /// <returns>返回令牌字符串。</returns>
         public virtual string Encode(LibrameIdentity identity)
         {
-            var options = Options.TokenProvider;
+            var options = Options.Token;
 
             // 默认令牌签名证书
             if (options.SigningCredentials == null)
@@ -89,7 +89,7 @@ namespace LibrameCore.Authentication.Managers
                 return null;
 
             var jwt = handler.ReadJwtToken(token);
-            return new LibrameIdentity(jwt, Options.TokenProvider);
+            return new LibrameIdentity(jwt, Options.Token);
         }
 
 

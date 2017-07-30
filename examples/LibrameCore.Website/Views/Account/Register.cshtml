@@ -10,7 +10,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         var options = (ViewBag.Options as AuthenticationOptions);
-        var identity = User.AsLibrameIdentity(options.TokenProvider);
+        var identity = User.AsLibrameIdentity(options.Token);
 
         <h3>当前已登陆 @identity.Name</h3>
     }

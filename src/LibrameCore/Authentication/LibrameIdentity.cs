@@ -26,7 +26,7 @@ namespace LibrameCore.Authentication
     /// </summary>
     public class LibrameIdentity : ClaimsIdentity
     {
-        private readonly TokenProviderOptions _options;
+        private readonly TokenOptions _options;
 
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace LibrameCore.Authentication
         /// </summary>
         /// <param name="jwt">给定的 JSON Web 令牌。</param>
         /// <param name="options">给定的令牌提供程序选项。</param>
-        public LibrameIdentity(JwtSecurityToken jwt, TokenProviderOptions options)
+        public LibrameIdentity(JwtSecurityToken jwt, TokenOptions options)
             : base(jwt.Claims, AuthenticationOptions.DEFAULT_SCHEME, DefaultNameClaimType, DefaultRoleClaimType)
         {
             _options = options.NotNull(nameof(options));
@@ -44,7 +44,7 @@ namespace LibrameCore.Authentication
         /// </summary>
         /// <param name="claims">给定的声明集合。</param>
         /// <param name="options">给定的令牌提供程序选项。</param>
-        public LibrameIdentity(IEnumerable<Claim> claims, TokenProviderOptions options)
+        public LibrameIdentity(IEnumerable<Claim> claims, TokenOptions options)
             : base(claims, AuthenticationOptions.DEFAULT_SCHEME, DefaultNameClaimType, DefaultRoleClaimType)
         {
             _options = options.NotNull(nameof(options));
@@ -55,7 +55,7 @@ namespace LibrameCore.Authentication
         /// <param name="user">给定的用户模型。</param>
         /// <param name="roles">给定的用户角色集合。</param>
         /// <param name="options">给定的令牌提供程序选项。</param>
-        public LibrameIdentity(IUserModel user, IEnumerable<string> roles, TokenProviderOptions options)
+        public LibrameIdentity(IUserModel user, IEnumerable<string> roles, TokenOptions options)
             : base(BuildClaims(user, roles, options), AuthenticationOptions.DEFAULT_SCHEME, DefaultNameClaimType, DefaultRoleClaimType)
         {
             _options = options;
@@ -143,7 +143,7 @@ namespace LibrameCore.Authentication
             => FindAll(DefaultRoleClaimType).Select(s => s.Value);
 
 
-        private static IList<Claim> BuildClaims(IUserModel user, IEnumerable<string> roles, TokenProviderOptions options)
+        private static IList<Claim> BuildClaims(IUserModel user, IEnumerable<string> roles, TokenOptions options)
         {
             user.NotNull(nameof(user));
             options.NotNull(nameof(options));
