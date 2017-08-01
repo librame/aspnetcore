@@ -17,7 +17,7 @@
     <Content Include="configs\nlog.config" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="LibrameStandard" Version="1.6.1707.261" />
+    <PackageReference Include="LibrameStandard" Version="1.6.1708.11" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.2" />

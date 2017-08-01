@@ -14,7 +14,7 @@ using LibrameCore.Authentication;
 using LibrameCore.Authentication.Managers;
 using LibrameCore.Authentication.Senders;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
 namespace LibrameStandard
@@ -26,7 +26,7 @@ namespace LibrameStandard
     {
 
         /// <summary>
-        /// 注册认证服务集合。
+        /// 注册认证模块。
         /// </summary>
         /// <param name="builder">给定的 Librame 构建器。</param>
         /// <param name="optionsAction">给定的认证选项动作方法（可选）。</param>
@@ -38,17 +38,17 @@ namespace LibrameStandard
             builder.AddOptions(AuthenticationOptions.Key, optionsAction);
 
             // HttpContext 访问器
-            builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             // 管理器
-            builder.Services.AddTransient<IPasswordManager, PasswordManager>();
-            builder.Services.AddTransient<IRoleManager, RoleManager>();
-            builder.Services.AddTransient<ITokenManager, TokenManager>();
-            builder.Services.AddTransient(typeof(IUserManager<>), typeof(UserManager<>));
+            builder.Services.TryAddTransient<IPasswordManager, PasswordManager>();
+            builder.Services.TryAddTransient<IRoleManager, RoleManager>();
+            builder.Services.TryAddTransient<ITokenManager, TokenManager>();
+            builder.Services.TryAddTransient(typeof(IUserManager<>), typeof(UserManager<>));
 
             // 发送器
-            builder.Services.AddTransient<IEmailSender, EmailSender>();
-            builder.Services.AddTransient<ISmsSender, SmsSender>();
+            builder.Services.TryAddTransient<IEmailSender, EmailSender>();
+            builder.Services.TryAddTransient<ISmsSender, SmsSender>();
 
             return builder;
         }

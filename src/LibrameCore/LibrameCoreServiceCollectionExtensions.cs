@@ -13,6 +13,7 @@
 using LibrameStandard;
 using LibrameStandard.Algorithm;
 using LibrameCore.Authentication;
+using LibrameCore.Filtration;
 using LibrameStandard.Entity;
 using LibrameStandard.Utilities;
 using Microsoft.Extensions.Configuration;
@@ -34,14 +35,16 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="initialDataAction">给定的初始化数据动作方法（可选）。</param>
         /// <param name="algorithmOptionsAction">给定的算法选项动作方法（可选）。</param>
         /// <param name="entityOptionsAction">给定的实体选项动作方法（可选）。</param>
-        /// <param name="authenticationAction">给定的认证选项动作方法（可选）。</param>
+        /// <param name="authenticationOptionsAction">给定的认证选项动作方法（可选）。</param>
+        /// <param name="filtrationOptionsAction">给定的过滤选项动作方法（可选）。</param>
         /// <param name="builderAction">给定的自定义配置 Librame 构建器动作方法（可选）。</param>
         /// <returns>返回服务集合。</returns>
         public static IServiceCollection AddLibrameCoreByMemory(this IServiceCollection services,
             Action<Dictionary<string, string>> initialDataAction = null,
             Action<AlgorithmOptions> algorithmOptionsAction = null,
             Action<EntityOptions> entityOptionsAction = null,
-            Action<AuthenticationOptions> authenticationAction = null,
+            Action<AuthenticationOptions> authenticationOptionsAction = null,
+            Action<FiltrationOptions> filtrationOptionsAction = null,
             Action<ILibrameBuilder> builderAction = null)
         {
             var authenticationKeyPrefix = AuthenticationOptions.KeyPrefix;
@@ -61,8 +64,11 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddLibrameByMemory(coreInitialDataAction,
                 algorithmOptionsAction, entityOptionsAction, builder =>
                 {
-                    // Add Authentication Services
-                    builder.AddAuthentication(authenticationAction);
+                    // Add Authentication
+                    builder.AddAuthentication(authenticationOptionsAction);
+
+                    // Add Filtration
+                    builder.AddFiltration(filtrationOptionsAction);
 
                     builderAction?.Invoke(builder);
                 });
@@ -78,7 +84,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="key">给定的 Librame 配置部分键名（可选；默认为 <see cref="LibrameDefaults.NAME"/>）。</param>
         /// <param name="algorithmOptionsAction">给定的算法选项动作方法（可选）。</param>
         /// <param name="entityOptionsAction">给定的实体选项动作方法（可选）。</param>
-        /// <param name="authenticationAction">给定的认证选项动作方法（可选）。</param>
+        /// <param name="authenticationOptionsAction">给定的认证选项动作方法（可选）。</param>
+        /// <param name="filtrationOptionsAction">给定的过滤选项动作方法（可选）。</param>
         /// <param name="builderAction">给定的自定义配置 Librame 构建器动作方法（可选）。</param>
         /// <returns>返回服务集合。</returns>
         public static IServiceCollection AddLibrameCoreByJsonFile(this IServiceCollection services,
@@ -87,13 +94,17 @@ namespace Microsoft.Extensions.DependencyInjection
             string key = LibrameDefaults.NAME,
             Action<AlgorithmOptions> algorithmOptionsAction = null,
             Action<EntityOptions> entityOptionsAction = null,
-            Action<AuthenticationOptions> authenticationAction = null,
+            Action<AuthenticationOptions> authenticationOptionsAction = null,
+            Action<FiltrationOptions> filtrationOptionsAction = null,
             Action<ILibrameBuilder> builderAction = null)
         {
             return services.AddLibrameByJsonFile(fileName, basePath, key, algorithmOptionsAction, entityOptionsAction, builder =>
             {
-                // Add Authentication Services
-                builder.AddAuthentication(authenticationAction);
+                // Add Authentication
+                builder.AddAuthentication(authenticationOptionsAction);
+
+                // Add Filtration
+                builder.AddFiltration(filtrationOptionsAction);
 
                 builderAction?.Invoke(builder);
             });
@@ -108,7 +119,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="key">给定的 Librame 配置部分键名（可选；默认为 <see cref="LibrameDefaults.NAME"/>）。</param>
         /// <param name="algorithmOptionsAction">给定的算法选项动作方法（可选）。</param>
         /// <param name="entityOptionsAction">给定的实体选项动作方法（可选）。</param>
-        /// <param name="authenticationAction">给定的认证选项动作方法（可选）。</param>
+        /// <param name="authenticationOptionsAction">给定的认证选项动作方法（可选）。</param>
+        /// <param name="filtrationOptionsAction">给定的过滤选项动作方法（可选）。</param>
         /// <param name="builderAction">给定的自定义配置 Librame 构建器动作方法（可选）。</param>
         /// <returns>返回服务集合。</returns>
         public static IServiceCollection AddLibrameCoreByFile(this IServiceCollection services,
@@ -117,13 +129,17 @@ namespace Microsoft.Extensions.DependencyInjection
             string key = LibrameDefaults.NAME,
             Action<AlgorithmOptions> algorithmOptionsAction = null,
             Action<EntityOptions> entityOptionsAction = null,
-            Action<AuthenticationOptions> authenticationAction = null,
+            Action<AuthenticationOptions> authenticationOptionsAction = null,
+            Action<FiltrationOptions> filtrationOptionsAction = null,
             Action<ILibrameBuilder> builderAction = null)
         {
             return services.AddLibrameByFile(source, basePath, key, algorithmOptionsAction, entityOptionsAction, builder =>
             {
-                // Add Authentication Services
-                builder.AddAuthentication(authenticationAction);
+                // Add Authentication
+                builder.AddAuthentication(authenticationOptionsAction);
+
+                // Add Filtration
+                builder.AddFiltration(filtrationOptionsAction);
 
                 builderAction?.Invoke(builder);
             });
@@ -137,14 +153,16 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configuration">给定的 Librame 配置对象。</param>
         /// <param name="algorithmOptionsAction">给定的算法选项动作方法（可选）。</param>
         /// <param name="entityOptionsAction">给定的实体选项动作方法（可选）。</param>
-        /// <param name="authenticationAction">给定的认证选项动作方法（可选）。</param>
+        /// <param name="authenticationOptionsAction">给定的认证选项动作方法（可选）。</param>
+        /// <param name="filtrationOptionsAction">给定的过滤选项动作方法（可选）。</param>
         /// <param name="builderAction">给定的自定义配置 Librame 构建器动作方法（可选）。</param>
         /// <returns>返回服务集合。</returns>
         public static IServiceCollection AddLibrameCore(this IServiceCollection services,
             IConfiguration configuration,
             Action<AlgorithmOptions> algorithmOptionsAction = null,
             Action<EntityOptions> entityOptionsAction = null,
-            Action<AuthenticationOptions> authenticationAction = null,
+            Action<AuthenticationOptions> authenticationOptionsAction = null,
+            Action<FiltrationOptions> filtrationOptionsAction = null,
             Action<ILibrameBuilder> builderAction = null)
         {
             services.AddAuthorization();
@@ -152,7 +170,10 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddLibrame(configuration, algorithmOptionsAction, entityOptionsAction, builder =>
             {
                 // Add Authentication
-                builder.AddAuthentication(authenticationAction);
+                builder.AddAuthentication(authenticationOptionsAction);
+
+                // Add Filtration
+                builder.AddFiltration(filtrationOptionsAction);
 
                 builderAction?.Invoke(builder);
             });

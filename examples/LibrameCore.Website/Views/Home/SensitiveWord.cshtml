@@ -1,0 +1,16 @@
+﻿@model (bool exists, string content, Dictionary<string, int> replaces)
+@{
+    ViewData["Title"] = "过滤敏感词";
+}
+<div>
+    <h3>@ViewData["Title"]</h3>
+    <p>
+        过滤前内容：@ViewBag.Content
+    </p>
+    <p>
+        过滤敏感词：@Model.exists
+    </p>
+    <p>
+        过滤后内容：@Model.content
+    </p>
+</div>

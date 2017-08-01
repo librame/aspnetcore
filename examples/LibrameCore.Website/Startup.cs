@@ -57,7 +57,7 @@ namespace LibrameCore.Website
                 });
 
             // Add LibrameCore
-            services.AddLibrameCore(Configuration.GetSection("Librame"), authenticationAction: opts =>
+            services.AddLibrameCore(Configuration.GetSection("Librame"), authenticationOptionsAction: opts =>
             {
                 opts.Token.Expiration = TimeSpan.FromMinutes(5);
             });

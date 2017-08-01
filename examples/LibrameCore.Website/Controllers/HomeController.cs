@@ -14,11 +14,13 @@ using LibrameStandard.Entity;
 using LibrameStandard.Entity.DbContexts;
 using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LibrameCore.Website.Controllers
 {
     using Entities;
-    
+    using Filtration.SensitiveWord;
+
     public class HomeController : Controller
     {
         private readonly IRepository<SqlServerDbContextReader, SqlServerDbContextWriter, User> _repository;
@@ -54,5 +56,19 @@ namespace LibrameCore.Website.Controllers
         {
             return View();
         }
+
+
+        public IActionResult SensitiveWord()
+        {
+            var content = "由于很多人都不曾接触过这个肉棒采用全新设计的配置系统，为了让大荡女家对此有一个感官的认识，我们先从编疆独程的角度对它作一个初体炸药验。";
+
+            var filter = HttpContext.RequestServices.GetService<ISensitiveWordFilter>();
+            var result = filter.Filting(content);
+
+            ViewBag.Content = content;
+
+            return View(result);
+        }
+
     }
 }
