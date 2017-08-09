@@ -89,15 +89,6 @@ namespace LibrameCore.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Mapping entity type {0} to table {1}.{2} 的本地化字符串。
-        /// </summary>
-        public static string MappingEntityType {
-            get {
-                return ResourceManager.GetString("MappingEntityType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 Username or password is empty 的本地化字符串。
         /// </summary>
         public static string UsernameOrPasswordIsEmpty {

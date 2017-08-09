@@ -126,9 +126,6 @@
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Invalid username or password</value>
   </data>
-  <data name="MappingEntityType" xml:space="preserve">
-    <value>Mapping entity type {0} to table {1}.{2}</value>
-  </data>
   <data name="UsernameOrPasswordIsEmpty" xml:space="preserve">
     <value>Username or password is empty</value>
   </data>

@@ -1,5 +1,6 @@
 ﻿using LibrameCore.Authentication.Middlewares;
 using LibrameCore.Entities;
+using LibrameCore.Filtration.SensitiveWord;
 using LibrameStandard.Entity.DbContexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

@@ -13,33 +13,33 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LibrameCore.Website
+namespace LibrameCore.Filtration.SensitiveWord
 {
-    using Filtration.SensitiveWord;
-
+    ///// <summary>
+    ///// 敏感词动作过滤器。
+    ///// </summary>
     //public class SensitiveWordActionFilter : IActionFilter
     //{
-
+    //    /// <summary>
+    //    /// 动作执行后。
+    //    /// </summary>
+    //    /// <param name="context">给定的动作执行后上下文。</param>
     //    public void OnActionExecuted(ActionExecutedContext context)
     //    {
     //    }
 
+
+    //    /// <summary>
+    //    /// 动作执行时。
+    //    /// </summary>
+    //    /// <param name="context">给定的动作执行时上下文。</param>
     //    public void OnActionExecuting(ActionExecutingContext context)
     //    {
-    //        var form = context.HttpContext.Request.Form;
+    //        var state = context.ModelState;
 
-    //        if (form.Count > 0)
-    //        {
-    //            var filter = context.HttpContext.RequestServices.GetService<ISensitiveWordFilter>();
-
-    //            foreach (var key in form.Keys)
-    //            {
-    //                var content = form[key].ToString();
-    //                var result = filter.Filting(content);
-
-    //                form[key] = result.content;
-    //            }
-    //        }
+    //        //var filter = context.HttpContext.RequestServices.GetService<ISensitiveWordFilter>();
+            
+    //        //var result = filter.Filting(context.ModelState);
     //    }
 
     //}

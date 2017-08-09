@@ -126,9 +126,6 @@
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>無效的用戶名或密碼</value>
   </data>
-  <data name="MappingEntityType" xml:space="preserve">
-    <value>映射實體類型 {0} 為數據表 {1}.{2}</value>
-  </data>
   <data name="UsernameOrPasswordIsEmpty" xml:space="preserve">
     <value>用戶名或密碼為空</value>
   </data>
