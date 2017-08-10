@@ -7,8 +7,8 @@
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
     <Description>Librame for LibrameStandard and ASP.NET Core (With MVC)</Description>
-    <AssemblyVersion>1.1.1708.91</AssemblyVersion>
-    <FileVersion>1.1.1708.91</FileVersion>
+    <AssemblyVersion>1.1.1708.101</AssemblyVersion>
+    <FileVersion>1.1.1708.101</FileVersion>
     <Copyright>Copyright © 2012-2017</Copyright>
     <PackageLicenseUrl>https://github.com/librame/LibrameCore/blob/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
@@ -19,11 +19,11 @@
     <ApplicationIcon>..\..\resource\LibrameCore.ico</ApplicationIcon>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\resource\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.1.1708.91</Version>
+    <Version>1.1.1708.101</Version>
     <AssemblyName>LibrameCore</AssemblyName>
     <RootNamespace>LibrameCore</RootNamespace>
     <PackageId>LibrameCore</PackageId>
-    <PackageTags>LibrameCore,LibrameStandard,Librame,AspNetCore,NetStandard</PackageTags>
+    <PackageTags>LibrameCore,LibrameStandard,Librame,ASP.NETCore,.NETStandard</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

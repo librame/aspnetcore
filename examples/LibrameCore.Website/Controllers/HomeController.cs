@@ -20,6 +20,7 @@ namespace LibrameCore.Website.Controllers
 {
     using Entities;
     using Filtration.SensitiveWord;
+    using Filtration.StaticalHtml;
 
     public class HomeController : Controller
     {
@@ -52,6 +53,7 @@ namespace LibrameCore.Website.Controllers
             return View();
         }
 
+        [StaticalHtmlActionFilter]
         public IActionResult Error()
         {
             return View();

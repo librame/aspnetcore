@@ -12,6 +12,7 @@
 
 using LibrameCore.Filtration;
 using LibrameCore.Filtration.SensitiveWord;
+using LibrameCore.Filtration.StaticalHtml;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
@@ -35,8 +36,12 @@ namespace LibrameStandard
             // AddOptions
             builder.AddOptions(FiltrationOptions.Key, optionsAction);
 
-            // 敏感词过滤器
+            // 敏感词
             builder.Services.TryAddSingleton<ISensitiveWordFilter, FileSensitiveWordFilter>();
+
+            // 静态化
+            builder.Services.TryAddSingleton<IHtmlBuilder, HtmlBuilder>();
+            builder.Services.TryAddSingleton<IViewResultStaticizer, ViewResultStaticizer>();
 
             return builder;
         }
