@@ -57,7 +57,7 @@ namespace LibrameStandard.Utilities
             var id = routeData.Values["id"]?.ToString();
             var action = routeData.Values["action"]?.ToString();
             var controller = routeData.Values["controller"]?.ToString();
-            var area = routeData.DataTokens["area"]?.ToString();
+            var area = routeData.Values["area"]?.ToString();
 
             return new RouteInfo
             {
