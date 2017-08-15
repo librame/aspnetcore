@@ -70,7 +70,7 @@ namespace LibrameCore.Authentication
         /// <summary>
         /// 用户名。
         /// </summary>
-        public override string Name => FindFirst(DefaultNameClaimType).Value;
+        public override string Name => TryGetValue(DefaultNameClaimType);
 
         /// <summary>
         /// 是否已认证。
@@ -96,51 +96,76 @@ namespace LibrameCore.Authentication
         /// <summary>
         /// 签发者。
         /// </summary>
-        public virtual string Issuer
-            => FindFirst(JwtRegisteredClaimNames.Iss).Value;
+        public virtual string Issuer => TryGetValue(JwtRegisteredClaimNames.Iss);
 
         /// <summary>
         /// 接收者。
         /// </summary>
-        public virtual string Audience
-            => FindFirst(JwtRegisteredClaimNames.Aud).Value;
+        public virtual string Audience => TryGetValue(JwtRegisteredClaimNames.Aud);
 
         /// <summary>
         /// UTC 签发时间。
         /// </summary>
         public virtual DateTime IssuedTimeUtc
-            => new DateTime(FindFirst(JwtRegisteredClaimNames.Iat).Value.AsLong());
+            => TryGetValue(JwtRegisteredClaimNames.Iat, c => new DateTime(c.AsLong()));
 
         /// <summary>
         /// UTC 过期时间。
         /// </summary>
         public virtual DateTime ExpirationTimeUtc
-            => new DateTime(FindFirst(JwtRegisteredClaimNames.Exp).Value.AsLong());
+            => TryGetValue(JwtRegisteredClaimNames.Exp, c => new DateTime(c.AsLong()));
 
 
         /// <summary>
         /// JWT 标识。
         /// </summary>
-        public virtual string JwtId
-            => FindFirst(JwtRegisteredClaimNames.Jti).Value;
+        public virtual string JwtId => TryGetValue(JwtRegisteredClaimNames.Jti);
 
         /// <summary>
         /// 主题。
         /// </summary>
-        public virtual string Subject
-            => FindFirst(JwtRegisteredClaimNames.Sub).Value;
+        public virtual string Subject => TryGetValue(JwtRegisteredClaimNames.Sub);
 
         /// <summary>
         /// 唯一名称。
         /// </summary>
-        public virtual string UniqueName
-            => FindFirst(JwtRegisteredClaimNames.UniqueName).Value;
+        public virtual string UniqueName => TryGetValue(JwtRegisteredClaimNames.UniqueName);
 
         /// <summary>
         /// 角色集合。
         /// </summary>
-        public virtual IEnumerable<string> Roles
-            => FindAll(DefaultRoleClaimType).Select(s => s.Value);
+        public virtual IEnumerable<string> Roles => TryGetValues(DefaultRoleClaimType);
+
+
+        private TValue TryGetValue<TValue>(string type, Func<string, TValue> converter, TValue defaultValue = default(TValue))
+        {
+            var claim = FindFirst(type);
+
+            if (claim != null)
+                return converter.Invoke(claim.Value);
+
+            return defaultValue;
+        }
+
+        private string TryGetValue(string type)
+        {
+            var claim = FindFirst(type);
+
+            if (claim != null)
+                return claim.Value;
+
+            return string.Empty;
+        }
+
+        private IEnumerable<string> TryGetValues(string type)
+        {
+            var claims = FindAll(type);
+
+            if (claims.Count() < 1)
+                return Enumerable.Empty<string>();
+
+            return claims.Select(s => s.Value);
+        }
 
 
         private static IList<Claim> BuildClaims(IUserModel user, IEnumerable<string> roles, TokenOptions options)

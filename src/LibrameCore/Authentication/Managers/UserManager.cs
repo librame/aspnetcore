@@ -93,7 +93,8 @@ namespace LibrameCore.Authentication.Managers
                 if (ContainsProtectedUsernames(user.Name))
                     return (IdentityResultHelper.InvalidName, user);
 
-                if (await Repository.ExistsAsync(p => p.Name == user.Name))
+                var result = await Repository.ExistsAsync(p => p.Name == user.Name);
+                if (result.exists)
                     return (IdentityResultHelper.NameExists, user);
 
                 await Repository.Writer.CreateAsync(user);
@@ -150,7 +151,8 @@ namespace LibrameCore.Authentication.Managers
             var predicate = field.AsEqualPropertyExpression<TUserModel>(value, typeof(string));
 
             // 不存在表示唯一
-            return (!await Repository.ExistsAsync(predicate));
+            var result = await Repository.ExistsAsync(predicate);
+            return (!result.exists);
         }
 
     }

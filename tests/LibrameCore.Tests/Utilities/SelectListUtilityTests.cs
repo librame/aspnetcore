@@ -9,7 +9,7 @@ namespace LibrameStandard.Tests.Utilities
         [Fact]
         public void AsDataStatusItemsTest()
         {
-            var items = SelectListUtility.AsDataStatusItems(DataStatus.Public);
+            var items = SelectListUtility.AsDataStatusSelectListItems(DataStatus.Public);
 
             Assert.NotNull(items);
         }

@@ -12,14 +12,17 @@
 
 using LibrameStandard;
 using LibrameStandard.Algorithm;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Threading.Tasks;
 
 namespace LibrameCore
 {
     using Authentication;
+    using Authentication.Managers;
 
     /// <summary>
     /// 认证应用构建器静态扩展。
@@ -105,6 +108,12 @@ namespace LibrameCore
                 CookieName = AuthenticationOptions.DEFAULT_COOKIE_NAME,
                 LoginPath = new PathString(AuthenticationOptions.DEFAULT_LOGIN_PATH),
                 ExpireTimeSpan = options.Token.Expiration,
+
+                Events = new CookieAuthenticationEvents
+                {
+                    // Set other options
+                    OnValidatePrincipal = ValidatePrincipalAsync
+                }
             };
 
             // Custom Configure Options
@@ -112,6 +121,21 @@ namespace LibrameCore
 
             // Use Options
             app.UseCookieAuthentication(cookieOptions);
+        }
+
+        private static async Task ValidatePrincipalAsync(CookieValidatePrincipalContext context)
+        {
+            if (context.HttpContext.User.Identity.IsAuthenticated)
+            {
+                var identity = context.HttpContext.User.AsLibrameIdentity(context.HttpContext.RequestServices);
+
+                if (!identity.IsAuthenticated)
+                {
+                    context.RejectPrincipal();
+
+                    await context.HttpContext.Authentication.LibrameSignOutAsync();
+                }
+            }
         }
 
     }

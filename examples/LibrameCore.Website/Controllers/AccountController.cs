@@ -118,7 +118,7 @@ namespace LibrameCore.Website.Controllers
         [LibrameAuthorize]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.Authentication.SignOutAsync();
+            await HttpContext.Authentication.LibrameSignOutAsync();
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }

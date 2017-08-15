@@ -7,8 +7,8 @@
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
     <Description>Librame for LibrameStandard and ASP.NET Core (With MVC)</Description>
-    <AssemblyVersion>1.1.1708.141</AssemblyVersion>
-    <FileVersion>1.1.1708.141</FileVersion>
+    <AssemblyVersion>1.1.1708.151</AssemblyVersion>
+    <FileVersion>1.1.1708.151</FileVersion>
     <Copyright>Copyright © 2012-2017</Copyright>
     <PackageLicenseUrl>https://github.com/librame/LibrameCore/blob/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
@@ -19,7 +19,7 @@
     <ApplicationIcon>..\..\resource\LibrameCore.ico</ApplicationIcon>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\resource\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.1.1708.141</Version>
+    <Version>1.1.1708.151</Version>
     <AssemblyName>LibrameCore</AssemblyName>
     <RootNamespace>LibrameCore</RootNamespace>
     <PackageId>LibrameCore</PackageId>
@@ -33,7 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibrameStandard" Version="1.6.1708.92" />
+    <PackageReference Include="LibrameStandard" Version="1.6.1708.151" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.2" />

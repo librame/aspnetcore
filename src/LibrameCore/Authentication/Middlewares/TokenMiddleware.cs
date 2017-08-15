@@ -179,32 +179,29 @@ namespace LibrameCore.Authentication.Middlewares
             var roles = await RoleManager.GetRolesAsync(user.model);
             var identity = CreateIdentity(user.model, roles);
 
-            // SignIn
-            var utcNow = DateTimeOffset.UtcNow;
-            await context.Authentication.SignInAsync(AuthenticationOptions.DEFAULT_SCHEME,
-                new ClaimsPrincipal(identity),
-                new AuthenticationProperties
-                {
-                    IssuedUtc = utcNow,
-                    ExpiresUtc = utcNow.Add(Options.Token.Expiration)
-                });
+            // Token
+            var token = TokenManager.Encode(identity);
 
+            // SignIn
+            await context.Authentication.LibrameSignInAsync(Options.Token, identity, token);
+            
             // Redirect ReturnUrl
             var returnUrl = context.Request.Form["returnUrl"].ToString();
             returnUrl = returnUrl.AsOrDefault(context.Request.Query["returnUrl"].ToString());
 
             if (!string.IsNullOrEmpty(returnUrl))
             {
+                // Format Token
+                returnUrl = FormatUrlToken(returnUrl, token);
+
                 context.Response.Redirect(returnUrl);
                 return;
             }
 
-            // Token
-            var token = TokenManager.Encode(identity);
-
             // Redirect LoginSuccessful
             if (!string.IsNullOrEmpty(Options.Token.LoginSuccessful))
             {
+                // Format Token
                 var location = FormatUrlToken(Options.Token.LoginSuccessful, token);
 
                 context.Response.Redirect(location);
@@ -212,6 +209,7 @@ namespace LibrameCore.Authentication.Middlewares
             }
             else
             {
+                // Write Response
                 var result = new
                 {
                     access_token = token,

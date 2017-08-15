@@ -35,6 +35,11 @@ namespace LibrameCore.Authentication
         public const string DEFAULT_COOKIE_NAME = "LibrameAuthenticationCookie";
 
         /// <summary>
+        /// 默认令牌 COOKIE 名称。
+        /// </summary>
+        public const string DEFAULT_TOKEN_COOKIE_NAME = "LibrameAuthenticationTokenCookie";
+
+        /// <summary>
         /// 默认登录路径。
         /// </summary>
         public const string DEFAULT_LOGIN_PATH = "/Account/Login";
