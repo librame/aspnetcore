@@ -100,6 +100,25 @@ namespace LibrameStandard.Utilities
         /// 转换为选择列表项集合。
         /// </summary>
         /// <typeparam name="TEntity">指定的实体类型。</typeparam>
+        /// <param name="entities">给定的实体集合。</param>
+        /// <param name="textFactory">给定的文本工厂方法。</param>
+        /// <param name="selectedValue">给定的选中值。</param>
+        /// <param name="optionLabel">给定的选项标签。</param>
+        /// <param name="defaultValue">给定的默认值。</param>
+        /// <returns>返回选择列表项集合。</returns>
+        public static IList<SelectListItem> AsSelectListItems<TEntity>(this IEnumerable<TEntity> entities,
+            Func<TEntity, string> textFactory, string selectedValue = null,
+            string optionLabel = null, string defaultValue = null)
+            where TEntity : class, IIdDescriptor<int>
+        {
+            return entities.AsSelectListItems<TEntity, int>(textFactory, selectedValue,
+                optionLabel, defaultValue);
+        }
+
+        /// <summary>
+        /// 转换为选择列表项集合。
+        /// </summary>
+        /// <typeparam name="TEntity">指定的实体类型。</typeparam>
         /// <typeparam name="TId">指定的编号类型。</typeparam>
         /// <param name="entities">给定的实体集合。</param>
         /// <param name="textFactory">给定的文本工厂方法。</param>
@@ -165,7 +184,29 @@ namespace LibrameStandard.Utilities
 
 
         #region SelectListItemsWithGroup
-        
+
+        /// <summary>
+        /// 分组转换为选择列表项集合。
+        /// </summary>
+        /// <typeparam name="TEntity">指定的实体类型。</typeparam>
+        /// <param name="entities">给定的实体集合。</param>
+        /// <param name="textFactory">给定的文本工厂方法。</param>
+        /// <param name="groupLabel">给定的组标签。</param>
+        /// <param name="selectedValue">给定的选中值。</param>
+        /// <param name="groupFactory">断定组的工厂方法。</param>
+        /// <param name="optionLabel">给定的选项标签。</param>
+        /// <param name="defaultValue">给定的默认值。</param>
+        /// <returns>返回选择列表项集合。</returns>
+        public static IList<SelectListItem> AsSelectListItemsWithGroup<TEntity>(this IEnumerable<TEntity> entities,
+            Func<TEntity, string> textFactory, string groupLabel,
+            string selectedValue = null, Func<TEntity, bool> groupFactory = null,
+            string optionLabel = null, string defaultValue = null)
+            where TEntity : class, IParentIdDescriptor<int>
+        {
+            return entities.AsSelectListItemsWithGroup<TEntity, int>(textFactory, groupLabel,
+                selectedValue, groupFactory, optionLabel, defaultValue);
+        }
+
         /// <summary>
         /// 分组转换为选择列表项集合。
         /// </summary>
