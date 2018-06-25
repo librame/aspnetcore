@@ -1,0 +1,52 @@
+﻿@using LibrameCore.Authentication;
+@{
+    ViewData["Title"] = "Login";
+}
+<h2>User Login</h2>
+<hr />
+
+<div class="form-horizontal">
+    @if (User.Identity.IsAuthenticated)
+    {
+        var identity = User.AsLibrameIdentity(Context.RequestServices);
+
+        <h3>当前已登陆 @identity.Name</h3>
+    }
+    else
+    {
+        <form action="/token" method="post">
+            <fieldset>
+                <h3 class="col-sm-offset-1">User Info [<a href="/Account/Login?returnUrl=http://localhost:33591/Account/Validate?token={token}" target="_self">测试模式</a>]</h3>
+            </fieldset>
+
+            <div class="form-group">
+                <label for="username" class="control-label col-sm-1">用户</label>
+                <div class="col-sm-6">
+                    <input id="username" name="username" type="text" value="sanjin" />
+                    <span style="color:red;">*</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="control-label col-sm-1">密码</label>
+                <div class="col-sm-6">
+                    <input id="password" name="password" type="password" />
+                    <span style="color:red;">*</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="returnUrl" class="control-label col-sm-1"></label>
+                <div class="col-sm-6">
+                    <input id="returnUrl" name="returnUrl" type="hidden" value="@ViewBag.ReturnUrl" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-1 col-sm-6">
+                    <button type="submit" class="btn btn-default">登录</button>
+                </div>
+            </div>
+        </form>
+    }
+</div>

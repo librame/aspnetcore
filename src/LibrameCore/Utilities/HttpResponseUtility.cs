@@ -12,7 +12,6 @@
 
 using Microsoft.AspNetCore.Http;
 using System.Net;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,13 +39,18 @@ namespace LibrameStandard.Utilities
         /// 将消息内容写入响应主体。
         /// </summary>
         /// <param name="response">给定的 HTTP 响应。</param>
-        /// <param name="message">给定的消息内容。</param>
+        /// <param name="content">给定的消息内容。</param>
         /// <param name="statusCode">给定的 HTTP 响应状态码（可选；默认为 <see cref="HttpStatusCode.OK"/>）。</param>
         /// <returns>返回一个异步操作。</returns>
-        public static async Task WriteMessageAsync(this HttpResponse response, string message,
+        public static async Task WriteMessageAsync(this HttpResponse response, string content,
             HttpStatusCode statusCode = HttpStatusCode.OK)
         {
-            await response.WriteJsonAsync(message, statusCode, null, default(CancellationToken));
+            var json = new
+            {
+                message = content
+            };
+
+            await response.WriteJsonAsync(json, statusCode);
         }
 
         /// <summary>
@@ -62,28 +66,18 @@ namespace LibrameStandard.Utilities
         public static async Task WriteJsonAsync<TValue>(this HttpResponse response, TValue value,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             Encoding encoding = null,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             value.NotNull(nameof(value));
             encoding = encoding.AsOrDefault(Encoding.UTF8);
 
             response.StatusCode = (int)statusCode;
 
-            var typeInfo = value.GetType().GetTypeInfo();
-            if (typeInfo.IsValueType || typeInfo.IsString())
-            {
-                // 值类型和字符串类型直接写入
-                response.ContentType = "text/plain;charset=" + encoding.AsName();
-                await response.WriteAsync(value.ToString(), cancellationToken);
-            }
-            else
-            {
-                // JSON 序列化
-                string json = value.AsJson(false, Newtonsoft.Json.Formatting.Indented);
+            // JSON 序列化
+            string json = value.AsJsonString(); // Newtonsoft.Json.Formatting.Indented
 
-                response.ContentType = JsonConvertUtility.CONTENT_TYPE + ";charset=" + encoding.AsName();
-                await response.WriteAsync(json, cancellationToken);
-            }
+            response.ContentType = JsonConvertUtility.CONTENT_TYPE + ";charset=" + encoding.AsName();
+            await response.WriteAsync(json, cancellationToken);
         }
 
     }

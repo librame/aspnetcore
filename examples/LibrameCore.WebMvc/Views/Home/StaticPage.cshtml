@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "StaticPage";
+}
+
+<h2>StaticPage Test</h2>
+
+<div>
+    Current Id: @(ViewBag.Id as string)
+</div>
+
+<div>
+    @typeof(LibrameCore.LibrameCoreOptions).AsAssemblyName().Version.ToString()
+</div>

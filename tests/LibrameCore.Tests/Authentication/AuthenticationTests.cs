@@ -11,16 +11,14 @@ namespace LibrameCore.Tests.Authentication
         public void UseAuthenticationTest()
         {
             var services = new ServiceCollection();
-
-            // 注册 Librame MVC （默认使用内存配置源）
-            services.AddLibrameCoreByMemory();
+            
+            services.AddLibrameCore();
 
             var serviceProvider = services.BuildServiceProvider();
             
             // 获取认证选项
-            var options = serviceProvider.GetOptions<AuthenticationOptions>();
+            var options = serviceProvider.GetOptions<LibrameAuthenticationOptions>();
             Assert.NotNull(options);
-            Assert.NotNull(options.Token);
         }
 
     }

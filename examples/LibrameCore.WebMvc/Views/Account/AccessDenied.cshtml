@@ -1,0 +1,9 @@
+﻿@using LibrameCore.Authentication;
+@{
+    ViewData["Title"] = "Access Denied";
+
+    var identity = User.AsLibrameIdentity(Context.RequestServices);
+}
+
+<h1>@identity.Name</h1>
+<h2>权限不足，拒绝访问！</h2>

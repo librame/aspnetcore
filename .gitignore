@@ -288,3 +288,8 @@ __pycache__/
 *.xsd.cs
 /examples/LibrameCore.Website/wwwroot/lib
 /resource/LibrameCore.pfx.txt
+/temp
+/examples/LibrameCore.WebMvc/wwwroot/html
+/examples/LibrameCore.WebMvc/wwwroot/logs
+/examples/LibrameCore.WebMvc/wwwroot/uploads
+/examples/LibrameCore.WebPage/wwwroot/logs
