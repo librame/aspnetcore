@@ -10,21 +10,32 @@
 
 #endregion
 
+using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Builder;
 
-namespace LibrameCore
+namespace LibrameCore.Abstractions
 {
     /// <summary>
-    /// Librame 模块构建器接口。
+    /// 扩展构建器。
     /// </summary>
-    public interface ILibrameModuleBuilder
+    public class ExtensionBuilder : IExtensionBuilder
     {
+        /// <summary>
+        /// 构造一个 <see cref="ExtensionBuilder"/> 实例。
+        /// </summary>
+        /// <param name="builder">给定的 <see cref="IApplicationBuilder"/>。</param>
+        public ExtensionBuilder(IApplicationBuilder builder)
+        {
+            Builder = builder.NotNull(nameof(builder));
+        }
+
+
         /// <summary>
         /// 应用构建器。
         /// </summary>
         /// <value>
         /// 返回 <see cref="IApplicationBuilder"/>。
         /// </value>
-        IApplicationBuilder Builder { get; }
+        public IApplicationBuilder Builder { get; }
     }
 }

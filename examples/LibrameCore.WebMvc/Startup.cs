@@ -47,35 +47,26 @@ namespace LibrameCore.WebMvc
                 });
             
             // Add LibrameCore
-            services.AddLibrameCore(modules =>
+            services.AddLibrameCore(options =>
             {
-                // 使用配置文件
-                //modules.AddStandard(standard =>
-                //{
-                //    standard.ConfigureEntity = entity =>
-                //    {
-                //        entity.Automappings.Add(new EntityAutomappingOptions
-                //        {
-                //            // 修改默认的自映射实体程序集
-                //            DbContextAssemblies = typeof(User).Assembly.AsAssemblyName().Name,
-                //            // 修改默认的数据库上下文类型名为 SQLServer
-                //            DbContextTypeName = typeof(SqlServerDbContext).AsAssemblyQualifiedNameWithoutVCP(),
-                //            DbContextWriterTypeName = typeof(SqlServerDbContextWriter).AsAssemblyQualifiedNameWithoutVCP(),
-                //            // 启用读写分离（默认不启用）
-                //            ReadWriteSeparation = false
-                //        });
-                //    };
-                //});
-
-                modules.AddStandard();
-
-                modules.AddCore(core =>
+                options.PostConfigureAuthentication = opts =>
                 {
-                    core.ConfigureAuthentication = auth =>
+                    opts.Cookie.Expiration = TimeSpan.FromMinutes(5);
+                };
+
+                options.PostConfigureEntity = opts =>
+                {
+                    opts.Automappings.Add(new EntityExtensionOptions.AutomappingOptions
                     {
-                        auth.Cookie.Expiration = TimeSpan.FromMinutes(5);
-                    };
-                });
+                        // 修改默认的自映射实体程序集
+                        DbContextAssemblies = typeof(User).Assembly.AsAssemblyName().Name,
+                        // 修改默认的数据库上下文类型名为 SQLServer
+                        DbContextTypeName = typeof(SqlServerDbContext).AsAssemblyQualifiedNameWithoutVCP(),
+                        DbContextWriterTypeName = typeof(SqlServerDbContextWriter).AsAssemblyQualifiedNameWithoutVCP(),
+                        // 启用读写分离（默认不启用）
+                        ReadWriteSeparation = false
+                    });
+                };
             },
             Configuration.GetSection("Librame"));
 
@@ -119,11 +110,10 @@ namespace LibrameCore.WebMvc
             app.UseCookiePolicy();
 
             // Use LibrameCore
-            app.UseLibrameCore(modules =>
+            app.UseLibrameCore(extension =>
             {
-                modules.UseAuthentication<Role, User, UserRole, int, int, int>();
-                modules.UseNetwork();
-                modules.UsePlatform();
+                extension.UseAuthenticationExtension<Role, User, UserRole, int, int, int>();
+                extension.UsePlatformExtension();
             });
 
             app.UseMvc(routes =>

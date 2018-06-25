@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LibrameStandard.Platform
+namespace LibrameStandard.Extensions.Platform
 {
     using Utilities;
 

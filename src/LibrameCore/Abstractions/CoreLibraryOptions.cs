@@ -10,8 +10,6 @@
 
 #endregion
 
-using System;
-
 namespace LibrameCore.Abstractions
 {
     /// <summary>

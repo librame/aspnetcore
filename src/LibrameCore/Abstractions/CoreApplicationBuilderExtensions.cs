@@ -10,33 +10,32 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Builder;
+using LibrameCore.Abstractions;
 using System;
 
-namespace LibrameCore
+namespace Microsoft.AspNetCore.Builder
 {
     /// <summary>
-    /// LibrameCore 应用构建器静态扩展。
+    /// <see cref="IApplicationBuilder"/> 核心静态扩展。
     /// </summary>
-    public static class LibrameCoreApplicationBuilderExtensions
+    public static class CoreApplicationBuilderExtensions
     {
 
         /// <summary>
-        /// 使用 LibrameCore 模块集合。
+        /// 使用 LibrameCore 扩展。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IApplicationBuilder"/>。</param>
-        /// <param name="configureModules">给定的模块配置。</param>
+        /// <param name="configureBuilder">给定的扩展构建器配置方法。</param>
         /// <returns>返回 <see cref="IApplicationBuilder"/>。</returns>
         public static IApplicationBuilder UseLibrameCore(this IApplicationBuilder builder,
-            Action<ILibrameModuleBuilder> configureModules = null)
+            Action<IExtensionBuilder> configureBuilder)
         {
             try
             {
-                // Use Librame
-                var moduleBuilder = new LibrameModuleBuilder(builder);
-                configureModules?.Invoke(moduleBuilder);
+                var extension = new ExtensionBuilder(extension);
+                configureBuilder?.Invoke(extension);
 
-                return builder;
+                return extension.Builder;
             }
             catch (Exception ex)
             {

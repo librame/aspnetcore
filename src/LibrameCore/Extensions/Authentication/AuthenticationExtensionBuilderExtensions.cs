@@ -12,19 +12,19 @@
 
 using Microsoft.AspNetCore.Builder;
 
-namespace LibrameCore
+namespace LibrameCore.Abstractions
 {
     using Authentication;
     using Authentication.Descriptors;
     
     /// <summary>
-    /// <see cref="ILibrameModuleBuilder"/> 认证静态扩展。
+    /// <see cref="IExtensionBuilder"/> 认证静态扩展。
     /// </summary>
-    public static class AuthenticationLibrameModuleBuilderExtensions
+    public static class AuthenticationExtensionBuilderExtensions
     {
 
         /// <summary>
-        /// 使用认证模块。
+        /// 使用认证扩展。
         /// </summary>
         /// <typeparam name="TRole">指定的角色类型。</typeparam>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
@@ -32,17 +32,17 @@ namespace LibrameCore
         /// <typeparam name="TRoleId">指定的角色主键类型。</typeparam>
         /// <typeparam name="TUserId">指定的用户主键类型。</typeparam>
         /// <typeparam name="TUserRoleId">指定的用户角色主键类型。</typeparam>
-        /// <param name="modules">给定的 <see cref="ILibrameModuleBuilder"/>。</param>
-        /// <returns>返回 <see cref="ILibrameModuleBuilder"/>。</returns>
-        public static ILibrameModuleBuilder UseAuthentication<TRole, TUser, TUserRole, TRoleId, TUserId, TUserRoleId>(this ILibrameModuleBuilder modules)
+        /// <param name="extension">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <returns>返回 <see cref="IExtensionBuilder"/>。</returns>
+        public static IExtensionBuilder UseAuthenticationExtension<TRole, TUser, TUserRole, TRoleId, TUserId, TUserRoleId>(this IExtensionBuilder extension)
             where TRole : class, IRoleDescriptor<TRoleId>
             where TUser : class, IUserDescriptor<TUserId>
             where TUserRole : class, IUserRoleDescriptor<TUserRoleId, TUserId, TRoleId>
         {
-            modules.Builder.UseMiddleware<LibrameAuthenticationMiddleware<TRole, TUser, TUserRole, TRoleId, TUserId, TUserRoleId>>();
-            modules.Builder.UseAuthentication();
+            extension.Builder.UseMiddleware<LibrameAuthenticationMiddleware<TRole, TUser, TUserRole, TRoleId, TUserId, TUserRoleId>>();
+            extension.Builder.UseAuthentication();
 
-            return modules;
+            return extension;
         }
 
 
