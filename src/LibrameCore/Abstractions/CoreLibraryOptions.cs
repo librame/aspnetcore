@@ -10,12 +10,14 @@
 
 #endregion
 
+using System;
+
 namespace LibrameCore.Abstractions
 {
     /// <summary>
     /// 核心库选项。
     /// </summary>
-    public class CoreLibraryOptions : LibrameStandard.Abstractions.LibraryOptions
+    public class CoreLibraryOptions : LibrameStandard.Abstractions.StandardLibraryOptions
     {
         /// <summary>
         /// 认证扩展选项配置动作。

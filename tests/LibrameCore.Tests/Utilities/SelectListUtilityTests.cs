@@ -1,4 +1,4 @@
-﻿using LibrameStandard.Entity;
+﻿using LibrameStandard.Extensions.Entity;
 using LibrameStandard.Utilities;
 using Xunit;
 

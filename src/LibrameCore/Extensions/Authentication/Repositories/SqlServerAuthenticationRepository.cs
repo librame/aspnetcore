@@ -10,7 +10,7 @@
 
 #endregion
 
-using LibrameStandard.Entity;
+using LibrameStandard.Extensions.Entity;
 using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,20 +41,20 @@ namespace LibrameCore.Extensions.Authentication.Repositories
         where TUserRole : class, IUserRoleDescriptor<TUserRoleId, TUserId, TRoleId>
     {
         /// <summary>
-        /// 构造一个认证仓库实例。
+        /// 构造一个 <see cref="SqlServerAuthenticationRepository{TRole, TUser, TUserRole, TRoleId, TUserId, TUserRoleId}"/> 实例。
         /// </summary>
         /// <param name="options">给定的认证选项。</param>
         /// <param name="roleRepository">给定的角色仓库。</param>
         /// <param name="userRepository">给定的用户仓库。</param>
         /// <param name="userRoleRepository">给定的用户角色仓库。</param>
         /// <param name="passwordManager">密码管理器。</param>
-        public SqlServerAuthenticationRepository(IOptions<AuthenticationExtensionOptions> options,
+        public SqlServerAuthenticationRepository(IOptionsMonitor<AuthenticationExtensionOptions> options,
             ISqlServerRepositoryWriter<TRole> roleRepository,
             ISqlServerRepositoryWriter<TUser> userRepository,
             ISqlServerRepositoryWriter<TUserRole> userRoleRepository,
             IPasswordManager passwordManager)
         {
-            Options = options.NotNull(nameof(options)).Value;
+            Options = options.NotNull(nameof(options)).CurrentValue;
             RoleRepository = roleRepository.NotNull(nameof(roleRepository));
             UserRepository = userRepository.NotNull(nameof(userRepository));
             UserRoleRepository = userRoleRepository.NotNull(nameof(userRoleRepository));
@@ -204,11 +204,10 @@ namespace LibrameCore.Extensions.Authentication.Repositories
 
             // 查找关联的用户角色集合
             var userRoles = await UserRoleRepository.GetManyAsync(p => p.UserId.Equals(user.Id));
-
             if (userRoles == null)
                 return Enumerable.Empty<TRole>();
 
-            return RoleRepository.SelectMany(userRoles, (q, ur) => q.Find(ur.RoleId));
+            return GetRoleNamesAsync(userRoles, r => r);
         }
 
         /// <summary>
@@ -226,13 +225,26 @@ namespace LibrameCore.Extensions.Authentication.Repositories
 
             // 查找关联的用户角色集合
             var userRoles = await UserRoleRepository.GetManyAsync(p => p.UserId.Equals(user.Id));
-
             if (userRoles == null)
                 return Enumerable.Empty<string>();
 
-            var roleIds = userRoles.Select(ur => ur.RoleId);
+            return GetRoleNamesAsync(userRoles, r => r.Name);
+        }
+        
+        /// <summary>
+        /// 获取角色名称集合。
+        /// </summary>
+        /// <param name="userRoles">给定的用户角色集合。</param>
+        /// <param name="valueFactory">给定的值工厂方法。</param>
+        /// <returns>返回一个包含字符串数组的异步任务。</returns>
+        protected virtual IEnumerable<TValue> GetRoleNamesAsync<TValue>(IEnumerable<TUserRole> userRoles, Func<TRole, TValue> valueFactory)
+        {
+            return RoleRepository.Ready(query =>
+            {
+                var roleIds = userRoles.Select(ur => ur.RoleId);
 
-            return RoleRepository.SelectMany(userRoles, (q, ur) => q.Find(ur.RoleId)?.Name);
+                return roleIds.Select(id => valueFactory.Invoke(query.Find(id)));
+            });
         }
 
         #endregion

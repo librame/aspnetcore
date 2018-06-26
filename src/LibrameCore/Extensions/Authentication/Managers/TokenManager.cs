@@ -10,9 +10,8 @@
 
 #endregion
 
-using LibrameStandard.Algorithm;
+using LibrameStandard.Extensions.Algorithm;
 using LibrameStandard.Utilities;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -25,37 +24,35 @@ namespace LibrameCore.Extensions.Authentication.Managers
     public class TokenManager : AbstractAuthenticationExtensionService<TokenManager>, ITokenManager
     {
         /// <summary>
-        /// 构造一个令牌管理器实例。
+        /// 构造一个 <see cref="TokenManager"/> 实例。
         /// </summary>
-        /// <param name="algorithmOptions">给定的算法选项。</param>
+        /// <param name="symmetry">给定的 <see cref="ISymmetryAlgorithm"/>。</param>
         /// <param name="options">给定的认证选项。</param>
-        /// <param name="logger">给定的记录器。</param>
-        public TokenManager(IOptions<AlgorithmOptions> algorithmOptions,
-            IOptions<AuthenticationExtensionOptions> options, ILogger<TokenManager> logger)
-            : base(options, logger)
+        public TokenManager(ISymmetryAlgorithm symmetry, IOptionsMonitor<AuthenticationExtensionOptions> options)
+            : base(options)
         {
-            AlgorithmOptions = algorithmOptions.NotNull(nameof(algorithmOptions)).Value;
+            Symmetry = symmetry.NotNull(nameof(symmetry));
         }
 
 
         /// <summary>
-        /// 算法选项。
+        /// 对称算法。
         /// </summary>
-        public AlgorithmOptions AlgorithmOptions { get; }
+        public ISymmetryAlgorithm Symmetry { get; }
 
 
         /// <summary>
         /// 编码令牌。
         /// </summary>
-        /// <param name="identity">给定的 Librame 身份标识。</param>
+        /// <param name="identity">给定的 <see cref="LibrameClaimsIdentity"/>。</param>
         /// <returns>返回令牌字符串。</returns>
-        public virtual string Encode(LibrameIdentity identity)
+        public virtual string Encode(LibrameClaimsIdentity identity)
         {
             // 默认令牌签名证书
             if (Options.Local.Credentials == null)
             {
-                // 默认以授权编号为密钥
-                var key = AlgorithmOptions.AuthId.FromAuthIdByBytes();
+                // 默认使用 AES 密钥
+                var key = Symmetry.KeyGenerator.FromAESKey();
                 var securityKey = new SymmetricSecurityKey(key);
 
                 Options.Local.Credentials = new SigningCredentials(securityKey,
@@ -77,8 +74,8 @@ namespace LibrameCore.Extensions.Authentication.Managers
         /// 解码令牌。
         /// </summary>
         /// <param name="token">给定的令牌字符串。</param>
-        /// <returns>返回 Librame 身份标识。</returns>
-        public virtual LibrameIdentity Decode(string token)
+        /// <returns>返回 <see cref="LibrameClaimsIdentity"/>。</returns>
+        public virtual LibrameClaimsIdentity Decode(string token)
         {
             var handler = new JwtSecurityTokenHandler();
 
@@ -86,7 +83,7 @@ namespace LibrameCore.Extensions.Authentication.Managers
                 return null;
 
             var jwt = handler.ReadJwtToken(token);
-            return new LibrameIdentity(jwt, Options);
+            return new LibrameClaimsIdentity(jwt, Options);
         }
 
     }

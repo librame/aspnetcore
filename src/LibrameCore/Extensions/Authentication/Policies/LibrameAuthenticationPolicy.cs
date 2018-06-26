@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
-using System.Linq;
 using System.Net.Http.Headers;
 
 namespace LibrameCore.Extensions.Authentication.Policies
@@ -29,9 +28,9 @@ namespace LibrameCore.Extensions.Authentication.Policies
     {
 
         /// <summary>
-        /// 构造一个 Librame 认证策略实例。
+        /// 构造一个 <see cref="LibrameAuthenticationPolicy"/> 实例。
         /// </summary>
-        /// <param name="tokenManager">给定的令牌管理器。</param>
+        /// <param name="tokenManager">给定的 <see cref="ITokenManager"/>。</param>
         /// <param name="cookieOptions">给定的 Cookie 选项。</param>
         public LibrameAuthenticationPolicy(ITokenManager tokenManager,
             IOptions<CookieAuthenticationOptions> cookieOptions)
@@ -62,20 +61,23 @@ namespace LibrameCore.Extensions.Authentication.Policies
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <returns>返回认证状态与身份标识。</returns>
-        public virtual (AuthenticationStatus Status, LibrameIdentity Identity) Authenticate(HttpContext context)
+        public virtual (AuthenticationStatus Status, LibrameClaimsIdentity Identity) Authenticate(HttpContext context)
         {
             // 优先检测 Cookie 是否存在
             var token = GetCookieToken(context);
             if (!string.IsNullOrEmpty(token))
                 return (AuthenticationStatus.Cookie, TokenManager.Decode(token));
 
-            // 检测请求头部信息是否存在（格式：Scheme<空格>Parameter）
+            // 检测请求头部信息是否存在
             var authentication = context.Request.Headers["Authentication"].ToString();
             if (!string.IsNullOrEmpty(authentication))
             {
+                // 认证格式：Scheme<空格>Parameter
                 var header = AuthenticationHeaderValue.Parse(authentication);
-                if (header.Scheme == AuthenticationExtensionOptions.DEFAULT_HEADER_SCHEME)
+                if (header.Scheme == "Bearer" || header.Scheme == "Librame")
                     return (AuthenticationStatus.Header, TokenManager.Decode(header.Parameter));
+                else
+                    return (AuthenticationStatus.Header, null); // 不被支持的头部认证信息
             }
 
             // 最后检测查询参数

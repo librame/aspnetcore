@@ -10,8 +10,8 @@
 
 #endregion
 
-using LibrameCore.Authentication.Descriptors;
-using LibrameStandard.Entity.Descriptors;
+using LibrameCore.Extensions.Authentication.Descriptors;
+using LibrameStandard.Extensions.Entity.Descriptors;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,7 +21,7 @@ namespace LibrameCore.Entities
     /// 用户角色。
     /// </summary>
     [DisplayName("用户角色")]
-    public class UserRole : AbstractCreateDataIdDescriptor<int>, IUserRoleDescriptor<int, int, int>
+    public class UserRole : AbstractCIdDataDescriptor<int>, IUserRoleDescriptor<int, int, int>
     {
         /// <summary>
         /// 角色。

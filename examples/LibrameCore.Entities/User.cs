@@ -10,8 +10,8 @@
 
 #endregion
 
-using LibrameStandard.Entity.Descriptors;
-using LibrameCore.Authentication.Descriptors;
+using LibrameStandard.Extensions.Entity.Descriptors;
+using LibrameCore.Extensions.Authentication.Descriptors;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System;
@@ -22,7 +22,7 @@ namespace LibrameCore.Entities
     /// 用户。
     /// </summary>
     [DisplayName("用户")]
-    public class User : AbstractCreateDataIdDescriptor<int>, IUserDescriptor<int>
+    public class User : AbstractCIdDataDescriptor<int>, IUserDescriptor<int>
     {
         /// <summary>
         /// 名称。

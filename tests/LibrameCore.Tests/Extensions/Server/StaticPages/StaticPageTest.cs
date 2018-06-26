@@ -1,8 +1,8 @@
-﻿using LibrameCore.Server;
+﻿using LibrameCore.Extensions.Server;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace LibrameCore.Tests.Server.StaticPages
+namespace LibrameCore.Tests.Extensions.Server.StaticPages
 {
     public class StaticPageTest
     {
@@ -12,6 +12,8 @@ namespace LibrameCore.Tests.Server.StaticPages
             var services = new ServiceCollection();
             
             services.AddLibrameCore();
+            services.AddLogging();
+            services.AddMvc();
 
             var serviceProvider = services.BuildServiceProvider();
 

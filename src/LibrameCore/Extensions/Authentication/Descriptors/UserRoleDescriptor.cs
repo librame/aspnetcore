@@ -10,7 +10,7 @@
 
 #endregion
 
-using LibrameStandard.Entity.Descriptors;
+using LibrameStandard.Extensions.Entity.Descriptors;
 
 namespace LibrameCore.Extensions.Authentication.Descriptors
 {

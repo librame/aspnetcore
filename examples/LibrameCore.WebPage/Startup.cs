@@ -1,4 +1,4 @@
-using LibrameStandard;
+using LibrameCore.Abstractions;
 using LibrameStandard.Extensions.Entity.DbContexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,19 +42,15 @@ namespace LibrameCore.WebPage
                     });
                 });
 
-            // Add LibrameCore
-            services.AddLibrameCore(modules =>
-            {
-                modules.AddStandard();
-                modules.AddCore();
-            },
-            Configuration.GetSection("Librame"));
-
+            // Add CookiePolicy
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            // Add LibrameCore
+            services.AddLibrameCore(configuration: Configuration.GetSection("Librame"));
 
             //services.AddMvc();
         }
@@ -89,7 +85,10 @@ namespace LibrameCore.WebPage
             app.UseCookiePolicy();
 
             // Use LibrameCore
-            app.UseLibrameCore();
+            app.UseLibrameCore(extension =>
+            {
+                extension.UsePlatformExtension();
+            });
 
             //app.UseMvc();
         }

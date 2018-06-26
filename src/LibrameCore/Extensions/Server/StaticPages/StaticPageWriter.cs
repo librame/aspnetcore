@@ -10,9 +10,8 @@
 
 #endregion
 
-using LibrameStandard.Algorithm;
+using LibrameStandard.Extensions.Algorithm;
 using LibrameStandard.Utilities;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.IO;
@@ -26,16 +25,19 @@ namespace LibrameCore.Extensions.Server.StaticPages
     /// </summary>
     public class StaticPageWriter : AbstractServerExtensionService<StaticPageWriter>, IStaticPageWriter
     {
+        /// <summary>
+        /// 默认文件扩展名。
+        /// </summary>
+        public const string DEFAULT_FILE_EXTENSION = ".html";
+
 
         /// <summary>
         /// 构造一个 <see cref="StaticPageWriter"/> 实例。
         /// </summary>
-        /// <param name="hash">给定的哈希算法。</param>
+        /// <param name="hash">给定的 <see cref="IHashAlgorithm"/>。</param>
         /// <param name="options">给定的网络选项。</param>
-        /// <param name="logger">给定的记录器。</param>
-        public StaticPageWriter(IHashAlgorithm hash,
-            IOptions<ServerExtensionOptions> options, ILogger<StaticPageWriter> logger)
-            : base(options, logger)
+        public StaticPageWriter(IHashAlgorithm hash, IOptionsMonitor<ServerExtensionOptions> options)
+            : base(options)
         {
             Hash = hash.NotNull(nameof(hash));
         }
@@ -68,9 +70,14 @@ namespace LibrameCore.Extensions.Server.StaticPages
 
 
         /// <summary>
+        /// 保存路径。
+        /// </summary>
+        public string SavePath { get; set; }
+
+        /// <summary>
         /// 文件扩展名。
         /// </summary>
-        public string FileExtension { get; set; } = ".html";
+        public string FileExtension { get; set; } = DEFAULT_FILE_EXTENSION;
 
 
         /// <summary>
@@ -79,16 +86,15 @@ namespace LibrameCore.Extensions.Server.StaticPages
         /// <param name="content">给定的文件内容。</param>
         /// <param name="routeInfo">给定的路由信息。</param>
         /// <returns>返回一个异步操作。</returns>
-        public async Task<string> BuildAsync(string content, RouteInfo routeInfo)
+        public async Task BuildAsync(string content, RouteInfo routeInfo)
         {
-            routeInfo.NotNull(nameof(routeInfo));
-            
-            var directory = GenerateDirectory(routeInfo);
-            var filename = GenerateFilename(routeInfo);
+            if (string.IsNullOrEmpty(SavePath))
+            {
+                routeInfo.NotNull(nameof(routeInfo));
+                SavePath = GetSavePath(routeInfo);
+            }
 
-            filename = Path.Combine(directory, filename);
-
-            using (var fs = File.Open(filename, FileMode.Create))
+            using (var fs = File.Open(SavePath, FileMode.Create))
             {
                 using (var sw = new StreamWriter(fs, Encoding))
                 {
@@ -98,31 +104,20 @@ namespace LibrameCore.Extensions.Server.StaticPages
                     await sw.WriteAsync(content);
                 }
             }
-
-            return filename;
         }
 
 
         /// <summary>
-        /// 建立完整文件名。
+        /// 得到保存路径。
         /// </summary>
         /// <param name="routeInfo">给定的路由信息。</param>
         /// <returns>返回字符串。</returns>
-        public virtual string BuildFullFilename(RouteInfo routeInfo)
+        public virtual string GetSavePath(RouteInfo routeInfo)
         {
-            try
-            {
-                var directory = GenerateDirectory(routeInfo);
-                var filename = GenerateFilename(routeInfo);
+            var directory = GenerateDirectory(routeInfo);
+            var filename = GenerateFilename(routeInfo);
 
-                return Path.Combine(directory, filename);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-
-                throw ex;
-            }
+            return Path.Combine(directory, filename);
         }
 
 

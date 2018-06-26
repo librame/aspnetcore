@@ -93,7 +93,7 @@ namespace LibrameCore.Extensions.Authentication
         /// <param name="context">给定的 <see cref="AuthorizationFilterContext"/>。</param>
         /// <param name="policy">给定的 <see cref="IAuthenticationPolicy"/>。</param>
         /// <returns>返回 URL。</returns>
-        protected virtual string LocalPathToAbsoluteUrl(Func<AuthenticationLocalOptions, string> localPathFactory,
+        protected virtual string LocalPathToAbsoluteUrl(Func<AuthenticationExtensionOptions.LocalOptions, string> localPathFactory,
             AuthorizationFilterContext context, IAuthenticationPolicy policy)
         {
             var requestUrl = context.HttpContext.Request.AsAbsoluteUrl();

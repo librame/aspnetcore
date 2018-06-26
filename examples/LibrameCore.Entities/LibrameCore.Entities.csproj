@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibrameStandard" Version="2.0.1806.171" />
+    <PackageReference Include="LibrameStandard" Version="2.20.1806.261" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,9 @@
-﻿using LibrameCore.Authentication;
-using LibrameCore.Authentication.Managers;
+﻿using LibrameCore.Extensions.Authentication;
+using LibrameCore.Extensions.Authentication.Managers;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace LibrameCore.Tests.Authentication.Managers
+namespace LibrameCore.Tests.Extensions.Authentication.Managers
 {
     using Repositories;
 
@@ -28,7 +28,7 @@ namespace LibrameCore.Tests.Authentication.Managers
                 Passwd = "123456"
             };
             var roles = new string[] { "Administrator" };
-            var identity = new LibrameIdentity(user.Name, roles, tokenManager.Options);
+            var identity = new LibrameClaimsIdentity(user.Name, roles, tokenManager.Options);
             
             var token = tokenManager.Encode(identity);
             Assert.NotEmpty(token);

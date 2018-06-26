@@ -28,7 +28,7 @@ namespace System
         /// <returns>返回 HTTP 上下文。</returns>
         public static HttpContext GetHttpContext(this IServiceProvider serviceProvider)
         {
-            var accessor = serviceProvider.GetService<IHttpContextAccessor>();
+            var accessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
 
             return accessor.HttpContext;
         }

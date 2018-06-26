@@ -10,10 +10,10 @@
 
 #endregion
 
+using LibrameCore.Abstractions;
 using LibrameStandard.Abstractions;
 using LibrameStandard.Utilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -41,6 +41,14 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<CoreLibraryOptions> configureOptions = null,
             Action<ILibraryDependency, CoreLibraryOptions> configureDependency = null)
         {
+            if (null == configureDependency)
+            {
+                configureDependency = (depend, opts) =>
+                {
+                    depend.AddCoreLibrary(opts);
+                };
+            }
+
             return services.AddLibrameByJsonFile(fileName, basePath, configureRoot,
                 configureOptions,
                 configureDependency);
@@ -63,6 +71,14 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<CoreLibraryOptions> configureOptions = null,
             Action<ILibraryDependency, CoreLibraryOptions> configureDependency = null)
         {
+            if (null == configureDependency)
+            {
+                configureDependency = (depend, opts) =>
+                {
+                    depend.AddCoreLibrary(opts);
+                };
+            }
+
             return services.AddLibrameByFile(source, basePath, configureRoot,
                 configureOptions,
                 configureDependency);
@@ -81,6 +97,14 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<CoreLibraryOptions> configureOptions = null,
             Action<ILibraryDependency, CoreLibraryOptions> configureDependency = null)
         {
+            if (null == configureDependency)
+            {
+                configureDependency = (depend, opts) =>
+                {
+                    depend.AddCoreLibrary(opts);
+                };
+            }
+
             return services.AddLibrameByConfig(configureBuilder,
                 configureOptions,
                 configureDependency);
@@ -99,6 +123,14 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<ILibraryDependency, CoreLibraryOptions> configureDependency = null,
             IConfiguration configuration = null)
         {
+            if (null == configureDependency)
+            {
+                configureDependency = (depend, opts) =>
+                {
+                    depend.AddCoreLibrary(opts);
+                };
+            }
+
             return services.AddLibrame(configureOptions,
                 configureDependency,
                 configuration);

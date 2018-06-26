@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using LibrameStandard.Drawing;
+using LibrameStandard.Extensions.Drawing;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 

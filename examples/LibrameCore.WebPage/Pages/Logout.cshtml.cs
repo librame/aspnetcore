@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LibrameCore.WebPage.Pages
 {
-    using Authentication;
+    using Extensions.Authentication;
     
     [LibrameClientLogout]
     public class LogoutModel : PageModel

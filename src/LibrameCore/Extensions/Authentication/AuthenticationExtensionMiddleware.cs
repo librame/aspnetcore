@@ -24,7 +24,7 @@ namespace LibrameCore.Extensions.Authentication
     using Descriptors;
 
     /// <summary>
-    /// Librame 认证中间件。
+    /// 认证扩展中间件。
     /// </summary>
     /// <typeparam name="TRole">指定的角色类型。</typeparam>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
@@ -32,18 +32,18 @@ namespace LibrameCore.Extensions.Authentication
     /// <typeparam name="TRoleId">指定的角色主键类型。</typeparam>
     /// <typeparam name="TUserId">指定的用户主键类型。</typeparam>
     /// <typeparam name="TUserRoleId">指定的用户角色主键类型。</typeparam>
-    public class LibrameAuthenticationMiddleware<TRole, TUser, TUserRole, TRoleId, TUserId, TUserRoleId>
+    public class AuthenticationExtensionMiddleware<TRole, TUser, TUserRole, TRoleId, TUserId, TUserRoleId>
         where TRole : class, IRoleDescriptor<TRoleId>
         where TUser : class, IUserDescriptor<TUserId>
         where TUserRole : class, IUserRoleDescriptor<TUserRoleId, TUserId, TRoleId>
     {
         /// <summary>
-        /// 构造一个 Librame 认证中间件实例。
+        /// 构造一个 <see cref="AuthenticationExtensionMiddleware{TRole, TUser, TUserRole, TRoleId, TUserId, TUserRoleId}"/> 实例。
         /// </summary>
         /// <param name="next">给定的下一步请求委托。</param>
         /// <param name="schemes">给定的认证方案提供程序。</param>
         /// <param name="options">给定的认证选项。</param>
-        public LibrameAuthenticationMiddleware(RequestDelegate next, IAuthenticationSchemeProvider schemes,
+        public AuthenticationExtensionMiddleware(RequestDelegate next, IAuthenticationSchemeProvider schemes,
             IOptions<AuthenticationExtensionOptions> options)
         {
             Options = options.NotNull(nameof(options)).Value;
@@ -188,7 +188,7 @@ namespace LibrameCore.Extensions.Authentication
 
             // Identity
             var roleNames = await _repository.GetRoleNamesAsync(account.User.Name);
-            var identity = new LibrameIdentity(account.User.Name, roleNames, Options);
+            var identity = new LibrameClaimsIdentity(account.User.Name, roleNames, Options);
 
             // Token
             var token = _policy.TokenManager.Encode(identity);

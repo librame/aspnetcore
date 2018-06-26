@@ -22,6 +22,16 @@ namespace LibrameCore.Extensions.Server.StaticPages
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class StaticPageActionFilterAttribute : ActionFilterAttribute
     {
+        /// <summary>
+        /// 保存路径。
+        /// </summary>
+        public string SavePath { get; set; }
+
+        /// <summary>
+        /// 模板路径。
+        /// </summary>
+        public string TemplatePath { get; set; }
+
 
         /// <summary>
         /// 动作执行后。
@@ -30,6 +40,8 @@ namespace LibrameCore.Extensions.Server.StaticPages
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             var staticPage = context.HttpContext.RequestServices.GetRequiredService<IStaticPageServer>();
+            staticPage.Reader.TemplatePath = TemplatePath;
+            staticPage.Writer.SavePath = SavePath;
 
             staticPage.ActionExecuted(context);
         }
@@ -42,6 +54,8 @@ namespace LibrameCore.Extensions.Server.StaticPages
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var staticPage = context.HttpContext.RequestServices.GetRequiredService<IStaticPageServer>();
+            staticPage.Reader.TemplatePath = TemplatePath;
+            staticPage.Writer.SavePath = SavePath;
 
             staticPage.ActionExecuting(context);
         }

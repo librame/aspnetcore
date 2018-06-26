@@ -10,7 +10,7 @@
 
 #endregion
 
-using LibrameStandard.Algorithm;
+using LibrameStandard.Extensions.Algorithm;
 
 namespace LibrameCore.Extensions.Authentication.Managers
 {
@@ -20,24 +20,24 @@ namespace LibrameCore.Extensions.Authentication.Managers
     public interface ITokenManager : IAuthenticationExtensionService
     {
         /// <summary>
-        /// 算法选项。
+        /// 对称算法。
         /// </summary>
-        AlgorithmOptions AlgorithmOptions { get; }
+        ISymmetryAlgorithm Symmetry { get; }
 
 
         /// <summary>
         /// 编码令牌。
         /// </summary>
-        /// <param name="identity">给定的 Librame 身份标识。</param>
+        /// <param name="identity">给定的 <see cref="LibrameClaimsIdentity"/>。</param>
         /// <returns>返回令牌字符串。</returns>
-        string Encode(LibrameIdentity identity);
+        string Encode(LibrameClaimsIdentity identity);
 
 
         /// <summary>
         /// 解码令牌。
         /// </summary>
         /// <param name="token">给定的令牌字符串。</param>
-        /// <returns>返回 Librame 身份标识。</returns>
-        LibrameIdentity Decode(string token);
+        /// <returns>返回 <see cref="LibrameClaimsIdentity"/>。</returns>
+        LibrameClaimsIdentity Decode(string token);
     }
 }

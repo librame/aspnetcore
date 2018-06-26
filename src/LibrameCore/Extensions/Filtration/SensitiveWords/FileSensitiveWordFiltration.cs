@@ -13,7 +13,6 @@
 using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
@@ -26,12 +25,11 @@ namespace LibrameCore.Extensions.Filtration.SensitiveWords
     public class FileSensitiveWordFiltration : AbstractFiltrationExtensionService<FileSensitiveWordFiltration>, ISensitiveWordFiltration
     {
         /// <summary>
-        /// 构造一个文件型敏感词过滤器实例。
+        /// 构造一个 <see cref="FileSensitiveWordFiltration"/> 实例。
         /// </summary>
         /// <param name="options">给定的过滤选项。</param>
-        /// <param name="logger">给定的记录器。</param>
-        public FileSensitiveWordFiltration(IOptions<FiltrationExtensionOptions> options, ILogger<FileSensitiveWordFiltration> logger)
-            : base(options, logger)
+        public FileSensitiveWordFiltration(IOptionsMonitor<FiltrationExtensionOptions> options)
+            : base(options)
         {
         }
 

@@ -14,7 +14,6 @@ using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -22,22 +21,22 @@ using System.Threading.Tasks;
 namespace LibrameCore.Extensions.Authentication
 {
     /// <summary>
-    /// Librame 认证处理程序。
+    /// 认证扩展处理程序。
     /// </summary>
-    public class LibrameAuthenticationHandler : AuthenticationHandler<AuthenticationExtensionOptions>, IAuthenticationSignInHandler
+    public class AuthenticationExtensionHandler : AuthenticationHandler<AuthenticationExtensionOptions>, IAuthenticationSignInHandler
     {
         private IAuthenticationPolicy _policy = null;
 
 
         /// <summary>
-        /// 构造一个 Librame 认证处理程序。
+        /// 构造一个 <see cref="AuthenticationExtensionHandler"/> 实例。
         /// </summary>
-        /// <param name="policy">给定的认证策略。</param>
-        /// <param name="options">给定的选项监视器。</param>
-        /// <param name="logger">给定的日志工厂。</param>
-        /// <param name="encoder">给定的 URL 编码器。</param>
-        /// <param name="clock">给定的系统时钟。</param>
-        public LibrameAuthenticationHandler(IAuthenticationPolicy policy,
+        /// <param name="policy">给定的 <see cref="IAuthenticationPolicy"/>。</param>
+        /// <param name="options">给定的 <see cref="IOptionsMonitor{AuthenticationExtensionOptions}"/>。</param>
+        /// <param name="logger">给定的 <see cref="ILoggerFactory"/>。</param>
+        /// <param name="encoder">给定的 <see cref="UrlEncoder"/>。</param>
+        /// <param name="clock">给定的 <see cref="ISystemClock"/>。</param>
+        public AuthenticationExtensionHandler(IAuthenticationPolicy policy,
             IOptionsMonitor<AuthenticationExtensionOptions> options,
             ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, encoder, clock)
@@ -54,9 +53,9 @@ namespace LibrameCore.Extensions.Authentication
         /// <returns>返回一个任务。</returns>
         public Task SignInAsync(ClaimsPrincipal user, AuthenticationProperties properties)
         {
-            if (user.Identity is LibrameIdentity)
+            if (user.Identity is LibrameClaimsIdentity)
             {
-                var identity = (user.Identity as LibrameIdentity);
+                var identity = (user.Identity as LibrameClaimsIdentity);
                 var token = _policy.TokenManager.Encode(identity);
 
                 _policy.AddCookieToken(Context, identity.ExpirationTimeUtc, token);

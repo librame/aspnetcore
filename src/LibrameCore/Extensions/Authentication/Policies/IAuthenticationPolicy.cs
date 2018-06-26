@@ -44,7 +44,7 @@ namespace LibrameCore.Extensions.Authentication
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <returns>返回认证状态与身份标识。</returns>
-        (AuthenticationStatus Status, LibrameIdentity Identity) Authenticate(HttpContext context);
+        (AuthenticationStatus Status, LibrameClaimsIdentity Identity) Authenticate(HttpContext context);
 
 
         /// <summary>

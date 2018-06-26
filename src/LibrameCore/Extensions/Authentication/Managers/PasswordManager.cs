@@ -10,9 +10,8 @@
 
 #endregion
 
-using LibrameStandard.Algorithm;
+using LibrameStandard.Extensions.Algorithm;
 using LibrameStandard.Utilities;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace LibrameCore.Extensions.Authentication.Managers
@@ -23,14 +22,13 @@ namespace LibrameCore.Extensions.Authentication.Managers
     public class PasswordManager : AbstractAuthenticationExtensionService<PasswordManager>, IPasswordManager
     {
         /// <summary>
-        /// 构造一个密码管理器实例。
+        /// 构造一个 <see cref="PasswordManager"/> 实例。
         /// </summary>
-        /// <param name="hash">给定的散列算法。</param>
+        /// <param name="hash">给定的 <see cref="IHashAlgorithm"/>。</param>
         /// <param name="options">给定的认证选项。</param>
-        /// <param name="logger">给定的记录器。</param>
         public PasswordManager(IHashAlgorithm hash,
-            IOptions<AuthenticationExtensionOptions> options, ILogger<PasswordManager> logger)
-            : base(options, logger)
+            IOptionsMonitor<AuthenticationExtensionOptions> options)
+            : base(options)
         {
             Hash = hash.NotNull(nameof(hash));
         }
@@ -58,10 +56,10 @@ namespace LibrameCore.Extensions.Authentication.Managers
                 return string.Empty;
 
             // SHA384散列算法（64位长度）
-            var encode = Hash.GetSha384(original);
+            var encode = Hash.GetSHA384(original);
 
             // AES动态加密（防撞库）
-            encode = Symmetry.ToAes(encode);
+            encode = Symmetry.ToAES(encode);
 
             return encode;
         }
@@ -79,10 +77,10 @@ namespace LibrameCore.Extensions.Authentication.Managers
                 return false;
 
             // AES动态解密
-            encode = Symmetry.FromAes(encode);
+            encode = Symmetry.FromAES(encode);
 
             // SHA384散列算法（64位长度）
-            var compare = Hash.GetSha384(original);
+            var compare = Hash.GetSHA384(original);
 
             return (encode == compare);
         }

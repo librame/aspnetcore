@@ -10,7 +10,7 @@
 
 #endregion
 
-using LibrameStandard.Algorithm;
+using LibrameStandard.Extensions.Algorithm;
 using LibrameStandard.Utilities;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,9 +34,14 @@ namespace LibrameCore.Extensions.Server
 
 
         /// <summary>
+        /// 保存路径。
+        /// </summary>
+        string SavePath { get; set; }
+        
+        /// <summary>
         /// 文件扩展名。
         /// </summary>
-        string FileExtension { get; }
+        string FileExtension { get; set; }
 
 
         /// <summary>
@@ -45,14 +50,14 @@ namespace LibrameCore.Extensions.Server
         /// <param name="content">给定的文件内容。</param>
         /// <param name="routeInfo">给定的路由信息。</param>
         /// <returns>返回一个异步操作。</returns>
-        Task<string> BuildAsync(string content, RouteInfo routeInfo);
+        Task BuildAsync(string content, RouteInfo routeInfo);
 
 
         /// <summary>
-        /// 建立完整文件名。
+        /// 得到保存路径。
         /// </summary>
         /// <param name="routeInfo">给定的路由信息。</param>
         /// <returns>返回字符串。</returns>
-        string BuildFullFilename(RouteInfo routeInfo);
+        string GetSavePath(RouteInfo routeInfo);
     }
 }

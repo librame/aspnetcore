@@ -1,8 +1,8 @@
-﻿using LibrameCore.Authentication.Managers;
+﻿using LibrameCore.Extensions.Authentication.Managers;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace LibrameCore.Tests.Authentication.Managers
+namespace LibrameCore.Tests.Extensions.Authentication.Managers
 {
     public class PasswordManagerTests
     {

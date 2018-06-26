@@ -53,7 +53,7 @@ namespace LibrameStandard.Abstractions
             extensions.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = AuthenticationExtensionOptions.DEFAULT_SCHEME;
-                options.AddScheme<LibrameAuthenticationHandler>(AuthenticationExtensionOptions.DEFAULT_SCHEME, null);
+                options.AddScheme<AuthenticationExtensionHandler>(AuthenticationExtensionOptions.DEFAULT_SCHEME, null);
             })
                 .AddCookie()
                 .AddJwtBearer();

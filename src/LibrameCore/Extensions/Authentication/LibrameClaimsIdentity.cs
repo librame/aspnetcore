@@ -20,44 +20,44 @@ using System.Security.Claims;
 namespace LibrameCore.Extensions.Authentication
 {
     /// <summary>
-    /// Librame 身份标识。
+    /// Librame 声明标识。
     /// </summary>
-    public class LibrameIdentity : ClaimsIdentity
+    public class LibrameClaimsIdentity : ClaimsIdentity
     {
         private readonly AuthenticationExtensionOptions _options;
 
 
         /// <summary>
-        /// 构造一个 Librame 身份标识实例。
+        /// 构造一个 <see cref="LibrameClaimsIdentity"/> 实例。
         /// </summary>
         /// <param name="jwt">给定的 JSON Web 令牌。</param>
         /// <param name="options">给定的认证选项。</param>
-        public LibrameIdentity(JwtSecurityToken jwt, AuthenticationExtensionOptions options)
+        public LibrameClaimsIdentity(JwtSecurityToken jwt, AuthenticationExtensionOptions options)
             : base(jwt.Claims, AuthenticationExtensionOptions.DEFAULT_SCHEME, DefaultNameClaimType, DefaultRoleClaimType)
         {
             _options = options.NotNull(nameof(options));
         }
         /// <summary>
-        /// 构造一个 Librame 身份标识实例。
+        /// 构造一个 <see cref="LibrameClaimsIdentity"/> 实例。
         /// </summary>
         /// <param name="claims">给定的声明集合。</param>
         /// <param name="options">给定的认证选项。</param>
-        public LibrameIdentity(IEnumerable<Claim> claims, AuthenticationExtensionOptions options)
+        public LibrameClaimsIdentity(IEnumerable<Claim> claims, AuthenticationExtensionOptions options)
             : base(claims, AuthenticationExtensionOptions.DEFAULT_SCHEME, DefaultNameClaimType, DefaultRoleClaimType)
         {
             _options = options.NotNull(nameof(options));
         }
         /// <summary>
-        /// 构造一个 Librame 身份标识实例。
+        /// 构造一个 <see cref="LibrameClaimsIdentity"/> 实例。
         /// </summary>
         /// <param name="username">给定的用户名。</param>
         /// <param name="roles">给定的用户角色集合。</param>
         /// <param name="options">给定的认证选项。</param>
-        public LibrameIdentity(string username, IEnumerable<string> roles, AuthenticationExtensionOptions options)
+        public LibrameClaimsIdentity(string username, IEnumerable<string> roles, AuthenticationExtensionOptions options)
             : base(BuildClaims(username, roles, options), AuthenticationExtensionOptions.DEFAULT_SCHEME,
                   DefaultNameClaimType, DefaultRoleClaimType)
         {
-            _options = options;
+            _options = options; // BuildClaims 已检测是否为空
         }
 
 
@@ -88,12 +88,12 @@ namespace LibrameCore.Extensions.Authentication
         /// <summary>
         /// 签发者。
         /// </summary>
-        public virtual string Issuer => TryGetValue(JwtRegisteredClaimNames.Iss);
+        public virtual string Issuer => FindFirst(JwtRegisteredClaimNames.Iss)?.Value;
 
         /// <summary>
         /// 接收者。
         /// </summary>
-        public virtual string Audience => TryGetValue(JwtRegisteredClaimNames.Aud);
+        public virtual string Audience => FindFirst(JwtRegisteredClaimNames.Aud)?.Value;
 
         /// <summary>
         /// UTC 签发时间。
@@ -109,64 +109,33 @@ namespace LibrameCore.Extensions.Authentication
         /// <summary>
         /// JWT 标识。
         /// </summary>
-        public virtual string JwtId => TryGetValue(JwtRegisteredClaimNames.Jti);
+        public virtual string JwtId => FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
 
         /// <summary>
         /// 主题。
         /// </summary>
-        public virtual string Subject => TryGetValue(JwtRegisteredClaimNames.Sub);
+        public virtual string Subject => FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
 
         /// <summary>
         /// 唯一名称。
         /// </summary>
-        public virtual string UniqueName => TryGetValue(JwtRegisteredClaimNames.UniqueName);
+        public virtual string UniqueName => FindFirst(JwtRegisteredClaimNames.UniqueName)?.Value;
 
         /// <summary>
         /// 角色集合。
         /// </summary>
-        public virtual IEnumerable<string> Roles => TryGetValues(DefaultRoleClaimType);
+        public virtual IEnumerable<string> Roles => FindAll(DefaultRoleClaimType).Select(c => c.Value);
 
 
         private DateTimeOffset TryGetDateTimeOffset(string type)
         {
-            DateTimeOffset offset;
+            DateTimeOffset offset = DateTimeOffset.Now;
 
             var claim = FindFirst(type);
-
             if (claim != null)
                 DateTimeOffset.TryParse(claim.Value, out offset);
 
             return offset;
-        }
-
-        private TValue TryGetValue<TValue>(string type, Func<string, TValue> converter, TValue defaultValue = default)
-        {
-            var claim = FindFirst(type);
-
-            if (claim != null)
-                return converter.Invoke(claim.Value);
-
-            return defaultValue;
-        }
-
-        private string TryGetValue(string type)
-        {
-            var claim = FindFirst(type);
-
-            if (claim != null)
-                return claim.Value;
-
-            return string.Empty;
-        }
-
-        private IEnumerable<string> TryGetValues(string type)
-        {
-            var claims = FindAll(type);
-
-            if (claims.Count() < 1)
-                return Enumerable.Empty<string>();
-
-            return claims.Select(s => s.Value);
         }
 
 

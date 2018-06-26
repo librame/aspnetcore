@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LibrameCore.WebMvc.Controllers
 {
-    using Authentication;
+    using Extensions.Authentication;
     using Entities;
 
     public class AccountController : Controller

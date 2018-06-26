@@ -12,6 +12,7 @@
 
 using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Builder;
+using System;
 
 namespace LibrameCore.Abstractions
 {
@@ -37,5 +38,13 @@ namespace LibrameCore.Abstractions
         /// 返回 <see cref="IApplicationBuilder"/>。
         /// </value>
         public IApplicationBuilder Builder { get; }
+
+        /// <summary>
+        /// 服务提供程序。
+        /// </summary>
+        /// <value>
+        /// 返回 <see cref="IServiceProvider"/>。
+        /// </value>
+        public IServiceProvider Services => Builder.ApplicationServices;
     }
 }

@@ -10,7 +10,7 @@
 
 #endregion
 
-using LibrameStandard.Algorithm;
+using LibrameStandard.Extensions.Algorithm;
 
 namespace LibrameCore.Extensions.Authentication.Managers
 {

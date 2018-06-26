@@ -1,4 +1,4 @@
-﻿using LibrameStandard.Drawing;
+﻿using LibrameStandard.Extensions.Drawing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace LibrameCore.WebMvc.Controllers
 {
-    using Filtration;
-    using Filtration.SensitiveWords;
-    using Server.StaticPages;
+    using Extensions.Filtration;
+    using Extensions.Filtration.SensitiveWords;
+    using Extensions.Server.StaticPages;
     using WebMvc.Models;
 
     public class HomeController : Controller

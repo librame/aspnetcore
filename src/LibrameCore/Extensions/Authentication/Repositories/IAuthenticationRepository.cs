@@ -10,7 +10,7 @@
 
 #endregion
 
-using LibrameStandard.Entity;
+using LibrameStandard.Extensions.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace LibrameCore.Extensions.Authentication
         where TUserRole : class, IUserRoleDescriptor<TUserRoleId, TUserId, TRoleId>
     {
         /// <summary>
-        /// 认证设置。
+        /// 认证扩展选项。
         /// </summary>
         AuthenticationExtensionOptions Options { get; }
         

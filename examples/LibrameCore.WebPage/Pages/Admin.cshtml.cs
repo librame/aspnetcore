@@ -2,7 +2,7 @@
 
 namespace LibrameCore.WebPage.Pages
 {
-    using Authentication;
+    using Extensions.Authentication;
 
     [LibrameAuthorize(Roles = "Administrator")]
     public class AdminModel : PageModel
@@ -10,7 +10,7 @@ namespace LibrameCore.WebPage.Pages
         /// <summary>
         /// 当前用户。
         /// </summary>
-        public LibrameIdentity Identity
+        public LibrameClaimsIdentity Identity
             => User.AsLibrameIdentity(HttpContext.RequestServices);
 
 

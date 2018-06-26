@@ -32,7 +32,7 @@ namespace Microsoft.AspNetCore.Builder
         {
             try
             {
-                var extension = new ExtensionBuilder(extension);
+                var extension = new ExtensionBuilder(builder);
                 configureBuilder?.Invoke(extension);
 
                 return extension.Builder;

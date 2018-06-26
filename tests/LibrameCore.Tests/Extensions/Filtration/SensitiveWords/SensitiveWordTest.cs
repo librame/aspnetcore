@@ -1,8 +1,8 @@
-﻿using LibrameCore.Filtration;
+﻿using LibrameCore.Extensions.Filtration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace LibrameCore.Tests.Filtration.SensitiveWords
+namespace LibrameCore.Tests.Extensions.Filtration.SensitiveWords
 {
     public class SensitiveWordTest
     {

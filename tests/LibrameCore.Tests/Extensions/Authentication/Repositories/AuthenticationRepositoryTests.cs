@@ -1,9 +1,8 @@
-﻿using LibrameCore.Authentication;
-using LibrameCore.Authentication.Descriptors;
-using LibrameStandard;
-using LibrameStandard.Entity;
-using LibrameStandard.Entity.DbContexts;
-using LibrameStandard.Entity.Descriptors;
+﻿using LibrameCore.Extensions.Authentication;
+using LibrameCore.Extensions.Authentication.Descriptors;
+using LibrameStandard.Extensions.Entity;
+using LibrameStandard.Extensions.Entity.DbContexts;
+using LibrameStandard.Extensions.Entity.Descriptors;
 using LibrameStandard.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +11,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Xunit;
 
-namespace LibrameCore.Tests.Authentication.Repositories
+namespace LibrameCore.Tests.Extensions.Authentication.Repositories
 {
     public class AuthenticationRepositoryTests
     {
@@ -44,25 +43,21 @@ namespace LibrameCore.Tests.Authentication.Repositories
             // 默认实体程序集
             var defaultAssemblies = TypeUtility.AsAssemblyName<User>().Name;
 
-            services.AddLibrameCore(modules =>
+            services.AddLibrameCore(options =>
             {
-                modules.AddStandard(standard =>
+                options.PostConfigureEntity = opts =>
                 {
-                    standard.ConfigureEntity = entity =>
+                    opts.Automappings.Add(new EntityExtensionOptions.AutomappingOptions
                     {
-                        entity.Automappings.Add(new EntityAutomappingOptions
-                        {
-                            // 修改默认的自映射实体程序集
-                            DbContextAssemblies = defaultAssemblies,
-                            // 修改默认的数据库上下文类型名为 SQLServer
-                            DbContextTypeName = typeof(SqlServerDbContext).AsAssemblyQualifiedNameWithoutVCP(),
-                            DbContextWriterTypeName = typeof(SqlServerDbContextWriter).AsAssemblyQualifiedNameWithoutVCP(),
-                            // 启用读写分离（默认不启用）
-                            ReadWriteSeparation = true
-                        });
-                    };
-                })
-                .AddCore();
+                        // 修改默认的自映射实体程序集
+                        DbContextAssemblies = defaultAssemblies,
+                        // 修改默认的数据库上下文类型名为 SQLServer
+                        DbContextTypeName = typeof(SqlServerDbContext).AsAssemblyQualifiedNameWithoutVCP(),
+                        DbContextWriterTypeName = typeof(SqlServerDbContextWriter).AsAssemblyQualifiedNameWithoutVCP(),
+                        // 启用读写分离（默认不启用）
+                        ReadWriteSeparation = true
+                    });
+                };
             });
 
             var serviceProvider = services.BuildServiceProvider();
@@ -101,7 +96,7 @@ namespace LibrameCore.Tests.Authentication.Repositories
     /// 测试用户。
     /// </summary>
     [DisplayName("用户")]
-    public class User : AbstractCreateDataIdDescriptor<int>, IUserDescriptor<int>
+    public class User : AbstractCIdDataDescriptor<int>, IUserDescriptor<int>
     {
         /// <summary>
         /// 名称。
@@ -151,7 +146,7 @@ namespace LibrameCore.Tests.Authentication.Repositories
     /// 测试角色。
     /// </summary>
     [DisplayName("角色")]
-    public class Role : AbstractCreateDataIdDescriptor<int>, IRoleDescriptor<int>
+    public class Role : AbstractCIdDataDescriptor<int>, IRoleDescriptor<int>
     {
         /// <summary>
         /// 名称。
@@ -174,7 +169,7 @@ namespace LibrameCore.Tests.Authentication.Repositories
     /// 测试用户角色。
     /// </summary>
     [DisplayName("用户角色")]
-    public class UserRole : AbstractCreateDataIdDescriptor<int>, IUserRoleDescriptor<int, int, int>
+    public class UserRole : AbstractCIdDataDescriptor<int>, IUserRoleDescriptor<int, int, int>
     {
         /// <summary>
         /// 角色。

@@ -35,7 +35,7 @@ namespace LibrameStandard.Abstractions
             extensions.ConfigureOptions(configureOptions);
             
             // 静态页
-            extensions.Services.TryAddSingleton<IStaticPageGenerator, StaticPageGenerator>();
+            extensions.Services.TryAddSingleton<IStaticPageReader, StaticPageReader>();
             extensions.Services.TryAddSingleton<IStaticPageWriter, StaticPageWriter>();
             extensions.Services.TryAddSingleton<IStaticPageServer, StaticPageServer>();
 

@@ -13,11 +13,8 @@
 using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using System.IO;
-using System.Text;
 
 namespace LibrameCore.Extensions.Server.StaticPages
 {
@@ -27,17 +24,16 @@ namespace LibrameCore.Extensions.Server.StaticPages
     public class StaticPageServer : AbstractServerExtensionService<StaticPageServer>, IStaticPageServer
     {
         /// <summary>
-        /// 构造一个 <see cref="AbstractServerExtensionService{TServer}"/> 实例。
+        /// 构造一个 <see cref="StaticPageServer"/> 实例。
         /// </summary>
-        /// <param name="generator">给定的生成器。</param>
-        /// <param name="writer">给定的写入器。</param>
+        /// <param name="reader">给定的 <see cref="IStaticPageReader"/>。</param>
+        /// <param name="writer">给定的 <see cref="IStaticPageWriter"/>。</param>
         /// <param name="options">给定的服务器选项。</param>
-        /// <param name="logger">给定的记录器。</param>
-        public StaticPageServer(IStaticPageGenerator generator, IStaticPageWriter writer,
-            IOptions<ServerExtensionOptions> options, ILogger<StaticPageServer> logger)
-            : base(options, logger)
+        public StaticPageServer(IStaticPageReader reader, IStaticPageWriter writer,
+            IOptionsMonitor<ServerExtensionOptions> options)
+            : base(options)
         {
-            Generator = generator.NotNull(nameof(generator));
+            Reader = reader.NotNull(nameof(reader));
             Writer = writer.NotNull(nameof(writer));
         }
 
@@ -45,7 +41,7 @@ namespace LibrameCore.Extensions.Server.StaticPages
         /// <summary>
         /// 生成器。
         /// </summary>
-        public IStaticPageGenerator Generator { get; }
+        public IStaticPageReader Reader { get; }
 
         /// <summary>
         /// 写入器。
@@ -70,33 +66,25 @@ namespace LibrameCore.Extensions.Server.StaticPages
         /// <param name="context">给定的 <see cref="ActionExecutingContext"/>。</param>
         public virtual void ActionExecuting(ActionExecutingContext context)
         {
-            if (!Enabled)
-                return;
+            if (!Enabled) return;
 
             var routeInfo = context.RouteData.AsRouteInfo();
-            var filename = Writer.BuildFullFilename(routeInfo);
+            var savePath = Writer.GetSavePath(routeInfo);
             
             // 如果静态文件已存在
-            if (File.Exists(filename))
+            if (File.Exists(savePath))
             {
-                try
+                using (var fs = File.Open(savePath, FileMode.Open))
                 {
-                    using (var fs = File.Open(filename, FileMode.Open))
+                    using (var sr = new StreamReader(fs, Writer.Encoding))
                     {
-                        using (var sr = new StreamReader(fs, Writer.Encoding))
-                        {
-                            var result = new ContentResult();
+                        var result = new ContentResult();
 
-                            result.Content = sr.ReadToEnd();
-                            result.ContentType = ContentType;
+                        result.Content = sr.ReadToEnd();
+                        result.ContentType = ContentType;
 
-                            context.Result = result;
-                        }
+                        context.Result = result;
                     }
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex.Message);
                 }
             }
         }
@@ -108,26 +96,24 @@ namespace LibrameCore.Extensions.Server.StaticPages
         /// <param name="context">给定的 <see cref="ActionExecutedContext"/>。</param>
         public virtual void ActionExecuted(ActionExecutedContext context)
         {
-            if (!Enabled)
-                return;
+            if (!Enabled) return;
 
             if (context.Result is ViewResult)
             {
                 var routeInfo = context.RouteData.AsRouteInfo();
 
                 // 取得呈现视图的内容
-                var sb = Generator.RenderAsync(context)
+                var htmlCode = Reader.RenderToStringAsync(context)
                     .GetAwaiter().GetResult();
 
                 // 可格式化内容
-                var content = FormatContent(sb);
+                htmlCode = FormatHtmlCode(htmlCode);
 
                 // 建立静态页文件
-                var filename = Writer.BuildAsync(content, routeInfo)
-                    .GetAwaiter().GetResult();
+                Writer.BuildAsync(htmlCode, routeInfo).GetAwaiter().GetResult();
 
                 var result = new ContentResult();
-                result.Content = content;
+                result.Content = htmlCode;
                 result.ContentType = ContentType;
 
                 context.Result = result;
@@ -138,11 +124,11 @@ namespace LibrameCore.Extensions.Server.StaticPages
         /// <summary>
         /// 格式化静态页内容。
         /// </summary>
-        /// <param name="builder">给定的字符串构建器。</param>
+        /// <param name="htmlCode">给定的 HTML 代码。</param>
         /// <returns>返回字符串。</returns>
-        protected virtual string FormatContent(StringBuilder builder)
+        protected virtual string FormatHtmlCode(string htmlCode)
         {
-            return builder.ToString();
+            return htmlCode;
         }
 
     }

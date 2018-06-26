@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>2.0.1803.271</Version>
+    <Version>2.21.1806.261</Version>
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
     <Description>Librame for LibrameCore</Description>
@@ -17,10 +17,10 @@
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>LibrameCore,LibrameStandard,Librame,ASP.NETCore,.NETStandard</PackageTags>
     <PackageReleaseNotes>Librame for LibrameCore</PackageReleaseNotes>
-	<SignAssembly>True</SignAssembly>
+    <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>2.0.1803.271</AssemblyVersion>
-    <FileVersion>2.0.1803.271</FileVersion>
+    <AssemblyVersion>2.21.1806.261</AssemblyVersion>
+    <FileVersion>2.21.1806.261</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -30,12 +30,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibrameStandard" Version="2.0.1806.171" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="2.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.0" />
+    <PackageReference Include="LibrameStandard" Version="2.20.1806.261" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibrameStandard" Version="2.0.1806.171" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.0" />
+    <PackageReference Include="LibrameStandard" Version="2.20.1806.261" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.1.0" />
   </ItemGroup>
 

@@ -20,9 +20,9 @@ namespace LibrameCore.Extensions.Server
     public interface IStaticPageServer : IServerExtensionService
     {
         /// <summary>
-        /// 生成器。
+        /// 读取器。
         /// </summary>
-        IStaticPageGenerator Generator { get; }
+        IStaticPageReader Reader { get; }
 
         /// <summary>
         /// 写入器。

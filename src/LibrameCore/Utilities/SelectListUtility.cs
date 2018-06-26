@@ -10,8 +10,8 @@
 
 #endregion
 
-using LibrameStandard.Entity;
-using LibrameStandard.Entity.Descriptors;
+using LibrameStandard.Extensions.Entity;
+using LibrameStandard.Extensions.Entity.Descriptors;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;

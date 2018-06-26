@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Builder;
 
 namespace LibrameCore.Abstractions
 {
-    using Authentication;
-    using Authentication.Descriptors;
+    using Extensions.Authentication;
+    using Extensions.Authentication.Descriptors;
     
     /// <summary>
     /// <see cref="IExtensionBuilder"/> 认证静态扩展。
@@ -23,6 +23,21 @@ namespace LibrameCore.Abstractions
     public static class AuthenticationExtensionBuilderExtensions
     {
 
+        /// <summary>
+        /// 使用认证扩展。
+        /// </summary>
+        /// <typeparam name="TRole">指定的角色类型（整数型主键）。</typeparam>
+        /// <typeparam name="TUser">指定的用户类型（整数型主键）。</typeparam>
+        /// <typeparam name="TUserRole">指定的用户角色类型（整数型主键）。</typeparam>
+        /// <param name="extension">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <returns>返回 <see cref="IExtensionBuilder"/>。</returns>
+        public static IExtensionBuilder UseAuthenticationExtension<TRole, TUser, TUserRole>(this IExtensionBuilder extension)
+            where TRole : class, IRoleDescriptor<int>
+            where TUser : class, IUserDescriptor<int>
+            where TUserRole : class, IUserRoleDescriptor<int, int, int>
+        {
+            return extension.UseAuthenticationExtension<TRole, TUser, TUserRole, int, int, int>();
+        }
         /// <summary>
         /// 使用认证扩展。
         /// </summary>
@@ -39,7 +54,7 @@ namespace LibrameCore.Abstractions
             where TUser : class, IUserDescriptor<TUserId>
             where TUserRole : class, IUserRoleDescriptor<TUserRoleId, TUserId, TRoleId>
         {
-            extension.Builder.UseMiddleware<LibrameAuthenticationMiddleware<TRole, TUser, TUserRole, TRoleId, TUserId, TUserRoleId>>();
+            extension.Builder.UseMiddleware<AuthenticationExtensionMiddleware<TRole, TUser, TUserRole, TRoleId, TUserId, TUserRoleId>>();
             extension.Builder.UseAuthentication();
 
             return extension;
