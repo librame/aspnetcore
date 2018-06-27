@@ -13,12 +13,12 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Collections.Generic;
 
-namespace LibrameCore.Extensions.Filtration
+namespace LibrameCore.Extensions.Server
 {
     /// <summary>
     /// 敏感词过滤接口。
     /// </summary>
-    public interface ISensitiveWordFiltration : IFiltrationExtensionService
+    public interface ISensitiveWordServer : IServerExtensionService
     {
         /// <summary>
         /// 单词数组。

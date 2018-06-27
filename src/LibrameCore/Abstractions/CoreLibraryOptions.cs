@@ -25,11 +25,6 @@ namespace LibrameCore.Abstractions
         public Action<Extensions.Authentication.AuthenticationExtensionOptions> PostConfigureAuthentication { get; set; }
 
         /// <summary>
-        /// 过滤扩展选项配置动作。
-        /// </summary>
-        public Action<Extensions.Filtration.FiltrationExtensionOptions> PostConfigureFiltration { get; set; }
-
-        /// <summary>
         /// 服务器扩展选项配置动作。
         /// </summary>
         public Action<Extensions.Server.ServerExtensionOptions> PostConfigureServer { get; set; }

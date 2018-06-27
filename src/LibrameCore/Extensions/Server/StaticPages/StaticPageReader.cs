@@ -77,7 +77,7 @@ namespace LibrameCore.Extensions.Server.StaticPages
             if (context.Result is ViewResult viewResult)
             {
                 if (string.IsNullOrEmpty(TemplatePath))
-                    TemplatePath = viewResult.ViewName;
+                    TemplatePath = viewResult.ViewName.AsOrDefault(() => context.RouteData.AsRouteInfo().Action);
 
                 var viewEngineResult = ViewEngine.FindView(context, TemplatePath, true);
                 if (viewEngineResult.View == null)

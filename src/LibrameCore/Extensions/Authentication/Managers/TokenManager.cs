@@ -51,12 +51,12 @@ namespace LibrameCore.Extensions.Authentication.Managers
             // 默认令牌签名证书
             if (Options.Local.Credentials == null)
             {
-                // 默认使用 AES 密钥
+                // 默认使用 AES 密钥（256 位）
                 var key = Symmetry.KeyGenerator.FromAESKey();
                 var securityKey = new SymmetricSecurityKey(key);
 
                 Options.Local.Credentials = new SigningCredentials(securityKey,
-                    SecurityAlgorithms.HmacSha384);
+                    SecurityAlgorithms.HmacSha256Signature);
             }
 
             var jwt = new JwtSecurityToken(

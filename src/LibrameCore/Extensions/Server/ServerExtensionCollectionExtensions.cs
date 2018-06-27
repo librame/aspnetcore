@@ -11,6 +11,7 @@
 #endregion
 
 using LibrameCore.Extensions.Server;
+using LibrameCore.Extensions.Server.SensitiveWords;
 using LibrameCore.Extensions.Server.StaticPages;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
@@ -33,7 +34,10 @@ namespace LibrameStandard.Abstractions
             Action<ServerExtensionOptions> configureOptions = null)
         {
             extensions.ConfigureOptions(configureOptions);
-            
+
+            // 敏感词
+            extensions.Services.TryAddSingleton<ISensitiveWordServer, FileSensitiveWordServer>();
+
             // 静态页
             extensions.Services.TryAddSingleton<IStaticPageReader, StaticPageReader>();
             extensions.Services.TryAddSingleton<IStaticPageWriter, StaticPageWriter>();

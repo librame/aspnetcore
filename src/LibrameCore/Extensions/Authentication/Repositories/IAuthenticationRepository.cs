@@ -20,7 +20,21 @@ namespace LibrameCore.Extensions.Authentication
 {
     using Descriptors;
     using Managers;
-    
+
+    /// <summary>
+    /// 认证仓库接口。
+    /// </summary>
+    /// <typeparam name="TRole">指定的角色类型。</typeparam>
+    /// <typeparam name="TUser">指定的用户类型。</typeparam>
+    /// <typeparam name="TUserRole">指定的用户角色类型。</typeparam>
+    public interface IAuthenticationRepository<TRole, TUser, TUserRole> : IAuthenticationRepository<TRole, TUser, TUserRole, int, int, int>
+        where TRole : class, IRoleDescriptor<int>
+        where TUser : class, IUserDescriptor<int>
+        where TUserRole : class, IUserRoleDescriptor<int, int, int>
+    {
+    }
+
+
     /// <summary>
     /// 认证仓库接口。
     /// </summary>

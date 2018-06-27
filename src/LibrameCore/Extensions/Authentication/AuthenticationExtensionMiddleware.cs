@@ -210,7 +210,7 @@ namespace LibrameCore.Extensions.Authentication
             else
             {
                 // SignIn
-                _policy.AddCookieToken(context, identity.ExpirationTimeUtc, token);
+                _policy.AddToken(context, identity.ExpirationTimeUtc, token);
 
                 // Redirect ReturnUrl
                 var returnUrl = context.Request.Form["returnUrl"].ToString();

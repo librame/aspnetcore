@@ -1,8 +1,8 @@
-﻿using LibrameCore.Extensions.Filtration;
+﻿using LibrameCore.Extensions.Server;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace LibrameCore.Tests.Extensions.Filtration.SensitiveWords
+namespace LibrameCore.Tests.Extensions.Server.SensitiveWords
 {
     public class SensitiveWordTest
     {
@@ -15,7 +15,7 @@ namespace LibrameCore.Tests.Extensions.Filtration.SensitiveWords
 
             var serviceProvider = services.BuildServiceProvider();
 
-            var filter = serviceProvider.GetRequiredService<ISensitiveWordFiltration>();
+            var filter = serviceProvider.GetRequiredService<ISensitiveWordServer>();
             Assert.NotNull(filter);
 
             var content = "大刀";

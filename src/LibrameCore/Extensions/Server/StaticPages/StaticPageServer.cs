@@ -100,8 +100,6 @@ namespace LibrameCore.Extensions.Server.StaticPages
 
             if (context.Result is ViewResult)
             {
-                var routeInfo = context.RouteData.AsRouteInfo();
-
                 // 取得呈现视图的内容
                 var htmlCode = Reader.RenderToStringAsync(context)
                     .GetAwaiter().GetResult();
@@ -110,6 +108,7 @@ namespace LibrameCore.Extensions.Server.StaticPages
                 htmlCode = FormatHtmlCode(htmlCode);
 
                 // 建立静态页文件
+                var routeInfo = context.RouteData.AsRouteInfo();
                 Writer.BuildAsync(htmlCode, routeInfo).GetAwaiter().GetResult();
 
                 var result = new ContentResult();

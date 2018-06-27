@@ -52,7 +52,7 @@ namespace LibrameCore.WebPage
             // Add LibrameCore
             services.AddLibrameCore(configuration: Configuration.GetSection("Librame"));
 
-            //services.AddMvc();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,7 +90,7 @@ namespace LibrameCore.WebPage
                 extension.UsePlatformExtension();
             });
 
-            //app.UseMvc();
+            app.UseMvc();
         }
     }
 }

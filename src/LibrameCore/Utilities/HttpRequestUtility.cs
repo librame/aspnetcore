@@ -70,7 +70,9 @@ namespace LibrameStandard.Utilities
         /// <summary>
         /// 表现为绝对 URL 字符串。
         /// </summary>
-        /// <example>http://localhost:80/path?query</example>
+        /// <example>
+        /// http://localhost:80/path?query
+        /// </example>
         /// <param name="request">给定的 HTTP 请求。</param>
         /// <returns>返回字符串。</returns>
         public static string AsAbsoluteUrl(this HttpRequest request)
@@ -137,7 +139,9 @@ namespace LibrameStandard.Utilities
         /// <summary>
         /// 表现为根 URL 格式字符串。
         /// </summary>
-        /// <example>http://localhost:80</example>
+        /// <example>
+        /// http://localhost:80
+        /// </example>
         /// <param name="request">给定的 HTTP 请求。</param>
         /// <returns>返回字符串。</returns>
         public static string AsRootUrl(this HttpRequest request)
@@ -162,12 +166,18 @@ namespace LibrameStandard.Utilities
 
 
         /// <summary>
-        /// 是否为相对虚拟路径。
+        /// 是否为绝对虚拟路径。
         /// </summary>
+        /// <example>
+        /// ~/VirtualPath or /VirtualPath.
+        /// </example>
         /// <param name="path">给定的路径。</param>
         /// <returns>返回布尔值。</returns>
-        public static bool IsRelativeVirtualPath(this string path)
+        public static bool IsAbsoluteVirtualPath(this string path)
         {
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
             return (path.StartsWith("~/") || path.StartsWith("/"));
         }
 
@@ -180,44 +190,29 @@ namespace LibrameStandard.Utilities
         /// <returns>返回布尔值。</returns>
         public static bool IsLocalUrl(this string pathOrUrl, HttpRequest request)
         {
-            if (string.IsNullOrWhiteSpace(pathOrUrl))
-                return false;
-
-            if (pathOrUrl.StartsWith("~/"))
-                return true;
+            return IsLocalUrl(pathOrUrl, request.Host.ToString());
+        }
+        /// <summary>
+        /// 是否为本地虚拟路径。
+        /// </summary>
+        /// <param name="pathOrUrl">给定的路径或 URL 字符串。</param>
+        /// <param name="localhost">给定的本地主机名（如：localhost:80）。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsLocalUrl(this string pathOrUrl, string localhost)
+        {
+            if (pathOrUrl.IsAbsoluteVirtualPath())
+                return true; // Local
 
             if (pathOrUrl.StartsWith("//") || pathOrUrl.StartsWith("/\\"))
                 return false;
-
-            // at this point is the url starts with "/" it is local
-            if (pathOrUrl.StartsWith("/"))
-                return true;
-
-            // at this point, check for an fully qualified url
+            
             try
             {
                 var uri = new Uri(pathOrUrl);
-
-                // same host and port number
-                if (uri.Authority.Equals(request.Host.ToString(), StringComparison.OrdinalIgnoreCase))
-                    return true;
-
-                //// finally, check the base url from the settings
-                //var workContext = request.RequestContext.GetWorkContext();
-                //if (workContext != null) {
-                //    var baseUrl = workContext.CurrentSite.BaseUrl;
-                //    if (!string.IsNullOrWhiteSpace(baseUrl)) {
-                //        if (uri.Authority.Equals(new Uri(baseUrl).Authority, StringComparison.OrdinalIgnoreCase)) {
-                //            return true;
-                //        }
-                //    }
-                //}
-
-                return false;
+                return uri.Authority.Equals(localhost, StringComparison.OrdinalIgnoreCase);
             }
-            catch
+            catch (Exception)
             {
-                // mall-formed url e.g, "abcdef"
                 return false;
             }
         }

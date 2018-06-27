@@ -11,6 +11,7 @@
 #endregion
 
 using LibrameStandard.Abstractions;
+using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
@@ -37,12 +38,12 @@ namespace LibrameCore.Extensions.Authentication
 
         
         /// <summary>
-        /// 构造一个 Librame 认证选项。
+        /// 构造一个 <see cref="AuthenticationExtensionOptions"/> 实例。
         /// </summary>
         public AuthenticationExtensionOptions()
             : base()
         {
-            ClaimsIssuer = IPEndPointDescriptor.DEFAULT_DOMAIN;
+            ClaimsIssuer = IPAddressEndPoint.DEFAULT_HOST;
         }
 
 
@@ -63,7 +64,7 @@ namespace LibrameCore.Extensions.Authentication
         {
             Name = DEFAULT_COOKIE,
             Path = "/",
-            Domain = IPEndPointDescriptor.DEFAULT_DOMAIN,
+            Domain = IPAddressEndPoint.DEFAULT_HOST,
             HttpOnly = true,
             Expiration = TimeSpan.FromDays(14)
         };
@@ -86,24 +87,25 @@ namespace LibrameCore.Extensions.Authentication
         /// <returns>返回布尔值。</returns>
         public bool IsHostRegistered(string url)
         {
-            Uri uri = null;
-
+            if (url.IsAbsoluteVirtualPath())
+                return true; // 表示本机
+            
             try
             {
-                uri = new Uri(url);
+                var uri = new Uri(url);
+
+                // 如果客户端集合未配置（表示未启用客户端鉴权），或者配置为本机
+                if (Clients.Count < 1 || Local.EndPoint.ToString() == uri.Authority)
+                    return true;
+
+                // 查询客户端集合
+                var exist = Clients.FirstOrDefault(c => c.EndPoint.ToString() == uri.Authority);
+                return (exist != null);
             }
-            catch
+            catch (Exception)
             {
                 return false;
             }
-
-            // 如果客户端集合未配置（表示未启用客户端鉴权），或者为本机
-            if (Clients.Count < 1 || Local.EndPoint.ToString() == uri.Authority)
-                return true;
-
-            // 查询客户端集合
-            var exist = Clients.FirstOrDefault(c => c.EndPoint.ToString() == uri.Authority);
-            return (exist != null);
         }
 
 
@@ -115,9 +117,9 @@ namespace LibrameCore.Extensions.Authentication
         public class LocalOptions
         {
             /// <summary>
-            /// IP 端点。
+            /// IP 地址端点。
             /// </summary>
-            public IPEndPointDescriptor EndPoint { get; set; } = new IPEndPointDescriptor();
+            public IPAddressEndPoint EndPoint { get; set; } = new IPAddressEndPoint();
 
             /// <summary>
             /// 拒绝访问路径。
@@ -152,9 +154,9 @@ namespace LibrameCore.Extensions.Authentication
         public class ClientOptions
         {
             /// <summary>
-            /// IP 端点。
+            /// IP 地址端点。
             /// </summary>
-            public IPEndPointDescriptor EndPoint { get; set; } = new IPEndPointDescriptor();
+            public IPAddressEndPoint EndPoint { get; set; } = new IPAddressEndPoint();
         }
 
         #endregion

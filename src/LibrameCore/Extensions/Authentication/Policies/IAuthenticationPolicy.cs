@@ -10,7 +10,6 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using System;
 
@@ -29,11 +28,6 @@ namespace LibrameCore.Extensions.Authentication
         ITokenManager TokenManager { get; }
 
         /// <summary>
-        /// Cookie 选项。
-        /// </summary>
-        CookieAuthenticationOptions CookieOptions { get; }
-
-        /// <summary>
         /// 认证选项。
         /// </summary>
         AuthenticationExtensionOptions Options { get; }
@@ -48,20 +42,20 @@ namespace LibrameCore.Extensions.Authentication
 
 
         /// <summary>
-        /// 添加 Cookie 令牌。
+        /// 添加令牌。
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <param name="expires">给定的过期时间。</param>
         /// <param name="token">给定的令牌。</param>
         /// <returns>返回令牌。</returns>
-        string AddCookieToken(HttpContext context, DateTimeOffset expires, string token);
+        string AddToken(HttpContext context, DateTimeOffset expires, string token);
 
 
         /// <summary>
-        /// 删除 Cookie 令牌。
+        /// 删除令牌。
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <returns>返回令牌。</returns>
-        string DeleteCookieToken(HttpContext context);
+        string DeleteToken(HttpContext context);
     }
 }

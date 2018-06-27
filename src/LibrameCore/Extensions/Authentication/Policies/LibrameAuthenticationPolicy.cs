@@ -26,6 +26,11 @@ namespace LibrameCore.Extensions.Authentication.Policies
     /// </summary>
     public class LibrameAuthenticationPolicy : IAuthenticationPolicy
     {
+        /// <summary>
+        /// Cookie 认证选项。
+        /// </summary>
+        protected CookieAuthenticationOptions CookieAuthOptions;
+
 
         /// <summary>
         /// 构造一个 <see cref="LibrameAuthenticationPolicy"/> 实例。
@@ -36,7 +41,7 @@ namespace LibrameCore.Extensions.Authentication.Policies
             IOptions<CookieAuthenticationOptions> cookieOptions)
         {
             TokenManager = tokenManager.NotNull(nameof(tokenManager));
-            CookieOptions = cookieOptions.NotNull(nameof(cookieOptions)).Value;
+            CookieAuthOptions = cookieOptions.NotNull(nameof(cookieOptions)).Value;
         }
 
 
@@ -44,12 +49,7 @@ namespace LibrameCore.Extensions.Authentication.Policies
         /// 令牌管理器。
         /// </summary>
         public ITokenManager TokenManager { get; }
-
-        /// <summary>
-        /// Cookie 选项。
-        /// </summary>
-        public CookieAuthenticationOptions CookieOptions { get; }
-
+        
         /// <summary>
         /// 认证选项。
         /// </summary>
@@ -63,30 +63,23 @@ namespace LibrameCore.Extensions.Authentication.Policies
         /// <returns>返回认证状态与身份标识。</returns>
         public virtual (AuthenticationStatus Status, LibrameClaimsIdentity Identity) Authenticate(HttpContext context)
         {
-            // 优先检测 Cookie 是否存在
+            // 优先检测 Cookie
             var token = GetCookieToken(context);
             if (!string.IsNullOrEmpty(token))
                 return (AuthenticationStatus.Cookie, TokenManager.Decode(token));
 
-            // 检测请求头部信息是否存在
-            var authentication = context.Request.Headers["Authentication"].ToString();
-            if (!string.IsNullOrEmpty(authentication))
-            {
-                // 认证格式：Scheme<空格>Parameter
-                var header = AuthenticationHeaderValue.Parse(authentication);
-                if (header.Scheme == "Bearer" || header.Scheme == "Librame")
-                    return (AuthenticationStatus.Header, TokenManager.Decode(header.Parameter));
-                else
-                    return (AuthenticationStatus.Header, null); // 不被支持的头部认证信息
-            }
+            // 其次检测 Header
+            token = GetHeaderToken(context);
+            if (!string.IsNullOrEmpty(token))
+                return (AuthenticationStatus.Header, TokenManager.Decode(token));
 
-            // 最后检测查询参数
-            token = context.Request.Query["token"].ToString();
+            // 最后检测 Query
+            token = GetQueryToken(context);
             if (!string.IsNullOrEmpty(token))
                 return (AuthenticationStatus.Query, TokenManager.Decode(token));
 
             // 表单无提交时会抛出异常
-            //token = context.Request.Form["token"].ToString();
+            //token = GetFormToken(context);
             //if (!string.IsNullOrEmpty(token))
             //    return (AuthenticationStatus.Form, TokenManager.Decode(token));
 
@@ -95,50 +88,152 @@ namespace LibrameCore.Extensions.Authentication.Policies
 
 
         /// <summary>
-        /// 添加 Cookie 令牌。
+        /// 添加令牌。
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <param name="expires">给定的过期时间。</param>
         /// <param name="token">给定的令牌。</param>
         /// <returns>返回令牌。</returns>
-        public virtual string AddCookieToken(HttpContext context, DateTimeOffset expires, string token)
+        public virtual string AddToken(HttpContext context, DateTimeOffset expires, string token)
         {
-            //var cookies = CookieOptions.Cookie.Build(context, expires);
-            var cookies = Options.Cookie.Build(context, expires);
-
-            CookieOptions.CookieManager.AppendResponseCookie(context, Options.Cookie.Name, token, cookies);
+            AddCookieToken(context, expires, token);
+            AddHeaderToken(context, expires, token);
 
             return token;
         }
 
 
         /// <summary>
-        /// 删除 Cookie 令牌。
+        /// 删除令牌。
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
         /// <returns>返回令牌。</returns>
-        public virtual string DeleteCookieToken(HttpContext context)
+        public virtual string DeleteToken(HttpContext context)
         {
-            var token = GetCookieToken(context);
-
-            var cookies = CookieOptions.Cookie.Build(context);
-            cookies.Expires = null;
-
-            CookieOptions.CookieManager.DeleteCookie(context, Options.Cookie.Name, cookies);
+            var token = DeleteCookieToken(context);
+            token = DeleteHeaderToken(context);
 
             return token;
         }
 
+
+        #region Cookie
 
         /// <summary>
         /// 获取 Cookie 令牌。
         /// </summary>
         /// <param name="context">给定的 HTTP 上下文。</param>
-        /// <returns>返回令牌。</returns>
+        /// <returns>返回字符串。</returns>
         protected virtual string GetCookieToken(HttpContext context)
         {
-            return CookieOptions.CookieManager.GetRequestCookie(context, Options.Cookie.Name);
+            return CookieAuthOptions.CookieManager.GetRequestCookie(context, Options.Cookie.Name);
         }
+
+        /// <summary>
+        /// 添加 Cookie 令牌。
+        /// </summary>
+        /// <param name="context">给定的 HTTP 上下文。</param>
+        /// <param name="expires">给定的过期时间。</param>
+        /// <param name="token">给定的令牌。</param>
+        protected virtual void AddCookieToken(HttpContext context, DateTimeOffset expires, string token)
+        {
+            var cookies = Options.Cookie.Build(context, expires);
+
+            CookieAuthOptions.CookieManager.AppendResponseCookie(context, Options.Cookie.Name, token, cookies);
+        }
+
+        /// <summary>
+        /// 删除 Cookie 令牌。
+        /// </summary>
+        /// <param name="context">给定的 HTTP 上下文。</param>
+        /// <returns>返回字符串。</returns>
+        protected virtual string DeleteCookieToken(HttpContext context)
+        {
+            var token = GetCookieToken(context);
+
+            var cookies = CookieAuthOptions.Cookie.Build(context);
+            cookies.Expires = null;
+
+            CookieAuthOptions.CookieManager.DeleteCookie(context, Options.Cookie.Name, cookies);
+
+            return token;
+        }
+
+        #endregion
+
+
+        #region Header
+
+        /// <summary>
+        /// 获取 Header 令牌。
+        /// </summary>
+        /// <param name="context">给定的 HTTP 上下文。</param>
+        /// <returns>返回字符串。</returns>
+        protected virtual string GetHeaderToken(HttpContext context)
+        {
+            var authentication = context.Request.Headers["Authentication"].ToString();
+
+            if (!string.IsNullOrEmpty(authentication))
+            {
+                // 认证格式：Scheme<空格>Parameter
+                var headerValue = AuthenticationHeaderValue.Parse(authentication);
+
+                // 仅支持 Bearer/Librame 格式
+                if (headerValue.Scheme == "Bearer" || headerValue.Scheme == "Librame")
+                    authentication = headerValue.Parameter;
+            }
+
+            return authentication;
+        }
+
+        /// <summary>
+        /// 添加 Header 令牌。
+        /// </summary>
+        /// <param name="context">给定的 HTTP 上下文。</param>
+        /// <param name="expires">给定的过期时间。</param>
+        /// <param name="token">给定的令牌。</param>
+        protected virtual void AddHeaderToken(HttpContext context, DateTimeOffset expires, string token)
+        {
+            var headerValue = new AuthenticationHeaderValue("Bearer", token);
+
+            context.Request.Headers.Add("Authentication", headerValue.ToString());
+        }
+
+        /// <summary>
+        /// 删除 Header 令牌。
+        /// </summary>
+        /// <param name="context">给定的 HTTP 上下文。</param>
+        /// <returns>返回字符串。</returns>
+        protected virtual string DeleteHeaderToken(HttpContext context)
+        {
+            var token = GetHeaderToken(context);
+            context.Request.Headers.Remove("Authentication");
+
+            return token;
+        }
+
+        #endregion
+
+        
+        /// <summary>
+        /// 获取 Query 令牌。
+        /// </summary>
+        /// <param name="context">给定的 HTTP 上下文。</param>
+        /// <returns>返回令牌或空字符串。</returns>
+        protected virtual string GetQueryToken(HttpContext context)
+        {
+            return context.Request.Query["token"].ToString();
+        }
+
+        ///// <summary>
+        ///// 获取 Form 令牌。
+        ///// </summary>
+        ///// <param name="context">给定的 HTTP 上下文。</param>
+        ///// <returns>返回令牌或空字符串。</returns>
+        //protected virtual string GetFormToken(HttpContext context)
+        //{
+        //    return context.Request.Form["token"].ToString();
+        //}
 
     }
 }

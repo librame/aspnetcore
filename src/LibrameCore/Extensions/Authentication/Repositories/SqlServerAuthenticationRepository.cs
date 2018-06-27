@@ -31,6 +31,37 @@ namespace LibrameCore.Extensions.Authentication.Repositories
     /// <typeparam name="TRole">指定的角色类型。</typeparam>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     /// <typeparam name="TUserRole">指定的用户角色类型。</typeparam>
+    public class SqlServerAuthenticationRepository<TRole, TUser, TUserRole> : SqlServerAuthenticationRepository<TRole, TUser, TUserRole, int, int, int>, IAuthenticationRepository<TRole, TUser, TUserRole>
+        where TRole : class, IRoleDescriptor<int>
+        where TUser : class, IUserDescriptor<int>
+        where TUserRole : class, IUserRoleDescriptor<int, int, int>
+    {
+        /// <summary>
+        /// 构造一个 <see cref="SqlServerAuthenticationRepository{TRole, TUser, TUserRole}"/> 实例。
+        /// </summary>
+        /// <param name="options">给定的认证选项。</param>
+        /// <param name="roleRepository">给定的角色仓库。</param>
+        /// <param name="userRepository">给定的用户仓库。</param>
+        /// <param name="userRoleRepository">给定的用户角色仓库。</param>
+        /// <param name="passwordManager">密码管理器。</param>
+        public SqlServerAuthenticationRepository(IOptionsMonitor<AuthenticationExtensionOptions> options,
+            ISqlServerRepositoryWriter<TRole> roleRepository,
+            ISqlServerRepositoryWriter<TUser> userRepository,
+            ISqlServerRepositoryWriter<TUserRole> userRoleRepository,
+            IPasswordManager passwordManager)
+            : base(options, roleRepository, userRepository, userRoleRepository, passwordManager)
+        {
+        }
+
+    }
+
+
+    /// <summary>
+    /// SQLServer 认证仓库。
+    /// </summary>
+    /// <typeparam name="TRole">指定的角色类型。</typeparam>
+    /// <typeparam name="TUser">指定的用户类型。</typeparam>
+    /// <typeparam name="TUserRole">指定的用户角色类型。</typeparam>
     /// <typeparam name="TRoleId">指定的角色主键类型。</typeparam>
     /// <typeparam name="TUserId">指定的用户主键类型。</typeparam>
     /// <typeparam name="TUserRoleId">指定的用户角色主键类型。</typeparam>
@@ -154,7 +185,6 @@ namespace LibrameCore.Extensions.Authentication.Repositories
 
             // 查找用户
             var user = await UserRepository.GetAsync(p => p.Name == name);
-
             if (user == null)
                 return (IdentityResultHelper.NameNotExists, user);
 

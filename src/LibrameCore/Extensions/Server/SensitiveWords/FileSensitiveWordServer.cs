@@ -17,18 +17,18 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
 
-namespace LibrameCore.Extensions.Filtration.SensitiveWords
+namespace LibrameCore.Extensions.Server.SensitiveWords
 {
     /// <summary>
-    /// 文件敏感词过滤。
+    /// 文件敏感词服务器。
     /// </summary>
-    public class FileSensitiveWordFiltration : AbstractFiltrationExtensionService<FileSensitiveWordFiltration>, ISensitiveWordFiltration
+    public class FileSensitiveWordServer : AbstractServerExtensionService<FileSensitiveWordServer>, ISensitiveWordServer
     {
         /// <summary>
-        /// 构造一个 <see cref="FileSensitiveWordFiltration"/> 实例。
+        /// 构造一个 <see cref="FileSensitiveWordServer"/> 实例。
         /// </summary>
-        /// <param name="options">给定的过滤选项。</param>
-        public FileSensitiveWordFiltration(IOptionsMonitor<FiltrationExtensionOptions> options)
+        /// <param name="options">给定的服务器选项。</param>
+        public FileSensitiveWordServer(IOptionsMonitor<ServerExtensionOptions> options)
             : base(options)
         {
         }

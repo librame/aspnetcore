@@ -12,11 +12,11 @@ namespace LibrameCore.WebMvc.Controllers
 
     public class AccountController : Controller
     {
-        private readonly IAuthenticationRepository<Role, User, UserRole, int, int, int> _repository = null;
+        private readonly IAuthenticationRepository<Role, User, UserRole> _repository = null;
         private readonly IAuthenticationPolicy _policy = null;
 
 
-        public AccountController(IAuthenticationRepository<Role, User, UserRole, int, int, int> repository,
+        public AccountController(IAuthenticationRepository<Role, User, UserRole> repository,
             IAuthenticationPolicy policy)
         {
             _repository = repository.NotNull(nameof(repository));
@@ -37,12 +37,10 @@ namespace LibrameCore.WebMvc.Controllers
         
         public IActionResult Login(string returnUrl)
         {
-            if (!string.IsNullOrEmpty(returnUrl) && !returnUrl.IsRelativeVirtualPath())
+            // 为空表示不检查
+            if (!string.IsNullOrEmpty(returnUrl) && !_policy.Options.IsHostRegistered(returnUrl))
             {
-                if (!_policy.Options.IsHostRegistered(returnUrl))
-                {
-                    return new JsonResult(new { message = "未授权的主机请求" });
-                }
+                return new JsonResult(new { message = "未授权的主机请求" });
             }
 
             if (!User.Identity.IsAuthenticated)
@@ -56,15 +54,10 @@ namespace LibrameCore.WebMvc.Controllers
         [LibrameAuthorize]
         public IActionResult Logout(string returnUrl)
         {
-            _policy.DeleteCookieToken(HttpContext);
+            _policy.DeleteToken(HttpContext);
 
             if (!string.IsNullOrEmpty(returnUrl))
             {
-                if (!returnUrl.IsRelativeVirtualPath() && !_policy.Options.IsHostRegistered(returnUrl))
-                {
-                    return new JsonResult(new { message = "未授权的主机请求" });
-                }
-
                 return Redirect(returnUrl);
             }
 

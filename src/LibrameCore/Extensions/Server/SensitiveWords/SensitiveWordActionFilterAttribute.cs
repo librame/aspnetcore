@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace LibrameCore.Extensions.Filtration.SensitiveWords
+namespace LibrameCore.Extensions.Server.SensitiveWords
 {
     /// <summary>
     /// 敏感词动作过滤器特性。
@@ -38,7 +38,7 @@ namespace LibrameCore.Extensions.Filtration.SensitiveWords
         /// <param name="context">给定的动作执行前上下文。</param>
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            var filter = context.HttpContext.RequestServices.GetService<ISensitiveWordFiltration>();
+            var filter = context.HttpContext.RequestServices.GetService<ISensitiveWordServer>();
 
             filter.Filting(context);
         }

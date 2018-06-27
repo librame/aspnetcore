@@ -17,57 +17,67 @@ using System.Text;
 namespace LibrameCore.Extensions.Authentication
 {
     /// <summary>
-    /// IP 端点描述符。
+    /// IP 地址端点。
     /// </summary>
-    public class IPEndPointDescriptor
+    public class IPAddressEndPoint
     {
         /// <summary>
-        /// 默认域名。
+        /// 默认主机。
         /// </summary>
-        internal const string DEFAULT_DOMAIN = "localhost";
+        public const string DEFAULT_HOST = "localhost";
 
         /// <summary>
-        /// 默认端口号。
+        /// 默认端口。
         /// </summary>
-        private const int DEFAULT_PORT = 80;
+        public const int DEFAULT_PORT = 80;
 
 
         /// <summary>
-        /// 构造一个 <see cref="IPEndPointDescriptor"/> 默认实例。
+        /// 构造一个 <see cref="IPAddressEndPoint"/> 默认实例。
         /// </summary>
-        public IPEndPointDescriptor()
-            : this(DEFAULT_DOMAIN)
+        public IPAddressEndPoint()
+            : this(DEFAULT_HOST)
         {
         }
         /// <summary>
-        /// 构造一个 <see cref="IPEndPointDescriptor"/> 实例。
+        /// 构造一个 <see cref="IPAddressEndPoint"/> 实例。
         /// </summary>
         /// <param name="host">给定的主机。</param>
-        public IPEndPointDescriptor(string host)
+        public IPAddressEndPoint(string host)
             : this(host, DEFAULT_PORT)
         {
         }
         /// <summary>
-        /// 构造一个 <see cref="IPEndPointDescriptor"/> 实例。
+        /// 构造一个 <see cref="IPAddressEndPoint"/> 实例。
         /// </summary>
         /// <param name="host">给定的主机。</param>
         /// <param name="port">给定的端口号。</param>
-        public IPEndPointDescriptor(string host, int port)
+        public IPAddressEndPoint(string host, int port)
         {
-            Host = host.NotEmpty(nameof(host));
-            Port = port.NotOutOfRange(IPEndPoint.MinPort, IPEndPoint.MaxPort, nameof(port));
+            Host = host;
+            Port = port;
         }
 
 
+        private string _host = null;
         /// <summary>
         /// 主机。
         /// </summary>
-        public string Host { get; }
+        public string Host
+        {
+            get { return _host.AsOrDefault(DEFAULT_HOST); }
+            set { _host = value.NotEmpty(nameof(value)); }
+        }
 
+        private int _port = 0;
         /// <summary>
         /// 端口。
         /// </summary>
-        public int Port { get; }
+        public int Port
+        {
+            get { return _port.AsOrDefault(DEFAULT_PORT, p => p == 0); }
+            set { _port = value.NotOutOfRange(IPEndPoint.MinPort, IPEndPoint.MaxPort, nameof(value)); }
+        }
 
 
         /// <summary>
@@ -77,10 +87,10 @@ namespace LibrameCore.Extensions.Authentication
         /// <returns>返回布尔值。</returns>
         public override bool Equals(object obj)
         {
-            if (null == obj || !(obj is IPEndPointDescriptor))
+            if (null == obj || !(obj is IPAddressEndPoint))
                 return false;
 
-            var ep = (obj as IPEndPointDescriptor);
+            var ep = (obj as IPAddressEndPoint);
 
             return (ep.Host == Host && ep.Port == Port);
         }
@@ -118,7 +128,7 @@ namespace LibrameCore.Extensions.Authentication
         /// </summary>
         /// <param name="endPoint">给定的端点字符串。</param>
         /// <returns>返回端点选项。</returns>
-        public static IPEndPointDescriptor Parse(string endPoint)
+        public static IPAddressEndPoint Parse(string endPoint)
         {
             endPoint.NotEmpty(nameof(endPoint));
 
@@ -126,10 +136,10 @@ namespace LibrameCore.Extensions.Authentication
             {
                 var pair = endPoint.SplitPair(":");
 
-                return new IPEndPointDescriptor(pair.Key, pair.Value.AsOrDefault(DEFAULT_PORT, v => int.Parse(v)));
+                return new IPAddressEndPoint(pair.Key, pair.Value.AsOrDefault(DEFAULT_PORT, v => int.Parse(v)));
             }
 
-            return new IPEndPointDescriptor(endPoint);
+            return new IPAddressEndPoint(endPoint);
         }
 
 
@@ -141,7 +151,7 @@ namespace LibrameCore.Extensions.Authentication
         /// <param name="ep1">给定的端点选项1。</param>
         /// <param name="ep2">给定的端点选项2。</param>
         /// <returns>返回布尔值。</returns>
-        public static bool operator ==(IPEndPointDescriptor ep1, IPEndPointDescriptor ep2)
+        public static bool operator ==(IPAddressEndPoint ep1, IPAddressEndPoint ep2)
         {
             if (ep1.Equals(null) || ep2.Equals(null))
                 return false;
@@ -155,7 +165,7 @@ namespace LibrameCore.Extensions.Authentication
         /// <param name="ep1">给定的端点选项1。</param>
         /// <param name="ep2">给定的端点选项2。</param>
         /// <returns>返回布尔值。</returns>
-        public static bool operator !=(IPEndPointDescriptor ep1, IPEndPointDescriptor ep2)
+        public static bool operator !=(IPAddressEndPoint ep1, IPAddressEndPoint ep2)
         {
             return !(ep1 == ep2);
         }
@@ -166,7 +176,7 @@ namespace LibrameCore.Extensions.Authentication
         /// </summary>
         /// <param name="ep">给定的端点选项。</param>
         /// <returns>返回布尔值。</returns>
-        public static bool operator true(IPEndPointDescriptor ep)
+        public static bool operator true(IPAddressEndPoint ep)
         {
             return (!ep.Equals(null));
         }
@@ -176,7 +186,7 @@ namespace LibrameCore.Extensions.Authentication
         /// </summary>
         /// <param name="ep">给定的端点选项。</param>
         /// <returns>返回布尔值。</returns>
-        public static bool operator false(IPEndPointDescriptor ep)
+        public static bool operator false(IPAddressEndPoint ep)
         {
             return (ep.Equals(null));
         }

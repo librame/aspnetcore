@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>2.21.1806.261</Version>
+    <Version>2.21.1806.271</Version>
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
     <Description>Librame for LibrameCore</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Librame for LibrameCore</PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>2.21.1806.261</AssemblyVersion>
-    <FileVersion>2.21.1806.261</FileVersion>
+    <AssemblyVersion>2.21.1806.271</AssemblyVersion>
+    <FileVersion>2.21.1806.271</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

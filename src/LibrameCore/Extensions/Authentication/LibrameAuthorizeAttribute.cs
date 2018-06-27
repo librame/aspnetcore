@@ -52,8 +52,6 @@ namespace LibrameCore.Extensions.Authentication
             
             // 开始认证
             var auth = policy.Authenticate(context.HttpContext);
-            
-            
             if (auth.Identity == null || !auth.Identity.IsAuthenticated)
             {
                 if (context.HttpContext.Request.IsAjaxRequest())

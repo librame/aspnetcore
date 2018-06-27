@@ -58,7 +58,7 @@ namespace LibrameCore.Extensions.Authentication
                 var identity = (user.Identity as LibrameClaimsIdentity);
                 var token = _policy.TokenManager.Encode(identity);
 
-                _policy.AddCookieToken(Context, identity.ExpirationTimeUtc, token);
+                _policy.AddToken(Context, identity.ExpirationTimeUtc, token);
             }
 
             return Task.CompletedTask;
@@ -72,7 +72,7 @@ namespace LibrameCore.Extensions.Authentication
         /// <returns>返回一个任务。</returns>
         public Task SignOutAsync(AuthenticationProperties properties)
         {
-            _policy.DeleteCookieToken(Context);
+            _policy.DeleteToken(Context);
 
             return Task.CompletedTask;
         }

@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace LibrameCore.WebMvc.Controllers
 {
-    using Extensions.Filtration;
-    using Extensions.Filtration.SensitiveWords;
+    using Extensions.Server;
+    using Extensions.Server.SensitiveWords;
     using Extensions.Server.StaticPages;
     using WebMvc.Models;
 
@@ -34,6 +34,11 @@ namespace LibrameCore.WebMvc.Controllers
             return View();
         }
 
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
@@ -49,7 +54,7 @@ namespace LibrameCore.WebMvc.Controllers
 
         public IActionResult SensitiveWord()
         {
-            var filter = HttpContext.RequestServices.GetService<ISensitiveWordFiltration>();
+            var filter = HttpContext.RequestServices.GetService<ISensitiveWordServer>();
 
             return View(filter.Options);
         }

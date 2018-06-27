@@ -90,8 +90,7 @@ namespace LibrameCore.Extensions.Server.StaticPages
         {
             if (string.IsNullOrEmpty(SavePath))
             {
-                routeInfo.NotNull(nameof(routeInfo));
-                SavePath = GetSavePath(routeInfo);
+                SavePath = GetSavePath(routeInfo.NotNull(nameof(routeInfo)));
             }
 
             using (var fs = File.Open(SavePath, FileMode.Create))

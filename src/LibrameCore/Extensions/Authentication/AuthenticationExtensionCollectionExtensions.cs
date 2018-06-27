@@ -47,6 +47,7 @@ namespace LibrameStandard.Abstractions
 
             // 注：因 SqlServerDbContext/Writer 在 EFCore 中为范围实例
             // 所以 IAuthenticationRepository 只能注册为范围实例
+            extensions.Services.TryAddScoped(typeof(IAuthenticationRepository<,,>), typeof(SqlServerAuthenticationRepository<,,>));
             extensions.Services.TryAddScoped(typeof(IAuthenticationRepository<,,,,,>), typeof(SqlServerAuthenticationRepository<,,,,,>));
             
             // Add Authentication

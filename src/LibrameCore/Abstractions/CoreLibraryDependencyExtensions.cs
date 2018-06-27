@@ -34,9 +34,6 @@ namespace LibrameCore.Abstractions
             // 添加认证扩展
             dependency.Extensions.AddAuthenticationExtension(options.PostConfigureAuthentication);
 
-            // 添加过滤扩展
-            dependency.Extensions.AddFiltrationExtension(options.PostConfigureFiltration);
-
             // 添加服务器扩展
             dependency.Extensions.AddServerExtension(options.PostConfigureServer);
 

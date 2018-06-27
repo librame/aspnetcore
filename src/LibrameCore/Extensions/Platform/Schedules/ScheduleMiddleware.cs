@@ -51,16 +51,16 @@ namespace LibrameStandard.Extensions.Platform
         /// <returns>返回异步操作。</returns>
         public Task Invoke(HttpContext context)
         {
-            var schedule = context.RequestServices.GetRequiredService<ISchedulePlatform>();
-            //schedule.WatchingAssemblies = true;
-            schedule.StartJobs().Wait();
-
             // If the request path doesn't match, skip
             if (!context.Request.Path.Equals("/Schedules", StringComparison.Ordinal))
             {
                 return Next.Invoke(context);
             }
-            
+
+            var schedule = context.RequestServices.GetRequiredService<ISchedulePlatform>();
+            //schedule.WatchingAssemblies = true;
+            schedule.StartJobs().Wait();
+
             var allJobs = new List<IJobDetail>();
 
             var jobGroups = schedule.Scheduler.GetJobGroupNames().Result;
