@@ -184,7 +184,7 @@ namespace LibrameCore.Extensions.Authentication
             }
 
             // Login Successed
-            //await LoginSuccessed(context, result);
+            await LoginSuccessed(context, account.User);
 
             // Identity
             var roleNames = await _repository.GetRoleNamesAsync(account.User.Name);
@@ -227,6 +227,19 @@ namespace LibrameCore.Extensions.Authentication
             }
 
             return;
+        }
+
+
+        /// <summary>
+        /// 登陆成功。
+        /// </summary>
+        /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
+        /// <param name="user">给定的用户。</param>
+        /// <returns>返回一个异步操作。</returns>
+        protected virtual Task LoginSuccessed(HttpContext context, TUser user)
+        {
+            // Successed
+            return Task.CompletedTask;
         }
 
     }

@@ -12,15 +12,14 @@ namespace LibrameCore.WebMvc.Controllers
 
     public class AccountController : Controller
     {
-        private readonly IAuthenticationRepository<Role, User, UserRole> _repository = null;
         private readonly IAuthenticationPolicy _policy = null;
-
-
-        public AccountController(IAuthenticationRepository<Role, User, UserRole> repository,
-            IAuthenticationPolicy policy)
+        private readonly IAuthenticationRepository<Role, User, UserRole> _repository = null;
+        
+        public AccountController(IAuthenticationPolicy policy,
+            IAuthenticationRepository<Role, User, UserRole> repository)
         {
-            _repository = repository.NotNull(nameof(repository));
             _policy = policy.NotNull(nameof(policy));
+            _repository = repository.NotNull(nameof(repository));
         }
 
 
@@ -46,7 +45,7 @@ namespace LibrameCore.WebMvc.Controllers
             if (!User.Identity.IsAuthenticated)
                 ViewBag.ReturnUrl = returnUrl;
 
-            // 由 TokenHandler 实现
+            // 由 AuthenticationExtensionMiddleware 实现
             return View();
         }
 
