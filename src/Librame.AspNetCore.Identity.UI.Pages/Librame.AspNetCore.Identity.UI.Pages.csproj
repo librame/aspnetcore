@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Version>5.20.1810.281</Version>
+    <Authors>Librame Pang</Authors>
+    <Company>librame.net</Company>
+    <Description>Librame.AspNetCore.Identity.UI.Pages</Description>
+    <Copyright>Copyright © 2012-2018</Copyright>
+    <PackageLicenseUrl>https://github.com/librame/LibrameStandard/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/librame/LibrameStandard</PackageProjectUrl>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
+    <RepositoryUrl>https://github.com/librame</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>LibrameCore,Librame,ASP.NETCore.NETCore,.NETStandard,Identity</PackageTags>
+    <PackageReleaseNotes>Librame.AspNetCore.Identity.UI.Pages</PackageReleaseNotes>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>5.20.1810.281</AssemblyVersion>
+    <FileVersion>5.20.1810.281</FileVersion>
+    <NeutralLanguage>zh-CN</NeutralLanguage>
+    <RootNamespace>Librame.AspNetCore.Identity.UI</RootNamespace>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <ProvideApplicationPartFactoryAttributeTypeName>Microsoft.AspNetCore.Mvc.ApplicationParts.NullApplicationPartFactory, Microsoft.AspNetCore.Mvc.Core</ProvideApplicationPartFactoryAttributeTypeName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Identity.UI.Pages.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot/**/*" />
+    <EmbeddedResource Remove="wwwroot/**/*.map" />
+    <EmbeddedResource Remove="wwwroot/**/*.min.*" />
+    <EmbeddedResource Remove="wwwroot/**/.bower.json" />
+    <EmbeddedResource Remove="wwwroot/**/LICENSE*" />
+    <None Remove="wwwroot/**/*.map" />
+    <None Remove="wwwroot/**/*.min.*" />
+    <None Remove="wwwroot/**/.bower.json" />
+    <None Remove="wwwroot/**/LICENSE*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Librame.AspNetCore.Identity.UI.Abstractions\Librame.AspNetCore.Identity.UI.Abstractions.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore.Identity\Librame.AspNetCore.Identity.csproj" />
+  </ItemGroup>
+
+</Project>
