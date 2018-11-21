@@ -37,13 +37,14 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 构造一个 <see cref="AbstractIdentityUserDbContext{TDbContext, TUser}"/> 实例。
         /// </summary>
-        /// <param name="auditResolver">给定的 <see cref="IAuditResolver"/>。</param>
+        /// <param name="trackerContext">给定的 <see cref="IChangeTrackerContext"/>。</param>
+        /// <param name="tenantContext">给定的 <see cref="ITenantContext"/>。</param>
         /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="logger">给定的 <see cref="ILogger{TDbContext}"/>。</param>
         /// <param name="dbContextOptions">给定的 <see cref="DbContextOptions{TDbContext}"/>。</param>
-        public AbstractIdentityUserDbContext(IAuditResolver auditResolver, IOptions<IdentityBuilderOptions> builderOptions,
-            ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
-            : base(auditResolver, builderOptions, logger, dbContextOptions)
+        public AbstractIdentityUserDbContext(IChangeTrackerContext trackerContext, ITenantContext tenantContext,
+            IOptions<IdentityBuilderOptions> builderOptions, ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
+            : base(trackerContext, tenantContext, builderOptions, logger, dbContextOptions)
         {
         }
 
@@ -64,13 +65,14 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 构造一个 <see cref="AbstractIdentityUserDbContext{TDbContext, TUser, TUserId}"/> 实例。
         /// </summary>
-        /// <param name="auditResolver">给定的 <see cref="IAuditResolver"/>。</param>
+        /// <param name="trackerContext">给定的 <see cref="IChangeTrackerContext"/>。</param>
+        /// <param name="tenantContext">给定的 <see cref="ITenantContext"/>。</param>
         /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="logger">给定的 <see cref="ILogger{TDbContext}"/>。</param>
         /// <param name="dbContextOptions">给定的 <see cref="DbContextOptions{TDbContext}"/>。</param>
-        public AbstractIdentityUserDbContext(IAuditResolver auditResolver, IOptions<IdentityBuilderOptions> builderOptions,
-            ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
-            : base(auditResolver, builderOptions, logger, dbContextOptions)
+        public AbstractIdentityUserDbContext(IChangeTrackerContext trackerContext, ITenantContext tenantContext,
+            IOptions<IdentityBuilderOptions> builderOptions, ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
+            : base(trackerContext, tenantContext, builderOptions, logger, dbContextOptions)
         {
         }
 
@@ -97,13 +99,14 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 构造一个 <see cref="AbstractIdentityUserDbContext{TDbContext, TUser, UserId, TUserClaim, TUserLogin, TUserToken}"/> 实例。
         /// </summary>
-        /// <param name="auditResolver">给定的 <see cref="IAuditResolver"/>。</param>
+        /// <param name="trackerContext">给定的 <see cref="IChangeTrackerContext"/>。</param>
+        /// <param name="tenantContext">给定的 <see cref="ITenantContext"/>。</param>
         /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="logger">给定的 <see cref="ILogger{TDbContext}"/>。</param>
         /// <param name="dbContextOptions">给定的 <see cref="DbContextOptions{TDbContext}"/>。</param>
-        public AbstractIdentityUserDbContext(IAuditResolver auditResolver, IOptions<IdentityBuilderOptions> builderOptions,
-            ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
-            : base(auditResolver, builderOptions, logger, dbContextOptions)
+        public AbstractIdentityUserDbContext(IChangeTrackerContext trackerContext, ITenantContext tenantContext,
+            IOptions<IdentityBuilderOptions> builderOptions, ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
+            : base(trackerContext, tenantContext, builderOptions, logger, dbContextOptions)
         {
         }
 

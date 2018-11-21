@@ -32,7 +32,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Data.Abstractions" Version="5.20.1811.151" />
+    <PackageReference Include="Librame.Extensions.Data.Abstractions" Version="5.20.1811.211" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.6" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="2.1.6" />
   </ItemGroup>

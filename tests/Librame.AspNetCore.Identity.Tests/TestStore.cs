@@ -78,14 +78,14 @@ namespace Librame.AspNetCore.Identity.Tests
 
         public ITestStore UseDefaultStore()
         {
-            _dbContext.TrySwitchConnection(options => options.DefaultString);
+            _dbContext.TrySwitchConnection(options => options.DefaultConnectionString);
 
             return this;
         }
 
         public ITestStore UseWriteStore()
         {
-            _dbContext.TrySwitchConnection(options => options.WriteString);
+            _dbContext.TrySwitchConnection(options => options.WriteConnectionString);
 
             return this;
         }

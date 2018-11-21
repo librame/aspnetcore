@@ -61,18 +61,18 @@ namespace Librame.AspNetCore.Identity.Pages
 
             // AddLibrameCore
             services.AddLibrameCore()
-                .AddIdentity(configureOptions: options =>
+                .AddIdentity(postConfigureOptions: options =>
                 {
-                    options.Connection.DefaultString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_default;Integrated Security=True";
-                    options.Connection.WriteString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_write;Integrated Security=True";
-                    options.Connection.WriteSeparation = false;
+                    options.LocalTenant.DefaultConnectionString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_default;Integrated Security=True";
+                    options.LocalTenant.WriteConnectionString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_write;Integrated Security=True";
+                    options.LocalTenant.WriteConnectionSeparation = false;
                 })
                 .ConfigureData(builder =>
                 {
                     builder.AddDbContext<IDefaultIdentityDbContext, DefaultIdentityDbContext>((options, optionsBuilder) =>
                     {
                         var migrationsAssembly = typeof(DefaultIdentityDbContext).Assembly.GetName().Name;
-                        optionsBuilder.UseSqlServer(options.Connection.DefaultString,
+                        optionsBuilder.UseSqlServer(options.LocalTenant.DefaultConnectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                     });
                 })

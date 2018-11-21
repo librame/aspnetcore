@@ -18,18 +18,18 @@ namespace Librame.AspNetCore.Identity.Tests
 
                 // AddLibrameCore
                 services.AddLibrameCore()
-                    .AddIdentity(configureData: options =>
+                    .AddIdentity(postConfigureOptions: options =>
                     {
-                        options.Connection.DefaultString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_default;Integrated Security=True";
-                        options.Connection.WriteString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_write;Integrated Security=True";
-                        options.Connection.WriteSeparation = true;
+                        options.LocalTenant.DefaultConnectionString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_default;Integrated Security=True";
+                        options.LocalTenant.WriteConnectionString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_write;Integrated Security=True";
+                        options.LocalTenant.WriteConnectionSeparation = true;
                     })
                     .ConfigureData(builder =>
                     {
                         builder.AddDbContext<IDefaultIdentityDbContext, DefaultIdentityDbContext>((options, optionsBuilder) =>
                         {
                             var migrationsAssembly = typeof(TestServiceProvider).Assembly.GetName().Name;
-                            optionsBuilder.UseSqlServer(options.Connection.DefaultString,
+                            optionsBuilder.UseSqlServer(options.LocalTenant.DefaultConnectionString,
                                 sql => sql.MigrationsAssembly(migrationsAssembly));
                         });
                     })

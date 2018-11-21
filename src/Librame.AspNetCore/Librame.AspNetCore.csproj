@@ -31,7 +31,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame" Version="5.20.1811.151" />
+    <PackageReference Include="Librame" Version="5.20.1811.211" />
   </ItemGroup>
 
   <ItemGroup>

@@ -20,38 +20,38 @@ namespace Librame.AspNetCore.Identity
     public class IdentityBuilderOptions : DataBuilderOptions
     {
         /// <summary>
-        /// 用户表选项。
+        /// 用户表架构。
         /// </summary>
-        public ITableOptions RoleTable { get; set; }
+        public ITableSchema RoleTable { get; set; }
 
         /// <summary>
-        /// 用户声明表选项。
+        /// 用户声明表架构。
         /// </summary>
-        public ITableOptions RoleClaimTable { get; set; }
+        public ITableSchema RoleClaimTable { get; set; }
 
         /// <summary>
-        /// 用户角色表选项。
+        /// 用户角色表架构。
         /// </summary>
-        public ITableOptions UserRoleTable { get; set; }
+        public ITableSchema UserRoleTable { get; set; }
 
         /// <summary>
-        /// 用户表选项。
+        /// 用户表架构。
         /// </summary>
-        public ITableOptions UserTable { get; set; }
+        public ITableSchema UserTable { get; set; }
 
         /// <summary>
-        /// 用户声明表选项。
+        /// 用户声明表架构。
         /// </summary>
-        public ITableOptions UserClaimTable { get; set; }
+        public ITableSchema UserClaimTable { get; set; }
 
         /// <summary>
-        /// 用户登陆表选项。
+        /// 用户登陆表架构。
         /// </summary>
-        public ITableOptions UserLoginTable { get; set; }
+        public ITableSchema UserLoginTable { get; set; }
 
         /// <summary>
-        /// 用户令牌表选项。
+        /// 用户令牌表架构。
         /// </summary>
-        public ITableOptions UserTokenTable { get; set; }
+        public ITableSchema UserTokenTable { get; set; }
     }
 }

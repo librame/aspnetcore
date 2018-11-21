@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -26,25 +27,52 @@ namespace Librame.Builders
     /// </summary>
     public static class IdentityBuilderExtensions
     {
-
+        
         /// <summary>
-        /// 添加身份。
+        /// 添加身份扩展。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="configuration">给定的 <see cref="IConfiguration"/>。</param>
-        /// <param name="configureOptions">给定的 <see cref="Action{IdentityBuilderOptions}"/>。</param>
+        /// <param name="builderOptions">给定的 <see cref="IdentityBuilderOptions"/>（可选）。</param>
+        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选）。</param>
+        /// <param name="postConfigureOptions">给定的 <see cref="Action{IdentityBuilderOptions}"/>（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public static IIdentityBuilder AddIdentity(this IBuilder builder,
-            IConfiguration configuration = null, Action<IdentityBuilderOptions> configureOptions = null)
+        public static IIdentityBuilder AddIdentity(this IBuilder builder, IdentityBuilderOptions builderOptions = null,
+            IConfiguration configuration = null, Action<IdentityBuilderOptions> postConfigureOptions = null)
         {
-            builder.PreConfigureBuilder(configuration, configureOptions);
+            return builder.AddIdentity<IdentityBuilderOptions>(builderOptions ?? new IdentityBuilderOptions(),
+                configuration, postConfigureOptions);
+        }
+        /// <summary>
+        /// 添加身份扩展。
+        /// </summary>
+        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
+        /// <param name="builderOptions">给定的构建器选项。</param>
+        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选）。</param>
+        /// <param name="postConfigureOptions">给定的 <see cref="Action{TBuilderOptions}"/>（可选）。</param>
+        /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
+        public static IIdentityBuilder AddIdentity<TBuilderOptions>(this IBuilder builder, TBuilderOptions builderOptions,
+            IConfiguration configuration = null, Action<TBuilderOptions> postConfigureOptions = null)
+            where TBuilderOptions : IdentityBuilderOptions
+        {
+            var dataBuilder = builder.AddData(builderOptions, configuration, postConfigureOptions).ResetData();
+            
+            return dataBuilder.AddBuilder(b =>
+            {
+                return b.AsIdentityBuilder();
+            },
+            typeof(IdentityBuilderOptions), builderOptions, configuration, postConfigureOptions);
+        }
 
-            // 引入数据扩展
-            var dataBuilder = builder.AddData(configureOptions: data => configureOptions.Invoke(data));
+        /// <summary>
+        /// 重置数据扩展。
+        /// </summary>
+        /// <param name="builder">给定的 <see cref="IDataBuilder"/>。</param>
+        /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
+        public static IDataBuilder ResetData(this IDataBuilder builder)
+        {
+            builder.Services.Replace(ServiceDescriptor.Singleton<ITenantContext, HttpTenantContext>());
 
-            var identityBuilder = dataBuilder.AsIdentityBuilder();
-
-            return identityBuilder;
+            return builder;
         }
 
 
@@ -73,7 +101,7 @@ namespace Librame.Builders
             where TDbContext : DbContext
         {
             builder.RegisterCore<TUser>(configureOptions);
-
+            
             builder.Core.AddRoles<TRole>()
                 .AddEntityFrameworkStores<TDbContext>();
 

@@ -26,13 +26,15 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 构造一个 <see cref="DefaultIdentityDbContext"/> 实例。
         /// </summary>
-        /// <param name="auditResolver">给定的 <see cref="IAuditResolver"/>。</param>
+        /// <param name="trackerContext">给定的 <see cref="IChangeTrackerContext"/>。</param>
+        /// <param name="tenantContext">给定的 <see cref="ITenantContext"/>。</param>
         /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
-        /// <param name="logger">给定的 <see cref="ILogger{TDbContext}"/>。</param>
-        /// <param name="dbContextOptions">给定的 <see cref="DbContextOptions{TDbContext}"/>。</param>
-        public DefaultIdentityDbContext(IAuditResolver auditResolver, IOptions<IdentityBuilderOptions> builderOptions,
-            ILogger<DefaultIdentityDbContext> logger, DbContextOptions<DefaultIdentityDbContext> dbContextOptions)
-            : base(auditResolver, builderOptions, logger, dbContextOptions)
+        /// <param name="logger">给定的 <see cref="ILogger{DefaultIdentityDbContext}"/>。</param>
+        /// <param name="dbContextOptions">给定的 <see cref="DbContextOptions{DefaultIdentityDbContext}"/>。</param>
+        public DefaultIdentityDbContext(IChangeTrackerContext trackerContext, ITenantContext tenantContext,
+            IOptions<IdentityBuilderOptions> builderOptions, ILogger<DefaultIdentityDbContext> logger,
+            DbContextOptions<DefaultIdentityDbContext> dbContextOptions)
+            : base(trackerContext, tenantContext, builderOptions, logger, dbContextOptions)
         {
         }
 
