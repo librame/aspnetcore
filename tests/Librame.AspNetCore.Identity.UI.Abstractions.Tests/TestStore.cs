@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Librame.AspNetCore.Identity.Tests
+namespace Librame.AspNetCore.Identity.UI.Tests
 {
     using Extensions;
     using Extensions.Data;

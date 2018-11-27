@@ -16,21 +16,12 @@ using System;
 namespace Librame.AspNetCore.Identity
 {
     using Builders;
-    using Extensions.Data;
 
     /// <summary>
     /// 身份构建器接口。
     /// </summary>
     public interface IIdentityBuilder : IBuilder
     {
-        /// <summary>
-        /// 数据构建器。
-        /// </summary>
-        /// <value>
-        /// 返回 <see cref="IDataBuilder"/>。
-        /// </value>
-        IDataBuilder Data { get; }
-
         /// <summary>
         /// 核心身份构建器。
         /// </summary>

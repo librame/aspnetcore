@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace Librame.AspNetCore.Identity.Tests
+namespace Librame.AspNetCore.Identity.UI.Tests
 {
     using Builders;
     using Extensions;
@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.Identity.Tests
                     {
                         options.LocalTenant.DefaultConnectionString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_default;Integrated Security=True";
                         options.LocalTenant.WriteConnectionString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_write;Integrated Security=True";
-                        options.LocalTenant.WriteConnectionSeparation = true;
+                        options.LocalTenant.WriteConnectionSeparation = false;
                     })
                     .AddDbContext<IIdentityDbContext, IdentityDbContext, IdentityBuilderOptions>((options, optionsBuilder) =>
                     {

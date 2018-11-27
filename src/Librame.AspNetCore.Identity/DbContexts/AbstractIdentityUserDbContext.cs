@@ -37,14 +37,15 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 构造一个 <see cref="AbstractIdentityUserDbContext{TDbContext, TUser}"/> 实例。
         /// </summary>
+        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="trackerContext">给定的 <see cref="IChangeTrackerContext"/>。</param>
         /// <param name="tenantContext">给定的 <see cref="ITenantContext"/>。</param>
-        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="logger">给定的 <see cref="ILogger{TDbContext}"/>。</param>
         /// <param name="dbContextOptions">给定的 <see cref="DbContextOptions{TDbContext}"/>。</param>
-        public AbstractIdentityUserDbContext(IChangeTrackerContext trackerContext, ITenantContext tenantContext,
-            IOptions<IdentityBuilderOptions> builderOptions, ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
-            : base(trackerContext, tenantContext, builderOptions, logger, dbContextOptions)
+        public AbstractIdentityUserDbContext(IOptions<IdentityBuilderOptions> builderOptions,
+            IChangeTrackerContext trackerContext, ITenantContext tenantContext,
+            ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
+            : base(builderOptions, trackerContext, tenantContext, logger, dbContextOptions)
         {
         }
 
@@ -65,14 +66,15 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 构造一个 <see cref="AbstractIdentityUserDbContext{TDbContext, TUser, TUserId}"/> 实例。
         /// </summary>
+        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="trackerContext">给定的 <see cref="IChangeTrackerContext"/>。</param>
         /// <param name="tenantContext">给定的 <see cref="ITenantContext"/>。</param>
-        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="logger">给定的 <see cref="ILogger{TDbContext}"/>。</param>
         /// <param name="dbContextOptions">给定的 <see cref="DbContextOptions{TDbContext}"/>。</param>
-        public AbstractIdentityUserDbContext(IChangeTrackerContext trackerContext, ITenantContext tenantContext,
-            IOptions<IdentityBuilderOptions> builderOptions, ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
-            : base(trackerContext, tenantContext, builderOptions, logger, dbContextOptions)
+        public AbstractIdentityUserDbContext(IOptions<IdentityBuilderOptions> builderOptions,
+            IChangeTrackerContext trackerContext, ITenantContext tenantContext,
+            ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
+            : base(builderOptions, trackerContext, tenantContext, logger, dbContextOptions)
         {
         }
 
@@ -99,14 +101,15 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 构造一个 <see cref="AbstractIdentityUserDbContext{TDbContext, TUser, UserId, TUserClaim, TUserLogin, TUserToken}"/> 实例。
         /// </summary>
+        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="trackerContext">给定的 <see cref="IChangeTrackerContext"/>。</param>
         /// <param name="tenantContext">给定的 <see cref="ITenantContext"/>。</param>
-        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="logger">给定的 <see cref="ILogger{TDbContext}"/>。</param>
         /// <param name="dbContextOptions">给定的 <see cref="DbContextOptions{TDbContext}"/>。</param>
-        public AbstractIdentityUserDbContext(IChangeTrackerContext trackerContext, ITenantContext tenantContext,
-            IOptions<IdentityBuilderOptions> builderOptions, ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
-            : base(trackerContext, tenantContext, builderOptions, logger, dbContextOptions)
+        public AbstractIdentityUserDbContext(IOptions<IdentityBuilderOptions> builderOptions,
+            IChangeTrackerContext trackerContext, ITenantContext tenantContext,
+            ILogger<TDbContext> logger, DbContextOptions<TDbContext> dbContextOptions)
+            : base(builderOptions, trackerContext, tenantContext, logger, dbContextOptions)
         {
         }
 
@@ -163,7 +166,7 @@ namespace Librame.AspNetCore.Identity
 
             modelBuilder.Entity<TUser>(b =>
             {
-                b.ToTable(BuilderOptions.UserTable ?? new TableOptions<TUser>());
+                b.ToTable(BuilderOptions.UserTable ?? new TableSchema<TUser>());
 
                 b.HasKey(u => u.Id);
 
@@ -190,14 +193,14 @@ namespace Librame.AspNetCore.Identity
 
             modelBuilder.Entity<TUserClaim>(b =>
             {
-                b.ToTable(BuilderOptions.UserClaimTable ?? new TableOptions<TUserClaim>());
+                b.ToTable(BuilderOptions.UserClaimTable ?? new TableSchema<TUserClaim>());
 
                 b.HasKey(u => u.Id);
             });
 
             modelBuilder.Entity<TUserLogin>(b =>
             {
-                b.ToTable(BuilderOptions.UserLoginTable ?? new TableOptions<TUserLogin>());
+                b.ToTable(BuilderOptions.UserLoginTable ?? new TableSchema<TUserLogin>());
 
                 b.HasKey(l => new { l.LoginProvider, l.ProviderKey });
 
@@ -210,7 +213,7 @@ namespace Librame.AspNetCore.Identity
 
             modelBuilder.Entity<TUserToken>(b =>
             {
-                b.ToTable(BuilderOptions.UserTokenTable ?? new TableOptions<TUserToken>());
+                b.ToTable(BuilderOptions.UserTokenTable ?? new TableSchema<TUserToken>());
 
                 b.HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
 

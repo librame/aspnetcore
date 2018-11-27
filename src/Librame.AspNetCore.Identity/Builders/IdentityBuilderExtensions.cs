@@ -27,63 +27,67 @@ namespace Librame.Builders
     /// </summary>
     public static class IdentityBuilderExtensions
     {
-        
+
         /// <summary>
         /// 添加身份扩展。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="builderOptions">给定的 <see cref="IdentityBuilderOptions"/>（可选）。</param>
+        /// <param name="configureOptions">给定的 <see cref="Action{IdentityBuilderOptions}"/>（可选）。</param>
         /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选）。</param>
-        /// <param name="postConfigureOptions">给定的 <see cref="Action{IdentityBuilderOptions}"/>（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public static IIdentityBuilder AddIdentity(this IBuilder builder, IdentityBuilderOptions builderOptions = null,
-            IConfiguration configuration = null, Action<IdentityBuilderOptions> postConfigureOptions = null)
+        public static IIdentityBuilder AddIdentity(this IBuilder builder,
+            Action<IdentityBuilderOptions> configureOptions = null, IConfiguration configuration = null)
         {
-            return builder.AddIdentity<IdentityBuilderOptions>(builderOptions ?? new IdentityBuilderOptions(),
-                configuration, postConfigureOptions);
-        }
-        /// <summary>
-        /// 添加身份扩展。
-        /// </summary>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="builderOptions">给定的构建器选项。</param>
-        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选）。</param>
-        /// <param name="postConfigureOptions">给定的 <see cref="Action{TBuilderOptions}"/>（可选）。</param>
-        /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public static IIdentityBuilder AddIdentity<TBuilderOptions>(this IBuilder builder, TBuilderOptions builderOptions,
-            IConfiguration configuration = null, Action<TBuilderOptions> postConfigureOptions = null)
-            where TBuilderOptions : IdentityBuilderOptions
-        {
-            var dataBuilder = builder.AddData(builderOptions, configuration, postConfigureOptions).ResetData();
-            
-            return dataBuilder.AddBuilder(b =>
+            return builder.AddBuilder(configureOptions, configuration, _builder =>
             {
-                return b.AsIdentityBuilder();
-            },
-            typeof(IdentityBuilderOptions), builderOptions, configuration, postConfigureOptions);
+                return _builder.AsIdentityBuilder()
+                    .ResetData();
+            });
         }
 
         /// <summary>
-        /// 重置数据扩展。
+        /// 添加身份扩展。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IDataBuilder"/>。</param>
-        /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
-        public static IDataBuilder ResetData(this IDataBuilder builder)
+        /// <typeparam name="TUser">指定的用户类型。</typeparam>
+        /// <typeparam name="TRole">指定的角色类型。</typeparam>
+        /// <typeparam name="TDbContext">指定的数据库上下文类型。</typeparam>
+        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
+        /// <param name="configureOptions">给定的 <see cref="Action{IdentityBuilderOptions}"/>（可选）。</param>
+        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选）。</param>
+        /// <param name="configureCoreOptions"></param>
+        /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
+        public static IIdentityBuilder AddIdentity<TUser, TRole, TDbContext>(this IBuilder builder,
+            Action<IdentityBuilderOptions> configureOptions = null, IConfiguration configuration = null,
+            Action<IdentityOptions> configureCoreOptions = null)
+            where TUser : class
+            where TRole : class
+            where TDbContext : DbContext
         {
-            builder.Services.Replace(ServiceDescriptor.Singleton<ITenantContext, HttpTenantContext>());
-
-            return builder;
+            return builder.AddIdentity(configureOptions, configuration)
+                .AddCore<TUser, TRole, TDbContext>(configureCoreOptions);
         }
 
 
         /// <summary>
         /// 转换为内部身份构建器。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IDataBuilder"/>。</param>
+        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
         /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public static IIdentityBuilder AsIdentityBuilder(this IDataBuilder builder)
+        public static IIdentityBuilder AsIdentityBuilder(this IBuilder builder)
         {
             return new InternalIdentityBuilder(builder);
+        }
+
+        /// <summary>
+        /// 重置数据扩展。
+        /// </summary>
+        /// <param name="builder">给定的 <see cref="IIdentityBuilder"/>。</param>
+        /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
+        public static IIdentityBuilder ResetData(this IIdentityBuilder builder)
+        {
+            builder.Services.Replace(ServiceDescriptor.Singleton<ITenantContext, HttpTenantContext>());
+
+            return builder;
         }
 
         /// <summary>
@@ -101,9 +105,9 @@ namespace Librame.Builders
             where TDbContext : DbContext
         {
             builder.RegisterCore<TUser>(configureOptions);
-            
+
             builder.Core.AddRoles<TRole>()
-                .AddEntityFrameworkStores<TDbContext>();
+                .AddEntityFrameworkStores<TDbContext>(); // 兼容 Identity.EntityFrameworkCore
 
             return builder;
         }

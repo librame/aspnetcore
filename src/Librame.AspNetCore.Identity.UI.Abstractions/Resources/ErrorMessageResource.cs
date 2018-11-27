@@ -10,14 +10,12 @@
 
 #endregion
 
-using Librame.Resources;
-
 namespace Librame.AspNetCore.Identity.UI
 {
     /// <summary>
     /// 错误消息资源。
     /// </summary>
-    public class ErrorMessageResource : IResource
+    public class ErrorMessageResource : Resources.IResource
     {
         /// <summary>
         /// 密码。

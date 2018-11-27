@@ -61,24 +61,21 @@ namespace Librame.AspNetCore.Identity.Pages
 
             // AddLibrameCore
             services.AddLibrameCore()
-                .AddIdentity(postConfigureOptions: options =>
+                .AddData<IdentityBuilderOptions>(options =>
                 {
                     options.LocalTenant.DefaultConnectionString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_default;Integrated Security=True";
                     options.LocalTenant.WriteConnectionString = "Data Source=PC-CLOUD\\SQLEXPRESS;Initial Catalog=librame_identity_write;Integrated Security=True";
                     options.LocalTenant.WriteConnectionSeparation = false;
                 })
-                .ConfigureData(builder =>
+                .AddDbContext<IIdentityDbContext, IdentityDbContext, IdentityBuilderOptions>((options, optionsBuilder) =>
                 {
-                    builder.AddDbContext<IDefaultIdentityDbContext, DefaultIdentityDbContext>((options, optionsBuilder) =>
-                    {
-                        var migrationsAssembly = typeof(DefaultIdentityDbContext).Assembly.GetName().Name;
-                        optionsBuilder.UseSqlServer(options.LocalTenant.DefaultConnectionString,
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
-                    });
+                    var migrationsAssembly = typeof(IdentityDbContext).Assembly.GetName().Name;
+                    optionsBuilder.UseSqlServer(options.LocalTenant.DefaultConnectionString,
+                        sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
-                .AddCore<IdentityUser, IdentityRole, DefaultIdentityDbContext>(options =>
+                .AddIdentity<IdentityUser, IdentityRole, IdentityDbContext>(configureCoreOptions: coreOptions =>
                 {
-                    options.Stores.MaxLengthForKeys = 128;
+                    coreOptions.Stores.MaxLengthForKeys = 128;
                 })
                 .WithUI(builder =>
                 {
