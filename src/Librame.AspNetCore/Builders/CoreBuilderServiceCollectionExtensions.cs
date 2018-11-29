@@ -16,9 +16,9 @@ using System;
 namespace Librame.Builders
 {
     /// <summary>
-    /// 构建器静态扩展。
+    /// 核心构建器服务集合静态扩展。
     /// </summary>
-    public static class BuilderExtensions
+    public static class CoreBuilderServiceCollectionExtensions
     {
 
         /// <summary>

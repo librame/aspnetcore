@@ -7,11 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using System.Globalization;
+using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Pages
 {
     using Builders;
+    using Extensions;
+    using Microsoft.AspNetCore.Mvc.DataAnnotations.Internal;
+    using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Microsoft.Extensions.Options;
+    using Resources;
 
     public class Startup
     {
@@ -34,22 +41,24 @@ namespace Librame.AspNetCore.Identity.Pages
             });
             
             var mvcBuilder = services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddViewLocalization()
-                .AddDataAnnotationsLocalization();
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //.AddViewLocalization()
+            //.AddDataAnnotationsLocalization();
+            
+            services.TryReplace(typeof(IConfigureOptions<MvcOptions>), typeof(MvcDataAnnotationsMvcOptionsSetup),
+                typeof(TestMvcDataAnnotationsMvcOptionsSetup));
 
-                services.Configure<RequestLocalizationOptions>(options =>
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var cultures = new[]
                 {
-                    var cultures = new[]
-                    {
-                        new CultureInfo("en-US"),
-                        new CultureInfo("zh-CN")
-                    };
+                    new CultureInfo("en-US")
+                };
 
-                    options.DefaultRequestCulture = new RequestCulture("zh-CN", "zh-CN");
-                    options.SupportedCultures = cultures;
-                    options.SupportedUICultures = cultures;
-                });
+                options.DefaultRequestCulture = new RequestCulture("en-US", "en-US");
+                options.SupportedCultures = cultures;
+                options.SupportedUICultures = cultures;
+            });
 
             // AddAuthentication
             services.AddAuthentication(o =>

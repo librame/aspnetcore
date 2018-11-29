@@ -10,14 +10,12 @@
 
 #endregion
 
-using Librame.Resources;
-
 namespace Librame.AspNetCore.Identity.UI
 {
     /// <summary>
     /// 视图模型集合资源。
     /// </summary>
-    public class ViewModelsResource : IResource
+    public class ViewModelsResource : Resources.IResource
     {
         /// <summary>
         /// 邮箱。

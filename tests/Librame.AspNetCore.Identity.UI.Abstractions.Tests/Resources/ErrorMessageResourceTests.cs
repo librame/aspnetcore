@@ -11,16 +11,22 @@ namespace Librame.AspNetCore.Identity.UI.Tests
         [Fact]
         public void ResourceTest()
         {
+            var cultureNames = new string[] { "en-US", "zh-CN", "zh-TW" };
             var localizer = TestServiceProvider.Current.GetRequiredService<IEnhancedStringLocalizer<ErrorMessageResource>>();
 
-            // en-US
-            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+            foreach (var name in cultureNames)
+                RunTest(localizer, name);
+        }
+
+        private void RunTest(IEnhancedStringLocalizer<ErrorMessageResource> localizer, string cultureName)
+        {
+            CultureInfo.CurrentUICulture = CultureInfo.CreateSpecificCulture(cultureName);
 
             var password = localizer[r => r.Password];
-            Assert.NotEmpty(password.Value);
+            Assert.False(password.ResourceNotFound);
 
             var confirmPassword = localizer[r => r.ConfirmPassword];
-            Assert.NotEmpty(confirmPassword.Value);
+            Assert.False(confirmPassword.ResourceNotFound);
         }
 
     }

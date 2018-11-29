@@ -31,7 +31,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Data" Version="5.20.1811.271" />
+    <PackageReference Include="Librame.Extensions.Data" Version="5.20.1811.291" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.1.6" />
   </ItemGroup>
 

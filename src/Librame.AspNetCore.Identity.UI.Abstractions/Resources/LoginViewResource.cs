@@ -10,14 +10,12 @@
 
 #endregion
 
-using Librame.Resources;
-
 namespace Librame.AspNetCore.Identity.UI
 {
     /// <summary>
     /// 登录视图资源。
     /// </summary>
-    public class LoginViewResource : IResource
+    public class LoginViewResource : Resources.IResource
     {
         /// <summary>
         /// 标题。

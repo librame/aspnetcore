@@ -117,10 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConfirmPassword" xml:space="preserve">
-    <value>两次密码不一致。</value>
+  <data name="ButtonText" xml:space="preserve">
+    <value>登陸</value>
   </data>
-  <data name="Password" xml:space="preserve">
-    <value>密码 {0} 必须至少是 {2} 字符。</value>
+  <data name="Descr" xml:space="preserve">
+    <value>使用本地賬戶登陸</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>忘記口令？</value>
+  </data>
+  <data name="RegisterUser" xml:space="preserve">
+    <value>登記新用戶</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>登陸</value>
   </data>
 </root>

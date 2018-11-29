@@ -11,37 +11,43 @@ namespace Librame.AspNetCore.Identity.UI.Tests
         [Fact]
         public void ResourceTest()
         {
+            var cultureNames = new string[] { "en-US", "zh-CN", "zh-TW" };
             var localizer = TestServiceProvider.Current.GetRequiredService<IEnhancedStringLocalizer<ViewModelsResource>>();
 
-            // en-US
-            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+            foreach (var name in cultureNames)
+                RunTest(localizer, name);
+        }
+
+        private void RunTest(IEnhancedStringLocalizer<ViewModelsResource> localizer, string cultureName)
+        {
+            CultureInfo.CurrentUICulture = CultureInfo.CreateSpecificCulture(cultureName);
 
             var email = localizer[r => r.Email];
-            Assert.NotEmpty(email.Value);
+            Assert.False(email.ResourceNotFound);
 
             var password = localizer[r => r.Password];
-            Assert.NotEmpty(password.Value);
+            Assert.False(password.ResourceNotFound);
 
             var confirmPassword = localizer[r => r.ConfirmPassword];
-            Assert.NotEmpty(confirmPassword.Value);
+            Assert.False(confirmPassword.ResourceNotFound);
 
             var newPassword = localizer[r => r.NewPassword];
-            Assert.NotEmpty(newPassword.Value);
+            Assert.False(newPassword.ResourceNotFound);
 
             var confirmNewPassword = localizer[r => r.ConfirmNewPassword];
-            Assert.NotEmpty(confirmNewPassword.Value);
+            Assert.False(confirmNewPassword.ResourceNotFound);
 
             var oldPassword = localizer[r => r.OldPassword];
-            Assert.NotEmpty(oldPassword.Value);
+            Assert.False(oldPassword.ResourceNotFound);
 
             var phoneNumber = localizer[r => r.PhoneNumber];
-            Assert.NotEmpty(phoneNumber.Value);
+            Assert.False(phoneNumber.ResourceNotFound);
 
             var rememberBrowser = localizer[r => r.RememberBrowser];
-            Assert.NotEmpty(newPassword.Value);
+            Assert.False(newPassword.ResourceNotFound);
 
             var rememberMe = localizer[r => r.RememberMe];
-            Assert.NotEmpty(rememberMe.Value);
+            Assert.False(rememberMe.ResourceNotFound);
         }
 
     }

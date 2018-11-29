@@ -117,10 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>確認新口令</value>
+  </data>
   <data name="ConfirmPassword" xml:space="preserve">
-    <value>两次密码不一致。</value>
+    <value>確認口令</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>郵件</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>新口令</value>
+  </data>
+  <data name="OldPassword" xml:space="preserve">
+    <value>現有口令</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>密码 {0} 必须至少是 {2} 字符。</value>
+    <value>口令</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>電話號碼</value>
+  </data>
+  <data name="RememberBrowser" xml:space="preserve">
+    <value>記住瀏覽器</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>記住我？</value>
   </data>
 </root>
