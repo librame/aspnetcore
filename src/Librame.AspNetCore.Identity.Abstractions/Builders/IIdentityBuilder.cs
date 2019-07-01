@@ -15,7 +15,7 @@ using System;
 
 namespace Librame.AspNetCore.Identity
 {
-    using Builders;
+    using Extensions.Core;
 
     /// <summary>
     /// 身份构建器接口。
@@ -28,16 +28,16 @@ namespace Librame.AspNetCore.Identity
         /// <value>
         /// 返回 <see cref="IdentityBuilder"/>。
         /// </value>
-        IdentityBuilder Core { get; }
+        IdentityBuilder CoreIdentityBuilder { get; }
 
 
         /// <summary>
-        /// 注册核心。
+        /// 添加身份核心。
         /// </summary>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
-        /// <param name="configureOptions">给定用于配置的身份选项。</param>
+        /// <param name="configureCoreIdentity">配置核心身份构建器（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        IIdentityBuilder RegisterCore<TUser>(Action<IdentityOptions> configureOptions = null)
+        IIdentityBuilder AddIdentityCore<TUser>(Action<IdentityBuilder> configureCoreIdentity = null)
             where TUser : class;
     }
 }

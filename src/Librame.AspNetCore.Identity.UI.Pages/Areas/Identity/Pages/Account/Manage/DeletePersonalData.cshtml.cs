@@ -15,48 +15,66 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    [InternalUIIdentity(typeof(DeletePersonalDataModel<>))]
-    public abstract class DeletePersonalDataModel : PageModel
+    using AspNetCore.UI;
+    using Models;
+    using Extensions.Core;
+
+    /// <summary>
+    /// 抽象删除个人数据页面模型。
+    /// </summary>
+    [ThemepackTemplate(typeof(DeletePersonalDataPageModel<>))]
+    public abstract class AbstractDeletePersonalDataPageModel : PageModel
     {
+        /// <summary>
+        /// 输入模型。
+        /// </summary>
         [BindProperty]
-        public InputModel Input { get; set; }
+        public DeletePersonalDataViewModel Input { get; set; }
 
-        public class InputModel
-        {
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
-        }
-
+        /// <summary>
+        /// 强制密码。
+        /// </summary>
         public bool RequirePassword { get; set; }
 
-        public virtual Task<IActionResult> OnGet() => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnGetAsync()
+            => throw new NotImplementedException();
+
+        /// <summary>
+        /// 提交方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnPostAsync()
+            => throw new NotImplementedException();
     }
 
-    internal class DeletePersonalDataModel<TUser> : DeletePersonalDataModel where TUser: class
+    internal class DeletePersonalDataPageModel<TUser> : AbstractDeletePersonalDataPageModel where TUser: class
     {
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
-        private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly ILogger<AbstractDeletePersonalDataPageModel> _logger;
+        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
-        public DeletePersonalDataModel(
-            UserManager<TUser> userManager,
+        public DeletePersonalDataPageModel(
             SignInManager<TUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<AbstractDeletePersonalDataPageModel> logger,
+            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
+            _userManager = signInManager.UserManager;
             _logger = logger;
+            _errorLocalizer = errorLocalizer;
         }
 
-        public override async Task<IActionResult> OnGet()
+        public override async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -81,7 +99,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             {
                 if (!await _userManager.CheckPasswordAsync(user, Input.Password))
                 {
-                    ModelState.AddModelError(string.Empty, "Password not correct.");
+                    ModelState.AddModelError(string.Empty, _errorLocalizer[r => r.PasswordNotCorrect]);
                     return Page();
                 }
             }

@@ -108,13 +108,13 @@
                     "AuditEntity": true,
                     "LowerCaseName": false,
                     "EntityTypeNames": [
-                        "Librame.AspNetCore.Identity.Stores.IdentityRole, LibrameCore.EntityFrameworkCore",
-                        "Librame.AspNetCore.Identity.Stores.IdentityRoleClaim, LibrameCore.EntityFrameworkCore",
-                        "Librame.AspNetCore.Identity.Stores.IdentityUser, LibrameCore.EntityFrameworkCore",
-                        "Librame.AspNetCore.Identity.Stores.IdentityUserClaim, LibrameCore.EntityFrameworkCore",
-                        "Librame.AspNetCore.Identity.Stores.IdentityUserLogin, LibrameCore.EntityFrameworkCore",
-                        "Librame.AspNetCore.Identity.Stores.IdentityUserRole, LibrameCore.EntityFrameworkCore",
-                        "Librame.AspNetCore.Identity.Stores.IdentityUserToken, LibrameCore.EntityFrameworkCore"
+                        "Librame.AspNet.Identity.Stores.IdentityRole, LibrameCore.EntityFrameworkCore",
+                        "Librame.AspNet.Identity.Stores.IdentityRoleClaim, LibrameCore.EntityFrameworkCore",
+                        "Librame.AspNet.Identity.Stores.IdentityUser, LibrameCore.EntityFrameworkCore",
+                        "Librame.AspNet.Identity.Stores.IdentityUserClaim, LibrameCore.EntityFrameworkCore",
+                        "Librame.AspNet.Identity.Stores.IdentityUserLogin, LibrameCore.EntityFrameworkCore",
+                        "Librame.AspNet.Identity.Stores.IdentityUserRole, LibrameCore.EntityFrameworkCore",
+                        "Librame.AspNet.Identity.Stores.IdentityUserToken, LibrameCore.EntityFrameworkCore"
                     ]
                 }
             }

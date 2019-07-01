@@ -1,0 +1,43 @@
+@page
+@model AbstractExternalLoginConfirmationPageModel
+@inject IExpressionHtmlLocalizer<ExternalLoginConfirmationViewResource> Localizer
+@{
+    Layout = "_LayoutByLogin";
+    ViewData["Title"] = Localizer[r => r.Title];
+}
+<!-- ForgotPassword -->
+<div class="row">
+    <div class="col-sm-6 col-sm-offset-3 form-box">
+        <div class="form-top">
+            <div class="form-top-left">
+                <h3>@ViewData["Title"]</h3>
+                <p>@Localizer[r => r.Descr, Model.LoginProvider]</p>
+            </div>
+            <div class="form-top-right">
+                <i class="fa fa-key"></i>
+            </div>
+        </div>
+
+        <div class="form-bottom">
+            <form role="form" action="" method="post" class="login-form" asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Email" class="sr-only"></label>
+                    <input asp-for="Input.Email" class="form-username form-control" placeholder="@Localizer[r => r.Email] ..." />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn">@Localizer[r => r.ButtonText]</button>
+                </div>
+
+                <div class="form-group">
+                    <p>
+                        @Localizer[r => r.Info, Model.LoginProvider, Localizer[r => r.ButtonText]?.Value]
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

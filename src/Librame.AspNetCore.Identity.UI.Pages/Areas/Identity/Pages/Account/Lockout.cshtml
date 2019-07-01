@@ -1,10 +1,21 @@
 ﻿@page
-@model LockoutModel
+@model LockoutPageModel
+@inject IExpressionHtmlLocalizer<LockoutViewResource> Localizer
 @{
-    ViewData["Title"] = "Locked out";
+    Layout = "_LayoutByLogin";
+    ViewData["Title"] = Localizer[r => r.Title];
 }
-
-<header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">This account has been locked out, please try again later.</p>
-</header>
+<!-- AccessDenied -->
+<div class="row">
+    <div class="col-sm-6 col-sm-offset-3 form-box">
+        <div class="form-top">
+            <div class="form-top-left">
+                <h3>@ViewData["Title"]</h3>
+                <p>@Localizer[r => r.Descr]</p>
+            </div>
+            <div class="form-top-right">
+                <!-- <i class="fa fa-key"></i> -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -15,11 +15,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
+    /// <summary>
+    /// 锁定页面模型。
+    /// </summary>
     [AllowAnonymous]
-    public class LockoutModel : PageModel
+    public class LockoutPageModel : PageModel
     {
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
         public void OnGet()
         {
         }
+
     }
 }

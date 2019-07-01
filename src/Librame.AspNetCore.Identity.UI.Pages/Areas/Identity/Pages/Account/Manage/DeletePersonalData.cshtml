@@ -1,16 +1,17 @@
 ﻿@page
-@model DeletePersonalDataModel
+@model AbstractDeletePersonalDataPageModel
+@inject IExpressionHtmlLocalizer<DeletePersonalDataViewResource> Localizer
 @{
-    ViewData["Title"] = "Delete Personal Data";
-    ViewData["ActivePage"] = ManageNavPages.DeletePersonalData;
+    ViewData["Title"] = Localizer[r => r.Title];
 }
 
+<!-- DeletePersonalData -->
 <h4>@ViewData["Title"]</h4>
 
 <div class="alert alert-warning" role="alert">
     <p>
         <span class="glyphicon glyphicon-warning-sign"></span>
-        <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+        <strong>@Localizer[r => r.Descr]</strong>
     </p>
 </div>
 
@@ -24,11 +25,7 @@
                 <input asp-for="Input.Password" class="form-control" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
-        }       
-        <button class="btn btn-danger" type="submit">Delete data and close my account</button>
+        }
+        <button class="btn btn-danger" type="submit">@Localizer[r => r.ButtonText]</button>
     </form>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

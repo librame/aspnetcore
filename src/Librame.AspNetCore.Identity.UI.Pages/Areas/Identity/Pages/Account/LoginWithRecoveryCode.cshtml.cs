@@ -16,48 +16,68 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
-    [AllowAnonymous]
-    [InternalUIIdentity(typeof(LoginWithRecoveryCodeModel<>))]
-    public abstract class LoginWithRecoveryCodeModel : PageModel
-    {
-        [BindProperty]
-        public InputModel Input { get; set; }
+    using AspNetCore.UI;
+    using Models;
+    using Extensions.Core;
 
+    /// <summary>
+    /// 抽象恢复码登入页面模型。
+    /// </summary>
+    [AllowAnonymous]
+    [ThemepackTemplate(typeof(LoginWithRecoveryCodePageModel<>))]
+    public abstract class AbstractLoginWithRecoveryCodePageModel : PageModel
+    {
+        /// <summary>
+        /// 输入模型。
+        /// </summary>
+        [BindProperty]
+        public LoginWithRecoveryCodeViewModel Input { get; set; }
+
+        /// <summary>
+        /// 返回链接。
+        /// </summary>
         public string ReturnUrl { get; set; }
 
-        public class InputModel
-        {
-            [BindProperty]
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "Recovery Code")]
-            public string RecoveryCode { get; set; }
-        }
 
-        public virtual Task<IActionResult> OnGetAsync(string returnUrl = null) => throw new NotImplementedException();
+        /// <summary>
+        /// 异步获取方法。
+        /// </summary>
+        /// <param name="returnUrl">给定的返回 URL。</param>
+        /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
+        public virtual Task<IActionResult> OnGetAsync(string returnUrl = null)
+            => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostAsync(string returnUrl = null) => throw new NotImplementedException();
+        /// <summary>
+        /// 异步提交方法。
+        /// </summary>
+        /// <param name="returnUrl">给定的返回 URL。</param>
+        /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
+        public virtual Task<IActionResult> OnPostAsync(string returnUrl = null)
+            => throw new NotImplementedException();
     }
 
-    internal class LoginWithRecoveryCodeModel<TUser> : LoginWithRecoveryCodeModel where TUser: class
+
+    internal class LoginWithRecoveryCodePageModel<TUser> : AbstractLoginWithRecoveryCodePageModel where TUser: class
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<LoginWithRecoveryCodeModel> _logger;
+        private readonly ILogger<AbstractLoginWithRecoveryCodePageModel> _logger;
+        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
-        public LoginWithRecoveryCodeModel(
+        public LoginWithRecoveryCodePageModel(
             SignInManager<TUser> signInManager,
             UserManager<TUser> userManager,
-            ILogger<LoginWithRecoveryCodeModel> logger)
+            ILogger<AbstractLoginWithRecoveryCodePageModel> logger,
+            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _errorLocalizer = errorLocalizer;
         }
 
         public override async Task<IActionResult> OnGetAsync(string returnUrl = null)
@@ -87,12 +107,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
 
-            var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
-
-            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
-
             var userId = await _userManager.GetUserIdAsync(user);
-
+            var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
+            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
             if (result.Succeeded)
             {
                 _logger.LogInformation("User with ID '{UserId}' logged in with a recovery code.", userId);
@@ -106,9 +123,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             else
             {
                 _logger.LogWarning("Invalid recovery code entered for user with ID '{UserId}' ", userId);
-                ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
+                ModelState.AddModelError(string.Empty, _errorLocalizer[r => r.InvalidRecoveryCodeEntered]?.ToString());
                 return Page();
             }
         }
+
     }
 }

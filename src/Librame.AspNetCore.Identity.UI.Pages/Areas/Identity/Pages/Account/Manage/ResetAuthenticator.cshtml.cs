@@ -19,34 +19,57 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    [InternalUIIdentity(typeof(ResetAuthenticatorModel<>))]
-    public abstract class ResetAuthenticatorModel : PageModel
+    using AspNetCore.UI;
+    using Extensions.Core;
+
+    /// <summary>
+    /// 抽象重置验证器页面模型。
+    /// </summary>
+    [ThemepackTemplate(typeof(ResetAuthenticatorPageModel<>))]
+    public abstract class AbstractResetAuthenticatorPageModel : PageModel
     {
+        /// <summary>
+        /// 状态消息。
+        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        public virtual Task<IActionResult> OnGet() => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnGetAsync()
+            => throw new NotImplementedException();
+
+        /// <summary>
+        /// 提交方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnPostAsync()
+            => throw new NotImplementedException();
     }
 
-    internal class ResetAuthenticatorModel<TUser> : ResetAuthenticatorModel where TUser : class
+    internal class ResetAuthenticatorPageModel<TUser> : AbstractResetAuthenticatorPageModel where TUser : class
     {
-        UserManager<TUser> _userManager;
+        private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
-        ILogger<ResetAuthenticatorModel> _logger;
+        private readonly ILogger<AbstractResetAuthenticatorPageModel> _logger;
+        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
 
-        public ResetAuthenticatorModel(
+        public ResetAuthenticatorPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
-            ILogger<ResetAuthenticatorModel> logger)
+            ILogger<AbstractResetAuthenticatorPageModel> logger,
+            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _statusLocalizer = statusLocalizer;
         }
 
-        public override async Task<IActionResult> OnGet()
+        public override async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -71,7 +94,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             _logger.LogInformation("User with ID '{UserId}' has reset their authentication app key.", userId);
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your authenticator app key has been reset, you will need to configure your authenticator app using the new key.";
+
+            StatusMessage = _statusLocalizer[r => r.ResetAuthenticator]?.ToString();
 
             return RedirectToPage("./EnableAuthenticator");
         }

@@ -5,23 +5,22 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>5.20.1810.281</Version>
+    <Version>6.0.1613.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
-    <Description>Librame.AspNetCore</Description>
-    <Copyright>Copyright © 2012-2018</Copyright>
-    <PackageLicenseUrl>https://github.com/librame/LibrameCore/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <Description>Use Librame.Extensions.Core with the ASP.NET Core platform.</Description>
+    <Copyright>Copyright © 2012-2019</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>LibrameCore,Librame,ASP.NETCore.NETCore,.NETStandard</PackageTags>
-    <PackageReleaseNotes>Librame.AspNetCore</PackageReleaseNotes>
+    <PackageTags>AspNetCore,Extensions,Librame,NETStandard</PackageTags>
+    <PackageReleaseNotes>Use Librame.Extensions.Core with the ASP.NET Core platform.</PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>5.20.1810.281</AssemblyVersion>
-    <FileVersion>5.20.1810.281</FileVersion>
-    <NeutralLanguage>zh-CN</NeutralLanguage>
+    <AssemblyVersion>6.0.1613.201</AssemblyVersion>
+    <FileVersion>6.0.1906.181</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -29,9 +28,15 @@
     <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame" Version="5.20.1811.291" />
+    <PackageReference Include="Librame.Extensions.Core" Version="6.0.807.201" />
+    <PackageReference Include="Microsoft.AspNetCore.Localization.Routing" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -19,43 +19,62 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
-    using Models.AccountViewModels;
+    using AspNetCore.UI;
+    using Models;
 
+    /// <summary>
+    /// 抽象重置密码页面模型。
+    /// </summary>
     [AllowAnonymous]
-    [InternalUIIdentity(typeof(ResetPasswordModel<>))]
-    public abstract class ResetPasswordModel : PageModel
+    [ThemepackTemplate(typeof(ResetPasswordPageModel<>))]
+    public abstract class AbstractResetPasswordPageModel : PageModel
     {
+        /// <summary>
+        /// 输入模型。
+        /// </summary>
         [BindProperty]
         public ResetPasswordViewModel Input { get; set; }
 
 
-        public virtual IActionResult OnGet(string code = null) => throw new NotImplementedException();
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <param name="token">给定的令牌。</param>
+        /// <returns>返回 <see cref="IActionResult"/>。</returns>
+        public virtual IActionResult OnGet(string token = null)
+            => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 异步提交方法。
+        /// </summary>
+        /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
+        public virtual Task<IActionResult> OnPostAsync()
+            => throw new NotImplementedException();
     }
 
 
-    internal class ResetPasswordModel<TUser> : ResetPasswordModel where TUser : class
+    internal class ResetPasswordPageModel<TUser> : AbstractResetPasswordPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
 
-        public ResetPasswordModel(UserManager<TUser> userManager)
+        public ResetPasswordPageModel(UserManager<TUser> userManager)
         {
             _userManager = userManager;
         }
 
-        public override IActionResult OnGet(string code = null)
+        public override IActionResult OnGet(string token = null)
         {
-            if (code == null)
+            if (token == null)
             {
-                return BadRequest("A code must be supplied for password reset.");
+                return BadRequest("A token must be supplied for password reset.");
             }
             else
             {
                 Input = new ResetPasswordViewModel
                 {
-                    Code = code
+                    Token = token
                 };
+
                 return Page();
             }
         }
@@ -67,14 +86,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 return Page();
             }
 
-            var user = await _userManager.FindByEmailAsync(Input.Email);
+            var user = await _userManager.FindByNameAsync(Input.Name);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
+            var result = await _userManager.ResetPasswordAsync(user, Input.Token, Input.Password);
             if (result.Succeeded)
             {
                 return RedirectToPage("./ResetPasswordConfirmation");
@@ -84,7 +103,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+
             return Page();
         }
+
     }
 }

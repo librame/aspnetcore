@@ -1,5 +1,5 @@
 ﻿using LibrameStandard.Extensions.Entity;
-using Librame.AspNetCore.Identity.Stores;
+using Librame.AspNet.Identity.Stores;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;

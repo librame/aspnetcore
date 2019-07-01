@@ -289,7 +289,7 @@ jQuery.extend({
 		return true;
 	},
 
-	isEmptyObject: function( obj ) {
+	IsNullOrEmptyObject: function( obj ) {
 		var name;
 		for ( name in obj ) {
 			return false;
@@ -3600,7 +3600,7 @@ Data.prototype = {
 		// Handle: [ owner, { properties } ] args
 		} else {
 			// Fresh assignments by object are shallow copied
-			if ( jQuery.isEmptyObject( cache ) ) {
+			if ( jQuery.IsNullOrEmptyObject( cache ) ) {
 				jQuery.extend( this.cache[ unlock ], data );
 			// Otherwise, copy the properties one-by-one to the cache object
 			} else {
@@ -3694,7 +3694,7 @@ Data.prototype = {
 		}
 	},
 	hasData: function( owner ) {
-		return !jQuery.isEmptyObject(
+		return !jQuery.IsNullOrEmptyObject(
 			this.cache[ owner[ this.expando ] ] || {}
 		);
 	},
@@ -4255,7 +4255,7 @@ jQuery.event = {
 		}
 
 		// Remove the expando if it's no longer used
-		if ( jQuery.isEmptyObject( events ) ) {
+		if ( jQuery.IsNullOrEmptyObject( events ) ) {
 			delete elemData.handle;
 			data_priv.remove( elem, "events" );
 		}
@@ -4362,7 +4362,7 @@ jQuery.event = {
 		event.type = type;
 
 		// If nobody prevented the default action, do it now
-		if ( !onlyHandlers && !event.isDefaultPrevented() ) {
+		if ( !onlyHandlers && !event.IsNullPrevented() ) {
 
 			if ( (!special._default || special._default.apply( eventPath.pop(), data ) === false) &&
 				jQuery.acceptData( elem ) ) {
@@ -4653,7 +4653,7 @@ jQuery.event = {
 		} else {
 			jQuery.event.dispatch.call( elem, e );
 		}
-		if ( e.isDefaultPrevented() ) {
+		if ( e.IsNullPrevented() ) {
 			event.preventDefault();
 		}
 	}
@@ -4678,7 +4678,7 @@ jQuery.Event = function( src, props ) {
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
-		this.isDefaultPrevented = src.defaultPrevented ||
+		this.IsNullPrevented = src.defaultPrevented ||
 				src.defaultPrevented === undefined &&
 				// Support: Android<4.0
 				src.returnValue === false ?
@@ -4705,14 +4705,14 @@ jQuery.Event = function( src, props ) {
 // jQuery.Event is based on DOM3 Events as specified by the ECMAScript Language Binding
 // http://www.w3.org/TR/2003/WD-DOM-Level-3-Events-20030331/ecma-script-binding.html
 jQuery.Event.prototype = {
-	isDefaultPrevented: returnFalse,
+	IsNullPrevented: returnFalse,
 	isPropagationStopped: returnFalse,
 	isImmediatePropagationStopped: returnFalse,
 
 	preventDefault: function() {
 		var e = this.originalEvent;
 
-		this.isDefaultPrevented = returnTrue;
+		this.IsNullPrevented = returnTrue;
 
 		if ( e && e.preventDefault ) {
 			e.preventDefault();
@@ -6452,7 +6452,7 @@ function defaultPrefilter( elem, props, opts ) {
 		}
 	}
 
-	if ( !jQuery.isEmptyObject( orig ) ) {
+	if ( !jQuery.IsNullOrEmptyObject( orig ) ) {
 		if ( dataShow ) {
 			if ( "hidden" in dataShow ) {
 				hidden = dataShow.hidden;
@@ -6711,7 +6711,7 @@ jQuery.fn.extend({
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
-		var empty = jQuery.isEmptyObject( prop ),
+		var empty = jQuery.IsNullOrEmptyObject( prop ),
 			optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
 				// Operate on a copy of prop so per-property easing won't be lost

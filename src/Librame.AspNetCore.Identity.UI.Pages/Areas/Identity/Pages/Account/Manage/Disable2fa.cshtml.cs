@@ -19,31 +19,54 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    [InternalUIIdentity(typeof(Disable2faModel<>))]
-    public abstract class Disable2faModel : PageModel
+    using AspNetCore.UI;
+    using Extensions.Core;
+
+    /// <summary>
+    /// 抽象禁用双因子验证页面模型。
+    /// </summary>
+    [ThemepackTemplate(typeof(Disable2faPageModel<>))]
+    public abstract class AbstractDisable2faPageModel : PageModel
     {
+        /// <summary>
+        /// 状态消息。
+        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        public virtual Task<IActionResult> OnGet() => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnGetAsync()
+            => throw new NotImplementedException();
+
+        /// <summary>
+        /// 提交方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnPostAsync()
+            => throw new NotImplementedException();
     }
 
-    internal class Disable2faModel<TUser> : Disable2faModel where TUser : class
+    internal class Disable2faPageModel<TUser> : AbstractDisable2faPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<Disable2faModel> _logger;
+        private readonly ILogger<AbstractDisable2faPageModel> _logger;
+        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
 
-        public Disable2faModel(
+        public Disable2faPageModel(
             UserManager<TUser> userManager,
-            ILogger<Disable2faModel> logger)
+            ILogger<AbstractDisable2faPageModel> logger,
+            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _logger = logger;
+            _statusLocalizer = statusLocalizer;
         }
 
-        public override async Task<IActionResult> OnGet()
+        public override async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -74,7 +97,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             }
 
             _logger.LogInformation("User with ID '{UserId}' has disabled 2fa.", _userManager.GetUserId(User));
-            StatusMessage = "2fa has been disabled. You can reenable 2fa when you setup an authenticator app";
+
+            StatusMessage = _statusLocalizer[r => r.DisableTwoFactor]?.ToString();
+
             return RedirectToPage("./TwoFactorAuthentication");
         }
     }

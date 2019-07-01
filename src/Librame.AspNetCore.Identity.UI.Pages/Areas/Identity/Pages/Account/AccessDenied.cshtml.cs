@@ -14,10 +14,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
-    public class AccessDeniedModel : PageModel
+    /// <summary>
+    /// 拒绝访问页面模型。
+    /// </summary>
+    public class AccessDeniedPageModel : PageModel
     {
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
         public void OnGet()
         {
         }
+
     }
 }

@@ -1,0 +1,61 @@
+﻿@inject IApplicationContext Application
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @Application.Title</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="~/login/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/login/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/login/css/form-elements.css" />
+        <link rel="stylesheet" href="~/login/css/style.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.4/css/bootstrap.min.css"
+              asp-fallback-href="~/login/bootstrap/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/login/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/login/css/form-elements.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/login/css/style.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+    <div class="top-content">
+        <div class="inner-bg">
+            <div class="container">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <environment include="Development">
+        <script src="~/login/js/jquery-1.11.1.min.js"></script>
+        <script src="~/login/bootstrap/js/bootstrap.min.js"></script>
+        @*<script src="~/login/js/jquery.backstretch.min.js"></script>*@
+        <script src="~/login/js/scripts.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.11.1.min.js"
+                asp-fallback-src="~/login/js/jquery-1.11.1.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.4/bootstrap.min.js"
+                asp-fallback-src="~/login/bootstrap/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        @*<script src="~/login/js/jquery.backstretch.min.js"></script>*@
+        <script src="~/login/js/scripts.js" asp-append-version="true"></script>
+    </environment>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -19,26 +19,36 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    [InternalUIIdentity(typeof(PersonalDataModel<>))]
-    public abstract class PersonalDataModel : PageModel
+    using AspNetCore.UI;
+
+    /// <summary>
+    /// 抽象个人数据页面模型。
+    /// </summary>
+    [ThemepackTemplate(typeof(PersonalDataPageModel<>))]
+    public abstract class AbstractPersonalDataPageModel : PageModel
     {
-        public virtual Task<IActionResult> OnGet() => throw new NotImplementedException();
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnGetAsync()
+            => throw new NotImplementedException();
     }
 
-    internal class PersonalDataModel<TUser> : PersonalDataModel where TUser : class
+    internal class PersonalDataPageModel<TUser> : AbstractPersonalDataPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<PersonalDataModel> _logger;
+        private readonly ILogger<AbstractPersonalDataPageModel> _logger;
 
-        public PersonalDataModel(
+        public PersonalDataPageModel(
             UserManager<TUser> userManager,
-            ILogger<PersonalDataModel> logger)
+            ILogger<AbstractPersonalDataPageModel> logger)
         {
             _userManager = userManager;
             _logger = logger;
         }
 
-        public override async Task<IActionResult> OnGet()
+        public override async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

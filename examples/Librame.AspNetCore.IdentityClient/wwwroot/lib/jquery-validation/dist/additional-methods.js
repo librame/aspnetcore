@@ -1054,10 +1054,10 @@ $.validator.addMethod( "skip_or_fill_minimum", function( value, element, options
  *
  */
 $.validator.addMethod( "stateUS", function( value, element, options ) {
-	var isDefault = typeof options === "undefined",
-		caseSensitive = ( isDefault || typeof options.caseSensitive === "undefined" ) ? false : options.caseSensitive,
-		includeTerritories = ( isDefault || typeof options.includeTerritories === "undefined" ) ? false : options.includeTerritories,
-		includeMilitary = ( isDefault || typeof options.includeMilitary === "undefined" ) ? false : options.includeMilitary,
+	var IsNull = typeof options === "undefined",
+		caseSensitive = ( IsNull || typeof options.caseSensitive === "undefined" ) ? false : options.caseSensitive,
+		includeTerritories = ( IsNull || typeof options.includeTerritories === "undefined" ) ? false : options.includeTerritories,
+		includeMilitary = ( IsNull || typeof options.includeMilitary === "undefined" ) ? false : options.includeMilitary,
 		regex;
 
 	if ( !includeTerritories && !includeMilitary ) {

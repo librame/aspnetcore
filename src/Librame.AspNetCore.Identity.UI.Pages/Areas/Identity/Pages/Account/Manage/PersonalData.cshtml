@@ -1,27 +1,24 @@
 ﻿@page
-@model PersonalDataModel
+@model AbstractPersonalDataPageModel
+@inject IExpressionHtmlLocalizer<PersonalDataViewResource> Localizer
 @{
-    ViewData["Title"] = "Personal Data";
-    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+    ViewData["Title"] = Localizer[r => r.Title];
 }
 
+<!-- PersonalData -->
 <h4>@ViewData["Title"]</h4>
 
 <div class="row">
     <div class="col-md-6">
-        <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
+        <p>@Localizer[r => r.Info]</p>
         <p>
-            <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+            <strong>@Localizer[r => r.Descr]</strong>
         </p>
         <form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group">
-            <button class="btn btn-default" type="submit">Download</button>
+            <button class="btn btn-default" type="submit">@Localizer[r => r.DownloadButtonText]</button>
         </form>
         <p>
-            <a id="delete" asp-page="DeletePersonalData" class="btn btn-default">Delete</a>
+            <a id="delete" asp-page="DeletePersonalData" class="btn btn-default">@Localizer[r => r.ButtonText]</a>
         </p>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

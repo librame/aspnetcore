@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -23,52 +22,82 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    [InternalUIIdentity(typeof(EnableAuthenticatorModel<>))]
-    public class EnableAuthenticatorModel : PageModel
+    using AspNetCore.UI;
+    using Models;
+    using Extensions.Core;
+
+    /// <summary>
+    /// 抽象启用验证器页面模型。
+    /// </summary>
+    [ThemepackTemplate(typeof(EnableAuthenticatorPageModel<>))]
+    public abstract class AbstractEnableAuthenticatorPageModel : PageModel
     {
+        /// <summary>
+        /// 共享密钥。
+        /// </summary>
         public string SharedKey { get; set; }
 
+        /// <summary>
+        /// 验证器 URI。
+        /// </summary>
         public string AuthenticatorUri { get; set; }
 
+        /// <summary>
+        /// 恢复码集合。
+        /// </summary>
         [TempData]
         public string[] RecoveryCodes { get; set; }
 
+        /// <summary>
+        /// 状态消息。
+        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
+        /// <summary>
+        /// 输入模型。
+        /// </summary>
         [BindProperty]
-        public InputModel Input { get; set; }
+        public EnableAuthenticatorViewModel Input { get; set; }
 
-        public class InputModel
-        {
-            [Required]
-            [StringLength(7, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Text)]
-            [Display(Name = "Verification Code")]
-            public string Code { get; set; }
-        }
 
-        public virtual Task<IActionResult> OnGetAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnGetAsync()
+            => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 提交方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnPostAsync()
+            => throw new NotImplementedException();
     }
 
-    internal class EnableAuthenticatorModel<TUser> : EnableAuthenticatorModel where TUser : class
+    internal class EnableAuthenticatorPageModel<TUser> : AbstractEnableAuthenticatorPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<EnableAuthenticatorModel> _logger;
         private readonly UrlEncoder _urlEncoder;
+        private readonly ILogger<AbstractEnableAuthenticatorPageModel> _logger;
+        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
-        public EnableAuthenticatorModel(
+        public EnableAuthenticatorPageModel(
             UserManager<TUser> userManager,
-            ILogger<EnableAuthenticatorModel> logger,
-            UrlEncoder urlEncoder)
+            UrlEncoder urlEncoder,
+            ILogger<AbstractEnableAuthenticatorPageModel> logger,
+            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer,
+            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _userManager = userManager;
-            _logger = logger;
             _urlEncoder = urlEncoder;
+            _logger = logger;
+            _statusLocalizer = statusLocalizer;
+            _errorLocalizer = errorLocalizer;
         }
 
         public override async Task<IActionResult> OnGetAsync()
@@ -99,14 +128,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             }
 
             // Strip spaces and hypens
-            var verificationCode = Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+            var verificationCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
             var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
                 user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
 
             if (!is2faTokenValid)
             {
-                ModelState.AddModelError("Input.Code", "Verification code is invalid.");
+                ModelState.AddModelError(nameof(Input.TwoFactorCode), _errorLocalizer[r => r.InvalidVerificationCode]);
                 await LoadSharedKeyAndQrCodeUriAsync(user);
                 return Page();
             }
@@ -115,7 +144,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             var userId = await _userManager.GetUserIdAsync(user);
             _logger.LogInformation("User with ID '{UserId}' has enabled 2FA with an authenticator app.", userId);
 
-            StatusMessage = "Your authenticator app has been verified.";
+            StatusMessage = _statusLocalizer[r => r.EnableAuthenticator];
 
             if (await _userManager.CountRecoveryCodesAsync(user) == 0)
             {
@@ -166,7 +195,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         {
             return string.Format(
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("Microsoft.AspNetCore.Identity.UI"),
+                _urlEncoder.Encode("Librame.AspNetCore.Identity.UI"), // "Microsoft.AspNetCore.Identity.UI"
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }

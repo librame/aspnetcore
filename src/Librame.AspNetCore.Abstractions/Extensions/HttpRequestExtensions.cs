@@ -25,7 +25,6 @@ namespace Librame.Extensions
     /// </summary>
     public static class HttpRequestExtensions
     {
-
         /// <summary>
         /// 异步得到真实 IP 地址。
         /// </summary>
@@ -35,7 +34,7 @@ namespace Librame.Extensions
         {
             string ipAddress = request.Headers["X-Original-For"];
 
-            if (ipAddress.IsEmpty()) return ipAddress;
+            if (ipAddress.IsNullOrEmpty()) return ipAddress;
 
             if (ipAddress.Contains(":"))
                 ipAddress = ipAddress.Substring(0, ipAddress.IndexOf(":"));
@@ -56,7 +55,7 @@ namespace Librame.Extensions
             }
 
             // 对于通过多个代理的情况，第一个IP为客户端真实IP，多个IP按照英文逗号分割
-            if (ipAddress.IsNotDefault() && ipAddress.Length > 15)
+            if (ipAddress.IsNotNull() && ipAddress.Length > 15)
             {
                 if (ipAddress.IndexOf(",") > 0)
                     ipAddress = ipAddress.Substring(0, ipAddress.IndexOf(","));
@@ -162,7 +161,7 @@ namespace Librame.Extensions
         /// <returns>返回布尔值。</returns>
         public static bool IsAjaxRequest(this HttpRequest request)
         {
-            return (request.Headers["X-Requested-With"] == "XMLHttpRequest");
+            return request.Headers["X-Requested-With"] == "XMLHttpRequest";
         }
 
 

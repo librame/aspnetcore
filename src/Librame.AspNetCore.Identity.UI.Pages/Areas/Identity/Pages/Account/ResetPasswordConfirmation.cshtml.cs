@@ -15,11 +15,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
+    /// <summary>
+    /// 重置密码确认模型。
+    /// </summary>
     [AllowAnonymous]
-    public class ResetPasswordConfirmationModel : PageModel
+    public class ResetPasswordConfirmationPageModel : PageModel
     {
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
         public void OnGet()
         {
         }
+
     }
 }

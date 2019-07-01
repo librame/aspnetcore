@@ -15,11 +15,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
+    /// <summary>
+    /// 忘记密码确认页面模型。
+    /// </summary>
     [AllowAnonymous]
-    public class ForgotPasswordConfirmation : PageModel
+    public class ForgotPasswordConfirmationPageModel : PageModel
     {
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
         public void OnGet()
         {
         }
+
     }
 }

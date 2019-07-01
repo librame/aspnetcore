@@ -20,23 +20,40 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
+    using AspNetCore.UI;
+
+    /// <summary>
+    /// 抽象登出页面模型。
+    /// </summary>
     [AllowAnonymous]
-    [InternalUIIdentity(typeof(LogoutModel<>))]
-    public abstract class LogoutModel : PageModel
+    [ThemepackTemplate(typeof(LogoutPageModel<>))]
+    public abstract class AbstractLogoutPageModel : PageModel
     {
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
         public void OnGet()
         {
         }
 
-        public virtual Task<IActionResult> OnPost(string returnUrl = null) => throw new NotImplementedException();
+
+        /// <summary>
+        /// 异步提交方法。
+        /// </summary>
+        /// <param name="returnUrl">给定的返回 URL。</param>
+        /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
+        public virtual Task<IActionResult> OnPost(string returnUrl = null)
+            => throw new NotImplementedException();
     }
 
-    internal class LogoutModel<TUser> : LogoutModel where TUser : class
+
+    internal class LogoutPageModel<TUser> : AbstractLogoutPageModel where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
-        private readonly ILogger<LogoutModel> _logger;
+        private readonly ILogger<AbstractLogoutPageModel> _logger;
 
-        public LogoutModel(SignInManager<TUser> signInManager, ILogger<LogoutModel> logger)
+        public LogoutPageModel(SignInManager<TUser> signInManager,
+            ILogger<AbstractLogoutPageModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;

@@ -22,47 +22,84 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
+    using Models;
+    using AspNetCore.UI;
     using Extensions.Network;
-    using Models.AccountViewModels;
 
+    /// <summary>
+    /// 抽象注册页面模型。
+    /// </summary>
     [AllowAnonymous]
-    [InternalUIIdentity(typeof(RegisterModel<>))]
-    public abstract class RegisterModel : PageModel
+    [ThemepackTemplate(typeof(RegisterPageModel<>))]
+    public abstract class AbstractRegisterPageModel : PageModel
     {
+        /// <summary>
+        /// 构造一个 <see cref="AbstractRegisterPageModel"/> 实例。
+        /// </summary>
+        /// <param name="localizer">给定的 <see cref="IExpressionHtmlLocalizer{RegisterViewResource}"/>。</param>
+        protected AbstractRegisterPageModel(IExpressionHtmlLocalizer<RegisterViewResource> localizer)
+        {
+            Localizer = localizer;
+        }
+
+
+        /// <summary>
+        /// 本地化资源。
+        /// </summary>
+        public IExpressionHtmlLocalizer<RegisterViewResource> Localizer { get; set; }
+
+        /// <summary>
+        /// 注册视图模型。
+        /// </summary>
         [BindProperty]
         public RegisterViewModel Input { get; set; }
 
+        /// <summary>
+        /// 返回 URL。
+        /// </summary>
         public string ReturnUrl { get; set; }
-        
 
-        public virtual void OnGet(string returnUrl = null) => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostAsync(string returnUrl = null) => throw new NotImplementedException();
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <param name="returnUrl">给定的返回 URL。</param>
+        public virtual void OnGet(string returnUrl = null)
+            => throw new NotImplementedException();
+
+        /// <summary>
+        /// 异步提交方法。
+        /// </summary>
+        /// <param name="returnUrl">给定的返回 URL。</param>
+        /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
+        public virtual Task<IActionResult> OnPostAsync(string returnUrl = null)
+            => throw new NotImplementedException();
     }
 
 
-    internal class RegisterModel<TUser> : RegisterModel where TUser : class
+    internal class RegisterPageModel<TUser> : AbstractRegisterPageModel where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
         private readonly IUserEmailStore<TUser> _emailStore;
-        private readonly ILogger<AbstractLoginModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly ILogger<AbstractLoginPageModel> _logger;
+        private readonly IEmailService _emailService;
 
-        public RegisterModel(
-            UserManager<TUser> userManager,
-            IUserStore<TUser> userStore,
+        public RegisterPageModel(
             SignInManager<TUser> signInManager,
-            ILogger<AbstractLoginModel> logger,
-            IEmailSender emailSender)
+            IUserStore<TUser> userStore,
+            ILogger<AbstractLoginPageModel> logger,
+            IEmailService emailService,
+            IExpressionHtmlLocalizer<RegisterViewResource> localizer)
+            : base(localizer)
         {
-            _userManager = userManager;
-            _userStore = userStore;
-            _emailStore = GetEmailStore();
             _signInManager = signInManager;
+            _userManager = signInManager.UserManager;
+            _userStore = userStore;
+            _emailStore = userStore.GetUserEmailStore(_userManager);
             _logger = logger;
-            _emailSender = emailSender;
+            _emailService = emailService;
         }
 
         public override void OnGet(string returnUrl = null)
@@ -76,29 +113,31 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                await _userStore.SetUserNameAsync(user, Input.Name, CancellationToken.None);
 
+                var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { userId, code },
+                        values: new { userId, token },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailService.SendAsync(Input.Email,
+                        Localizer[r => r.ConfirmYourEmail]?.Value,
+                        Localizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value);
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -119,17 +158,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             {
                 throw new InvalidOperationException($"Can't create an instance of '{nameof(TUser)}'. " +
                     $"Ensure that '{nameof(TUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+                    $"override the register page in ~/Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<TUser> GetEmailStore()
-        {
-            if (!_userManager.SupportsUserEmail)
-            {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
-            }
-            return (IUserEmailStore<TUser>)_userStore;
-        }
     }
 }

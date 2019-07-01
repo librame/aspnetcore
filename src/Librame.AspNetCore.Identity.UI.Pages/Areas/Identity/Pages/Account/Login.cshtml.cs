@@ -23,23 +23,26 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
-    using Models.AccountViewModels;
+    using Extensions;
+    using AspNetCore.UI;
+    using Models;
+    using Extensions.Core;
 
     /// <summary>
-    /// 抽象登录模型。
+    /// 抽象登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [InternalUIIdentity(typeof(LoginModel<>))]
-    public abstract class AbstractLoginModel : PageModel
+    [ThemepackTemplate(typeof(LoginPageModel<>))]
+    public abstract class AbstractLoginPageModel : PageModel
     {
         /// <summary>
-        /// 输入视图模型。
+        /// 登入视图模型。
         /// </summary>
         [BindProperty]
         public LoginViewModel Input { get; set; }
 
         /// <summary>
-        /// 外部登录方案列表。
+        /// 外部登入方案列表。
         /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
@@ -56,40 +59,44 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
 
         /// <summary>
-        /// 异步获取任务。
+        /// 异步获取方法。
         /// </summary>
         /// <param name="returnUrl">给定的返回 URL。</param>
         /// <returns>返回一个异步操作。</returns>
-        public virtual Task OnGetAsync(string returnUrl = null) => throw new NotImplementedException();
+        public virtual Task OnGetAsync(string returnUrl = null)
+            => throw new NotImplementedException();
 
         /// <summary>
-        /// 异步提交任务。
+        /// 异步提交方法。
         /// </summary>
         /// <param name="returnUrl">给定的返回 URL。</param>
-        /// <returns>返回一个包含动作结果的异步操作。</returns>
-        public virtual Task<IActionResult> OnPostAsync(string returnUrl = null) => throw new NotImplementedException();
+        /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
+        public virtual Task<IActionResult> OnPostAsync(string returnUrl = null)
+            => throw new NotImplementedException();
     }
 
 
-    internal class LoginModel<TUser> : AbstractLoginModel where TUser : class
+    internal class LoginPageModel<TUser> : AbstractLoginPageModel where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
-        private readonly ILogger<AbstractLoginModel> _logger;
+        private readonly ILogger<AbstractLoginPageModel> _logger;
+        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
-
-        public LoginModel(SignInManager<TUser> signInManager, ILogger<AbstractLoginModel> logger)
+        public LoginPageModel(SignInManager<TUser> signInManager,
+            IUserStore<TUser> userStore,
+            ILogger<AbstractLoginPageModel> logger,
+            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _errorLocalizer = errorLocalizer;
         }
 
 
         public override async Task OnGetAsync(string returnUrl = null)
         {
-            if (!string.IsNullOrEmpty(ErrorMessage))
-            {
+            if (ErrorMessage.IsNotNullOrEmpty())
                 ModelState.AddModelError(string.Empty, ErrorMessage);
-            }
 
             returnUrl = returnUrl ?? Url.Content("~/");
 
@@ -109,7 +116,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(Input.Name, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -126,7 +133,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, _errorLocalizer[r => r.InvalidLoginAttempt]?.ToString());
                     return Page();
                 }
             }

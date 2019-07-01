@@ -18,34 +18,58 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    using Models.ManageViewModels;
+    using AspNetCore.UI;
+    using Models;
+    using Extensions.Core;
 
-    [InternalUIIdentity(typeof(SetPasswordModel<>))]
-    public abstract class SetPasswordModel : PageModel
+    /// <summary>
+    /// 抽象设置密码页面模型。
+    /// </summary>
+    [ThemepackTemplate(typeof(SetPasswordPageModel<>))]
+    public abstract class AbstractSetPasswordPageModel : PageModel
     {
+        /// <summary>
+        /// 输入模型。
+        /// </summary>
         [BindProperty]
         public SetPasswordViewModel Input { get; set; }
 
+        /// <summary>
+        /// 状态消息。
+        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
+        
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnGetAsync()
+            => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnGetAsync() => throw new NotImplementedException();
-
-        public virtual Task<IActionResult> OnPostAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 提交方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnPostAsync()
+            => throw new NotImplementedException();
     }
 
-    internal class SetPasswordModel<TUser> : SetPasswordModel where TUser : class
+    internal class SetPasswordPageModel<TUser> : AbstractSetPasswordPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
+        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
 
-        public SetPasswordModel(
+        public SetPasswordPageModel(
             UserManager<TUser> userManager,
-            SignInManager<TUser> signInManager)
+            SignInManager<TUser> signInManager,
+            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _statusLocalizer = statusLocalizer;
         }
 
         public override async Task<IActionResult> OnGetAsync()
@@ -90,7 +114,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your password has been set.";
+
+            StatusMessage = _statusLocalizer[r => r.SetPassword]?.ToString();
 
             return RedirectToPage();
         }

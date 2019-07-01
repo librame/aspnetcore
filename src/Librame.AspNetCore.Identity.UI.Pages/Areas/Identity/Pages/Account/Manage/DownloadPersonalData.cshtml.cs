@@ -23,22 +23,37 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    [InternalUIIdentity(typeof(DownloadPersonalDataModel<>))]
-    public abstract class DownloadPersonalDataModel : PageModel
-    {
-        public virtual IActionResult OnGet() => throw new NotImplementedException();
+    using AspNetCore.UI;
 
-        public virtual Task<IActionResult> OnPostAsync() => throw new NotImplementedException();
+    /// <summary>
+    /// 抽象下载个人数据页面模型。
+    /// </summary>
+    [ThemepackTemplate(typeof(DownloadPersonalDataModel<>))]
+    public abstract class AbstractDownloadPersonalDataPageModel : PageModel
+    {
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="IActionResult"/>。</returns>
+        public virtual IActionResult OnGet()
+            => throw new NotImplementedException();
+
+        /// <summary>
+        /// 提交方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnPostAsync()
+            => throw new NotImplementedException();
     }
 
-    internal class DownloadPersonalDataModel<TUser> : DownloadPersonalDataModel where TUser : class
+    internal class DownloadPersonalDataModel<TUser> : AbstractDownloadPersonalDataPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<DownloadPersonalDataModel> _logger;
+        private readonly ILogger<AbstractDownloadPersonalDataPageModel> _logger;
 
         public DownloadPersonalDataModel(
             UserManager<TUser> userManager,
-            ILogger<DownloadPersonalDataModel> logger)
+            ILogger<AbstractDownloadPersonalDataPageModel> logger)
         {
             _userManager = userManager;
             _logger = logger;
@@ -63,6 +78,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             var personalData = new Dictionary<string, string>();
             var personalDataProps = typeof(TUser).GetProperties().Where(
                             prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
+
             foreach (var p in personalDataProps)
             {
                 personalData.Add(p.Name, p.GetValue(user)?.ToString() ?? "null");

@@ -1,0 +1,23 @@
+﻿@model IApplicationContext
+@{
+    var descriptors = Model.Navigation.GetManageFooterDescriptors();
+}
+
+<nav class="pull-left">
+    <ul class="nav">
+        @if (descriptors != null && descriptors.Any())
+        {
+            foreach (var descr in descriptors)
+            {
+                <li class="nav-item">
+                    <a class="nav-link" href="@descr.Href" title="@descr.Title" @descr.Target>
+                        @descr.Text
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+</nav>
+<div class="copyright ml-auto">
+    &copy; @DateTime.Now.ToString("yyyy") - @Model.Copyright [@Model.Version]
+</div>

@@ -10,26 +10,35 @@
 
 #endregion
 
-using Microsoft.Extensions.DependencyInjection;
+using Librame.Extensions.Core;
+using Microsoft.Extensions.Configuration;
 using System;
 
-namespace Librame.Builders
+namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// 核心构建器服务集合静态扩展。
+    /// ASP.NET 构建器服务集合静态扩展。
     /// </summary>
-    public static class CoreBuilderServiceCollectionExtensions
+    public static class AspNetBuilderServiceCollectionExtensions
     {
-
         /// <summary>
-        /// 注册 Librame 核心服务集合。
+        /// 注册 Librame for ASP.NET Core 服务集合。
         /// </summary>
         /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
-        /// <param name="configureOptions">给定的配置依赖选项（可选）。</param>
+        /// <param name="configureOptions">给定的 <see cref="Action{BuilderOptions}"/>（可选；高优先级）。</param>
+        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
+        /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
         /// <returns>返回 <see cref="IBuilder"/>。</returns>
-        public static IBuilder AddLibrameCore(this IServiceCollection services, Action<DependenciesOptions> configureOptions = null)
+        public static IBuilder AddLibrameCore(this IServiceCollection services,
+            Action<BuilderOptions> configureOptions = null,
+            IConfiguration configuration = null,
+            Action<BinderOptions> configureBinderOptions = null)
         {
-            return services.AddLibrame(configureOptions);
+            var builder = services.AddLibrame(configureOptions, configuration, configureBinderOptions);
+
+            return builder
+                .AddCoreLocalizations()
+                .AddApplications();
         }
 
     }

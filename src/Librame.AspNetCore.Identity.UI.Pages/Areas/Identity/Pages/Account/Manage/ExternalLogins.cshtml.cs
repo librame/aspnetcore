@@ -21,41 +21,86 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    [InternalUIIdentity(typeof(ExternalLoginsModel<>))]
-    public abstract class ExternalLoginsModel : PageModel
+    using AspNetCore.UI;
+    using Extensions.Core;
+
+    /// <summary>
+    /// 抽象外部登入页面模型。
+    /// </summary>
+    [ThemepackTemplate(typeof(ExternalLoginsPageModel<>))]
+    public abstract class AbstractExternalLoginsPageModel : PageModel
     {
+        /// <summary>
+        /// 当前登入信息列表。
+        /// </summary>
         public IList<UserLoginInfo> CurrentLogins { get; set; }
 
+        /// <summary>
+        /// 其它登入方案列表。
+        /// </summary>
         public IList<AuthenticationScheme> OtherLogins { get; set; }
 
+        /// <summary>
+        /// 显示移除按钮。
+        /// </summary>
         public bool ShowRemoveButton { get; set; }
 
+        /// <summary>
+        /// 状态消息。
+        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        public virtual Task<IActionResult> OnGetAsync() => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostRemoveLoginAsync(string loginProvider, string providerKey) => throw new NotImplementedException();
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnGetAsync()
+            => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostLinkLoginAsync(string provider) => throw new NotImplementedException();
+        /// <summary>
+        /// 提交移除登入方法。
+        /// </summary>
+        /// <param name="loginProvider">给定的登入提供程序。</param>
+        /// <param name="providerKey">给定的提供程序密钥。</param>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnPostRemoveLoginAsync(string loginProvider, string providerKey)
+            => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnGetLinkLoginCallbackAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 提交链接登入方法。
+        /// </summary>
+        /// <param name="provider">给定的提供程序。</param>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnPostLinkLoginAsync(string provider)
+            => throw new NotImplementedException();
+
+        /// <summary>
+        /// 获取链接登入回传方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnGetLinkLoginCallbackAsync()
+            => throw new NotImplementedException();
     }
 
-    internal class ExternalLoginsModel<TUser> : ExternalLoginsModel where TUser : class
+    internal class ExternalLoginsPageModel<TUser> : AbstractExternalLoginsPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly IUserStore<TUser> _userStore;
+        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
 
-        public ExternalLoginsModel(
+        public ExternalLoginsPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
-            IUserStore<TUser> userStore)
+            IUserStore<TUser> userStore,
+            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _userStore = userStore;
+            _statusLocalizer = statusLocalizer;
         }
 
         public override async Task<IActionResult> OnGetAsync()
@@ -97,7 +142,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "The external login was removed.";
+
+            StatusMessage = _statusLocalizer[r => r.ExternalLoginRemoved]?.ToString();
+
             return RedirectToPage();
         }
 
@@ -136,7 +183,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            StatusMessage = "The external login was added.";
+            StatusMessage = _statusLocalizer[r => r.ExternalLoginAdded]?.ToString();
             return RedirectToPage();
         }
     }

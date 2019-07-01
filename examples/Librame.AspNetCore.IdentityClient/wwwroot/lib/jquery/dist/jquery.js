@@ -328,7 +328,7 @@ jQuery.extend( {
 		return typeof Ctor === "function" && fnToString.call( Ctor ) === ObjectFunctionString;
 	},
 
-	isEmptyObject: function( obj ) {
+	IsNullOrEmptyObject: function( obj ) {
 
 		/* eslint-disable no-unused-vars */
 		// See https://github.com/eslint/eslint/issues/6125
@@ -4133,7 +4133,7 @@ Data.prototype = {
 		}
 
 		// Remove the expando if there's no more data
-		if ( key === undefined || jQuery.isEmptyObject( cache ) ) {
+		if ( key === undefined || jQuery.IsNullOrEmptyObject( cache ) ) {
 
 			// Support: Chrome <=35 - 45
 			// Webkit & Blink performance suffers when deleting properties
@@ -4148,7 +4148,7 @@ Data.prototype = {
 	},
 	hasData: function( owner ) {
 		var cache = owner[ this.expando ];
-		return cache !== undefined && !jQuery.isEmptyObject( cache );
+		return cache !== undefined && !jQuery.IsNullOrEmptyObject( cache );
 	}
 };
 var dataPriv = new Data();
@@ -5131,7 +5131,7 @@ jQuery.event = {
 		}
 
 		// Remove data and the expando if it's no longer used
-		if ( jQuery.isEmptyObject( events ) ) {
+		if ( jQuery.IsNullOrEmptyObject( events ) ) {
 			dataPriv.remove( elem, "handle events" );
 		}
 	},
@@ -5369,7 +5369,7 @@ jQuery.Event = function( src, props ) {
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
-		this.isDefaultPrevented = src.defaultPrevented ||
+		this.IsNullPrevented = src.defaultPrevented ||
 				src.defaultPrevented === undefined &&
 
 				// Support: Android <=2.3 only
@@ -5408,7 +5408,7 @@ jQuery.Event = function( src, props ) {
 // https://www.w3.org/TR/2003/WD-DOM-Level-3-Events-20030331/ecma-script-binding.html
 jQuery.Event.prototype = {
 	constructor: jQuery.Event,
-	isDefaultPrevented: returnFalse,
+	IsNullPrevented: returnFalse,
 	isPropagationStopped: returnFalse,
 	isImmediatePropagationStopped: returnFalse,
 	isSimulated: false,
@@ -5416,7 +5416,7 @@ jQuery.Event.prototype = {
 	preventDefault: function() {
 		var e = this.originalEvent;
 
-		this.isDefaultPrevented = returnTrue;
+		this.IsNullPrevented = returnTrue;
 
 		if ( e && !this.isSimulated ) {
 			e.preventDefault();
@@ -6915,8 +6915,8 @@ function defaultPrefilter( elem, props, opts ) {
 	}
 
 	// Bail out if this is a no-op like .hide().hide()
-	propTween = !jQuery.isEmptyObject( props );
-	if ( !propTween && jQuery.isEmptyObject( orig ) ) {
+	propTween = !jQuery.IsNullOrEmptyObject( props );
+	if ( !propTween && jQuery.IsNullOrEmptyObject( orig ) ) {
 		return;
 	}
 
@@ -7285,7 +7285,7 @@ jQuery.fn.extend( {
 			.end().animate( { opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
-		var empty = jQuery.isEmptyObject( prop ),
+		var empty = jQuery.IsNullOrEmptyObject( prop ),
 			optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
 
@@ -8261,7 +8261,7 @@ jQuery.extend( jQuery.event, {
 		event.type = type;
 
 		// If nobody prevented the default action, do it now
-		if ( !onlyHandlers && !event.isDefaultPrevented() ) {
+		if ( !onlyHandlers && !event.IsNullPrevented() ) {
 
 			if ( ( !special._default ||
 				special._default.apply( eventPath.pop(), data ) === false ) &&

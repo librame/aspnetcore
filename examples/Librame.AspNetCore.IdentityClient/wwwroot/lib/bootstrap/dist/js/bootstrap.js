@@ -119,7 +119,7 @@ if (typeof jQuery === 'undefined') {
 
     $parent.trigger(e = $.Event('close.bs.alert'))
 
-    if (e.isDefaultPrevented()) return
+    if (e.IsNullPrevented()) return
 
     $parent.removeClass('in')
 
@@ -428,7 +428,7 @@ if (typeof jQuery === 'undefined') {
       direction: direction
     })
     this.$element.trigger(slideEvent)
-    if (slideEvent.isDefaultPrevented()) return
+    if (slideEvent.IsNullPrevented()) return
 
     this.sliding = true
 
@@ -593,7 +593,7 @@ if (typeof jQuery === 'undefined') {
 
     var startEvent = $.Event('show.bs.collapse')
     this.$element.trigger(startEvent)
-    if (startEvent.isDefaultPrevented()) return
+    if (startEvent.IsNullPrevented()) return
 
     if (actives && actives.length) {
       Plugin.call(actives, 'hide')
@@ -636,7 +636,7 @@ if (typeof jQuery === 'undefined') {
 
     var startEvent = $.Event('hide.bs.collapse')
     this.$element.trigger(startEvent)
-    if (startEvent.isDefaultPrevented()) return
+    if (startEvent.IsNullPrevented()) return
 
     var dimension = this.dimension()
 
@@ -798,7 +798,7 @@ if (typeof jQuery === 'undefined') {
 
       $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
 
-      if (e.isDefaultPrevented()) return
+      if (e.IsNullPrevented()) return
 
       $this.attr('aria-expanded', 'false')
       $parent.removeClass('open').trigger($.Event('hidden.bs.dropdown', relatedTarget))
@@ -827,7 +827,7 @@ if (typeof jQuery === 'undefined') {
       var relatedTarget = { relatedTarget: this }
       $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget))
 
-      if (e.isDefaultPrevented()) return
+      if (e.IsNullPrevented()) return
 
       $this
         .trigger('focus')
@@ -970,7 +970,7 @@ if (typeof jQuery === 'undefined') {
 
     this.$element.trigger(e)
 
-    if (this.isShown || e.isDefaultPrevented()) return
+    if (this.isShown || e.IsNullPrevented()) return
 
     this.isShown = true
 
@@ -1029,7 +1029,7 @@ if (typeof jQuery === 'undefined') {
 
     this.$element.trigger(e)
 
-    if (!this.isShown || e.isDefaultPrevented()) return
+    if (!this.isShown || e.IsNullPrevented()) return
 
     this.isShown = false
 
@@ -1244,7 +1244,7 @@ if (typeof jQuery === 'undefined') {
     if ($this.is('a')) e.preventDefault()
 
     $target.one('show.bs.modal', function (showEvent) {
-      if (showEvent.isDefaultPrevented()) return // only register focus restorer if modal will actually get shown
+      if (showEvent.IsNullPrevented()) return // only register focus restorer if modal will actually get shown
       $target.one('hidden.bs.modal', function () {
         $this.is(':visible') && $this.trigger('focus')
       })
@@ -1433,7 +1433,7 @@ if (typeof jQuery === 'undefined') {
       this.$element.trigger(e)
 
       var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
-      if (e.isDefaultPrevented() || !inDom) return
+      if (e.IsNullPrevented() || !inDom) return
       var that = this
 
       var $tip = this.tip()
@@ -1583,7 +1583,7 @@ if (typeof jQuery === 'undefined') {
 
     this.$element.trigger(e)
 
-    if (e.isDefaultPrevented()) return
+    if (e.IsNullPrevented()) return
 
     $tip.removeClass('in')
 
@@ -2105,7 +2105,7 @@ if (typeof jQuery === 'undefined') {
     $previous.trigger(hideEvent)
     $this.trigger(showEvent)
 
-    if (showEvent.isDefaultPrevented() || hideEvent.isDefaultPrevented()) return
+    if (showEvent.IsNullPrevented() || hideEvent.IsNullPrevented()) return
 
     var $target = $(selector)
 
@@ -2309,7 +2309,7 @@ if (typeof jQuery === 'undefined') {
 
       this.$element.trigger(e)
 
-      if (e.isDefaultPrevented()) return
+      if (e.IsNullPrevented()) return
 
       this.affixed = affix
       this.unpin = affix == 'bottom' ? this.getPinnedOffset() : null

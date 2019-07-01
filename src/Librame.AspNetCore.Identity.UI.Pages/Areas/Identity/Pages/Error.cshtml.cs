@@ -17,18 +17,31 @@ using System.Diagnostics;
 
 namespace Librame.AspNetCore.Identity.UI.Pages
 {
+    /// <summary>
+    /// 错误页面模型。
+    /// </summary>
     [AllowAnonymous]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public class ErrorModel : PageModel
+    public class ErrorPageModel : PageModel
     {
+        /// <summary>
+        /// 请求标识。
+        /// </summary>
         public string RequestId { get; set; }
 
+        /// <summary>
+        /// 显示请求标识。
+        /// </summary>
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
         public void OnGet()
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         }
+
     }
 }

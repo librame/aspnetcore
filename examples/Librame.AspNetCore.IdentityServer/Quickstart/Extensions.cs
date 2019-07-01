@@ -1,6 +1,6 @@
 using IdentityModel;
 using IdentityServer4.Stores;
-using Librame.AspNetCore.Identity.Stores;
+using Librame.AspNet.Identity.Stores;
 using LibrameStandard.Utilities;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
@@ -34,10 +34,10 @@ namespace LibrameCore.IdentityServer
 
 
         public static bool ValidateCredentials(this IEfCoreUserRoleStore users, string username, string password,
-            out Librame.AspNetCore.Identity.Stores.IdentityUser user)
+            out Librame.AspNet.Identity.Stores.IdentityUser user)
         {
             user = users.FindByNameAsync(username, CancellationToken.None).Result;
-            if (user.IsDefault()) return false;
+            if (user.IsNull()) return false;
 
             var validResult = users.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
             if (validResult == PasswordVerificationResult.Failed)
@@ -66,7 +66,7 @@ namespace LibrameCore.IdentityServer
         /// <param name="provider">The provider.</param>
         /// <param name="userId">The user identifier.</param>
         /// <returns></returns>
-        public static Librame.AspNetCore.Identity.Stores.IdentityUser FindByExternalProvider(this IEfCoreUserRoleStore users, string provider, string userId)
+        public static Librame.AspNet.Identity.Stores.IdentityUser FindByExternalProvider(this IEfCoreUserRoleStore users, string provider, string userId)
         {
             //return users.FirstOrDefault(x =>
             //    x.ProviderName == provider &&
@@ -82,7 +82,7 @@ namespace LibrameCore.IdentityServer
         /// <param name="userId">The user identifier.</param>
         /// <param name="claims">The claims.</param>
         /// <returns></returns>
-        public static Librame.AspNetCore.Identity.Stores.IdentityUser AutoProvisionUser(this IEfCoreUserRoleStore users, string provider, string userId, List<Claim> claims)
+        public static Librame.AspNet.Identity.Stores.IdentityUser AutoProvisionUser(this IEfCoreUserRoleStore users, string provider, string userId, List<Claim> claims)
         {
             // create a list of claims that we want to transfer into our store
             var filtered = new List<Claim>();
@@ -132,7 +132,7 @@ namespace LibrameCore.IdentityServer
             var name = filtered.FirstOrDefault(c => c.Type == JwtClaimTypes.Name)?.Value ?? userId;
 
             // create new user
-            var user = new Librame.AspNetCore.Identity.Stores.IdentityUser
+            var user = new Librame.AspNet.Identity.Stores.IdentityUser
             {
                 //SubjectId = sub,
                 //Username = name,

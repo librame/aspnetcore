@@ -20,31 +20,57 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    [InternalUIIdentity(typeof(GenerateRecoveryCodesModel<>))]
-    public abstract class GenerateRecoveryCodesModel : PageModel
+    using AspNetCore.UI;
+    using Extensions.Core;
+
+    /// <summary>
+    /// 抽象生成恢复码集合页面模型。
+    /// </summary>
+    [ThemepackTemplate(typeof(GenerateRecoveryCodesPageModel<>))]
+    public abstract class AbstractGenerateRecoveryCodesPageModel : PageModel
     {
+        /// <summary>
+        /// 恢复码集合。
+        /// </summary>
         [TempData]
         public string[] RecoveryCodes { get; set; }
 
+        /// <summary>
+        /// 状态消息。
+        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        public virtual Task<IActionResult> OnGetAsync() => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnGetAsync()
+            => throw new NotImplementedException();
+
+        /// <summary>
+        /// 提交方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnPostAsync()
+            => throw new NotImplementedException();
     }
 
-    internal class GenerateRecoveryCodesModel<TUser> : GenerateRecoveryCodesModel where TUser : class
+    internal class GenerateRecoveryCodesPageModel<TUser> : AbstractGenerateRecoveryCodesPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<GenerateRecoveryCodesModel> _logger;
+        private readonly ILogger<AbstractGenerateRecoveryCodesPageModel> _logger;
+        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
 
-        public GenerateRecoveryCodesModel(
+        public GenerateRecoveryCodesPageModel(
             UserManager<TUser> userManager,
-            ILogger<GenerateRecoveryCodesModel> logger)
+            ILogger<AbstractGenerateRecoveryCodesPageModel> logger,
+            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _logger = logger;
+            _statusLocalizer = statusLocalizer;
         }
 
         public override async Task<IActionResult> OnGetAsync()
@@ -84,7 +110,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             RecoveryCodes = recoveryCodes.ToArray();
 
             _logger.LogInformation("User with ID '{UserId}' has generated new 2FA recovery codes.", userId);
-            StatusMessage = "You have generated new recovery codes.";
+
+            StatusMessage = _statusLocalizer[r => r.GenerateRecoveryCodes]?.ToString();
+
             return RedirectToPage("./ShowRecoveryCodes");
         }
     }

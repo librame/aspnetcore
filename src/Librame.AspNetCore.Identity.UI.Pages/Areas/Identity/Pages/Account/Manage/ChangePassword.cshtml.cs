@@ -19,37 +19,60 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    using Models.ManageViewModels;
+    using Models;
+    using AspNetCore.UI;
+    using Extensions.Core;
 
-    [InternalUIIdentity(typeof(ChangePasswordModel<>))]
-    public abstract class ChangePasswordModel : PageModel
+    /// <summary>
+    /// 抽象修改密码页面模型。
+    /// </summary>
+    [ThemepackTemplate(typeof(ChangePasswordPageModel<>))]
+    public abstract class AbstractChangePasswordPageModel : PageModel
     {
+        /// <summary>
+        /// 输入模型。
+        /// </summary>
         [BindProperty]
         public ChangePasswordViewModel Input { get; set; }
 
+        /// <summary>
+        /// 状态消息。
+        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
 
-        public virtual Task<IActionResult> OnGetAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 获取方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnGetAsync()
+            => throw new NotImplementedException();
 
-        public virtual Task<IActionResult> OnPostAsync() => throw new NotImplementedException();
+        /// <summary>
+        /// 提交方法。
+        /// </summary>
+        /// <returns>返回一个 <see cref="Task{IActionResult}"/>。</returns>
+        public virtual Task<IActionResult> OnPostAsync()
+            => throw new NotImplementedException();
     }
 
-    internal class ChangePasswordModel<TUser> : ChangePasswordModel where TUser : class
+    internal class ChangePasswordPageModel<TUser> : AbstractChangePasswordPageModel where TUser : class
     {
-        private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
-        private readonly ILogger<ChangePasswordModel> _logger;
+        private readonly UserManager<TUser> _userManager;
+        private readonly ILogger<AbstractChangePasswordPageModel> _logger;
+        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
 
-        public ChangePasswordModel(
-            UserManager<TUser> userManager,
+        public ChangePasswordPageModel(
             SignInManager<TUser> signInManager,
-            ILogger<ChangePasswordModel> logger)
+            ILogger<AbstractChangePasswordPageModel> logger,
+            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
+            _userManager = signInManager.UserManager;
             _logger = logger;
+            _statusLocalizer = statusLocalizer;
         }
 
         public override async Task<IActionResult> OnGetAsync()
@@ -94,7 +117,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            
+            StatusMessage = _statusLocalizer[r => r.ChangePassword];
 
             return RedirectToPage();
         }
