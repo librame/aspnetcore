@@ -10,7 +10,6 @@
 
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,11 +23,9 @@ namespace Librame.AspNetCore.Portal
     /// </summary>
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     /// <typeparam name="TClaim">指定的声明类型。</typeparam>
-    /// <typeparam name="TClaimId">指定的声明标识类型。</typeparam>
-    public interface IClaimStore<TAccessor, TClaim, TClaimId> : IStore<TAccessor>
+    public interface IClaimStore<TAccessor, TClaim> : IStore<TAccessor>
         where TAccessor : IAccessor
         where TClaim : class
-        where TClaimId : IEquatable<TClaimId>
     {
         /// <summary>
         /// 异步查找声明。

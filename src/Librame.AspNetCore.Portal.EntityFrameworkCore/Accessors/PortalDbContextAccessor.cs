@@ -101,7 +101,8 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
     /// <typeparam name="TDateTime">指定的日期与时间类型（提供对 DateTime 或 DateTimeOffset 的支持）。</typeparam>
     public class PortalDbContextAccessor<TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim,
-        TClaimId, TCategoryId, TPaneId, TPaneClaimId, TTagId, TTagClaimId, TSourceId, TEditorId, TEditorTitleId, TSubjectId, TSubjectBodyId, TSubjectClaimId, TUserId, TDateTime> : DbContextAccessor
+        TClaimId, TCategoryId, TPaneId, TPaneClaimId, TTagId, TTagClaimId, TSourceId, TEditorId, TEditorTitleId, TSubjectId, TSubjectBodyId, TSubjectClaimId, TUserId, TDateTime>
+        : DbContextAccessor
         where TClaim : PortalClaim<TClaimId>
         where TCategory : PortalCategory<TCategoryId>
         where TPane : PortalPane<TPaneId, TCategoryId>

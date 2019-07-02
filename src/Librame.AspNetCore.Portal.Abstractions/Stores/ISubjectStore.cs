@@ -10,7 +10,6 @@
 
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,39 +25,41 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TSubject">指定的专题类型。</typeparam>
     /// <typeparam name="TSubjectBody">指定的专题主体类型。</typeparam>
     /// <typeparam name="TSubjectClaim">指定的专题声明类型。</typeparam>
-    /// <typeparam name="TSubjectId">指定的专题标识类型。</typeparam>
-    /// <typeparam name="TSubjectBodyId">指定的专题主体标识类型。</typeparam>
-    /// <typeparam name="TSubjectClaimId">指定的专题声明标识类型。</typeparam>
-    /// <typeparam name="TClaimId">指定的声明标识类型。</typeparam>
-    public interface ISubjectStore<TAccessor, TSubject, TSubjectBody, TSubjectClaim, TSubjectId, TSubjectBodyId, TSubjectClaimId, TClaimId> : IStore<TAccessor>
+    public interface ISubjectStore<TAccessor, TSubject, TSubjectBody, TSubjectClaim> : IStore<TAccessor>
         where TAccessor : IAccessor
         where TSubject : class
         where TSubjectBody : class
         where TSubjectClaim : class
-        where TSubjectId : IEquatable<TSubjectId>
-        where TClaimId : IEquatable<TClaimId>
     {
 
         #region Subject
 
         /// <summary>
-        /// 异步通过标识查找专题。
+        /// 异步查找专题。
         /// </summary>
-        /// <param name="subjectId">给定的专题标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
         /// <returns>返回一个包含 <typeparamref name="TSubject"/> 的异步操作。</returns>
-        Task<TSubject> FindSubjectByIdAsync(TSubjectId subjectId, CancellationToken cancellationToken = default);
+        Task<TSubject> FindSubjectAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
-        /// 异步通过名称查找专题。
+        /// 异步获取专题。
         /// </summary>
-        /// <param name="subjectName">给定的专题名称。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="host">给定的主机。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TSubject"/> 的异步操作。</returns>
-        Task<TSubject> FindSubjectByNameAsync(string subjectName, CancellationToken cancellationToken = default);
+        Task<TSubject> GetSubjectAsync(string name, string host, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步获取专题列表。
+        /// 异步获取所有专题集合。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <see cref="List{TSubject}"/> 的异步操作。</returns>
+        Task<List<TSubject>> GetAllSubjectsAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步获取分页专题集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
@@ -68,28 +69,26 @@ namespace Librame.AspNetCore.Portal
 
 
         /// <summary>
-        /// 异步创建专题。
+        /// 尝试异步创建专题集合。
         /// </summary>
-        /// <param name="subject">给定的 <typeparamref name="TSubject"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="subjects">给定的 <typeparamref name="TSubject"/> 数组。</param>
         /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> CreateAsync(TSubject subject, CancellationToken cancellationToken = default);
+        Task<EntityResult> TryCreateAsync(CancellationToken cancellationToken, params TSubject[] subjects);
 
         /// <summary>
-        /// 异步更新专题。
+        /// 尝试更新专题集合。
         /// </summary>
-        /// <param name="subject">给定的 <typeparamref name="TSubject"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> UpdateAsync(TSubject subject, CancellationToken cancellationToken = default);
+        /// <param name="subjects">给定的 <typeparamref name="TSubject"/> 数组。</param>
+        /// <returns>返回 <see cref="EntityResult"/>。</returns>
+        EntityResult TryUpdate(params TSubject[] subjects);
 
         /// <summary>
-        /// 异步删除专题。
+        /// 尝试删除专题集合。
         /// </summary>
-        /// <param name="subject">给定的 <typeparamref name="TSubject"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> DeleteAsync(TSubject subject, CancellationToken cancellationToken = default);
+        /// <param name="subjects">给定的 <typeparamref name="TSubject"/> 数组。</param>
+        /// <returns>返回 <see cref="EntityResult"/>。</returns>
+        EntityResult TryDelete(params TSubject[] subjects);
 
         #endregion
 
@@ -97,56 +96,60 @@ namespace Librame.AspNetCore.Portal
         #region SubjectBody
 
         /// <summary>
-        /// 异步通过标识查找专题主体。
+        /// 异步查找专题主体。
         /// </summary>
-        /// <param name="subjectBodyId">给定的专题主体标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
         /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
-        Task<TSubjectBody> FindSubjectBodyByIdAsync(TSubjectBodyId subjectBodyId, CancellationToken cancellationToken = default);
+        Task<TSubjectBody> FindSubjectBodyAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
-        /// 异步通过名称查找专题主体。
+        /// 异步获取专题主体。
         /// </summary>
-        /// <param name="subjectBodyName">给定的专题主体名称。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="host">给定的主机。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
-        Task<TSubjectBody> FindSubjectBodyByNameAsync(string subjectBodyName, CancellationToken cancellationToken = default);
+        Task<TSubjectBody> GetSubjectBodyAsync(string name, string host, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步获取专题主体列表。
+        /// 异步获取所有专题主体集合。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <see cref="List{TSubjectBody}"/> 的异步操作。</returns>
+        Task<List<TSubjectBody>> GetAllSubjectBodysAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步获取分页专题主体集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
-        /// <param name="subjectId">给定的专题标识（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TSubjectBody}"/> 的异步操作。</returns>
-        Task<IPageable<TSubjectBody>> GetPagingSubjectBodysAsync(int index, int size, TSubjectId subjectId = default,
-            CancellationToken cancellationToken = default);
+        Task<IPageable<TSubjectBody>> GetPagingSubjectBodysAsync(int index, int size, CancellationToken cancellationToken = default);
 
 
         /// <summary>
-        /// 异步创建专题主体。
+        /// 尝试异步创建专题主体集合。
         /// </summary>
-        /// <param name="subjectBody">给定的 <typeparamref name="TSubjectBody"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="subjectBodys">给定的 <typeparamref name="TSubjectBody"/> 数组。</param>
         /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> CreateAsync(TSubjectBody subjectBody, CancellationToken cancellationToken = default);
+        Task<EntityResult> TryCreateAsync(CancellationToken cancellationToken, params TSubjectBody[] subjectBodys);
 
         /// <summary>
-        /// 异步更新专题主体。
+        /// 尝试更新专题主体集合。
         /// </summary>
-        /// <param name="subjectBody">给定的 <typeparamref name="TSubjectBody"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> UpdateAsync(TSubjectBody subjectBody, CancellationToken cancellationToken = default);
+        /// <param name="subjectBodys">给定的 <typeparamref name="TSubjectBody"/> 数组。</param>
+        /// <returns>返回 <see cref="EntityResult"/>。</returns>
+        EntityResult TryUpdate(params TSubjectBody[] subjectBodys);
 
         /// <summary>
-        /// 异步删除专题主体。
+        /// 尝试删除专题主体集合。
         /// </summary>
-        /// <param name="subjectBody">给定的 <typeparamref name="TSubjectBody"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> DeleteAsync(TSubjectBody subjectBody, CancellationToken cancellationToken = default);
+        /// <param name="subjectBodys">给定的 <typeparamref name="TSubjectBody"/> 数组。</param>
+        /// <returns>返回 <see cref="EntityResult"/>。</returns>
+        EntityResult TryDelete(params TSubjectBody[] subjectBodys);
 
         #endregion
 
@@ -154,57 +157,60 @@ namespace Librame.AspNetCore.Portal
         #region SubjectClaim
 
         /// <summary>
-        /// 异步通过标识查找专题声明。
+        /// 异步查找专题声明。
         /// </summary>
-        /// <param name="subjectClaimId">给定的专题声明标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
         /// <returns>返回一个包含 <typeparamref name="TSubjectClaim"/> 的异步操作。</returns>
-        Task<TSubjectClaim> FindSubjectClaimByIdAsync(TSubjectClaimId subjectClaimId, CancellationToken cancellationToken = default);
+        Task<TSubjectClaim> FindSubjectClaimAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
-        /// 异步通过名称查找专题声明。
+        /// 异步获取专题声明。
         /// </summary>
-        /// <param name="subjectClaimName">给定的专题声明名称。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="host">给定的主机。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TSubjectClaim"/> 的异步操作。</returns>
-        Task<TSubjectClaim> FindSubjectClaimByNameAsync(string subjectClaimName, CancellationToken cancellationToken = default);
+        Task<TSubjectClaim> GetSubjectClaimAsync(string name, string host, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步获取专题声明列表。
+        /// 异步获取所有专题声明集合。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <see cref="List{TSubjectClaim}"/> 的异步操作。</returns>
+        Task<List<TSubjectClaim>> GetAllSubjectClaimsAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步获取分页专题声明集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
-        /// <param name="subjectId">给定的专题标识（可选）。</param>
-        /// <param name="claimId">给定的声明标识（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TSubjectClaim}"/> 的异步操作。</returns>
-        Task<IPageable<TSubjectClaim>> GetPagingSubjectClaimsAsync(int index, int size, TSubjectId subjectId = default,
-            TClaimId claimId = default, CancellationToken cancellationToken = default);
+        Task<IPageable<TSubjectClaim>> GetPagingSubjectClaimsAsync(int index, int size, CancellationToken cancellationToken = default);
 
 
         /// <summary>
-        /// 异步创建专题声明。
+        /// 尝试异步创建专题声明集合。
         /// </summary>
-        /// <param name="subjectClaim">给定的 <typeparamref name="TSubjectClaim"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="subjectClaims">给定的 <typeparamref name="TSubjectClaim"/> 数组。</param>
         /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> CreateAsync(TSubjectClaim subjectClaim, CancellationToken cancellationToken = default);
+        Task<EntityResult> TryCreateAsync(CancellationToken cancellationToken, params TSubjectClaim[] subjectClaims);
 
         /// <summary>
-        /// 异步更新专题声明。
+        /// 尝试更新专题声明集合。
         /// </summary>
-        /// <param name="subjectClaim">给定的 <typeparamref name="TSubjectClaim"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> UpdateAsync(TSubjectClaim subjectClaim, CancellationToken cancellationToken = default);
+        /// <param name="subjectClaims">给定的 <typeparamref name="TSubjectClaim"/> 数组。</param>
+        /// <returns>返回 <see cref="EntityResult"/>。</returns>
+        EntityResult TryUpdate(params TSubjectClaim[] subjectClaims);
 
         /// <summary>
-        /// 异步删除专题声明。
+        /// 尝试删除专题声明集合。
         /// </summary>
-        /// <param name="subjectClaim">给定的 <typeparamref name="TSubjectClaim"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> DeleteAsync(TSubjectClaim subjectClaim, CancellationToken cancellationToken = default);
+        /// <param name="subjectClaims">给定的 <typeparamref name="TSubjectClaim"/> 数组。</param>
+        /// <returns>返回 <see cref="EntityResult"/>。</returns>
+        EntityResult TryDelete(params TSubjectClaim[] subjectClaims);
 
         #endregion
 

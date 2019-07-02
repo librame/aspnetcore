@@ -10,7 +10,6 @@
 
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,46 +24,40 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     /// <typeparam name="TEditor">指定的编者类型。</typeparam>
     /// <typeparam name="TEditorTitle">指定的编者头衔类型。</typeparam>
-    /// <typeparam name="TEditorId">指定的编者标识类型。</typeparam>
-    /// <typeparam name="TEditorTitleId">指定的编者头衔标识类型。</typeparam>
-    /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
-    public interface IEditorStore<TAccessor, TEditor, TEditorTitle, TEditorId, TEditorTitleId, TUserId> : IStore<TAccessor>
+    public interface IEditorStore<TAccessor, TEditor, TEditorTitle> : IStore<TAccessor>
         where TAccessor : IAccessor
         where TEditor : class
         where TEditorTitle : class
-        where TEditorId : IEquatable<TEditorId>
-        where TEditorTitleId : IEquatable<TEditorTitleId>
-        where TUserId : IEquatable<TUserId>
     {
 
         #region Editor
 
         /// <summary>
-        /// 异步通过标识查找编者（单个用户对应单个编者）。
+        /// 异步查找编者。
         /// </summary>
-        /// <param name="userId">给定的用户标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
         /// <returns>返回一个包含 <typeparamref name="TEditor"/> 的异步操作。</returns>
-        Task<TEditor> FindEditorByIdAsync(TUserId userId, CancellationToken cancellationToken = default);
+        Task<TEditor> FindEditorAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
-        /// 异步通过标识查找编者。
+        /// 异步获取编者。
         /// </summary>
-        /// <param name="editorId">给定的编者标识。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="host">给定的主机。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TEditor"/> 的异步操作。</returns>
-        Task<TEditor> FindEditorByIdAsync(TEditorId editorId, CancellationToken cancellationToken = default);
+        Task<TEditor> GetEditorAsync(string name, string host, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步通过名称查找编者。
+        /// 异步获取所有编者集合。
         /// </summary>
-        /// <param name="editorName">给定的编者名称。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TEditor"/> 的异步操作。</returns>
-        Task<TEditor> FindEditorByNameAsync(string editorName, CancellationToken cancellationToken = default);
+        /// <returns>返回一个包含 <see cref="List{TEditor}"/> 的异步操作。</returns>
+        Task<List<TEditor>> GetAllEditorsAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步获取编者列表。
+        /// 异步获取分页编者集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
@@ -74,28 +67,26 @@ namespace Librame.AspNetCore.Portal
 
 
         /// <summary>
-        /// 异步创建编者。
+        /// 尝试异步创建编者集合。
         /// </summary>
-        /// <param name="editor">给定的 <typeparamref name="TEditor"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="editors">给定的 <typeparamref name="TEditor"/> 数组。</param>
         /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> CreateAsync(TEditor editor, CancellationToken cancellationToken = default);
+        Task<EntityResult> TryCreateAsync(CancellationToken cancellationToken, params TEditor[] editors);
 
         /// <summary>
-        /// 异步更新编者。
+        /// 尝试更新编者集合。
         /// </summary>
-        /// <param name="editor">给定的 <typeparamref name="TEditor"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> UpdateAsync(TEditor editor, CancellationToken cancellationToken = default);
+        /// <param name="editors">给定的 <typeparamref name="TEditor"/> 数组。</param>
+        /// <returns>返回 <see cref="EntityResult"/>。</returns>
+        EntityResult TryUpdate(params TEditor[] editors);
 
         /// <summary>
-        /// 异步删除编者。
+        /// 尝试删除编者集合。
         /// </summary>
-        /// <param name="editor">给定的 <typeparamref name="TEditor"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> DeleteAsync(TEditor editor, CancellationToken cancellationToken = default);
+        /// <param name="editors">给定的 <typeparamref name="TEditor"/> 数组。</param>
+        /// <returns>返回 <see cref="EntityResult"/>。</returns>
+        EntityResult TryDelete(params TEditor[] editors);
 
         #endregion
 
@@ -103,23 +94,31 @@ namespace Librame.AspNetCore.Portal
         #region EditorTitle
 
         /// <summary>
-        /// 异步通过标识查找编者头衔。
+        /// 异步查找编者头衔。
         /// </summary>
-        /// <param name="editorTitleId">给定的编者头衔标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
         /// <returns>返回一个包含 <typeparamref name="TEditorTitle"/> 的异步操作。</returns>
-        Task<TEditorTitle> FindEditorTitleByIdAsync(TEditorTitleId editorTitleId, CancellationToken cancellationToken = default);
+        Task<TEditorTitle> FindEditorTitleAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
-        /// 异步通过名称查找编者头衔。
+        /// 异步获取编者头衔。
         /// </summary>
-        /// <param name="editorTitleName">给定的编者头衔名称。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="host">给定的主机。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TEditorTitle"/> 的异步操作。</returns>
-        Task<TEditorTitle> FindEditorTitleByNameAsync(string editorTitleName, CancellationToken cancellationToken = default);
+        Task<TEditorTitle> GetEditorTitleAsync(string name, string host, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步获取编者头衔列表。
+        /// 异步获取所有编者头衔集合。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <see cref="List{TEditorTitle}"/> 的异步操作。</returns>
+        Task<List<TEditorTitle>> GetAllEditorTitlesAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步获取分页编者头衔集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
@@ -129,28 +128,26 @@ namespace Librame.AspNetCore.Portal
 
 
         /// <summary>
-        /// 异步创建编者头衔。
+        /// 尝试异步创建编者头衔集合。
         /// </summary>
-        /// <param name="editorTitle">给定的 <typeparamref name="TEditorTitle"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="editorTitles">给定的 <typeparamref name="TEditorTitle"/> 数组。</param>
         /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> CreateAsync(TEditorTitle editorTitle, CancellationToken cancellationToken = default);
+        Task<EntityResult> TryCreateAsync(CancellationToken cancellationToken, params TEditorTitle[] editorTitles);
 
         /// <summary>
-        /// 异步更新编者头衔。
+        /// 尝试更新编者头衔集合。
         /// </summary>
-        /// <param name="editorTitle">给定的 <typeparamref name="TEditorTitle"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> UpdateAsync(TEditorTitle editorTitle, CancellationToken cancellationToken = default);
+        /// <param name="editorTitles">给定的 <typeparamref name="TEditorTitle"/> 数组。</param>
+        /// <returns>返回 <see cref="EntityResult"/>。</returns>
+        EntityResult TryUpdate(params TEditorTitle[] editorTitles);
 
         /// <summary>
-        /// 异步删除编者头衔。
+        /// 尝试删除编者头衔集合。
         /// </summary>
-        /// <param name="editorTitle">给定的 <typeparamref name="TEditorTitle"/>。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="EntityResult"/> 的异步操作。</returns>
-        Task<EntityResult> DeleteAsync(TEditorTitle editorTitle, CancellationToken cancellationToken = default);
+        /// <param name="editorTitles">给定的 <typeparamref name="TEditorTitle"/> 数组。</param>
+        /// <returns>返回 <see cref="EntityResult"/>。</returns>
+        EntityResult TryDelete(params TEditorTitle[] editorTitles);
 
         #endregion
 
