@@ -37,13 +37,13 @@ namespace Librame.AspNetCore.Portal
         public virtual string Type { get; set; }
 
         /// <summary>
-        /// 标题。
-        /// </summary>
-        public virtual string Title { get; set; }
-
-        /// <summary>
         /// 模型。
         /// </summary>
         public virtual string Model { get; set; }
+
+        /// <summary>
+        /// 标题。
+        /// </summary>
+        public virtual string Title { get; set; }
     }
 }

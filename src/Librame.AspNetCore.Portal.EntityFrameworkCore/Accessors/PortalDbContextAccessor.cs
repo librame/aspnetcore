@@ -23,7 +23,7 @@ namespace Librame.AspNetCore.Portal
     /// 门户数据库上下文访问器。
     /// </summary>
     public class PortalDbContextAccessor : PortalDbContextAccessor<PortalClaim, PortalCategory, PortalPane, PortalTag, PortalSource, PortalEditor, PortalSubject,
-        int, int, int, int, int, string, string>
+        int, int, int, int, int, string, string, string>
     {
         /// <summary>
         /// 构造一个 <see cref="PortalDbContextAccessor"/> 实例。
@@ -39,17 +39,32 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户数据库上下文访问器。
     /// </summary>
+    /// <typeparam name="TClaim">指定的声明类型。</typeparam>
+    /// <typeparam name="TCategory">指定的分类类型。</typeparam>
+    /// <typeparam name="TPane">指定的窗格类型。</typeparam>
+    /// <typeparam name="TTag">指定的标签类型。</typeparam>
+    /// <typeparam name="TSource">指定的来源类型。</typeparam>
+    /// <typeparam name="TEditor">指定的编者类型。</typeparam>
+    /// <typeparam name="TSubject">指定的专题类型。</typeparam>
+    /// <typeparam name="TClaimId">指定的声明标识类型。</typeparam>
+    /// <typeparam name="TCategoryId">指定的分类标识类型。</typeparam>
+    /// <typeparam name="TPaneId">指定的窗格标识类型。</typeparam>
+    /// <typeparam name="TTagId">指定的标签标识类型。</typeparam>
+    /// <typeparam name="TSourceId">指定的来源标识类型。</typeparam>
+    /// <typeparam name="TEditorId">指定的编者标识类型。</typeparam>
+    /// <typeparam name="TSubjectId">指定的专题标识类型。</typeparam>
+    /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
     public class PortalDbContextAccessor<TClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject,
-        TClaimId, TCategoryId, TPaneId, TTagId, TSourceId, TEditorId, TSubjectId, TUserId, TDateTime>
-        : PortalDbContextAccessor<TClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, TClaimId>, TTag, PortalTagClaim<int, TTagId, TClaimId>, TSource,
-            TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<string, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>>
+        TClaimId, TCategoryId, TPaneId, TTagId, TSourceId, TEditorId, TSubjectId, TUserId>
+        : PortalDbContextAccessor<TClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, TClaimId>, TTag, PortalTagClaim<int, TTagId, TClaimId>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<string, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>,
+            TClaimId, TCategoryId, TPaneId, int, TTagId, int, TSourceId, TEditorId, int, TSubjectId, string, int, TUserId, DateTimeOffset>
         where TClaim : PortalClaim<TClaimId>
         where TCategory : PortalCategory<TCategoryId>
         where TPane : PortalPane<TPaneId, TCategoryId>
         where TTag : PortalTag<TTagId>
         where TSource : PortalSource<TSourceId, TCategoryId>
         where TEditor : PortalEditor<TEditorId, TUserId>
-        where TSubject : PortalSubject<TSubjectId, TCategoryId, TDateTime>
+        where TSubject : PortalSubject<TSubjectId, TCategoryId, DateTimeOffset>
         where TClaimId : IEquatable<TClaimId>
         where TCategoryId : IEquatable<TCategoryId>
         where TPaneId : IEquatable<TPaneId>
@@ -58,7 +73,6 @@ namespace Librame.AspNetCore.Portal
         where TEditorId : IEquatable<TEditorId>
         where TSubjectId : IEquatable<TSubjectId>
         where TUserId : IEquatable<TUserId>
-        where TDateTime : struct
     {
         /// <summary>
         /// 构造一个门户数据库上下文访问器实例。
@@ -141,9 +155,39 @@ namespace Librame.AspNetCore.Portal
 
 
         /// <summary>
+        /// 声明数据集。
+        /// </summary>
+        public DbSet<TClaim> Claims { get; set; }
+
+        /// <summary>
         /// 分类数据集。
         /// </summary>
         public DbSet<TCategory> Categories { get; set; }
+
+        /// <summary>
+        /// 窗格数据集。
+        /// </summary>
+        public DbSet<TPane> Panes { get; set; }
+
+        /// <summary>
+        /// 窗格声明数据集。
+        /// </summary>
+        public DbSet<TPaneClaim> PaneClaims { get; set; }
+
+        /// <summary>
+        /// 标签数据集。
+        /// </summary>
+        public DbSet<TTag> Tags { get; set; }
+
+        /// <summary>
+        /// 标签声明数据集。
+        /// </summary>
+        public DbSet<TTagClaim> TagClaims { get; set; }
+
+        /// <summary>
+        /// 来源数据集。
+        /// </summary>
+        public DbSet<TSource> Sources { get; set; }
 
         /// <summary>
         /// 编者数据集。
@@ -155,26 +199,20 @@ namespace Librame.AspNetCore.Portal
         /// </summary>
         public DbSet<TEditorTitle> EditorTitles { get; set; }
 
-
         /// <summary>
         /// 专题数据集。
         /// </summary>
         public DbSet<TSubject> Subjects { get; set; }
 
         /// <summary>
-        /// 专题文章数据集。
+        /// 专题主体数据集。
         /// </summary>
-        public DbSet<TSubjectArticle> SubjectArticles { get; set; }
+        public DbSet<TSubjectBody> SubjectBodies { get; set; }
 
         /// <summary>
-        /// 文章数据集。
+        /// 专题声明数据集。
         /// </summary>
-        public DbSet<TArticle> Articles { get; set; }
-
-        /// <summary>
-        /// 文章主体数据集。
-        /// </summary>
-        public DbSet<TArticleBody> ArticleBodies { get; set; }
+        public DbSet<TSubjectClaim> SubjectClaims { get; set; }
 
 
         /// <summary>
@@ -187,8 +225,8 @@ namespace Librame.AspNetCore.Portal
 
             var options = ServiceProvider.GetRequiredService<IOptions<PortalBuilderOptions>>().Value;
 
-            //modelBuilder.ConfigurePortalEntities<TCategory, TCategoryId, TEditor, TEditorId, TUserId,
-            //    TEditorTitle, TEditorTitleId>(options);
+            modelBuilder.ConfigurePortalEntities<TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim,
+                TClaimId, TCategoryId, TPaneId, TPaneClaimId, TTagId, TTagClaimId, TSourceId, TEditorId, TEditorTitleId, TSubjectId, TSubjectBodyId, TSubjectClaimId, TUserId, TDateTime>(options);
         }
     }
 }

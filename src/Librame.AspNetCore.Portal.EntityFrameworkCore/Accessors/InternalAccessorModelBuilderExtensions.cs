@@ -54,14 +54,14 @@ namespace Librame.AspNetCore.Portal
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
         /// <param name="options">给定的 <see cref="PortalBuilderOptions"/>。</param>
         public static void ConfigurePortalEntities<TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim,
-        TClaimId, TCategoryId, TPaneId, TPaneClaimId, TTagId, TTagClaimId, TSourceId, TEditorId, TEditorTitleId, TSubjectId, TSubjectBodyId, TSubjectClaimId, TUserId, TDateTime>
+            TClaimId, TCategoryId, TPaneId, TPaneClaimId, TTagId, TTagClaimId, TSourceId, TEditorId, TEditorTitleId, TSubjectId, TSubjectBodyId, TSubjectClaimId, TUserId, TDateTime>
             (this ModelBuilder modelBuilder, PortalBuilderOptions options)
             where TClaim : PortalClaim<TClaimId>
             where TCategory : PortalCategory<TCategoryId>
             where TPane : PortalPane<TPaneId, TCategoryId>
             where TPaneClaim : PortalPaneClaim<TPaneClaimId, TPaneId, TClaimId>
             where TTag : PortalTag<TTagId>
-            where TTagClaim : PortalTagClaim<TTagId, TTagId, TClaimId>
+            where TTagClaim : PortalTagClaim<TTagClaimId, TTagId, TClaimId>
             where TSource : PortalSource<TSourceId, TCategoryId>
             where TEditor : PortalEditor<TEditorId, TUserId>
             where TEditorTitle : PortalEditorTitle<TEditorTitleId, TEditorId>
@@ -89,12 +89,12 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasKey(k => k.Id);
 
-                b.HasIndex(i => i.Type).HasName().IsUnique();
+                b.HasIndex(i => new { i.Type, i.Model }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
                 b.Property(p => p.Type).HasMaxLength(100);
-                b.Property(p => p.Title).HasMaxLength(100);
                 b.Property(p => p.Model).HasMaxLength(200);
+                b.Property(p => p.Title).HasMaxLength(100);
             });
 
             modelBuilder.Entity<TCategory>(b =>

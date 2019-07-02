@@ -66,7 +66,6 @@ namespace Librame.AspNetCore.Portal
     /// </summary>
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     /// <typeparam name="TClaim">指定的声明类型。</typeparam>
-    /// <typeparam name="TClaimBody">指定的声明主体类型。</typeparam>
     /// <typeparam name="TCategory">指定的分类类型。</typeparam>
     /// <typeparam name="TPane">指定的窗格类型。</typeparam>
     /// <typeparam name="TPaneClaim">指定的窗格声明类型。</typeparam>
@@ -78,7 +77,7 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TSubject">指定的专题类型。</typeparam>
     /// <typeparam name="TSubjectBody">指定的专题主体类型。</typeparam>
     /// <typeparam name="TSubjectClaim">指定的专题声明类型。</typeparam>
-    public interface IPortalStore<TAccessor, TClaim, TClaimBody, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim>
+    public interface IPortalStore<TAccessor, TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim>
         : IClaimStore<TAccessor, TClaim>
         , ICategoryStore<TAccessor, TCategory>
         , IPaneStore<TAccessor, TPane, TPaneClaim>
@@ -88,7 +87,6 @@ namespace Librame.AspNetCore.Portal
         , ISubjectStore<TAccessor, TSubject, TSubjectBody, TSubjectClaim>
         where TAccessor : IAccessor
         where TClaim : class
-        where TClaimBody : class
         where TCategory : class
         where TPane : class
         where TPaneClaim : class

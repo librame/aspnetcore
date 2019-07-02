@@ -38,11 +38,11 @@ namespace Librame.AspNetCore.Portal
         /// <summary>
         /// 异步获取声明。
         /// </summary>
-        /// <param name="name">给定的名称。</param>
-        /// <param name="host">给定的主机。</param>
+        /// <param name="type">给定的类型。</param>
+        /// <param name="model">给定的模型。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TClaim"/> 的异步操作。</returns>
-        Task<TClaim> GetClaimAsync(string name, string host, CancellationToken cancellationToken = default);
+        Task<TClaim> GetClaimAsync(string type, string model, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取所有声明集合。
