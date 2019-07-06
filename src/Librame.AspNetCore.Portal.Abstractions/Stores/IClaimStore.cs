@@ -10,7 +10,9 @@
 
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,6 +29,14 @@ namespace Librame.AspNetCore.Portal
         where TAccessor : IAccessor
         where TClaim : class
     {
+        /// <summary>
+        /// 验证声明唯一性。
+        /// </summary>
+        /// <param name="type">给定的类型。</param>
+        /// <param name="model">给定的模型。</param>
+        /// <returns>返回查询表达式。</returns>
+        Expression<Func<TClaim, bool>> VerifyClaimUniqueness(string type, string model);
+
         /// <summary>
         /// 异步查找声明。
         /// </summary>

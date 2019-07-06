@@ -10,7 +10,9 @@
 
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,6 +35,14 @@ namespace Librame.AspNetCore.Portal
         #region Pane
 
         /// <summary>
+        /// 验证窗格唯一性。
+        /// </summary>
+        /// <param name="categoryId">给定的父标识。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <returns>返回查询表达式。</returns>
+        Expression<Func<TPane, bool>> VerifyPaneUniqueness(object categoryId, string name);
+
+        /// <summary>
         /// 异步查找窗格。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
@@ -43,11 +53,11 @@ namespace Librame.AspNetCore.Portal
         /// <summary>
         /// 异步获取窗格。
         /// </summary>
+        /// <param name="categoryId">给定的分类标识。</param>
         /// <param name="name">给定的名称。</param>
-        /// <param name="host">给定的主机。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TPane"/> 的异步操作。</returns>
-        Task<TPane> GetPaneAsync(string name, string host, CancellationToken cancellationToken = default);
+        Task<TPane> GetPaneAsync(object categoryId, string name, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取所有窗格集合。
@@ -94,6 +104,15 @@ namespace Librame.AspNetCore.Portal
         #region PaneClaim
 
         /// <summary>
+        /// 验证窗格声明唯一性。
+        /// </summary>
+        /// <param name="paneId">给定的窗格标识。</param>
+        /// <param name="claimId">给定的声明标识。</param>
+        /// <param name="assocId">给定的关联标识。</param>
+        /// <returns>返回查询表达式。</returns>
+        Expression<Func<TPaneClaim, bool>> VerifyPaneClaimUniqueness(object paneId, object claimId, string assocId);
+
+        /// <summary>
         /// 异步查找窗格声明。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
@@ -104,11 +123,21 @@ namespace Librame.AspNetCore.Portal
         /// <summary>
         /// 异步获取窗格声明。
         /// </summary>
-        /// <param name="name">给定的名称。</param>
-        /// <param name="host">给定的主机。</param>
+        /// <param name="paneId">给定的窗格标识。</param>
+        /// <param name="claimId">给定的声明标识。</param>
+        /// <param name="assocId">给定的关联标识。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TPaneClaim"/> 的异步操作。</returns>
-        Task<TPaneClaim> GetPaneClaimAsync(string name, string host, CancellationToken cancellationToken = default);
+        Task<TPaneClaim> GetPaneClaimAsync(object paneId, object claimId, string assocId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步获取窗格声明集合。
+        /// </summary>
+        /// <param name="paneId">给定的窗格标识。</param>
+        /// <param name="claimId">给定的声明标识。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <see cref="List{TPaneClaim}"/> 的异步操作。</returns>
+        Task<List<TPaneClaim>> GetPaneClaimsAsync(object paneId, object claimId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取所有窗格声明集合。

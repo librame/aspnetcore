@@ -103,9 +103,75 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasKey(k => k.Id);
                 
+                b.HasIndex(i => new { i.ParentId, i.Name }).HasName().IsUnique();
+
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
+                b.Property(p => p.Name).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<TPane>(b =>
+            {
+                b.ToTable(options.TableSchemas.PaneFactory);
+
+                b.HasKey(k => k.Id);
+
+                b.HasIndex(i => new { i.CategoryId, i.Name }).HasName().IsUnique();
+
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
+                b.Property(p => p.Name).HasMaxLength(100);
+                b.Property(p => p.Path).HasMaxLength(200);
+
+                //b.HasMany<TPaneClaim>().WithOne().HasForeignKey(fk => fk.PaneId).IsRequired();
+            });
+            modelBuilder.Entity<TPaneClaim>(b =>
+            {
+                b.ToTable(options.TableSchemas.PaneClaimFactory);
+
+                b.HasKey(k => k.Id);
+
+                b.HasIndex(i => new { i.PaneId, i.ClaimId, i.AssocId }).HasName().IsUnique();
+
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
+                b.Property(p => p.AssocId).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<TTag>(b =>
+            {
+                b.ToTable(options.TableSchemas.TagFactory);
+
+                b.HasKey(k => k.Id);
+
                 b.HasIndex(i => i.Name).HasName().IsUnique();
 
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
+                b.Property(p => p.Name).HasMaxLength(50);
+
+                //b.HasMany<TTagClaim>().WithOne().HasForeignKey(fk => fk.TagId).IsRequired();
+            });
+            modelBuilder.Entity<TTagClaim>(b =>
+            {
+                b.ToTable(options.TableSchemas.TagClaimFactory);
+
+                b.HasKey(k => k.Id);
+
+                b.HasIndex(i => new { i.TagId, i.ClaimId }).HasName().IsUnique();
+
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<TSource>(b =>
+            {
+                b.ToTable(options.TableSchemas.SourceFactory);
+
+                b.HasKey(k => k.Id);
+
+                b.HasIndex(i => new { i.CategoryId, i.Name }).HasName().IsUnique();
+
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
                 b.Property(p => p.Name).HasMaxLength(100);
+                b.Property(p => p.Logo).HasMaxLength(100);
+                b.Property(p => p.Link).HasMaxLength(100);
+                b.Property(p => p.Descr).HasMaxLength(200);
             });
 
             modelBuilder.Entity<TEditor>(b =>
@@ -114,22 +180,62 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasKey(k => k.Id);
 
-                b.HasIndex(i => i.Name).HasName().IsUnique();
+                b.HasIndex(i => new { i.UserId, i.Name }).HasName().IsUnique();
 
+                b.Property(p => p.Id).ValueGeneratedNever();
                 b.Property(p => p.Name).HasMaxLength(100);
 
-                b.HasMany<TEditorTitle>().WithOne().HasForeignKey(fk => fk.EditorId).IsRequired();
+                //b.HasMany<TEditorTitle>().WithOne().HasForeignKey(fk => fk.EditorId).IsRequired();
             });
-
             modelBuilder.Entity<TEditorTitle>(b =>
             {
                 b.ToTable(options.TableSchemas.EditorTitleFactory);
 
                 b.HasKey(k => k.Id);
 
-                b.HasIndex(i => i.Name).HasName().IsUnique();
+                b.HasIndex(i => new { i.EditorId, i.Name }).HasName().IsUnique();
 
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
                 b.Property(p => p.Name).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<TSubject>(b =>
+            {
+                b.ToTable(options.TableSchemas.SubjectFactory);
+
+                b.HasKey(k => k.Id);
+
+                b.HasIndex(i => new { i.CategoryId, i.Title }).HasName().IsUnique();
+
+                b.Property(p => p.Id).ValueGeneratedNever();
+                b.Property(p => p.PublishLink).HasMaxLength(100);
+                b.Property(p => p.Title).HasMaxLength(100);
+                b.Property(p => p.Subtitle).HasMaxLength(100);
+                b.Property(p => p.Tags).HasMaxLength(100);
+
+                //b.HasMany<TSubjectClaim>().WithOne().HasForeignKey(fk => fk.SubjectId).IsRequired();
+            });
+            modelBuilder.Entity<TSubjectBody>(b =>
+            {
+                b.ToTable(options.TableSchemas.SubjectBodyFactory);
+
+                b.HasKey(k => k.Id);
+
+                //b.HasIndex(i => new { i.SubjectId, i.Body }).HasName().IsUnique();
+
+                b.Property(p => p.Id).ValueGeneratedNever();
+                b.Property(p => p.Body).HasMaxLength(4000);
+            });
+            modelBuilder.Entity<TSubjectClaim>(b =>
+            {
+                b.ToTable(options.TableSchemas.SubjectClaimFactory);
+
+                b.HasKey(k => k.Id);
+
+                b.HasIndex(i => new { i.SubjectId, i.ClaimId, i.AssocId }).HasName().IsUnique();
+
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
+                b.Property(p => p.AssocId).HasMaxLength(100);
             });
         }
 

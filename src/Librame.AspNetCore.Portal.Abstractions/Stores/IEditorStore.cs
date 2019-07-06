@@ -10,7 +10,9 @@
 
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,6 +35,14 @@ namespace Librame.AspNetCore.Portal
         #region Editor
 
         /// <summary>
+        /// 验证编者唯一性。
+        /// </summary>
+        /// <param name="userId">给定的用户标识。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <returns>返回查询表达式。</returns>
+        Expression<Func<TEditor, bool>> VerifyEditorUniqueness(object userId, string name);
+
+        /// <summary>
         /// 异步查找编者。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
@@ -43,11 +53,11 @@ namespace Librame.AspNetCore.Portal
         /// <summary>
         /// 异步获取编者。
         /// </summary>
+        /// <param name="userId">给定的用户标识。</param>
         /// <param name="name">给定的名称。</param>
-        /// <param name="host">给定的主机。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TEditor"/> 的异步操作。</returns>
-        Task<TEditor> GetEditorAsync(string name, string host, CancellationToken cancellationToken = default);
+        Task<TEditor> GetEditorAsync(object userId, string name, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取所有编者集合。
@@ -94,6 +104,14 @@ namespace Librame.AspNetCore.Portal
         #region EditorTitle
 
         /// <summary>
+        /// 验证编者头衔唯一性。
+        /// </summary>
+        /// <param name="editorId">给定的用户标识。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <returns>返回查询表达式。</returns>
+        Expression<Func<TEditorTitle, bool>> VerifyEditorTitleUniqueness(object editorId, string name);
+
+        /// <summary>
         /// 异步查找编者头衔。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
@@ -104,11 +122,11 @@ namespace Librame.AspNetCore.Portal
         /// <summary>
         /// 异步获取编者头衔。
         /// </summary>
+        /// <param name="editorId">给定的用户标识。</param>
         /// <param name="name">给定的名称。</param>
-        /// <param name="host">给定的主机。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TEditorTitle"/> 的异步操作。</returns>
-        Task<TEditorTitle> GetEditorTitleAsync(string name, string host, CancellationToken cancellationToken = default);
+        Task<TEditorTitle> GetEditorTitleAsync(object editorId, string name, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取所有编者头衔集合。

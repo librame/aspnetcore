@@ -10,7 +10,9 @@
 
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,6 +35,13 @@ namespace Librame.AspNetCore.Portal
         #region Tag
 
         /// <summary>
+        /// 验证标签唯一性。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <returns>返回查询表达式。</returns>
+        Expression<Func<TTag, bool>> VerifyTagUniqueness(string name);
+
+        /// <summary>
         /// 异步查找标签。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
@@ -44,10 +53,9 @@ namespace Librame.AspNetCore.Portal
         /// 异步获取标签。
         /// </summary>
         /// <param name="name">给定的名称。</param>
-        /// <param name="host">给定的主机。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TTag"/> 的异步操作。</returns>
-        Task<TTag> GetTagAsync(string name, string host, CancellationToken cancellationToken = default);
+        Task<TTag> GetTagAsync(string name, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取所有标签集合。
@@ -94,6 +102,14 @@ namespace Librame.AspNetCore.Portal
         #region TagClaim
 
         /// <summary>
+        /// 验证标签声明唯一性。
+        /// </summary>
+        /// <param name="tagId">给定的标签标识。</param>
+        /// <param name="claimId">给定的声明标识。</param>
+        /// <returns>返回查询表达式。</returns>
+        Expression<Func<TTagClaim, bool>> VerifyTagClaimUniqueness(object tagId, object claimId);
+
+        /// <summary>
         /// 异步查找标签声明。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
@@ -104,11 +120,11 @@ namespace Librame.AspNetCore.Portal
         /// <summary>
         /// 异步获取标签声明。
         /// </summary>
-        /// <param name="name">给定的名称。</param>
-        /// <param name="host">给定的主机。</param>
+        /// <param name="tagId">给定的标签标识。</param>
+        /// <param name="claimId">给定的声明标识。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TTagClaim"/> 的异步操作。</returns>
-        Task<TTagClaim> GetTagClaimAsync(string name, string host, CancellationToken cancellationToken = default);
+        Task<TTagClaim> GetTagClaimAsync(object tagId, object claimId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取所有标签声明集合。

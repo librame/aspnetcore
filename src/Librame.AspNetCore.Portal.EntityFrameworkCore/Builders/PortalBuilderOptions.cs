@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户构建器选项。
     /// </summary>
-    public class PortalBuilderOptions : AbstractBuilderOptions<TableSchemaOptions>
+    public class PortalBuilderOptions : AbstractDataBuilderOptions<TableSchemaOptions>
     {
     }
 
