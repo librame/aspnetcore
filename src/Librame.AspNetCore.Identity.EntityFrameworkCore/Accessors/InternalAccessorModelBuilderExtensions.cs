@@ -20,6 +20,7 @@ using System.Linq;
 namespace Librame.AspNetCore.Identity
 {
     using Extensions;
+    using Extensions.Data;
 
     /// <summary>
     /// 内部访问器模型构建器静态扩展。
@@ -70,42 +71,42 @@ namespace Librame.AspNetCore.Identity
 
             modelBuilder.Entity<TRole>(b =>
             {
-                b.ToTable(options.RoleTableFactory?.Invoke(typeof(TRole)));
+                b.ToTable(options.TableSchemas.RoleFactory);
 
                 b.HasKey(k => k.Id);
 
-                b.HasIndex(i => i.NormalizedName).HasName("RoleNameIndex").IsUnique();
+                b.HasIndex(i => i.NormalizedName).HasName().IsUnique();
 
                 b.Property(p => p.ConcurrencyStamp).IsConcurrencyToken();
                 b.Property(p => p.Name).HasMaxLength(256);
                 b.Property(p => p.NormalizedName).HasMaxLength(256);
 
-                b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
-                b.HasMany<TRoleClaim>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
+                //b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
+                //b.HasMany<TRoleClaim>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
             });
 
             modelBuilder.Entity<TRoleClaim>(b =>
             {
-                b.ToTable(options.RoleClaimTableFactory?.Invoke(typeof(TRoleClaim)));
+                b.ToTable(options.TableSchemas.RoleClaimFactory);
 
                 b.HasKey(k => k.Id);
             });
 
             modelBuilder.Entity<TUserRole>(b =>
             {
-                b.ToTable(options.UserRoleTableFactory?.Invoke(typeof(TUserRole)));
+                b.ToTable(options.TableSchemas.UserRoleFactory);
 
                 b.HasKey(k => new { k.UserId, k.RoleId });
             });
 
             modelBuilder.Entity<TUser>(b =>
             {
-                b.ToTable(options.UserTableFactory?.Invoke(typeof(TUser)));
+                b.ToTable(options.TableSchemas.UserFactory);
 
                 b.HasKey(k => k.Id);
 
-                b.HasIndex(i => i.NormalizedUserName).HasName("UserNameIndex").IsUnique();
-                b.HasIndex(i => i.NormalizedEmail).HasName("EmailIndex");
+                b.HasIndex(i => i.NormalizedUserName).HasName().IsUnique();
+                b.HasIndex(i => i.NormalizedEmail).HasName();
 
                 b.Property(p => p.ConcurrencyStamp).IsConcurrencyToken();
                 b.Property(p => p.UserName).HasMaxLength(256);
@@ -120,22 +121,22 @@ namespace Librame.AspNetCore.Identity
                     ConfigureEncryptPersonalData<TUser, ProtectedPersonalDataAttribute>(b, converter);
                 }
 
-                b.HasMany<TUserClaim>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
-                b.HasMany<TUserLogin>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
-                b.HasMany<TUserToken>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
-                b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                //b.HasMany<TUserClaim>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                //b.HasMany<TUserLogin>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                //b.HasMany<TUserToken>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                //b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
             });
 
             modelBuilder.Entity<TUserClaim>(b =>
             {
-                b.ToTable(options.UserClaimTableFactory?.Invoke(typeof(TUserClaim)));
+                b.ToTable(options.TableSchemas.UserClaimFactory);
 
                 b.HasKey(k => k.Id);
             });
 
             modelBuilder.Entity<TUserLogin>(b =>
             {
-                b.ToTable(options.UserLoginTableFactory?.Invoke(typeof(TUserLogin)));
+                b.ToTable(options.TableSchemas.UserLoginFactory);
 
                 b.HasKey(k => new { k.LoginProvider, k.ProviderKey });
 
@@ -148,7 +149,7 @@ namespace Librame.AspNetCore.Identity
 
             modelBuilder.Entity<TUserToken>(b =>
             {
-                b.ToTable(options.UserTokenTableFactory?.Invoke(typeof(TUserToken)));
+                b.ToTable(options.TableSchemas.UserTokenFactory);
 
                 b.HasKey(k => new { k.UserId, k.LoginProvider, k.Name });
 

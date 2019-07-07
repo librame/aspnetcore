@@ -15,20 +15,20 @@ using Microsoft.AspNetCore.Builder;
 namespace Librame.AspNetCore.Identity
 {
     /// <summary>
-    /// 身份应用程序加载器静态扩展。
+    /// 身份应用程序构建器封装静态扩展。
     /// </summary>
-    public static class IdentityApplicationLoaderExtensions
+    public static class IdentityApplicationBuilderWrapperExtensions
     {
         /// <summary>
         /// 使用身份扩展。
         /// </summary>
-        /// <param name="loader">给定的 <see cref="IApplicationBuilderWrapper"/>。</param>
+        /// <param name="wrapper">给定的 <see cref="IApplicationBuilderWrapper"/>。</param>
         /// <returns>返回 <see cref="IApplicationBuilderWrapper"/>。</returns>
-        public static IApplicationBuilderWrapper UseIdentity(this IApplicationBuilderWrapper loader)
+        public static IApplicationBuilderWrapper UseIdentity(this IApplicationBuilderWrapper wrapper)
         {
-            loader.Builder.UseAuthentication();
+            wrapper.Builder.UseAuthentication();
 
-            return loader;
+            return wrapper;
         }
 
     }

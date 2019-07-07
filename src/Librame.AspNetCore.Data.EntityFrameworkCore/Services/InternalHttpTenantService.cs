@@ -25,7 +25,7 @@ namespace Librame.Extensions.Data
     /// <summary>
     /// 内部 HTTP 租户服务。
     /// </summary>
-    internal class InternalHttpTenantService : AbstractService<InternalHttpTenantService, DataBuilderOptions>, ITenantService
+    internal class InternalHttpTenantService : AbstractService<DataBuilderOptions>, ITenantService
     {
         private readonly IHttpContextAccessor _accessor;
 
@@ -35,9 +35,9 @@ namespace Librame.Extensions.Data
         /// </summary>
         /// <param name="accessor">给定的 <see cref="IHttpContextAccessor"/>。</param>
         /// <param name="options">给定的 <see cref="IOptions{DataBuilderOptions}"/>。</param>
-        /// <param name="logger">给定的 <see cref="ILogger{InternalHttpTenantService}"/>。</param>
+        /// <param name="logger">给定的 <see cref="ILoggerFactory"/>。</param>
         public InternalHttpTenantService(IHttpContextAccessor accessor,
-            IOptions<DataBuilderOptions> options, ILogger<InternalHttpTenantService> logger)
+            IOptions<DataBuilderOptions> options, ILoggerFactory logger)
             : base(options, logger)
         {
             _accessor = accessor.NotNull(nameof(accessor));
@@ -59,8 +59,8 @@ namespace Librame.Extensions.Data
 
             ITenant tenant = null;
 
-            var request = _accessor.HttpContext.Request;
-            if (request.Query.TryGetValue("name", out StringValues value))
+            var request = _accessor.HttpContext?.Request;
+            if (request.IsNotNull() && request.Query.TryGetValue("name", out StringValues value))
             {
                 var name = (string)value;
                 var host = request.Host.Value;

@@ -25,11 +25,11 @@ namespace Librame.AspNetCore.Portal
             int, int, int, string, string>
         , IClaimStore<TAccessor, PortalClaim>
         , ICategoryStore<TAccessor, PortalCategory>
-        , IPaneStore<TAccessor, PortalPane, PortalPaneClaim>
-        , ITagStore<TAccessor, PortalTag, PortalTagClaim>
+        , IPaneStore<TAccessor, PortalPane, PortalPaneClaim<int, int, int>>
+        , ITagStore<TAccessor, PortalTag, PortalTagClaim<int, int, int>>
         , ISourceStore<TAccessor, PortalSource>
-        , IEditorStore<TAccessor, PortalEditor, PortalEditorTitle>
-        , ISubjectStore<TAccessor, PortalSubject, PortalSubjectBody, PortalSubjectClaim>
+        , IEditorStore<TAccessor, PortalEditor, PortalEditorTitle<int, string>>
+        , ISubjectStore<TAccessor, PortalSubject, PortalSubjectBody<string, string>, PortalSubjectClaim<int, string, int>>
         where TAccessor : IAccessor
     {
     }
@@ -52,7 +52,7 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TSubjectId">指定的专题标识类型。</typeparam>
     public interface IPortalStore<TAccessor, TClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject,
         TClaimId, TPaneId, TTagId, TEditorId, TSubjectId>
-        : IFullPortalStore<TAccessor, TClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, TClaimId>, TTag, PortalTagClaim<int, TTagId, TClaimId>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<string, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>>
+        : IPortalFullStore<TAccessor, TClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, TClaimId>, TTag, PortalTagClaim<int, TTagId, TClaimId>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<string, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>>
         , IClaimStore<TAccessor, TClaim>
         , ICategoryStore<TAccessor, TCategory>
         , IPaneStore<TAccessor, TPane, PortalPaneClaim<int, TPaneId, TClaimId>>
@@ -78,7 +78,7 @@ namespace Librame.AspNetCore.Portal
 
 
     /// <summary>
-    /// 完整门户存储接口。
+    /// 门户完整存储接口。
     /// </summary>
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     /// <typeparam name="TClaim">指定的声明类型。</typeparam>
@@ -93,7 +93,7 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TSubject">指定的专题类型。</typeparam>
     /// <typeparam name="TSubjectBody">指定的专题主体类型。</typeparam>
     /// <typeparam name="TSubjectClaim">指定的专题声明类型。</typeparam>
-    public interface IFullPortalStore<TAccessor, TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim>
+    public interface IPortalFullStore<TAccessor, TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim>
         : IClaimStore<TAccessor, TClaim>
         , ICategoryStore<TAccessor, TCategory>
         , IPaneStore<TAccessor, TPane, TPaneClaim>

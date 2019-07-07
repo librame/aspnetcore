@@ -15,14 +15,13 @@ using System;
 
 namespace Librame.AspNetCore.Identity
 {
-    using Extensions;
     using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
     /// 身份构建器选项。
     /// </summary>
-    public class IdentityBuilderOptions : AbstractBuilderOptions, IBuilderOptions
+    public class IdentityBuilderOptions : AbstractDataBuilderOptions<TableSchemaOptions>
     {
         /// <summary>
         /// 配置核心身份选项。
@@ -33,48 +32,54 @@ namespace Librame.AspNetCore.Identity
         /// 配置 UI 模式。
         /// </summary>
         public Action<IIdentityBuilder> ConfigureUIMode { get; set; }
+    }
 
 
+    /// <summary>
+    /// 表架构选项。
+    /// </summary>
+    public class TableSchemaOptions : ITableSchemaOptions
+    {
         /// <summary>
-        /// 角色表。
+        /// 角色工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> RoleTableFactory { get; set; }
-            = type => type.AsTableSchema(names => names.TrimStart("Default"));
-
-        /// <summary>
-        /// 角色声明表。
-        /// </summary>
-        public Func<Type, ITableSchema> RoleClaimTableFactory { get; set; }
+        public Func<Type, ITableSchema> RoleFactory { get; set; }
             = type => type.AsTableSchema();
 
         /// <summary>
-        /// 用户角色表。
+        /// 角色声明工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> UserRoleTableFactory { get; set; }
+        public Func<Type, ITableSchema> RoleClaimFactory { get; set; }
             = type => type.AsTableSchema();
 
         /// <summary>
-        /// 用户表。
+        /// 用户角色工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> UserTableFactory { get; set; }
-            = type => type.AsTableSchema(names => names.TrimStart("Default"));
-
-        /// <summary>
-        /// 用户声明表。
-        /// </summary>
-        public Func<Type, ITableSchema> UserClaimTableFactory { get; set; }
+        public Func<Type, ITableSchema> UserRoleFactory { get; set; }
             = type => type.AsTableSchema();
 
         /// <summary>
-        /// 用户登入表。
+        /// 用户工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> UserLoginTableFactory { get; set; }
+        public Func<Type, ITableSchema> UserFactory { get; set; }
             = type => type.AsTableSchema();
 
         /// <summary>
-        /// 用户令牌表。
+        /// 用户声明工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> UserTokenTableFactory { get; set; }
+        public Func<Type, ITableSchema> UserClaimFactory { get; set; }
+            = type => type.AsTableSchema();
+
+        /// <summary>
+        /// 用户登入工厂方法。
+        /// </summary>
+        public Func<Type, ITableSchema> UserLoginFactory { get; set; }
+            = type => type.AsTableSchema();
+
+        /// <summary>
+        /// 用户令牌工厂方法。
+        /// </summary>
+        public Func<Type, ITableSchema> UserTokenFactory { get; set; }
             = type => type.AsTableSchema();
     }
 }

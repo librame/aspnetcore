@@ -80,7 +80,8 @@ namespace Librame.AspNetCore.Identity
 
             identityBuilder.CoreIdentityBuilder.AddDefaultTokenProviders();
 
-            return identityBuilder;
+            return identityBuilder
+                .AddServices();
         }
 
     }

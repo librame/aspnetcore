@@ -25,16 +25,17 @@ namespace Microsoft.Extensions.DependencyInjection
         /// 注册 Librame for ASP.NET Core 服务集合。
         /// </summary>
         /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
-        /// <param name="configureOptions">给定的 <see cref="Action{BuilderOptions}"/>（可选；高优先级）。</param>
+        /// <param name="configureOptions">给定的 <see cref="Action{CoreBuilderOptions}"/>（可选；高优先级）。</param>
         /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
         /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
         /// <returns>返回 <see cref="IBuilder"/>。</returns>
         public static IBuilder AddLibrameCore(this IServiceCollection services,
-            Action<BuilderOptions> configureOptions = null,
+            Action<CoreBuilderOptions> configureOptions = null,
             IConfiguration configuration = null,
             Action<BinderOptions> configureBinderOptions = null)
         {
-            var builder = services.AddLibrame(configureOptions, configuration, configureBinderOptions);
+            var builder = services.AddLibrame(configureOptions,
+                configuration, configureBinderOptions);
 
             return builder
                 .AddCoreLocalizations()

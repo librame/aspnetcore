@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace Librame.AspNetCore.Identity.Tests
+namespace Librame.AspNetCore.Portal.Tests
 {
     using Extensions;
     using Extensions.Data;
@@ -18,19 +18,19 @@ namespace Librame.AspNetCore.Identity.Tests
                 services.AddLibrameCore()
                     .AddCoreData(options =>
                     {
-                        options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-                        options.DefaultTenant.WriteConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";
+                        options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_portal_default;Integrated Security=True";
+                        options.DefaultTenant.WriteConnectionString = "Data Source=.;Initial Catalog=librame_portal_write;Integrated Security=True";
                         options.DefaultTenant.WriteConnectionSeparation = true;
                     })
-                    .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
+                    .AddAccessor<PortalDbContextAccessor>((options, optionsBuilder) =>
                     {
-                        var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
+                        var migrationsAssembly = typeof(PortalDbContextAccessor).Assembly.GetName().Name;
                         optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                     })
-                    .AddIdentity<IdentityDbContextAccessor>(options =>
+                    .AddPortal<PortalDbContextAccessor>(options =>
                     {
-                        options.ConfigureCoreIdentity = core =>
+                        options.ConfigureCorePortal = core =>
                         {
                             core.Stores.MaxLengthForKeys = 128;
                         };

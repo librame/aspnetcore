@@ -26,10 +26,8 @@ namespace Librame.AspNetCore.Identity
         /// 构造一个 <see cref="DefaultIdentityRole"/> 实例。
         /// </summary>
         public DefaultIdentityRole()
-            : base()
+            : this(null)
         {
-            // 默认使用空标识符，新增推荐使用服务注入
-            Id = GuIdentifier.Empty;
         }
 
         /// <summary>
@@ -39,6 +37,8 @@ namespace Librame.AspNetCore.Identity
         public DefaultIdentityRole(string roleName)
             : base(roleName)
         {
+            // 默认使用空标识符，新增推荐使用服务注入
+            Id = GuIdentifier.Empty;
             NormalizedName = roleName;
         }
 

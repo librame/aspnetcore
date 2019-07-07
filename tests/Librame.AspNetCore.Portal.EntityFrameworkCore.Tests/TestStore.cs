@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Librame.AspNetCore.Identity.Tests
+namespace Librame.AspNetCore.Portal.Tests
 {
     using Extensions.Data;
 
-    public interface ITestStore : IBaseStore<IdentityDbContextAccessor>
+    public interface ITestStore : IBaseStore<PortalDbContextAccessor>
     {
-        IList<DefaultIdentityRole> GetRoles();
+        IList<DefaultPortalRole> GetRoles();
 
-        IPageable<DefaultIdentityUser> GetUsers();
+        IPageable<DefaultPortalUser> GetUsers();
 
 
         /// <summary>
@@ -27,12 +26,12 @@ namespace Librame.AspNetCore.Identity.Tests
     }
 
 
-    public class TestStore : AbstractBaseStore<IdentityDbContextAccessor>, ITestStore
+    public class TestStore : AbstractBaseStore<PortalDbContextAccessor>, ITestStore
     {
-        private readonly SignInManager<DefaultIdentityUser> _signInManager;
+        private readonly SignInManager<DefaultPortalUser> _signInManager;
 
-        public TestStore(SignInManager<DefaultIdentityUser> signInManager,
-            IIdentityIdentifierService identifierService, IAccessor accessor) // or IdentityDbContextAccessor
+        public TestStore(SignInManager<DefaultPortalUser> signInManager,
+            IPortalIdentifierService identifierService, IAccessor accessor) // or PortalDbContextAccessor
             : base(accessor)
         {
             _signInManager = signInManager;
@@ -40,15 +39,15 @@ namespace Librame.AspNetCore.Identity.Tests
             Initialize(identifierService);
         }
 
-        private void Initialize(IIdentityIdentifierService identifierService)
+        private void Initialize(IPortalIdentifierService identifierService)
         {
             UseWriteDbConnection();
 
-            DefaultIdentityRole firstRole;
+            DefaultPortalRole firstRole;
 
             if (!Accessor.Roles.Any())
             {
-                firstRole = new DefaultIdentityRole("SuperAdministrator")
+                firstRole = new DefaultPortalRole("SuperAdministrator")
                 {
                     Id = identifierService.GetRoleIdAsync().Result
                 };
@@ -62,7 +61,7 @@ namespace Librame.AspNetCore.Identity.Tests
 
             if (!Accessor.Users.Any())
             {
-                var firstUser = new DefaultIdentityUser("Librame")
+                var firstUser = new DefaultPortalUser("Librame")
                 {
                     Id = identifierService.GetUserIdAsync().Result
                 };
@@ -70,7 +69,7 @@ namespace Librame.AspNetCore.Identity.Tests
                 var result = _signInManager.UserManager.CreateAsync(firstUser, "123456");
                 if (result.IsCompletedSuccessfully)
                 {
-                    Accessor.UserRoles.Add(new IdentityUserRole<string>
+                    Accessor.UserRoles.Add(new PortalUserRole<string>
                     {
                         RoleId = firstRole.Id,
                         UserId = firstUser.Id
@@ -84,12 +83,12 @@ namespace Librame.AspNetCore.Identity.Tests
         }
 
 
-        public IList<DefaultIdentityRole> GetRoles()
+        public IList<DefaultPortalRole> GetRoles()
         {
             return Accessor.Roles.ToList();
         }
 
-        public IPageable<DefaultIdentityUser> GetUsers()
+        public IPageable<DefaultPortalUser> GetUsers()
         {
             return Accessor.Users.AsPagingByIndex(ordered => ordered.OrderBy(k => k.Id), 1, 10);
         }

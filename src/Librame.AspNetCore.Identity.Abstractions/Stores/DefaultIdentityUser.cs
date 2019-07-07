@@ -23,24 +23,23 @@ namespace Librame.AspNetCore.Identity
     public class DefaultIdentityUser : IdentityUser<string>, IId<string>
     {
         /// <summary>
-        /// 构造一个 <see cref="DefaultIdentityRole"/> 实例。
+        /// 构造一个 <see cref="DefaultIdentityUser"/> 实例。
         /// </summary>
         public DefaultIdentityUser()
-            : base()
+            : this(null)
         {
-            // 默认使用空标识符，新增推荐使用服务注入
-            Id = GuIdentifier.Empty;
         }
 
         /// <summary>
-        /// 构造一个 <see cref="DefaultIdentityRole"/> 实例。
+        /// 构造一个 <see cref="DefaultIdentityUser"/> 实例。
         /// </summary>
         /// <param name="userName">给定的用户名称。</param>
         public DefaultIdentityUser(string userName)
             : base(userName)
         {
+            // 默认使用空标识符，新增推荐使用服务注入
+            Id = GuIdentifier.Empty;
             NormalizedUserName = userName;
-            UserName = userName;
         }
     }
 }
