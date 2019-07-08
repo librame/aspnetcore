@@ -44,7 +44,9 @@ namespace Librame.AspNetCore.Portal
 
             var portalBuilder = new InternalPortalBuilder(builder, options);
 
-            return portalBuilder;
+            return portalBuilder
+                .AddServices()
+                .AddStores();
         }
 
     }

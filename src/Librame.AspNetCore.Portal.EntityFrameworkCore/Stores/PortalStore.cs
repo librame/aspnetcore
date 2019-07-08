@@ -28,7 +28,7 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     public class PortalStore<TAccessor>
         : PortalStore<TAccessor, PortalClaim, PortalCategory, PortalPane, PortalTag, PortalSource, PortalEditor, PortalSubject,
-            int, int, int, int, int, string, string, string>
+            int, int, int, string, int, int, int, string>
         , IPortalStore<TAccessor>
         where TAccessor : PortalDbContextAccessor
     {
@@ -64,12 +64,12 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
     public class PortalStore<TAccessor, TClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject,
         TClaimId, TCategoryId, TPaneId, TTagId, TSourceId, TEditorId, TSubjectId, TUserId>
-        : PortalFullStore<TAccessor, TClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, TClaimId>, TTag, PortalTagClaim<int, TTagId, TClaimId>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<string, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>,
-            TClaimId, TCategoryId, TPaneId, int, TTagId, int, TSourceId, TEditorId, int, TSubjectId, string, int, TUserId, DateTimeOffset>
+        : PortalFullStore<TAccessor, TClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, TClaimId>, TTag, PortalTagClaim<string, TTagId, TClaimId>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<int, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>,
+            TClaimId, TCategoryId, TPaneId, int, TTagId, string, TSourceId, TEditorId, int, TSubjectId, int, int, TUserId, DateTimeOffset>
         , IPortalStore<TAccessor, TClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject,
             TClaimId, TPaneId, TTagId, TEditorId, TSubjectId>
         where TAccessor : PortalDbContextAccessor<TClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject,
-        TClaimId, TCategoryId, TPaneId, TTagId, TSourceId, TEditorId, TSubjectId, TUserId>
+            TClaimId, TCategoryId, TPaneId, TTagId, TSourceId, TEditorId, TSubjectId, TUserId>
         where TClaim : PortalClaim<TClaimId>
         where TCategory : PortalCategory<TCategoryId>
         where TPane : PortalPane<TPaneId, TCategoryId>
@@ -1294,21 +1294,21 @@ namespace Librame.AspNetCore.Portal
 
         #region SubjectBody
 
-        ///// <summary>
-        ///// 验证专题主体唯一性。
-        ///// </summary>
-        ///// <param name="subjectId">给定的专题标识。</param>
-        ///// <param name="body">给定的主体。</param>
-        ///// <returns>返回查询表达式。</returns>
-        //public virtual Expression<Func<TSubjectBody, bool>> VerifySubjectBodyUniqueness(object subjectId, string body)
-        //{
-        //    body.NotNullOrEmpty(nameof(body));
+        /// <summary>
+        /// 验证专题主体唯一性。
+        /// </summary>
+        /// <param name="subjectId">给定的专题标识。</param>
+        /// <param name="bodyHash">给定的主体散列。</param>
+        /// <returns>返回查询表达式。</returns>
+        public virtual Expression<Func<TSubjectBody, bool>> VerifySubjectBodyUniqueness(object subjectId, string bodyHash)
+        {
+            bodyHash.NotNullOrEmpty(nameof(bodyHash));
 
-        //    var _subjectId = ToSubjectId(subjectId);
+            var _subjectId = ToSubjectId(subjectId);
 
-        //    // SubjectId and Body is unique index
-        //    return p => p.SubjectId.Equals(_subjectId) && p.Body == body;
-        //}
+            // SubjectId and BodyHash is unique index
+            return p => p.SubjectId.Equals(_subjectId) && p.BodyHash == bodyHash;
+        }
 
         /// <summary>
         /// 异步查找专题主体。
@@ -1319,6 +1319,20 @@ namespace Librame.AspNetCore.Portal
         public virtual Task<TSubjectBody> FindSubjectBodyAsync(CancellationToken cancellationToken, params object[] keyValues)
         {
             return Accessor.SubjectBodies.FindAsync(cancellationToken, keyValues);
+        }
+
+        /// <summary>
+        /// 异步获取专题主体。
+        /// </summary>
+        /// <param name="subjectId">给定的专题标识。</param>
+        /// <param name="bodyHash">给定的主体散列。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
+        public virtual Task<TSubjectBody> GetSubjectBodyAsync(object subjectId, string bodyHash, CancellationToken cancellationToken = default)
+        {
+            var predicate = VerifySubjectBodyUniqueness(subjectId, bodyHash);
+
+            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.SubjectBodies.SingleOrDefault(predicate));
         }
 
         /// <summary>

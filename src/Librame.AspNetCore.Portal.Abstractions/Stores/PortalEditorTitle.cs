@@ -14,23 +14,13 @@ using System;
 
 namespace Librame.AspNetCore.Portal
 {
-    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
     /// 门户编者头衔。
     /// </summary>
-    public class PortalEditorTitle : PortalEditorTitle<int, string>
+    public class PortalEditorTitle : PortalEditorTitle<int, int>
     {
-        /// <summary>
-        /// 构造一个 <see cref="PortalEditorTitle"/> 实例。
-        /// </summary>
-        public PortalEditorTitle()
-            : base()
-        {
-            // 默认使用空标识符，新增推荐使用服务注入
-            EditorId = GuIdentifier.Empty;
-        }
     }
 
 

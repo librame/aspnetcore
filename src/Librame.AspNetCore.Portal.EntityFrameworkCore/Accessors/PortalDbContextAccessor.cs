@@ -23,7 +23,7 @@ namespace Librame.AspNetCore.Portal
     /// 门户数据库上下文访问器。
     /// </summary>
     public class PortalDbContextAccessor : PortalDbContextAccessor<PortalClaim, PortalCategory, PortalPane, PortalTag, PortalSource, PortalEditor, PortalSubject,
-        int, int, int, int, int, string, string, string>
+        int, int, int, string, int, int, int, string>
     {
         /// <summary>
         /// 构造一个 <see cref="PortalDbContextAccessor"/> 实例。
@@ -56,8 +56,8 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
     public class PortalDbContextAccessor<TClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject,
         TClaimId, TCategoryId, TPaneId, TTagId, TSourceId, TEditorId, TSubjectId, TUserId>
-        : PortalDbContextAccessor<TClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, TClaimId>, TTag, PortalTagClaim<int, TTagId, TClaimId>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<string, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>,
-            TClaimId, TCategoryId, TPaneId, int, TTagId, int, TSourceId, TEditorId, int, TSubjectId, string, int, TUserId, DateTimeOffset>
+        : PortalDbContextAccessor<TClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, TClaimId>, TTag, PortalTagClaim<string, TTagId, TClaimId>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<int, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>,
+            TClaimId, TCategoryId, TPaneId, int, TTagId, string, TSourceId, TEditorId, int, TSubjectId, int, int, TUserId, DateTimeOffset>
         where TClaim : PortalClaim<TClaimId>
         where TCategory : PortalCategory<TCategoryId>
         where TPane : PortalPane<TPaneId, TCategoryId>

@@ -14,23 +14,13 @@ using System;
 
 namespace Librame.AspNetCore.Portal
 {
-    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
     /// 门户专题。
     /// </summary>
-    public class PortalSubject : PortalSubject<string, int, DateTimeOffset>
+    public class PortalSubject : PortalSubject<int, int, DateTimeOffset>
     {
-        /// <summary>
-        /// 构造一个 <see cref="PortalSubject"/> 实例。
-        /// </summary>
-        public PortalSubject()
-            : base()
-        {
-            // 默认使用空标识符，新增推荐使用服务注入
-            Id = GuIdentifier.Empty;
-        }
     }
 
 

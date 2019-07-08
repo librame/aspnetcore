@@ -14,13 +14,23 @@ using System;
 
 namespace Librame.AspNetCore.Portal
 {
+    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
     /// 门户标签声明。
     /// </summary>
-    public class PortalTagClaim : PortalTagClaim<int, int, int>
+    public class PortalTagClaim : PortalTagClaim<string, string, int>
     {
+        /// <summary>
+        /// 构造一个 <see cref="PortalTagClaim"/> 实例。
+        /// </summary>
+        public PortalTagClaim()
+            : base()
+        {
+            // 默认使用空标识符，新增推荐使用服务注入
+            TagId = Id = GuIdentifier.Empty;
+        }
     }
 
 

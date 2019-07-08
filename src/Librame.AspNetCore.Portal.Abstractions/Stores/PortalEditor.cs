@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户编者。
     /// </summary>
-    public class PortalEditor : PortalEditor<string, string>
+    public class PortalEditor : PortalEditor<int, string>
     {
         /// <summary>
         /// 构造一个 <see cref="PortalEditor"/> 实例。
@@ -29,7 +29,7 @@ namespace Librame.AspNetCore.Portal
             : base()
         {
             // 默认使用空标识符，新增推荐使用服务注入
-            UserId = Id = GuIdentifier.Empty;
+            UserId = GuIdentifier.Empty;
         }
     }
 

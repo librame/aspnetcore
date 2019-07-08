@@ -22,14 +22,14 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     public interface IPortalStore<TAccessor>
         : IPortalStore<TAccessor, PortalClaim, PortalCategory, PortalPane, PortalTag, PortalSource, PortalEditor, PortalSubject,
-            int, int, int, string, string>
+            int, int, string, int, int>
         , IClaimStore<TAccessor, PortalClaim>
         , ICategoryStore<TAccessor, PortalCategory>
         , IPaneStore<TAccessor, PortalPane, PortalPaneClaim<int, int, int>>
-        , ITagStore<TAccessor, PortalTag, PortalTagClaim<int, int, int>>
+        , ITagStore<TAccessor, PortalTag, PortalTagClaim<string, string, int>>
         , ISourceStore<TAccessor, PortalSource>
-        , IEditorStore<TAccessor, PortalEditor, PortalEditorTitle<int, string>>
-        , ISubjectStore<TAccessor, PortalSubject, PortalSubjectBody<string, string>, PortalSubjectClaim<int, string, int>>
+        , IEditorStore<TAccessor, PortalEditor, PortalEditorTitle<int, int>>
+        , ISubjectStore<TAccessor, PortalSubject, PortalSubjectBody<int, int>, PortalSubjectClaim<int, int, int>>
         where TAccessor : IAccessor
     {
     }
@@ -52,14 +52,14 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TSubjectId">指定的专题标识类型。</typeparam>
     public interface IPortalStore<TAccessor, TClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject,
         TClaimId, TPaneId, TTagId, TEditorId, TSubjectId>
-        : IPortalFullStore<TAccessor, TClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, TClaimId>, TTag, PortalTagClaim<int, TTagId, TClaimId>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<string, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>>
+        : IPortalFullStore<TAccessor, TClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, TClaimId>, TTag, PortalTagClaim<string, TTagId, TClaimId>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<int, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>>
         , IClaimStore<TAccessor, TClaim>
         , ICategoryStore<TAccessor, TCategory>
         , IPaneStore<TAccessor, TPane, PortalPaneClaim<int, TPaneId, TClaimId>>
-        , ITagStore<TAccessor, TTag, PortalTagClaim<int, TTagId, TClaimId>>
+        , ITagStore<TAccessor, TTag, PortalTagClaim<string, TTagId, TClaimId>>
         , ISourceStore<TAccessor, TSource>
         , IEditorStore<TAccessor, TEditor, PortalEditorTitle<int, TEditorId>>
-        , ISubjectStore<TAccessor, TSubject, PortalSubjectBody<string, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>>
+        , ISubjectStore<TAccessor, TSubject, PortalSubjectBody<int, TSubjectId>, PortalSubjectClaim<int, TSubjectId, TClaimId>>
         where TAccessor : IAccessor
         where TClaim : class
         where TCategory : class

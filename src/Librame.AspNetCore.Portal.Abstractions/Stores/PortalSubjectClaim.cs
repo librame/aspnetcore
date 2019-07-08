@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户专题声明。
     /// </summary>
-    public class PortalSubjectClaim : PortalSubjectClaim<int, string, int>
+    public class PortalSubjectClaim : PortalSubjectClaim<int, int, int>
     {
     }
 

@@ -9,14 +9,14 @@ namespace Librame.AspNetCore.Identity.UI.Tests
     {
         static TestServiceProvider()
         {
-            if (Current.IsNull())
+            Current = Current.EnsureSingleton(() =>
             {
                 var services = new ServiceCollection();
 
                 services.AddLibrameCore();
 
-                Current = services.BuildServiceProvider();
-            }
+                return services.BuildServiceProvider();
+            });
         }
 
         public static IServiceProvider Current { get; private set; }

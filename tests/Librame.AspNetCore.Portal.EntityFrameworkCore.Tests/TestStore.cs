@@ -5,7 +5,7 @@ namespace Librame.AspNetCore.Portal.Tests
 {
     using Extensions.Data;
 
-    public interface ITestStore : IBaseStore<PortalDbContextAccessor>
+    public interface ITestStore : IPortalStore<PortalDbContextAccessor>
     {
         IList<DefaultPortalRole> GetRoles();
 
@@ -26,16 +26,11 @@ namespace Librame.AspNetCore.Portal.Tests
     }
 
 
-    public class TestStore : AbstractBaseStore<PortalDbContextAccessor>, ITestStore
+    public class TestStore : PortalStore<PortalDbContextAccessor>, ITestStore
     {
-        private readonly SignInManager<DefaultPortalUser> _signInManager;
-
-        public TestStore(SignInManager<DefaultPortalUser> signInManager,
-            IPortalIdentifierService identifierService, IAccessor accessor) // or PortalDbContextAccessor
+        public TestStore(IPortalIdentifierService identifierService, IAccessor accessor) // or PortalDbContextAccessor
             : base(accessor)
         {
-            _signInManager = signInManager;
-
             Initialize(identifierService);
         }
 

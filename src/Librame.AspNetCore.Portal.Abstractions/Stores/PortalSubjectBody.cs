@@ -14,23 +14,13 @@ using System;
 
 namespace Librame.AspNetCore.Portal
 {
-    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
     /// 门户专题主体。
     /// </summary>
-    public class PortalSubjectBody : PortalSubjectBody<string, string>
+    public class PortalSubjectBody : PortalSubjectBody<int, int>
     {
-        /// <summary>
-        /// 构造一个 <see cref="PortalSubjectBody"/> 实例。
-        /// </summary>
-        public PortalSubjectBody()
-            : base()
-        {
-            // 默认使用空标识符，新增推荐使用服务注入
-            SubjectId = Id = GuIdentifier.Empty;
-        }
     }
 
 
@@ -47,6 +37,11 @@ namespace Librame.AspNetCore.Portal
         /// 专题标识。
         /// </summary>
         public virtual TSubjectId SubjectId { get; set; }
+
+        /// <summary>
+        /// 主体散列。
+        /// </summary>
+        public virtual string BodyHash { get; set; }
 
         /// <summary>
         /// 正文。

@@ -105,13 +105,13 @@ namespace Librame.AspNetCore.Portal
 
         #region SubjectBody
 
-        ///// <summary>
-        ///// 验证专题主体唯一性。
-        ///// </summary>
-        ///// <param name="subjectId">给定的专题标识。</param>
-        ///// <param name="body">给定的主体。</param>
-        ///// <returns>返回查询表达式。</returns>
-        //Expression<Func<TSubjectBody, bool>> VerifySubjectBodyUniqueness(object subjectId, string body);
+        /// <summary>
+        /// 验证专题主体唯一性。
+        /// </summary>
+        /// <param name="subjectId">给定的专题标识。</param>
+        /// <param name="bodyHash">给定的主体散列。</param>
+        /// <returns>返回查询表达式。</returns>
+        Expression<Func<TSubjectBody, bool>> VerifySubjectBodyUniqueness(object subjectId, string bodyHash);
 
         /// <summary>
         /// 异步查找专题主体。
@@ -173,6 +173,15 @@ namespace Librame.AspNetCore.Portal
         /// <param name="keyValues">给定的键值对数组或标识。</param>
         /// <returns>返回一个包含 <typeparamref name="TSubjectClaim"/> 的异步操作。</returns>
         Task<TSubjectClaim> FindSubjectClaimAsync(CancellationToken cancellationToken, params object[] keyValues);
+
+        /// <summary>
+        /// 异步获取专题主体。
+        /// </summary>
+        /// <param name="subjectId">给定的专题标识。</param>
+        /// <param name="bodyHash">给定的主体散列。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
+        Task<TSubjectBody> GetSubjectBodyAsync(object subjectId, string bodyHash, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取专题声明。

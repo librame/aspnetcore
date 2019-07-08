@@ -28,13 +28,7 @@ namespace Librame.AspNetCore.Portal.Tests
                         optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                     })
-                    .AddPortal<PortalDbContextAccessor>(options =>
-                    {
-                        options.ConfigureCorePortal = core =>
-                        {
-                            core.Stores.MaxLengthForKeys = 128;
-                        };
-                    });
+                    .AddPortal<PortalDbContextAccessor>();
 
                 services.AddScoped<ITestStore, TestStore>();
 

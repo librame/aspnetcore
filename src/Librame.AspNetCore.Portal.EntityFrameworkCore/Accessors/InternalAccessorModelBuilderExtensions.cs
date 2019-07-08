@@ -92,9 +92,9 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.Type, i.Model }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                b.Property(p => p.Type).HasMaxLength(100);
-                b.Property(p => p.Model).HasMaxLength(200);
-                b.Property(p => p.Title).HasMaxLength(100);
+                //b.Property(p => p.Type).HasMaxLength(100);
+                //b.Property(p => p.Model).HasMaxLength(200);
+                //b.Property(p => p.Title).HasMaxLength(100);
             });
 
             modelBuilder.Entity<TCategory>(b =>
@@ -106,7 +106,7 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.ParentId, i.Name }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                b.Property(p => p.Name).HasMaxLength(100);
+                //b.Property(p => p.Name).HasMaxLength(100);
             });
 
             modelBuilder.Entity<TPane>(b =>
@@ -118,8 +118,8 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.CategoryId, i.Name }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                b.Property(p => p.Name).HasMaxLength(100);
-                b.Property(p => p.Path).HasMaxLength(200);
+                //b.Property(p => p.Name).HasMaxLength(100);
+                //b.Property(p => p.Path).HasMaxLength(200);
 
                 //b.HasMany<TPaneClaim>().WithOne().HasForeignKey(fk => fk.PaneId).IsRequired();
             });
@@ -132,7 +132,7 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.PaneId, i.ClaimId, i.AssocId }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                b.Property(p => p.AssocId).HasMaxLength(100);
+                //b.Property(p => p.AssocId).HasMaxLength(100);
             });
 
             modelBuilder.Entity<TTag>(b =>
@@ -143,8 +143,8 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasIndex(i => i.Name).HasName().IsUnique();
 
-                b.Property(p => p.Id).ValueGeneratedOnAdd();
-                b.Property(p => p.Name).HasMaxLength(50);
+                b.Property(p => p.Id).ValueGeneratedNever();
+                //b.Property(p => p.Name).HasMaxLength(50);
 
                 //b.HasMany<TTagClaim>().WithOne().HasForeignKey(fk => fk.TagId).IsRequired();
             });
@@ -156,7 +156,8 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasIndex(i => new { i.TagId, i.ClaimId }).HasName().IsUnique();
 
-                b.Property(p => p.Id).ValueGeneratedOnAdd();
+                b.Property(p => p.Id).ValueGeneratedNever();
+                //b.Property(p => p.TagId).HasMaxLength(50);
             });
 
             modelBuilder.Entity<TSource>(b =>
@@ -168,10 +169,10 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.CategoryId, i.Name }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                b.Property(p => p.Name).HasMaxLength(100);
-                b.Property(p => p.Logo).HasMaxLength(100);
-                b.Property(p => p.Link).HasMaxLength(100);
-                b.Property(p => p.Descr).HasMaxLength(200);
+                //b.Property(p => p.Name).HasMaxLength(100);
+                //b.Property(p => p.Logo).HasMaxLength(100);
+                //b.Property(p => p.Link).HasMaxLength(100);
+                //b.Property(p => p.Descr).HasMaxLength(200);
             });
 
             modelBuilder.Entity<TEditor>(b =>
@@ -182,8 +183,8 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasIndex(i => new { i.UserId, i.Name }).HasName().IsUnique();
 
-                b.Property(p => p.Id).ValueGeneratedNever();
-                b.Property(p => p.Name).HasMaxLength(100);
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
+                //b.Property(p => p.Name).HasMaxLength(100);
 
                 //b.HasMany<TEditorTitle>().WithOne().HasForeignKey(fk => fk.EditorId).IsRequired();
             });
@@ -196,7 +197,7 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.EditorId, i.Name }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                b.Property(p => p.Name).HasMaxLength(100);
+                //b.Property(p => p.Name).HasMaxLength(100);
             });
 
             modelBuilder.Entity<TSubject>(b =>
@@ -207,11 +208,11 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasIndex(i => new { i.CategoryId, i.Title }).HasName().IsUnique();
 
-                b.Property(p => p.Id).ValueGeneratedNever();
-                b.Property(p => p.PublishLink).HasMaxLength(100);
-                b.Property(p => p.Title).HasMaxLength(100);
-                b.Property(p => p.Subtitle).HasMaxLength(100);
-                b.Property(p => p.Tags).HasMaxLength(100);
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
+                //b.Property(p => p.PublishLink).HasMaxLength(100);
+                //b.Property(p => p.Title).HasMaxLength(100);
+                //b.Property(p => p.Subtitle).HasMaxLength(100);
+                //b.Property(p => p.Tags).HasMaxLength(100);
 
                 //b.HasMany<TSubjectClaim>().WithOne().HasForeignKey(fk => fk.SubjectId).IsRequired();
             });
@@ -221,10 +222,11 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasKey(k => k.Id);
 
-                //b.HasIndex(i => new { i.SubjectId, i.Body }).HasName().IsUnique();
+                b.HasIndex(i => new { i.SubjectId, i.BodyHash }).HasName().IsUnique();
 
-                b.Property(p => p.Id).ValueGeneratedNever();
-                b.Property(p => p.Body).HasMaxLength(4000);
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
+                //b.Property(p => p.BodyHash).HasMaxLength(100);
+                //b.Property(p => p.Body).HasMaxLength(4000);
             });
             modelBuilder.Entity<TSubjectClaim>(b =>
             {
@@ -235,7 +237,7 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.SubjectId, i.ClaimId, i.AssocId }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                b.Property(p => p.AssocId).HasMaxLength(100);
+                //b.Property(p => p.AssocId).HasMaxLength(100);
             });
         }
 
