@@ -12,7 +12,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,12 +35,13 @@ namespace Librame.AspNetCore.Portal
         #region Pane
 
         /// <summary>
-        /// 验证窗格唯一性。
+        /// 异步包含指定窗格。
         /// </summary>
         /// <param name="categoryId">给定的父标识。</param>
         /// <param name="name">给定的名称。</param>
-        /// <returns>返回查询表达式。</returns>
-        Expression<Func<TPane, bool>> VerifyPaneUniqueness(object categoryId, string name);
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        Task<bool> ContainPaneAsync(object categoryId, string name, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取窗格。
@@ -62,18 +63,23 @@ namespace Librame.AspNetCore.Portal
         /// <summary>
         /// 异步获取所有窗格集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TPane}"/> 的异步操作。</returns>
-        Task<List<TPane>> GetAllPanesAsync(CancellationToken cancellationToken = default);
+        Task<List<TPane>> GetAllPanesAsync(Func<IQueryable<TPane>, IQueryable<TPane>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取分页窗格集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TPane}"/> 的异步操作。</returns>
-        Task<IPageable<TPane>> GetPagingPanesAsync(int index, int size, CancellationToken cancellationToken = default);
+        Task<IPageable<TPane>> GetPagingPanesAsync(int index, int size,
+            Func<IQueryable<TPane>, IQueryable<TPane>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
 
         /// <summary>
@@ -104,13 +110,14 @@ namespace Librame.AspNetCore.Portal
         #region PaneClaim
 
         /// <summary>
-        /// 验证窗格声明唯一性。
+        /// 异步包含指定窗格。
         /// </summary>
         /// <param name="paneId">给定的窗格标识。</param>
         /// <param name="claimId">给定的声明标识。</param>
         /// <param name="assocId">给定的关联标识。</param>
-        /// <returns>返回查询表达式。</returns>
-        Expression<Func<TPaneClaim, bool>> VerifyPaneClaimUniqueness(object paneId, object claimId, string assocId);
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        Task<bool> ContainPaneClaimAsync(object paneId, object claimId, string assocId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取窗格声明。
@@ -130,30 +137,38 @@ namespace Librame.AspNetCore.Portal
         /// <returns>返回一个包含 <typeparamref name="TPaneClaim"/> 的异步操作。</returns>
         Task<TPaneClaim> FindPaneClaimAsync(CancellationToken cancellationToken, params object[] keyValues);
 
-        /// <summary>
-        /// 异步获取窗格声明集合。
-        /// </summary>
-        /// <param name="paneId">给定的窗格标识。</param>
-        /// <param name="claimId">给定的声明标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="List{TPaneClaim}"/> 的异步操作。</returns>
-        Task<List<TPaneClaim>> GetPaneClaimsAsync(object paneId, object claimId, CancellationToken cancellationToken = default);
+        ///// <summary>
+        ///// 异步获取窗格声明集合。
+        ///// </summary>
+        ///// <param name="paneId">给定的窗格标识。</param>
+        ///// <param name="claimId">给定的声明标识。</param>
+        ///// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
+        ///// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        ///// <returns>返回一个包含 <see cref="List{TPaneClaim}"/> 的异步操作。</returns>
+        //Task<List<TPaneClaim>> GetPaneClaimsAsync(object paneId, object claimId,
+        //    Func<IQueryable<TPaneClaim>, IQueryable<TPaneClaim>> queryFactory = null,
+        //    CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取所有窗格声明集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TPaneClaim}"/> 的异步操作。</returns>
-        Task<List<TPaneClaim>> GetAllPaneClaimsAsync(CancellationToken cancellationToken = default);
+        Task<List<TPaneClaim>> GetAllPaneClaimsAsync(Func<IQueryable<TPaneClaim>, IQueryable<TPaneClaim>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取分页窗格声明集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TPaneClaim}"/> 的异步操作。</returns>
-        Task<IPageable<TPaneClaim>> GetPagingPaneClaimsAsync(int index, int size, CancellationToken cancellationToken = default);
+        Task<IPageable<TPaneClaim>> GetPagingPaneClaimsAsync(int index, int size,
+            Func<IQueryable<TPaneClaim>, IQueryable<TPaneClaim>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
 
         /// <summary>

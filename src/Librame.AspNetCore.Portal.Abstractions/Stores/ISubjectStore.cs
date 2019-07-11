@@ -12,7 +12,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,12 +37,13 @@ namespace Librame.AspNetCore.Portal
         #region Subject
 
         /// <summary>
-        /// 验证专题唯一性。
+        /// 异步包含指定专题。
         /// </summary>
         /// <param name="categoryId">给定的分类标识。</param>
         /// <param name="title">给定的标题。</param>
-        /// <returns>返回查询表达式。</returns>
-        Expression<Func<TSubject, bool>> VerifySubjectUniqueness(object categoryId, string title);
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        Task<bool> ContainSubjectAsync(object categoryId, string title, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取专题。
@@ -64,18 +65,23 @@ namespace Librame.AspNetCore.Portal
         /// <summary>
         /// 异步获取所有专题集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TSubject}"/> 的异步操作。</returns>
-        Task<List<TSubject>> GetAllSubjectsAsync(CancellationToken cancellationToken = default);
+        Task<List<TSubject>> GetAllSubjectsAsync(Func<IQueryable<TSubject>, IQueryable<TSubject>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取分页专题集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TSubject}"/> 的异步操作。</returns>
-        Task<IPageable<TSubject>> GetPagingSubjectsAsync(int index, int size, CancellationToken cancellationToken = default);
+        Task<IPageable<TSubject>> GetPagingSubjectsAsync(int index, int size,
+            Func<IQueryable<TSubject>, IQueryable<TSubject>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
 
         /// <summary>
@@ -106,12 +112,30 @@ namespace Librame.AspNetCore.Portal
         #region SubjectBody
 
         /// <summary>
-        /// 验证专题主体唯一性。
+        /// 异步包含指定专题主体。
         /// </summary>
         /// <param name="subjectId">给定的专题标识。</param>
         /// <param name="bodyHash">给定的主体散列。</param>
-        /// <returns>返回查询表达式。</returns>
-        Expression<Func<TSubjectBody, bool>> VerifySubjectBodyUniqueness(object subjectId, string bodyHash);
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        Task<bool> ContainSubjectBodyAsync(object subjectId, string bodyHash, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步获取指定专题主体。
+        /// </summary>
+        /// <param name="subjectId">给定的专题标识。</param>
+        /// <param name="bodyHash">给定的主体散列。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
+        Task<TSubjectBody> GetSubjectBodyAsync(object subjectId, string bodyHash, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步查找指定专题主体。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
+        /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
+        Task<TSubjectBody> FindSubjectBodyAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
         /// 异步获取专题主体集合。
@@ -120,14 +144,6 @@ namespace Librame.AspNetCore.Portal
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TSubjectBody}"/> 的异步操作。</returns>
         Task<List<TSubjectBody>> GetSubjectBodiesAsync(object subjectId, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// 异步查找专题主体。
-        /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
-        /// <param name="keyValues">给定的键值对数组或标识。</param>
-        /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
-        Task<TSubjectBody> FindSubjectBodyAsync(CancellationToken cancellationToken, params object[] keyValues);
 
 
         /// <summary>
@@ -158,33 +174,17 @@ namespace Librame.AspNetCore.Portal
         #region SubjectClaim
 
         /// <summary>
-        /// 验证专题声明唯一性。
+        /// 异步包含指定专题声明。
         /// </summary>
         /// <param name="subjectId">给定的专题标识。</param>
         /// <param name="claimId">给定的声明标识。</param>
         /// <param name="assocId">给定的关联标识。</param>
-        /// <returns>返回查询表达式。</returns>
-        Expression<Func<TSubjectClaim, bool>> VerifySubjectClaimUniqueness(object subjectId, object claimId, string assocId);
-
-        /// <summary>
-        /// 异步获取专题主体。
-        /// </summary>
-        /// <param name="subjectId">给定的专题标识。</param>
-        /// <param name="bodyHash">给定的主体散列。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
-        Task<TSubjectBody> GetSubjectBodyAsync(object subjectId, string bodyHash, CancellationToken cancellationToken = default);
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        Task<bool> ContainTenantAsync(object subjectId, object claimId, string assocId, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步查找专题声明。
-        /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
-        /// <param name="keyValues">给定的键值对数组或标识。</param>
-        /// <returns>返回一个包含 <typeparamref name="TSubjectClaim"/> 的异步操作。</returns>
-        Task<TSubjectClaim> FindSubjectClaimAsync(CancellationToken cancellationToken, params object[] keyValues);
-
-        /// <summary>
-        /// 异步获取专题声明。
+        /// 异步获取指定专题声明。
         /// </summary>
         /// <param name="subjectId">给定的专题标识。</param>
         /// <param name="claimId">给定的声明标识。</param>
@@ -194,20 +194,33 @@ namespace Librame.AspNetCore.Portal
         Task<TSubjectClaim> GetSubjectClaimAsync(object subjectId, object claimId, string assocId, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// 异步查找指定专题声明。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
+        /// <returns>返回一个包含 <typeparamref name="TSubjectClaim"/> 的异步操作。</returns>
+        Task<TSubjectClaim> FindSubjectClaimAsync(CancellationToken cancellationToken, params object[] keyValues);
+
+        /// <summary>
         /// 异步获取所有专题声明集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TSubjectClaim}"/> 的异步操作。</returns>
-        Task<List<TSubjectClaim>> GetAllSubjectClaimsAsync(CancellationToken cancellationToken = default);
+        Task<List<TSubjectClaim>> GetAllSubjectClaimsAsync(Func<IQueryable<TSubjectClaim>, IQueryable<TSubjectClaim>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取分页专题声明集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TSubjectClaim}"/> 的异步操作。</returns>
-        Task<IPageable<TSubjectClaim>> GetPagingSubjectClaimsAsync(int index, int size, CancellationToken cancellationToken = default);
+        Task<IPageable<TSubjectClaim>> GetPagingSubjectClaimsAsync(int index, int size,
+            Func<IQueryable<TSubjectClaim>, IQueryable<TSubjectClaim>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
 
         /// <summary>

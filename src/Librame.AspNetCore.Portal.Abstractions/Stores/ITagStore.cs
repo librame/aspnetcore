@@ -12,7 +12,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,14 +35,15 @@ namespace Librame.AspNetCore.Portal
         #region Tag
 
         /// <summary>
-        /// 验证标签唯一性。
+        /// 异步包含指定标签。
         /// </summary>
         /// <param name="name">给定的名称。</param>
-        /// <returns>返回查询表达式。</returns>
-        Expression<Func<TTag, bool>> VerifyTagUniqueness(string name);
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        Task<bool> ContainTagAsync(string name, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步获取标签。
+        /// 异步获取指定标签。
         /// </summary>
         /// <param name="name">给定的名称。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
@@ -50,7 +51,7 @@ namespace Librame.AspNetCore.Portal
         Task<TTag> GetTagAsync(string name, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步查找标签。
+        /// 异步查找指定标签。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
         /// <param name="keyValues">给定的键值对数组或标识。</param>
@@ -60,18 +61,23 @@ namespace Librame.AspNetCore.Portal
         /// <summary>
         /// 异步获取所有标签集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TTag}"/> 的异步操作。</returns>
-        Task<List<TTag>> GetAllTagsAsync(CancellationToken cancellationToken = default);
+        Task<List<TTag>> GetAllTagsAsync(Func<IQueryable<TTag>, IQueryable<TTag>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取分页标签集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TTag}"/> 的异步操作。</returns>
-        Task<IPageable<TTag>> GetPagingTagsAsync(int index, int size, CancellationToken cancellationToken = default);
+        Task<IPageable<TTag>> GetPagingTagsAsync(int index, int size,
+            Func<IQueryable<TTag>, IQueryable<TTag>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
 
         /// <summary>
@@ -102,15 +108,16 @@ namespace Librame.AspNetCore.Portal
         #region TagClaim
 
         /// <summary>
-        /// 验证标签声明唯一性。
+        /// 异步包含指定标签声明。
         /// </summary>
         /// <param name="tagId">给定的标签标识。</param>
         /// <param name="claimId">给定的声明标识。</param>
-        /// <returns>返回查询表达式。</returns>
-        Expression<Func<TTagClaim, bool>> VerifyTagClaimUniqueness(object tagId, object claimId);
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        Task<bool> ContainTagClaimAsync(object tagId, object claimId, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步获取标签声明。
+        /// 异步获取指定标签声明。
         /// </summary>
         /// <param name="tagId">给定的标签标识。</param>
         /// <param name="claimId">给定的声明标识。</param>
@@ -119,7 +126,7 @@ namespace Librame.AspNetCore.Portal
         Task<TTagClaim> GetTagClaimAsync(object tagId, object claimId, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 异步查找标签声明。
+        /// 异步查找指定标签声明。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
         /// <param name="keyValues">给定的键值对数组或标识。</param>

@@ -512,12 +512,12 @@ namespace Librame.AspNetCore.Portal
         #region Pane
 
         /// <summary>
-        /// 验证窗格唯一性。
+        /// 建立唯一窗格表达式。
         /// </summary>
         /// <param name="categoryId">给定的分类标识。</param>
         /// <param name="name">给定的名称。</param>
         /// <returns>返回查询表达式。</returns>
-        public virtual Expression<Func<TPane, bool>> VerifyPaneUniqueness(object categoryId, string name)
+        protected virtual Expression<Func<TPane, bool>> BuildUniquePaneExpression(object categoryId, string name)
         {
             name.NotNullOrEmpty(nameof(name));
 
@@ -525,6 +525,34 @@ namespace Librame.AspNetCore.Portal
 
             // CategoryId and Name is unique index
             return p => p.CategoryId.Equals(_categoryId) && p.Name == name;
+        }
+
+        /// <summary>
+        /// 异步包含指定窗格。
+        /// </summary>
+        /// <param name="categoryId">给定的父标识。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        public virtual Task<bool> ContainPaneAsync(object categoryId, string name, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniquePaneExpression(categoryId, name);
+
+            return Accessor.Panes.AnyAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步获取窗格。
+        /// </summary>
+        /// <param name="categoryId">给定的分类标识。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TPane"/> 的异步操作。</returns>
+        public virtual Task<TPane> GetPaneAsync(object categoryId, string name, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniquePaneExpression(categoryId, name);
+
+            return Accessor.Panes.SingleOrDefaultAsync(predicate, cancellationToken);
         }
 
         /// <summary>
@@ -539,27 +567,17 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步获取窗格。
-        /// </summary>
-        /// <param name="categoryId">给定的分类标识。</param>
-        /// <param name="name">给定的名称。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TPane"/> 的异步操作。</returns>
-        public virtual Task<TPane> GetPaneAsync(object categoryId, string name, CancellationToken cancellationToken = default)
-        {
-            var predicate = VerifyPaneUniqueness(categoryId, name);
-
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.Panes.SingleOrDefault(predicate));
-        }
-
-        /// <summary>
         /// 异步获取所有窗格集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TPane}"/> 的异步操作。</returns>
-        public virtual Task<List<TPane>> GetAllPanesAsync(CancellationToken cancellationToken = default)
+        public virtual Task<List<TPane>> GetAllPanesAsync(Func<IQueryable<TPane>, IQueryable<TPane>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.Panes.ToList());
+            var query = queryFactory?.Invoke(Accessor.Panes) ?? Accessor.Panes;
+
+            return query.ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -567,11 +585,16 @@ namespace Librame.AspNetCore.Portal
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TPane}"/> 的异步操作。</returns>
-        public virtual Task<IPageable<TPane>> GetPagingPanesAsync(int index, int size, CancellationToken cancellationToken = default)
+        public virtual Task<IPageable<TPane>> GetPagingPanesAsync(int index, int size,
+            Func<IQueryable<TPane>, IQueryable<TPane>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return Accessor.Panes.AsDescendingPagingByIndexAsync(index, size, cancellationToken);
+            var query = queryFactory?.Invoke(Accessor.Panes) ?? Accessor.Panes;
+
+            return query.AsDescendingPagingByIndexAsync(index, size, cancellationToken);
         }
 
 
@@ -612,13 +635,13 @@ namespace Librame.AspNetCore.Portal
         #region PaneClaim
 
         /// <summary>
-        /// 验证窗格声明唯一性。
+        /// 建立唯一窗格声明表达式。
         /// </summary>
         /// <param name="paneId">给定的窗格标识。</param>
         /// <param name="claimId">给定的声明标识。</param>
         /// <param name="assocId">给定的关联标识。</param>
         /// <returns>返回查询表达式。</returns>
-        public virtual Expression<Func<TPaneClaim, bool>> VerifyPaneClaimUniqueness(object paneId, object claimId, string assocId)
+        protected virtual Expression<Func<TPaneClaim, bool>> BuildUniquePaneClaimExpression(object paneId, object claimId, string assocId)
         {
             assocId.NotNullOrEmpty(nameof(assocId));
 
@@ -627,6 +650,36 @@ namespace Librame.AspNetCore.Portal
 
             // PaneId, ClaimId and AssocId is unique index
             return p => p.PaneId.Equals(_paneId) && p.ClaimId.Equals(_claimId) && p.AssocId.Equals(assocId);
+        }
+
+        /// <summary>
+        /// 异步包含指定窗格。
+        /// </summary>
+        /// <param name="paneId">给定的窗格标识。</param>
+        /// <param name="claimId">给定的声明标识。</param>
+        /// <param name="assocId">给定的关联标识。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        public virtual Task<bool> ContainPaneClaimAsync(object paneId, object claimId, string assocId, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniquePaneClaimExpression(paneId, claimId, assocId);
+
+            return Accessor.PaneClaims.AnyAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步获取窗格声明。
+        /// </summary>
+        /// <param name="paneId">给定的窗格标识。</param>
+        /// <param name="claimId">给定的声明标识。</param>
+        /// <param name="assocId">给定的关联标识。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TPaneClaim"/> 的异步操作。</returns>
+        public virtual Task<TPaneClaim> GetPaneClaimAsync(object paneId, object claimId, string assocId, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniquePaneClaimExpression(paneId, claimId, assocId);
+
+            return Accessor.PaneClaims.SingleOrDefaultAsync(predicate, cancellationToken);
         }
 
         /// <summary>
@@ -640,47 +693,36 @@ namespace Librame.AspNetCore.Portal
             return Accessor.PaneClaims.FindAsync(keyValues, cancellationToken);
         }
 
-        /// <summary>
-        /// 异步获取窗格声明。
-        /// </summary>
-        /// <param name="paneId">给定的窗格标识。</param>
-        /// <param name="claimId">给定的声明标识。</param>
-        /// <param name="assocId">给定的关联标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TPaneClaim"/> 的异步操作。</returns>
-        public virtual Task<TPaneClaim> GetPaneClaimAsync(object paneId, object claimId, string assocId, CancellationToken cancellationToken = default)
-        {
-            var predicate = VerifyPaneClaimUniqueness(paneId, claimId, assocId);
+        ///// <summary>
+        ///// 异步获取窗格声明集合。
+        ///// </summary>
+        ///// <param name="paneId">给定的窗格标识。</param>
+        ///// <param name="claimId">给定的声明标识。</param>
+        ///// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
+        ///// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        ///// <returns>返回一个包含 <see cref="List{TPaneClaim}"/> 的异步操作。</returns>
+        //public virtual Task<List<TPaneClaim>> GetPaneClaimsAsync(object paneId, object claimId,
+        //    Func<IQueryable<TPaneClaim>, IQueryable<TPaneClaim>> queryFactory = null,
+        //    CancellationToken cancellationToken = default)
+        //{
+        //    var _paneId = ToPaneId(paneId);
+        //    var _claimId = ToClaimId(claimId);
 
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.PaneClaims.SingleOrDefault(predicate));
-        }
-
-        /// <summary>
-        /// 异步获取窗格声明集合。
-        /// </summary>
-        /// <param name="paneId">给定的窗格标识。</param>
-        /// <param name="claimId">给定的声明标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="List{TPaneClaim}"/> 的异步操作。</returns>
-        public virtual Task<List<TPaneClaim>> GetPaneClaimsAsync(object paneId, object claimId, CancellationToken cancellationToken = default)
-        {
-            var _paneId = ToPaneId(paneId);
-            var _claimId = ToClaimId(claimId);
-
-            return cancellationToken.RunFactoryOrCancellationAsync(() =>
-            {
-                return Accessor.PaneClaims.Where(p => p.PaneId.Equals(_paneId) && p.ClaimId.Equals(_claimId)).ToList();
-            });
-        }
+        //    return Accessor.PaneClaims.Where(p => p.PaneId.Equals(_paneId) && p.ClaimId.Equals(_claimId)).ToListAsync(cancellationToken);
+        //}
 
         /// <summary>
         /// 异步获取所有窗格声明集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TPaneClaim}"/> 的异步操作。</returns>
-        public virtual Task<List<TPaneClaim>> GetAllPaneClaimsAsync(CancellationToken cancellationToken = default)
+        public virtual Task<List<TPaneClaim>> GetAllPaneClaimsAsync(Func<IQueryable<TPaneClaim>, IQueryable<TPaneClaim>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.PaneClaims.ToList());
+            var query = queryFactory?.Invoke(Accessor.PaneClaims) ?? Accessor.PaneClaims;
+
+            return query.ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -688,11 +730,16 @@ namespace Librame.AspNetCore.Portal
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TPaneClaim}"/> 的异步操作。</returns>
-        public virtual Task<IPageable<TPaneClaim>> GetPagingPaneClaimsAsync(int index, int size, CancellationToken cancellationToken = default)
+        public virtual Task<IPageable<TPaneClaim>> GetPagingPaneClaimsAsync(int index, int size,
+            Func<IQueryable<TPaneClaim>, IQueryable<TPaneClaim>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return Accessor.PaneClaims.AsPagingByIndexAsync(ordered => ordered.OrderByDescending(k => k.Id),
+            var query = queryFactory?.Invoke(Accessor.PaneClaims) ?? Accessor.PaneClaims;
+
+            return query.AsPagingByIndexAsync(q => q.OrderByDescending(k => k.Id),
                 index, size, cancellationToken);
         }
 
@@ -734,11 +781,11 @@ namespace Librame.AspNetCore.Portal
         #region Tag
 
         /// <summary>
-        /// 验证标签唯一性。
+        /// 建立唯一标签表达式。
         /// </summary>
         /// <param name="name">给定的名称。</param>
         /// <returns>返回查询表达式。</returns>
-        public virtual Expression<Func<TTag, bool>> VerifyTagUniqueness(string name)
+        protected virtual Expression<Func<TTag, bool>> BuildUniqueTagExpression(string name)
         {
             name.NotNullOrEmpty(nameof(name));
 
@@ -747,7 +794,33 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步查找标签。
+        /// 异步包含指定标签。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        public virtual Task<bool> ContainTagAsync(string name, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniqueTagExpression(name);
+
+            return Accessor.Tags.AnyAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步获取指定标签。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TTag"/> 的异步操作。</returns>
+        public virtual Task<TTag> GetTagAsync(string name, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniqueTagExpression(name);
+
+            return Accessor.Tags.SingleOrDefaultAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步查找指定标签。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
         /// <param name="keyValues">给定的键值对数组或标识。</param>
@@ -758,26 +831,17 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步获取标签。
-        /// </summary>
-        /// <param name="name">给定的名称。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TTag"/> 的异步操作。</returns>
-        public virtual Task<TTag> GetTagAsync(string name, CancellationToken cancellationToken = default)
-        {
-            var predicate = VerifyTagUniqueness(name);
-
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.Tags.SingleOrDefault(predicate));
-        }
-
-        /// <summary>
         /// 异步获取所有标签集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TTag}"/> 的异步操作。</returns>
-        public virtual Task<List<TTag>> GetAllTagsAsync(CancellationToken cancellationToken = default)
+        public virtual Task<List<TTag>> GetAllTagsAsync(Func<IQueryable<TTag>, IQueryable<TTag>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.Tags.ToList());
+            var query = queryFactory?.Invoke(Accessor.Tags) ?? Accessor.Tags;
+
+            return query.ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -785,11 +849,16 @@ namespace Librame.AspNetCore.Portal
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TTag}"/> 的异步操作。</returns>
-        public virtual Task<IPageable<TTag>> GetPagingTagsAsync(int index, int size, CancellationToken cancellationToken = default)
+        public virtual Task<IPageable<TTag>> GetPagingTagsAsync(int index, int size,
+            Func<IQueryable<TTag>, IQueryable<TTag>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return Accessor.Tags.AsDescendingPagingByIndexAsync(index, size, cancellationToken);
+            var query = queryFactory?.Invoke(Accessor.Tags) ?? Accessor.Tags;
+
+            return query.AsDescendingPagingByIndexAsync(index, size, cancellationToken);
         }
 
 
@@ -830,12 +899,12 @@ namespace Librame.AspNetCore.Portal
         #region TagClaim
 
         /// <summary>
-        /// 验证标签声明唯一性。
+        /// 建立唯一标签声明表达式。
         /// </summary>
         /// <param name="tagId">给定的标签标识。</param>
         /// <param name="claimId">给定的声明标识。</param>
         /// <returns>返回查询表达式。</returns>
-        public virtual Expression<Func<TTagClaim, bool>> VerifyTagClaimUniqueness(object tagId, object claimId)
+        protected virtual Expression<Func<TTagClaim, bool>> BuildUniqueTagClaimExpression(object tagId, object claimId)
         {
             var _tagId = ToTagId(tagId);
             var _claimId = ToClaimId(claimId);
@@ -845,18 +914,21 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步查找标签声明。
+        /// 异步包含指定标签声明。
         /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
-        /// <param name="keyValues">给定的键值对数组或标识。</param>
-        /// <returns>返回一个包含 <typeparamref name="TTagClaim"/> 的异步操作。</returns>
-        public virtual Task<TTagClaim> FindTagClaimAsync(CancellationToken cancellationToken, params object[] keyValues)
+        /// <param name="tagId">给定的标签标识。</param>
+        /// <param name="claimId">给定的声明标识。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        public virtual Task<bool> ContainTagClaimAsync(object tagId, object claimId, CancellationToken cancellationToken = default)
         {
-            return Accessor.TagClaims.FindAsync(keyValues, cancellationToken);
+            var predicate = BuildUniqueTagClaimExpression(tagId, claimId);
+
+            return Accessor.TagClaims.AnyAsync(predicate, cancellationToken);
         }
 
         /// <summary>
-        /// 异步获取标签声明。
+        /// 异步获取指定标签声明。
         /// </summary>
         /// <param name="tagId">给定的标签标识。</param>
         /// <param name="claimId">给定的声明标识。</param>
@@ -864,9 +936,20 @@ namespace Librame.AspNetCore.Portal
         /// <returns>返回一个包含 <typeparamref name="TTagClaim"/> 的异步操作。</returns>
         public virtual Task<TTagClaim> GetTagClaimAsync(object tagId, object claimId, CancellationToken cancellationToken = default)
         {
-            var predicate = VerifyTagClaimUniqueness(tagId, claimId);
+            var predicate = BuildUniqueTagClaimExpression(tagId, claimId);
 
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.TagClaims.SingleOrDefault(predicate));
+            return Accessor.TagClaims.SingleOrDefaultAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步查找指定标签声明。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
+        /// <returns>返回一个包含 <typeparamref name="TTagClaim"/> 的异步操作。</returns>
+        public virtual Task<TTagClaim> FindTagClaimAsync(CancellationToken cancellationToken, params object[] keyValues)
+        {
+            return Accessor.TagClaims.FindAsync(keyValues, cancellationToken);
         }
 
         /// <summary>
@@ -948,12 +1031,12 @@ namespace Librame.AspNetCore.Portal
         #region Source
 
         /// <summary>
-        /// 验证来源唯一性。
+        /// 建立唯一来源表达式。
         /// </summary>
         /// <param name="categoryId">给定的分类标识。</param>
         /// <param name="name">给定的名称。</param>
         /// <returns>返回查询表达式。</returns>
-        public virtual Expression<Func<TSource, bool>> VerifySourceUniqueness(object categoryId, string name)
+        protected virtual Expression<Func<TSource, bool>> BuildUniqueSourceExpression(object categoryId, string name)
         {
             name.NotNullOrEmpty(nameof(name));
 
@@ -964,7 +1047,35 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步查找来源。
+        /// 异步包含指定来源。
+        /// </summary>
+        /// <param name="categoryId">给定的分类标识。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        public virtual Task<bool> ContainSourceAsync(object categoryId, string name, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniqueSourceExpression(categoryId, name);
+
+            return Accessor.Sources.AnyAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步获取指定来源。
+        /// </summary>
+        /// <param name="categoryId">给定的分类标识。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TSource"/> 的异步操作。</returns>
+        public virtual Task<TSource> GetSourceAsync(object categoryId, string name, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniqueSourceExpression(categoryId, name);
+
+            return Accessor.Sources.SingleOrDefaultAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步查找指定来源。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
         /// <param name="keyValues">给定的键值对数组或标识。</param>
@@ -974,44 +1085,34 @@ namespace Librame.AspNetCore.Portal
             return Accessor.Sources.FindAsync(keyValues, cancellationToken);
         }
 
-        /// <summary>
-        /// 异步获取来源。
-        /// </summary>
-        /// <param name="categoryId">给定的分类标识。</param>
-        /// <param name="name">给定的名称。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TSource"/> 的异步操作。</returns>
-        public virtual Task<TSource> GetSourceAsync(object categoryId, string name, CancellationToken cancellationToken = default)
-        {
-            var predicate = VerifySourceUniqueness(categoryId, name);
+        ///// <summary>
+        ///// 异步获取来源集合。
+        ///// </summary>
+        ///// <param name="categoryId">给定的分类标识。</param>
+        ///// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        ///// <returns>返回一个包含 <see cref="List{TSource}"/> 的异步操作。</returns>
+        //public virtual Task<List<TSource>> GetSourcesAsync(object categoryId, CancellationToken cancellationToken = default)
+        //{
+        //    var _categoryId = ToCategoryId(categoryId);
 
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.Sources.SingleOrDefault(predicate));
-        }
-
-        /// <summary>
-        /// 异步获取来源集合。
-        /// </summary>
-        /// <param name="categoryId">给定的分类标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="List{TSource}"/> 的异步操作。</returns>
-        public virtual Task<List<TSource>> GetSourcesAsync(object categoryId, CancellationToken cancellationToken = default)
-        {
-            var _categoryId = ToCategoryId(categoryId);
-
-            return cancellationToken.RunFactoryOrCancellationAsync(() =>
-            {
-                return Accessor.Sources.Where(p => p.CategoryId.Equals(categoryId)).ToList();
-            });
-        }
+        //    return cancellationToken.RunFactoryOrCancellationAsync(() =>
+        //    {
+        //        return Accessor.Sources.Where(p => p.CategoryId.Equals(categoryId)).ToList();
+        //    });
+        //}
 
         /// <summary>
         /// 异步获取所有来源集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TSource}"/> 的异步操作。</returns>
-        public virtual Task<List<TSource>> GetAllSourcesAsync(CancellationToken cancellationToken = default)
+        public virtual Task<List<TSource>> GetAllSourcesAsync(Func<IQueryable<TSource>, IQueryable<TSource>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.Sources.ToList());
+            var query = queryFactory?.Invoke(Accessor.Sources) ?? Accessor.Sources;
+
+            return query.ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -1019,11 +1120,16 @@ namespace Librame.AspNetCore.Portal
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TSource}"/> 的异步操作。</returns>
-        public virtual Task<IPageable<TSource>> GetPagingSourcesAsync(int index, int size, CancellationToken cancellationToken = default)
+        public virtual Task<IPageable<TSource>> GetPagingSourcesAsync(int index, int size,
+            Func<IQueryable<TSource>, IQueryable<TSource>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return Accessor.Sources.AsDescendingPagingByIndexAsync(index, size, cancellationToken);
+            var query = queryFactory?.Invoke(Accessor.Sources) ?? Accessor.Sources;
+
+            return query.AsDescendingPagingByIndexAsync(index, size, cancellationToken);
         }
 
 
@@ -1187,12 +1293,12 @@ namespace Librame.AspNetCore.Portal
         #region EditorTitle
 
         /// <summary>
-        /// 验证编者头衔唯一性。
+        /// 建立唯一编者头衔表达式。
         /// </summary>
         /// <param name="editorId">给定的用户标识。</param>
         /// <param name="name">给定的名称。</param>
         /// <returns>返回查询表达式。</returns>
-        protected virtual Expression<Func<TEditorTitle, bool>> VerifyEditorTitleUniqueness(object editorId, string name)
+        protected virtual Expression<Func<TEditorTitle, bool>> BuildUniqueEditorTitleExpression(object editorId, string name)
         {
             name.NotNullOrEmpty(nameof(name));
 
@@ -1203,7 +1309,35 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步查找编者头衔。
+        /// 异步包含指定编者头衔。
+        /// </summary>
+        /// <param name="editorId">给定的用户标识。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        public virtual Task<bool> ContainEditorTitleAsync(object editorId, string name, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniqueEditorTitleExpression(editorId, name);
+
+            return Accessor.EditorTitles.AnyAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步获取指定编者头衔。
+        /// </summary>
+        /// <param name="editorId">给定的用户标识。</param>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TEditorTitle"/> 的异步操作。</returns>
+        public virtual Task<TEditorTitle> GetEditorTitleAsync(object editorId, string name, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniqueEditorTitleExpression(editorId, name);
+
+            return Accessor.EditorTitles.SingleOrDefaultAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步查找指定编者头衔。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
         /// <param name="keyValues">给定的键值对数组或标识。</param>
@@ -1214,27 +1348,17 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步获取编者头衔。
-        /// </summary>
-        /// <param name="editorId">给定的用户标识。</param>
-        /// <param name="name">给定的名称。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TEditorTitle"/> 的异步操作。</returns>
-        public virtual Task<TEditorTitle> GetEditorTitleAsync(object editorId, string name, CancellationToken cancellationToken = default)
-        {
-            var predicate = VerifyEditorTitleUniqueness(editorId, name);
-
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.EditorTitles.SingleOrDefault(predicate));
-        }
-
-        /// <summary>
         /// 异步获取所有编者头衔集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TEditorTitle}"/> 的异步操作。</returns>
-        public virtual Task<List<TEditorTitle>> GetAllEditorTitlesAsync(CancellationToken cancellationToken = default)
+        public virtual Task<List<TEditorTitle>> GetAllEditorTitlesAsync(Func<IQueryable<TEditorTitle>, IQueryable<TEditorTitle>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.EditorTitles.ToList());
+            var query = queryFactory?.Invoke(Accessor.EditorTitles) ?? Accessor.EditorTitles;
+
+            return query.ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -1242,11 +1366,16 @@ namespace Librame.AspNetCore.Portal
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TEditorTitle}"/> 的异步操作。</returns>
-        public virtual Task<IPageable<TEditorTitle>> GetPagingEditorTitlesAsync(int index, int size, CancellationToken cancellationToken = default)
+        public virtual Task<IPageable<TEditorTitle>> GetPagingEditorTitlesAsync(int index, int size,
+            Func<IQueryable<TEditorTitle>, IQueryable<TEditorTitle>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return Accessor.EditorTitles.AsDescendingPagingByIndexAsync(index, size, cancellationToken);
+            var query = queryFactory?.Invoke(Accessor.EditorTitles) ?? Accessor.EditorTitles;
+
+            return query.AsDescendingPagingByIndexAsync(index, size, cancellationToken);
         }
 
 
@@ -1287,12 +1416,12 @@ namespace Librame.AspNetCore.Portal
         #region Subject
 
         /// <summary>
-        /// 验证专题唯一性。
+        /// 建立唯一专题表达式。
         /// </summary>
         /// <param name="categoryId">给定的分类标识。</param>
         /// <param name="title">给定的标题。</param>
         /// <returns>返回查询表达式。</returns>
-        public virtual Expression<Func<TSubject, bool>> VerifySubjectUniqueness(object categoryId, string title)
+        protected virtual Expression<Func<TSubject, bool>> BuildUniqueSubjectExpression(object categoryId, string title)
         {
             title.NotNullOrEmpty(nameof(title));
 
@@ -1300,6 +1429,34 @@ namespace Librame.AspNetCore.Portal
 
             // CategoryId and Name is unique index
             return p => p.CategoryId.Equals(_categoryId) && p.Title == title;
+        }
+
+        /// <summary>
+        /// 异步包含指定专题。
+        /// </summary>
+        /// <param name="categoryId">给定的分类标识。</param>
+        /// <param name="title">给定的标题。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        public virtual Task<bool> ContainSubjectAsync(object categoryId, string title, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniqueSubjectExpression(categoryId, title);
+
+            return Accessor.Subjects.AnyAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步获取专题。
+        /// </summary>
+        /// <param name="categoryId">给定的分类标识。</param>
+        /// <param name="title">给定的标题。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TSubject"/> 的异步操作。</returns>
+        public virtual Task<TSubject> GetSubjectAsync(object categoryId, string title, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniqueSubjectExpression(categoryId, title);
+
+            return Accessor.Subjects.SingleOrDefaultAsync(predicate, cancellationToken);
         }
 
         /// <summary>
@@ -1314,27 +1471,17 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步获取专题。
-        /// </summary>
-        /// <param name="categoryId">给定的分类标识。</param>
-        /// <param name="title">给定的标题。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TSubject"/> 的异步操作。</returns>
-        public virtual Task<TSubject> GetSubjectAsync(object categoryId, string title, CancellationToken cancellationToken = default)
-        {
-            var predicate = VerifySubjectUniqueness(categoryId, title);
-
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.Subjects.SingleOrDefault(predicate));
-        }
-
-        /// <summary>
         /// 异步获取所有专题集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TSubject}"/> 的异步操作。</returns>
-        public virtual Task<List<TSubject>> GetAllSubjectsAsync(CancellationToken cancellationToken = default)
+        public virtual Task<List<TSubject>> GetAllSubjectsAsync(Func<IQueryable<TSubject>, IQueryable<TSubject>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.Subjects.ToList());
+            var query = queryFactory?.Invoke(Accessor.Subjects) ?? Accessor.Subjects;
+
+            return query.ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -1342,11 +1489,16 @@ namespace Librame.AspNetCore.Portal
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TSubject}"/> 的异步操作。</returns>
-        public virtual Task<IPageable<TSubject>> GetPagingSubjectsAsync(int index, int size, CancellationToken cancellationToken = default)
+        public virtual Task<IPageable<TSubject>> GetPagingSubjectsAsync(int index, int size,
+            Func<IQueryable<TSubject>, IQueryable<TSubject>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return Accessor.Subjects.AsDescendingPagingByIndexAsync(index, size, cancellationToken);
+            var query = queryFactory?.Invoke(Accessor.Subjects) ?? Accessor.Subjects;
+
+            return query.AsDescendingPagingByIndexAsync(index, size, cancellationToken);
         }
 
 
@@ -1387,12 +1539,12 @@ namespace Librame.AspNetCore.Portal
         #region SubjectBody
 
         /// <summary>
-        /// 验证专题主体唯一性。
+        /// 建立唯一专题主体表达式。
         /// </summary>
         /// <param name="subjectId">给定的专题标识。</param>
         /// <param name="bodyHash">给定的主体散列。</param>
         /// <returns>返回查询表达式。</returns>
-        public virtual Expression<Func<TSubjectBody, bool>> VerifySubjectBodyUniqueness(object subjectId, string bodyHash)
+        protected virtual Expression<Func<TSubjectBody, bool>> BuildUniqueSubjectBodyExpression(object subjectId, string bodyHash)
         {
             bodyHash.NotNullOrEmpty(nameof(bodyHash));
 
@@ -1403,18 +1555,21 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步查找专题主体。
+        /// 异步包含指定专题主体。
         /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
-        /// <param name="keyValues">给定的键值对数组或标识。</param>
-        /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
-        public virtual Task<TSubjectBody> FindSubjectBodyAsync(CancellationToken cancellationToken, params object[] keyValues)
+        /// <param name="subjectId">给定的专题标识。</param>
+        /// <param name="bodyHash">给定的主体散列。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        public virtual Task<bool> ContainSubjectBodyAsync(object subjectId, string bodyHash, CancellationToken cancellationToken = default)
         {
-            return Accessor.SubjectBodies.FindAsync(keyValues, cancellationToken);
+            var predicate = BuildUniqueSubjectBodyExpression(subjectId, bodyHash);
+
+            return Accessor.SubjectBodies.AnyAsync(predicate, cancellationToken);
         }
 
         /// <summary>
-        /// 异步获取专题主体。
+        /// 异步获取指定专题主体。
         /// </summary>
         /// <param name="subjectId">给定的专题标识。</param>
         /// <param name="bodyHash">给定的主体散列。</param>
@@ -1422,9 +1577,20 @@ namespace Librame.AspNetCore.Portal
         /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
         public virtual Task<TSubjectBody> GetSubjectBodyAsync(object subjectId, string bodyHash, CancellationToken cancellationToken = default)
         {
-            var predicate = VerifySubjectBodyUniqueness(subjectId, bodyHash);
+            var predicate = BuildUniqueSubjectBodyExpression(subjectId, bodyHash);
 
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.SubjectBodies.SingleOrDefault(predicate));
+            return Accessor.SubjectBodies.SingleOrDefaultAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步查找指定专题主体。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
+        /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
+        public virtual Task<TSubjectBody> FindSubjectBodyAsync(CancellationToken cancellationToken, params object[] keyValues)
+        {
+            return Accessor.SubjectBodies.FindAsync(keyValues, cancellationToken);
         }
 
         /// <summary>
@@ -1437,10 +1603,7 @@ namespace Librame.AspNetCore.Portal
         {
             var _subjectId = ToSubjectId(subjectId);
 
-            return cancellationToken.RunFactoryOrCancellationAsync(() =>
-            {
-                return Accessor.SubjectBodies.Where(p => p.SubjectId.Equals(_subjectId)).ToList();
-            });
+            return Accessor.SubjectBodies.Where(p => p.SubjectId.Equals(_subjectId)).ToListAsync(cancellationToken);
         }
 
 
@@ -1481,13 +1644,13 @@ namespace Librame.AspNetCore.Portal
         #region SubjectClaim
 
         /// <summary>
-        /// 验证专题声明唯一性。
+        /// 建立唯一专题声明表达式。
         /// </summary>
         /// <param name="subjectId">给定的专题标识。</param>
         /// <param name="claimId">给定的声明标识。</param>
         /// <param name="assocId">给定的关联标识。</param>
         /// <returns>返回查询表达式。</returns>
-        public virtual Expression<Func<TSubjectClaim, bool>> VerifySubjectClaimUniqueness(object subjectId, object claimId, string assocId)
+        protected virtual Expression<Func<TSubjectClaim, bool>> BuildUniqueSubjectClaimExpression(object subjectId, object claimId, string assocId)
         {
             assocId.NotNullOrEmpty(nameof(assocId));
 
@@ -1499,7 +1662,37 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步查找专题声明。
+        /// 异步包含指定专题声明。
+        /// </summary>
+        /// <param name="subjectId">给定的专题标识。</param>
+        /// <param name="claimId">给定的声明标识。</param>
+        /// <param name="assocId">给定的关联标识。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含布尔值的异步操作。</returns>
+        public virtual Task<bool> ContainTenantAsync(object subjectId, object claimId, string assocId, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniqueSubjectClaimExpression(subjectId, claimId, assocId);
+
+            return Accessor.SubjectClaims.AnyAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步获取指定专题声明。
+        /// </summary>
+        /// <param name="subjectId">给定的专题标识。</param>
+        /// <param name="claimId">给定的声明标识。</param>
+        /// <param name="assocId">给定的关联标识。</param>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TSubjectClaim"/> 的异步操作。</returns>
+        public virtual Task<TSubjectClaim> GetSubjectClaimAsync(object subjectId, object claimId, string assocId, CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildUniqueSubjectClaimExpression(subjectId, claimId, assocId);
+
+            return Accessor.SubjectClaims.SingleOrDefaultAsync(predicate, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步查找指定专题声明。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
         /// <param name="keyValues">给定的键值对数组或标识。</param>
@@ -1509,47 +1702,36 @@ namespace Librame.AspNetCore.Portal
             return Accessor.SubjectClaims.FindAsync(keyValues, cancellationToken);
         }
 
-        /// <summary>
-        /// 异步获取专题声明。
-        /// </summary>
-        /// <param name="subjectId">给定的专题标识。</param>
-        /// <param name="claimId">给定的声明标识。</param>
-        /// <param name="assocId">给定的关联标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TSubjectClaim"/> 的异步操作。</returns>
-        public virtual Task<TSubjectClaim> GetSubjectClaimAsync(object subjectId, object claimId, string assocId, CancellationToken cancellationToken = default)
-        {
-            var predicate = VerifySubjectClaimUniqueness(subjectId, claimId, assocId);
+        ///// <summary>
+        ///// 异步获取专题声明集合。
+        ///// </summary>
+        ///// <param name="subjectId">给定的专题标识。</param>
+        ///// <param name="claimId">给定的声明标识。</param>
+        ///// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        ///// <returns>返回一个包含 <see cref="List{TSubjectClaim}"/> 的异步操作。</returns>
+        //public virtual Task<List<TSubjectClaim>> GetSubjectClaimsAsync(object subjectId, object claimId, CancellationToken cancellationToken = default)
+        //{
+        //    var _subjectId = ToSubjectId(subjectId);
+        //    var _claimId = ToClaimId(claimId);
 
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.SubjectClaims.SingleOrDefault(predicate));
-        }
-
-        /// <summary>
-        /// 异步获取专题声明集合。
-        /// </summary>
-        /// <param name="subjectId">给定的专题标识。</param>
-        /// <param name="claimId">给定的声明标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="List{TSubjectClaim}"/> 的异步操作。</returns>
-        public virtual Task<List<TSubjectClaim>> GetSubjectClaimsAsync(object subjectId, object claimId, CancellationToken cancellationToken = default)
-        {
-            var _subjectId = ToSubjectId(subjectId);
-            var _claimId = ToClaimId(claimId);
-
-            return cancellationToken.RunFactoryOrCancellationAsync(() =>
-            {
-                return Accessor.SubjectClaims.Where(p => p.SubjectId.Equals(_subjectId) && p.ClaimId.Equals(_claimId)).ToList();
-            });
-        }
+        //    return cancellationToken.RunFactoryOrCancellationAsync(() =>
+        //    {
+        //        return Accessor.SubjectClaims.Where(p => p.SubjectId.Equals(_subjectId) && p.ClaimId.Equals(_claimId)).ToList();
+        //    });
+        //}
 
         /// <summary>
         /// 异步获取所有专题声明集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TSubjectClaim}"/> 的异步操作。</returns>
-        public virtual Task<List<TSubjectClaim>> GetAllSubjectClaimsAsync(CancellationToken cancellationToken = default)
+        public virtual Task<List<TSubjectClaim>> GetAllSubjectClaimsAsync(Func<IQueryable<TSubjectClaim>, IQueryable<TSubjectClaim>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.SubjectClaims.ToList());
+            var query = queryFactory?.Invoke(Accessor.SubjectClaims) ?? Accessor.SubjectClaims;
+
+            return query.ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -1557,11 +1739,16 @@ namespace Librame.AspNetCore.Portal
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TSubjectClaim}"/> 的异步操作。</returns>
-        public virtual Task<IPageable<TSubjectClaim>> GetPagingSubjectClaimsAsync(int index, int size, CancellationToken cancellationToken = default)
+        public virtual Task<IPageable<TSubjectClaim>> GetPagingSubjectClaimsAsync(int index, int size,
+            Func<IQueryable<TSubjectClaim>, IQueryable<TSubjectClaim>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return Accessor.SubjectClaims.AsPagingByIndexAsync(ordered => ordered.OrderByDescending(k => k.Id),
+            var query = queryFactory?.Invoke(Accessor.SubjectClaims) ?? Accessor.SubjectClaims;
+
+            return query.AsPagingByIndexAsync(ordered => ordered.OrderByDescending(k => k.Id),
                 index, size, cancellationToken);
         }
 

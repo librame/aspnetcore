@@ -116,7 +116,7 @@ namespace Librame.AspNetCore.Portal
         /// <param name="name">给定的名称。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含布尔值的异步操作。</returns>
-        Task<bool> ContainTenantAsync(object editorId, string name, CancellationToken cancellationToken = default);
+        Task<bool> ContainEditorTitleAsync(object editorId, string name, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取指定编者头衔。
