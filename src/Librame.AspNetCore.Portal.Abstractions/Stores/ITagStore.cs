@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     /// <typeparam name="TTag">指定的标签类型。</typeparam>
     /// <typeparam name="TTagClaim">指定的标签声明类型。</typeparam>
-    public interface ITagStore<TAccessor, TTag, TTagClaim> : IStore<TAccessor>
+    public interface ITagStore<out TAccessor, TTag, TTagClaim> : IStore<TAccessor>
         where TAccessor : IAccessor
         where TTag : class
         where TTagClaim : class
@@ -42,20 +42,20 @@ namespace Librame.AspNetCore.Portal
         Expression<Func<TTag, bool>> VerifyTagUniqueness(string name);
 
         /// <summary>
-        /// 异步查找标签。
-        /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
-        /// <param name="keyValues">给定的键值对数组或标识。</param>
-        /// <returns>返回一个包含 <typeparamref name="TTag"/> 的异步操作。</returns>
-        Task<TTag> FindTagAsync(CancellationToken cancellationToken, params object[] keyValues);
-
-        /// <summary>
         /// 异步获取标签。
         /// </summary>
         /// <param name="name">给定的名称。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TTag"/> 的异步操作。</returns>
         Task<TTag> GetTagAsync(string name, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步查找标签。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
+        /// <returns>返回一个包含 <typeparamref name="TTag"/> 的异步操作。</returns>
+        Task<TTag> FindTagAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
         /// 异步获取所有标签集合。
@@ -110,14 +110,6 @@ namespace Librame.AspNetCore.Portal
         Expression<Func<TTagClaim, bool>> VerifyTagClaimUniqueness(object tagId, object claimId);
 
         /// <summary>
-        /// 异步查找标签声明。
-        /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
-        /// <param name="keyValues">给定的键值对数组或标识。</param>
-        /// <returns>返回一个包含 <typeparamref name="TTagClaim"/> 的异步操作。</returns>
-        Task<TTagClaim> FindTagClaimAsync(CancellationToken cancellationToken, params object[] keyValues);
-
-        /// <summary>
         /// 异步获取标签声明。
         /// </summary>
         /// <param name="tagId">给定的标签标识。</param>
@@ -125,6 +117,14 @@ namespace Librame.AspNetCore.Portal
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TTagClaim"/> 的异步操作。</returns>
         Task<TTagClaim> GetTagClaimAsync(object tagId, object claimId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步查找标签声明。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
+        /// <returns>返回一个包含 <typeparamref name="TTagClaim"/> 的异步操作。</returns>
+        Task<TTagClaim> FindTagClaimAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
         /// 异步获取所有标签声明集合。

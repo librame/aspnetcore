@@ -25,17 +25,17 @@ namespace Librame.AspNetCore
     /// <summary>
     /// ASP.NET Core 资源管理器字符串定位器工厂。
     /// </summary>
-    public class CoreResourceManagerStringLocalizerFactory : IStringLocalizerFactory
+    public class AspNetCoreResourceManagerStringLocalizerFactory : IStringLocalizerFactory
     {
         private readonly string _resourcesRelativePath;
 
 
         /// <summary>
-        /// 构造一个 <see cref="CoreResourceManagerStringLocalizerFactory"/> 实例。
+        /// 构造一个 <see cref="AspNetCoreResourceManagerStringLocalizerFactory"/> 实例。
         /// </summary>
         /// <param name="localizationOptions">给定的 <see cref="IOptions{LocalizationOptions}"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        public CoreResourceManagerStringLocalizerFactory(
+        public AspNetCoreResourceManagerStringLocalizerFactory(
             IOptions<LocalizationOptions> localizationOptions,
             ILoggerFactory loggerFactory)
         {
@@ -61,7 +61,7 @@ namespace Librame.AspNetCore
         /// <summary>
         /// 记录器。
         /// </summary>
-        protected ILogger Logger => LoggerFactory.CreateLogger<CoreResourceManagerStringLocalizerFactory>();
+        protected ILogger Logger => LoggerFactory.CreateLogger<AspNetCoreResourceManagerStringLocalizerFactory>();
 
         /// <summary>
         /// 资源名称集合缓存。
@@ -245,7 +245,7 @@ namespace Librame.AspNetCore
         protected virtual ResourceManagerStringLocalizer CreateResourceManagerStringLocalizer(Assembly assembly, string baseName)
         {
             // 使用核心资源管理器
-            var resourceManager = new CoreResourceManager(baseName, assembly, LoggerFactory.CreateLogger<CoreResourceManager>());
+            var resourceManager = new AspNetCoreResourceManager(baseName, assembly, LoggerFactory.CreateLogger<AspNetCoreResourceManager>());
             
             return new ResourceManagerStringLocalizer(
                 resourceManager,

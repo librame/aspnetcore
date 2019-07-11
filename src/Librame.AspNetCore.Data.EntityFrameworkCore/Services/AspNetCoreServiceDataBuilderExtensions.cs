@@ -17,14 +17,14 @@ namespace Librame.Extensions.Data
     /// <summary>
     /// ASP.NET Core 服务数据构建器静态扩展。
     /// </summary>
-    public static class CoreServiceDataBuilderExtensions
+    public static class AspNetCoreServiceDataBuilderExtensions
     {
         /// <summary>
         /// 添加 ASP.NET Core 服务集合。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IDataBuilder"/>。</param>
         /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
-        public static IDataBuilder AddCoreServices(this IDataBuilder builder)
+        public static IDataBuilder AddAspNetCoreServices(this IDataBuilder builder)
         {
             builder.Services.TryReplace<ITenantService, InternalHttpTenantService>();
 

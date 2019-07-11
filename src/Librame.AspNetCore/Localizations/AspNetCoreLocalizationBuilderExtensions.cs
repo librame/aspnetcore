@@ -13,23 +13,23 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 
-namespace Librame.Extensions.Core
+namespace Librame.AspNetCore
 {
-    using AspNetCore;
+    using Extensions.Core;
 
     /// <summary>
     /// ASP.NET Core 本地化构建器静态扩展。
     /// </summary>
-    public static class CoreLocalizationBuilderExtensions
+    public static class AspNetCoreLocalizationBuilderExtensions
     {
         /// <summary>
         /// 注册 ASP.NET Core 本地化集合。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
+        /// <param name="builder">给定的 <see cref="ICoreBuilder"/>。</param>
         /// <returns>返回 <see cref="IBuilder"/>。</returns>
-        public static IBuilder AddCoreLocalizations(this IBuilder builder)
+        public static ICoreBuilder AddAspNetCoreLocalizations(this ICoreBuilder builder)
         {
-            builder.Services.TryReplace<IStringLocalizerFactory, CoreResourceManagerStringLocalizerFactory>();
+            builder.Services.TryReplace<IStringLocalizerFactory, AspNetCoreResourceManagerStringLocalizerFactory>();
 
             return builder;
         }

@@ -5,7 +5,7 @@ namespace Librame.AspNetCore.Portal.Tests
 {
     using Extensions.Data;
 
-    public interface ITestStore : IPortalStore<PortalDbContextAccessor>
+    public interface ITestStore : IPortalStoreHub<PortalDbContextAccessor>
     {
         IList<DefaultPortalRole> GetRoles();
 
@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Portal.Tests
     }
 
 
-    public class TestStore : PortalStore<PortalDbContextAccessor>, ITestStore
+    public class TestStore : PortalStoreHub<PortalDbContextAccessor>, ITestStore
     {
         public TestStore(IPortalIdentifierService identifierService, IAccessor accessor) // or PortalDbContextAccessor
             : base(accessor)

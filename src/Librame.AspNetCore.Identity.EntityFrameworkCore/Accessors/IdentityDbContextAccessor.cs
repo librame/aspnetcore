@@ -24,7 +24,7 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 身份数据库上下文访问器。
     /// </summary>
-    public class IdentityDbContextAccessor : IdentityDbContextAccessor<DefaultIdentityRole, string, DefaultIdentityUser, string>
+    public class IdentityDbContextAccessor : IdentityDbContextAccessor<DefaultIdentityRole, DefaultIdentityUser, string, string>
     {
         /// <summary>
         /// 构造一个身份数据库上下文访问器实例。
@@ -41,15 +41,15 @@ namespace Librame.AspNetCore.Identity
     /// 身份数据库上下文访问器。
     /// </summary>
     /// <typeparam name="TRole">指定的角色类型。</typeparam>
-    /// <typeparam name="TRoleId">指定的角色标识类型。</typeparam>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
-    /// <typeparam name="TUserId">指定的标识类型。</typeparam>
-    public class IdentityDbContextAccessor<TRole, TRoleId, TUser, TUserId> : IdentityDbContextAccessor<TRole, TRoleId,
-        IdentityRoleClaim<TUserId>, IdentityUserRole<TUserId>,
-        TUser, TUserId, IdentityUserClaim<TUserId>, IdentityUserLogin<TUserId>, IdentityUserToken<TUserId>>
+    /// <typeparam name="TRoleId">指定的角色标识类型。</typeparam>
+    /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
+    public class IdentityDbContextAccessor<TRole, TUser, TRoleId, TUserId>
+        : IdentityDbContextAccessor<TRole, IdentityRoleClaim<TUserId>, IdentityUserRole<TUserId>,
+            TUser, IdentityUserClaim<TUserId>, IdentityUserLogin<TUserId>, IdentityUserToken<TUserId>, TRoleId, TUserId>
         where TRole : IdentityRole<TUserId>
-        where TRoleId : IEquatable<TRoleId>
         where TUser : IdentityUser<TUserId>
+        where TRoleId : IEquatable<TRoleId>
         where TUserId : IEquatable<TUserId>
     {
         /// <summary>
@@ -67,24 +67,25 @@ namespace Librame.AspNetCore.Identity
     /// 身份数据库上下文访问器。
     /// </summary>
     /// <typeparam name="TRole">指定的角色类型。</typeparam>
-    /// <typeparam name="TRoleId">指定的角色标识类型。</typeparam>
     /// <typeparam name="TRoleClaim">指定的角色声明类型。</typeparam>
     /// <typeparam name="TUserRole">指定的用户角色类型。</typeparam>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
-    /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
     /// <typeparam name="TUserClaim">指定的用户声明类型。</typeparam>
     /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
     /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
-    public class IdentityDbContextAccessor<TRole, TRoleId, TRoleClaim, TUserRole, TUser, TUserId, TUserClaim, TUserLogin, TUserToken> : DbContextAccessor
+    /// <typeparam name="TRoleId">指定的角色标识类型。</typeparam>
+    /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
+    public class IdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TRoleId, TUserId>
+        : DbContextAccessor
         where TRole : IdentityRole<TUserId>
-        where TRoleId : IEquatable<TRoleId>
         where TRoleClaim : IdentityRoleClaim<TUserId>
         where TUserRole : IdentityUserRole<TUserId>
         where TUser : IdentityUser<TUserId>
-        where TUserId : IEquatable<TUserId>
         where TUserClaim : IdentityUserClaim<TUserId>
         where TUserLogin : IdentityUserLogin<TUserId>
         where TUserToken : IdentityUserToken<TUserId>
+        where TRoleId : IEquatable<TRoleId>
+        where TUserId : IEquatable<TUserId>
     {
         /// <summary>
         /// 构造一个身份数据库上下文访问器实例。
@@ -145,8 +146,9 @@ namespace Librame.AspNetCore.Identity
             var storeOptions = ServiceProvider.GetRequiredService<IOptions<IdentityOptions>>().Value?.Stores;
             var dataProtector = ServiceProvider.GetService<IPersonalDataProtector>();
 
-            modelBuilder.ConfigureIdentityEntities<TRole, TRoleId, TRoleClaim, TUserRole,
-                TUser, TUserId, TUserClaim, TUserLogin, TUserToken>(options, storeOptions, dataProtector);
+            modelBuilder.ConfigureIdentityEntities<TRole, TRoleClaim, TUserRole,
+                TUser, TUserClaim, TUserLogin, TUserToken, TRoleId, TUserId>(options, storeOptions, dataProtector);
         }
+
     }
 }

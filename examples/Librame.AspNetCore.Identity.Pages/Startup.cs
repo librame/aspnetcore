@@ -66,7 +66,7 @@ namespace Librame.AspNetCore.Identity.Pages
 
             // Add Librame for ASP.NET Core
             services.AddLibrameCore()
-                .AddCoreData(options =>
+                .AddAspNetCoreData(options =>
                 {
                     options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
                     options.DefaultTenant.WriteConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";

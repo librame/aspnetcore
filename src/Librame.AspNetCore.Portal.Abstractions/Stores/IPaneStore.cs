@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     /// <typeparam name="TPane">指定的窗格类型。</typeparam>
     /// <typeparam name="TPaneClaim">指定的窗格声明类型。</typeparam>
-    public interface IPaneStore<TAccessor, TPane, TPaneClaim> : IStore<TAccessor>
+    public interface IPaneStore<out TAccessor, TPane, TPaneClaim> : IStore<TAccessor>
         where TAccessor : IAccessor
         where TPane : class
         where TPaneClaim : class
@@ -43,14 +43,6 @@ namespace Librame.AspNetCore.Portal
         Expression<Func<TPane, bool>> VerifyPaneUniqueness(object categoryId, string name);
 
         /// <summary>
-        /// 异步查找窗格。
-        /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
-        /// <param name="keyValues">给定的键值对数组或标识。</param>
-        /// <returns>返回一个包含 <typeparamref name="TPane"/> 的异步操作。</returns>
-        Task<TPane> FindPaneAsync(CancellationToken cancellationToken, params object[] keyValues);
-
-        /// <summary>
         /// 异步获取窗格。
         /// </summary>
         /// <param name="categoryId">给定的分类标识。</param>
@@ -58,6 +50,14 @@ namespace Librame.AspNetCore.Portal
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TPane"/> 的异步操作。</returns>
         Task<TPane> GetPaneAsync(object categoryId, string name, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步查找窗格。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
+        /// <returns>返回一个包含 <typeparamref name="TPane"/> 的异步操作。</returns>
+        Task<TPane> FindPaneAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
         /// 异步获取所有窗格集合。
@@ -113,14 +113,6 @@ namespace Librame.AspNetCore.Portal
         Expression<Func<TPaneClaim, bool>> VerifyPaneClaimUniqueness(object paneId, object claimId, string assocId);
 
         /// <summary>
-        /// 异步查找窗格声明。
-        /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
-        /// <param name="keyValues">给定的键值对数组或标识。</param>
-        /// <returns>返回一个包含 <typeparamref name="TPaneClaim"/> 的异步操作。</returns>
-        Task<TPaneClaim> FindPaneClaimAsync(CancellationToken cancellationToken, params object[] keyValues);
-
-        /// <summary>
         /// 异步获取窗格声明。
         /// </summary>
         /// <param name="paneId">给定的窗格标识。</param>
@@ -129,6 +121,14 @@ namespace Librame.AspNetCore.Portal
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TPaneClaim"/> 的异步操作。</returns>
         Task<TPaneClaim> GetPaneClaimAsync(object paneId, object claimId, string assocId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步查找窗格声明。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
+        /// <returns>返回一个包含 <typeparamref name="TPaneClaim"/> 的异步操作。</returns>
+        Task<TPaneClaim> FindPaneClaimAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
         /// 异步获取窗格声明集合。

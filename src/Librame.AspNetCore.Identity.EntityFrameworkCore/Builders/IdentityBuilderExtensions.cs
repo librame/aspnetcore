@@ -13,13 +13,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Librame.AspNetCore.Identity
 {
     using Extensions.Core;
-    using Extensions.Data;
 
     /// <summary>
     /// 身份构建器静态扩展。
@@ -38,30 +36,30 @@ namespace Librame.AspNetCore.Identity
             Action<IdentityBuilderOptions> configureOptions = null,
             IConfiguration configuration = null,
             Action<BinderOptions> configureBinderOptions = null)
-            where TAccessor : DbContext, IAccessor
+            where TAccessor : IdentityDbContextAccessor
         {
-            return builder.AddIdentity<DefaultIdentityUser, DefaultIdentityRole,
-                TAccessor>(configureOptions, configuration, configureBinderOptions);
+            return builder.AddIdentity<TAccessor, DefaultIdentityUser,
+                DefaultIdentityRole>(configureOptions, configuration, configureBinderOptions);
         }
 
         /// <summary>
         /// 添加身份扩展。
         /// </summary>
+        /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
         /// <typeparam name="TRole">指定的角色类型。</typeparam>
-        /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
         /// <param name="configureOptions">给定的 <see cref="Action{IdentityBuilderOptions}"/>（可选；高优先级）。</param>
         /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
         /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public static IIdentityBuilder AddIdentity<TUser, TRole, TAccessor>(this IBuilder builder,
+        public static IIdentityBuilder AddIdentity<TAccessor, TUser, TRole>(this IBuilder builder,
             Action<IdentityBuilderOptions> configureOptions = null,
             IConfiguration configuration = null,
             Action<BinderOptions> configureBinderOptions = null)
+            where TAccessor : IdentityDbContextAccessor
             where TUser : class
             where TRole : class
-            where TAccessor : DbContext, IAccessor
         {
             var options = builder.Configure(configureOptions,
                 configuration, configureBinderOptions);

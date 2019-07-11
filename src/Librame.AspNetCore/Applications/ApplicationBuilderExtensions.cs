@@ -12,9 +12,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Librame.Extensions.Core
+namespace Librame.AspNetCore
 {
-    using AspNetCore;
+    using Extensions.Core;
 
     /// <summary>
     /// 应用程序构建器静态扩展。
@@ -24,9 +24,9 @@ namespace Librame.Extensions.Core
         /// <summary>
         /// 注册应用程序集合。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <returns>返回 <see cref="IBuilder"/>。</returns>
-        public static IBuilder AddApplications(this IBuilder builder)
+        /// <param name="builder">给定的 <see cref="ICoreBuilder"/>。</param>
+        /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
+        public static ICoreBuilder AddApplications(this ICoreBuilder builder)
         {
             // Add ApplicationLocalization
             builder.Services.AddSingleton<IApplicationLocalization, InternalApplicationLocalization>();

@@ -10,6 +10,7 @@
 
 #endregion
 
+using Librame.AspNetCore;
 using Librame.Extensions.Core;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -28,8 +29,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configureOptions">给定的 <see cref="Action{CoreBuilderOptions}"/>（可选；高优先级）。</param>
         /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
         /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
-        /// <returns>返回 <see cref="IBuilder"/>。</returns>
-        public static IBuilder AddLibrameCore(this IServiceCollection services,
+        /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
+        public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
             Action<CoreBuilderOptions> configureOptions = null,
             IConfiguration configuration = null,
             Action<BinderOptions> configureBinderOptions = null)
@@ -38,7 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 configuration, configureBinderOptions);
 
             return builder
-                .AddCoreLocalizations()
+                .AddAspNetCoreLocalizations()
                 .AddApplications();
         }
 

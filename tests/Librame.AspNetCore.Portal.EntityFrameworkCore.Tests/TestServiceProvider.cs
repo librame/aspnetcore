@@ -16,7 +16,7 @@ namespace Librame.AspNetCore.Portal.Tests
                 var services = new ServiceCollection();
 
                 services.AddLibrameCore()
-                    .AddCoreData(options =>
+                    .AddAspNetCoreData(options =>
                     {
                         options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_portal_default;Integrated Security=True";
                         options.DefaultTenant.WriteConnectionString = "Data Source=.;Initial Catalog=librame_portal_write;Integrated Security=True";

@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Portal
     /// </summary>
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     /// <typeparam name="TSource">指定的来源类型。</typeparam>
-    public interface ISourceStore<TAccessor, TSource> : IStore<TAccessor>
+    public interface ISourceStore<out TAccessor, TSource> : IStore<TAccessor>
         where TAccessor : IAccessor
         where TSource : class
     {
@@ -38,14 +38,6 @@ namespace Librame.AspNetCore.Portal
         Expression<Func<TSource, bool>> VerifySourceUniqueness(object categoryId, string name);
 
         /// <summary>
-        /// 异步查找来源。
-        /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
-        /// <param name="keyValues">给定的键值对数组或标识。</param>
-        /// <returns>返回一个包含 <typeparamref name="TSource"/> 的异步操作。</returns>
-        Task<TSource> FindSourceAsync(CancellationToken cancellationToken, params object[] keyValues);
-
-        /// <summary>
         /// 异步获取来源。
         /// </summary>
         /// <param name="categoryId">给定的分类标识。</param>
@@ -53,6 +45,14 @@ namespace Librame.AspNetCore.Portal
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TSource"/> 的异步操作。</returns>
         Task<TSource> GetSourceAsync(object categoryId, string name, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 异步查找来源。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>。</param>
+        /// <param name="keyValues">给定的键值对数组或标识。</param>
+        /// <returns>返回一个包含 <typeparamref name="TSource"/> 的异步操作。</returns>
+        Task<TSource> FindSourceAsync(CancellationToken cancellationToken, params object[] keyValues);
 
         /// <summary>
         /// 异步获取来源集合。

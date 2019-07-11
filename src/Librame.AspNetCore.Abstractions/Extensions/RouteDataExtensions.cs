@@ -10,10 +10,10 @@
 
 #endregion
 
-using Librame.AspNetCore;
 using Librame.Extensions;
+using Microsoft.AspNetCore.Routing;
 
-namespace Microsoft.AspNetCore.Routing
+namespace Librame.AspNetCore
 {
     /// <summary>
     /// <see cref="RouteData"/> 静态扩展。

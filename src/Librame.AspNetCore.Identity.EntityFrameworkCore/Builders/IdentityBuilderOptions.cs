@@ -45,7 +45,7 @@ namespace Librame.AspNetCore.Identity
         /// 角色工厂方法。
         /// </summary>
         public Func<Type, ITableSchema> RoleFactory { get; set; }
-            = type => type.AsTableSchema((string names) => names.TrimStart("Default"));
+            = type => type.AsTableSchema(names => names.TrimStart("Default"));
 
         /// <summary>
         /// 角色声明工厂方法。
@@ -63,7 +63,7 @@ namespace Librame.AspNetCore.Identity
         /// 用户工厂方法。
         /// </summary>
         public Func<Type, ITableSchema> UserFactory { get; set; }
-            = type => type.AsTableSchema((string names) => names.TrimStart("Default"));
+            = type => type.AsTableSchema(names => names.TrimStart("Default"));
 
         /// <summary>
         /// 用户声明工厂方法。

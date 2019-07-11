@@ -26,9 +26,7 @@ namespace Librame.AspNetCore.Portal
         /// <returns>返回 <see cref="IPortalBuilder"/>。</returns>
         public static IPortalBuilder AddStores(this IPortalBuilder builder)
         {
-            builder.Services.AddScoped(typeof(IPortalStore<>), typeof(PortalStore<>));
-            builder.Services.AddScoped(typeof(IPortalStore<,,,,,,,, ,,,,>), typeof(PortalStore<,,,,,,,, ,,,,,,,>));
-            builder.Services.AddScoped(typeof(IPortalFullStore<,,,,,,,,,,,,>), typeof(PortalFullStore<,,,,,,,,,,,, ,,,,,,,,,,,,,,>));
+            builder.Services.AddScoped(typeof(IPortalStoreHub<>), typeof(PortalStoreHub<>));
 
             return builder;
         }

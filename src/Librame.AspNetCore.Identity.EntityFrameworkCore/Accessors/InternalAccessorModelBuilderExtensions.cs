@@ -40,29 +40,29 @@ namespace Librame.AspNetCore.Identity
         /// 配置身份实体集合。
         /// </summary>
         /// <typeparam name="TRole">指定的角色类型。</typeparam>
-        /// <typeparam name="TRoleId">指定的角色标识类型。</typeparam>
         /// <typeparam name="TRoleClaim">指定的角色声明类型。</typeparam>
         /// <typeparam name="TUserRole">指定的用户角色类型。</typeparam>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
-        /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
         /// <typeparam name="TUserClaim">指定的用户声明类型。</typeparam>
         /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
         /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
+        /// <typeparam name="TRoleId">指定的角色标识类型。</typeparam>
+        /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
         /// <param name="options">给定的 <see cref="IdentityBuilderOptions"/>。</param>
         /// <param name="storeOptions">给定的 <see cref="StoreOptions"/>。</param>
         /// <param name="dataProtector">给定的 <see cref="IPersonalDataProtector"/>。</param>
-        public static void ConfigureIdentityEntities<TRole, TRoleId, TRoleClaim, TUserRole, TUser, TUserId, TUserClaim, TUserLogin, TUserToken>(this ModelBuilder modelBuilder,
+        public static void ConfigureIdentityEntities<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TRoleId, TUserId>(this ModelBuilder modelBuilder,
             IdentityBuilderOptions options, StoreOptions storeOptions, IPersonalDataProtector dataProtector)
             where TRole : IdentityRole<TUserId>
-            where TRoleId : IEquatable<TRoleId>
             where TRoleClaim : IdentityRoleClaim<TUserId>
             where TUserRole : IdentityUserRole<TUserId>
             where TUser : IdentityUser<TUserId>
-            where TUserId : IEquatable<TUserId>
             where TUserClaim : IdentityUserClaim<TUserId>
             where TUserLogin : IdentityUserLogin<TUserId>
             where TUserToken : IdentityUserToken<TUserId>
+            where TRoleId : IEquatable<TRoleId>
+            where TUserId : IEquatable<TUserId>
         {
             var maxKeyLength = storeOptions?.MaxLengthForKeys ?? 0;
             var encryptPersonalData = storeOptions?.ProtectPersonalData ?? false;

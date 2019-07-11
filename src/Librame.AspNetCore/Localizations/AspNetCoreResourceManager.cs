@@ -25,39 +25,39 @@ namespace Librame.AspNetCore
     /// <summary>
     /// ASP.NET Core 资源管理器。
     /// </summary>
-    public class CoreResourceManager : ResourceManager
+    public class AspNetCoreResourceManager : ResourceManager
     {
         /// <summary>
-        /// 构造一个 <see cref="CoreResourceManager"/> 实例。
+        /// 构造一个 <see cref="AspNetCoreResourceManager"/> 实例。
         /// </summary>
         /// <param name="resourceSource">给定的资源来源类型。</param>
         /// <param name="logger">给定的 <see cref="ILogger{AspNetResourceManager}"/>。</param>
-        public CoreResourceManager(Type resourceSource, ILogger<CoreResourceManager> logger)
+        public AspNetCoreResourceManager(Type resourceSource, ILogger<AspNetCoreResourceManager> logger)
             : base(resourceSource)
         {
             Logger = logger.NotNull(nameof(logger));
         }
 
         /// <summary>
-        /// 构造一个 <see cref="CoreResourceManager"/> 实例。
+        /// 构造一个 <see cref="AspNetCoreResourceManager"/> 实例。
         /// </summary>
         /// <param name="baseName">给定的基础名称。</param>
         /// <param name="assembly">给定的程序集。</param>
         /// <param name="logger">给定的 <see cref="ILogger{AspNetResourceManager}"/>。</param>
-        public CoreResourceManager(string baseName, Assembly assembly, ILogger<CoreResourceManager> logger)
+        public AspNetCoreResourceManager(string baseName, Assembly assembly, ILogger<AspNetCoreResourceManager> logger)
             : base(baseName, assembly)
         {
             Logger = logger.NotNull(nameof(logger));
         }
 
         /// <summary>
-        /// 构造一个 <see cref="CoreResourceManager"/> 实例。
+        /// 构造一个 <see cref="AspNetCoreResourceManager"/> 实例。
         /// </summary>
         /// <param name="baseName">给定的基础名称。</param>
         /// <param name="assembly">给定的程序集。</param>
         /// <param name="usingResourceSet">给定的使用资源集类型。</param>
         /// <param name="logger">给定的 <see cref="ILogger{AspNetResourceManager}"/>。</param>
-        public CoreResourceManager(string baseName, Assembly assembly, Type usingResourceSet, ILogger<CoreResourceManager> logger)
+        public AspNetCoreResourceManager(string baseName, Assembly assembly, Type usingResourceSet, ILogger<AspNetCoreResourceManager> logger)
             : base(baseName, assembly, usingResourceSet)
         {
             Logger = logger.NotNull(nameof(logger));
@@ -70,7 +70,7 @@ namespace Librame.AspNetCore
         /// <value>
         /// 返回 <see cref="ILogger{CoreResourceManager}"/>。
         /// </value>
-        protected ILogger<CoreResourceManager> Logger { get; }
+        protected ILogger<AspNetCoreResourceManager> Logger { get; }
 
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Librame.AspNetCore
             if (viewResourceType.IsNotNull() && viewResourceType.TryGetCustomAttribute(out ViewResourceMappingAttribute attribute))
             {
                 var viewBaseName = attribute.GetResourceBaseName(viewResourceType);
-                var resourceManager = new CoreResourceManager(viewBaseName, MainAssembly, Logger);
+                var resourceManager = new AspNetCoreResourceManager(viewBaseName, MainAssembly, Logger);
                 return resourceManager.GetResourceSet(culture, createIfNotExists, tryParents);
             }
             

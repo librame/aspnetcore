@@ -20,7 +20,7 @@ namespace Librame.Extensions.Data
     /// <summary>
     /// ASP.NET Core 数据构建器静态扩展。
     /// </summary>
-    public static class CoreDataBuilderExtensions
+    public static class AspNetCoreDataBuilderExtensions
     {
         /// <summary>
         /// 添加 ASP.NET Core 数据扩展。
@@ -30,7 +30,7 @@ namespace Librame.Extensions.Data
         /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
         /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
         /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
-        public static IDataBuilder AddCoreData(this IBuilder builder,
+        public static IDataBuilder AddAspNetCoreData(this IBuilder builder,
             Action<DataBuilderOptions> configureOptions = null,
             IConfiguration configuration = null,
             Action<BinderOptions> configureBinderOptions = null)
@@ -39,7 +39,7 @@ namespace Librame.Extensions.Data
                 configuration, configureBinderOptions);
 
             return dataBuilder
-                .AddCoreServices();
+                .AddAspNetCoreServices();
         }
 
     }
