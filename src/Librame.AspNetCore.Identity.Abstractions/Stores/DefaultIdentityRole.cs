@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 默认身份角色。
     /// </summary>
-    public class DefaultIdentityRole : IdentityRole<string>, IId<string>
+    public class DefaultIdentityRole : IdentityRole<string>, IGenId
     {
         /// <summary>
         /// 构造一个 <see cref="DefaultIdentityRole"/> 实例。

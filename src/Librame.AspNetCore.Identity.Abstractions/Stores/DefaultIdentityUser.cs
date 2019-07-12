@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 默认身份用户。
     /// </summary>
-    public class DefaultIdentityUser : IdentityUser<string>, IId<string>
+    public class DefaultIdentityUser : IdentityUser<string>, IGenId
     {
         /// <summary>
         /// 构造一个 <see cref="DefaultIdentityUser"/> 实例。
@@ -41,5 +41,6 @@ namespace Librame.AspNetCore.Identity
             Id = GuIdentifier.Empty;
             NormalizedUserName = userName;
         }
+
     }
 }

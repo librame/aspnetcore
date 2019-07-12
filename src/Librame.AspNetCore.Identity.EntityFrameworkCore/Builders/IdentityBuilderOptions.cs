@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 身份构建器选项。
     /// </summary>
-    public class IdentityBuilderOptions : AbstractDataBuilderOptions<TableSchemaOptions>
+    public class IdentityBuilderOptions : AbstractDataBuilderOptions<StoreOptions, TableSchemaOptions>
     {
         /// <summary>
         /// 配置核心身份选项。

@@ -35,7 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Core" Version="6.0.817.201" />
+    <PackageReference Include="Librame.Extensions.Core" Version="6.0.818.201" />
     <PackageReference Include="Microsoft.AspNetCore.Localization.Routing" Version="2.2.0" />
   </ItemGroup>
 

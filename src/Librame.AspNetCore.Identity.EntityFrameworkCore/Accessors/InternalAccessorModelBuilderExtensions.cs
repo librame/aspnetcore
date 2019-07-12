@@ -46,26 +46,24 @@ namespace Librame.AspNetCore.Identity
         /// <typeparam name="TUserClaim">指定的用户声明类型。</typeparam>
         /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
         /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
-        /// <typeparam name="TRoleId">指定的角色标识类型。</typeparam>
-        /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
+        /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
         /// <param name="options">给定的 <see cref="IdentityBuilderOptions"/>。</param>
-        /// <param name="storeOptions">给定的 <see cref="StoreOptions"/>。</param>
+        /// <param name="coreOptions">给定的 <see cref="StoreOptions"/>。</param>
         /// <param name="dataProtector">给定的 <see cref="IPersonalDataProtector"/>。</param>
-        public static void ConfigureIdentityEntities<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TRoleId, TUserId>(this ModelBuilder modelBuilder,
-            IdentityBuilderOptions options, StoreOptions storeOptions, IPersonalDataProtector dataProtector)
-            where TRole : IdentityRole<TUserId>
-            where TRoleClaim : IdentityRoleClaim<TUserId>
-            where TUserRole : IdentityUserRole<TUserId>
-            where TUser : IdentityUser<TUserId>
-            where TUserClaim : IdentityUserClaim<TUserId>
-            where TUserLogin : IdentityUserLogin<TUserId>
-            where TUserToken : IdentityUserToken<TUserId>
-            where TRoleId : IEquatable<TRoleId>
-            where TUserId : IEquatable<TUserId>
+        public static void ConfigureIdentityEntities<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TGenId>(this ModelBuilder modelBuilder,
+            IdentityBuilderOptions options, IdentityOptions coreOptions, IPersonalDataProtector dataProtector)
+            where TRole : IdentityRole<TGenId>
+            where TRoleClaim : IdentityRoleClaim<TGenId>
+            where TUserRole : IdentityUserRole<TGenId>
+            where TUser : IdentityUser<TGenId>
+            where TUserClaim : IdentityUserClaim<TGenId>
+            where TUserLogin : IdentityUserLogin<TGenId>
+            where TUserToken : IdentityUserToken<TGenId>
+            where TGenId : IEquatable<TGenId>
         {
-            var maxKeyLength = storeOptions?.MaxLengthForKeys ?? 0;
-            var encryptPersonalData = storeOptions?.ProtectPersonalData ?? false;
+            var maxKeyLength = coreOptions.Stores?.MaxLengthForKeys ?? 0;
+            var encryptPersonalData = coreOptions.Stores?.ProtectPersonalData ?? false;
 
             PersonalDataConverter converter = null;
 
@@ -81,8 +79,8 @@ namespace Librame.AspNetCore.Identity
                 b.Property(p => p.Name).HasMaxLength(256);
                 b.Property(p => p.NormalizedName).HasMaxLength(256);
 
-                //b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
-                //b.HasMany<TRoleClaim>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
+                b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
+                b.HasMany<TRoleClaim>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
             });
 
             modelBuilder.Entity<TRoleClaim>(b =>
@@ -121,10 +119,10 @@ namespace Librame.AspNetCore.Identity
                     ConfigureEncryptPersonalData<TUser, ProtectedPersonalDataAttribute>(b, converter);
                 }
 
-                //b.HasMany<TUserClaim>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
-                //b.HasMany<TUserLogin>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
-                //b.HasMany<TUserToken>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
-                //b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                b.HasMany<TUserClaim>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                b.HasMany<TUserLogin>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                b.HasMany<TUserToken>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
             });
 
             modelBuilder.Entity<TUserClaim>(b =>

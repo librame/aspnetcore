@@ -24,7 +24,7 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 身份数据库上下文访问器。
     /// </summary>
-    public class IdentityDbContextAccessor : IdentityDbContextAccessor<DefaultIdentityRole, DefaultIdentityUser, string, string>
+    public class IdentityDbContextAccessor : IdentityDbContextAccessor<DefaultIdentityRole, DefaultIdentityUser, string>
     {
         /// <summary>
         /// 构造一个身份数据库上下文访问器实例。
@@ -42,15 +42,13 @@ namespace Librame.AspNetCore.Identity
     /// </summary>
     /// <typeparam name="TRole">指定的角色类型。</typeparam>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
-    /// <typeparam name="TRoleId">指定的角色标识类型。</typeparam>
-    /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
-    public class IdentityDbContextAccessor<TRole, TUser, TRoleId, TUserId>
-        : IdentityDbContextAccessor<TRole, IdentityRoleClaim<TUserId>, IdentityUserRole<TUserId>,
-            TUser, IdentityUserClaim<TUserId>, IdentityUserLogin<TUserId>, IdentityUserToken<TUserId>, TRoleId, TUserId>
-        where TRole : IdentityRole<TUserId>
-        where TUser : IdentityUser<TUserId>
-        where TRoleId : IEquatable<TRoleId>
-        where TUserId : IEquatable<TUserId>
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    public class IdentityDbContextAccessor<TRole, TUser, TGenId>
+        : IdentityDbContextAccessor<TRole, IdentityRoleClaim<TGenId>, IdentityUserRole<TGenId>,
+            TUser, IdentityUserClaim<TGenId>, IdentityUserLogin<TGenId>, IdentityUserToken<TGenId>, TGenId>
+        where TRole : IdentityRole<TGenId>
+        where TUser : IdentityUser<TGenId>
+        where TGenId : IEquatable<TGenId>
     {
         /// <summary>
         /// 构造一个身份数据库上下文访问器实例。
@@ -73,19 +71,17 @@ namespace Librame.AspNetCore.Identity
     /// <typeparam name="TUserClaim">指定的用户声明类型。</typeparam>
     /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
     /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
-    /// <typeparam name="TRoleId">指定的角色标识类型。</typeparam>
-    /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
-    public class IdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TRoleId, TUserId>
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    public class IdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TGenId>
         : DbContextAccessor
-        where TRole : IdentityRole<TUserId>
-        where TRoleClaim : IdentityRoleClaim<TUserId>
-        where TUserRole : IdentityUserRole<TUserId>
-        where TUser : IdentityUser<TUserId>
-        where TUserClaim : IdentityUserClaim<TUserId>
-        where TUserLogin : IdentityUserLogin<TUserId>
-        where TUserToken : IdentityUserToken<TUserId>
-        where TRoleId : IEquatable<TRoleId>
-        where TUserId : IEquatable<TUserId>
+        where TRole : IdentityRole<TGenId>
+        where TRoleClaim : IdentityRoleClaim<TGenId>
+        where TUserRole : IdentityUserRole<TGenId>
+        where TUser : IdentityUser<TGenId>
+        where TUserClaim : IdentityUserClaim<TGenId>
+        where TUserLogin : IdentityUserLogin<TGenId>
+        where TUserToken : IdentityUserToken<TGenId>
+        where TGenId : IEquatable<TGenId>
     {
         /// <summary>
         /// 构造一个身份数据库上下文访问器实例。
@@ -143,11 +139,11 @@ namespace Librame.AspNetCore.Identity
             base.OnModelCreating(modelBuilder);
 
             var options = ServiceProvider.GetRequiredService<IOptions<IdentityBuilderOptions>>().Value;
-            var storeOptions = ServiceProvider.GetRequiredService<IOptions<IdentityOptions>>().Value?.Stores;
+            var coreOptions = ServiceProvider.GetRequiredService<IOptions<IdentityOptions>>().Value;
             var dataProtector = ServiceProvider.GetService<IPersonalDataProtector>();
 
             modelBuilder.ConfigureIdentityEntities<TRole, TRoleClaim, TUserRole,
-                TUser, TUserClaim, TUserLogin, TUserToken, TRoleId, TUserId>(options, storeOptions, dataProtector);
+                TUser, TUserClaim, TUserLogin, TUserToken, TGenId>(options, coreOptions, dataProtector);
         }
 
     }
