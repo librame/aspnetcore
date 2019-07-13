@@ -27,15 +27,6 @@ namespace Librame.AspNetCore.Identity
     /// </summary>
     internal static class InternalAccessorModelBuilderExtensions
     {
-        private class PersonalDataConverter : ValueConverter<string, string>
-        {
-            public PersonalDataConverter(IPersonalDataProtector protector)
-                : base(s => protector.Protect(s), s => protector.Unprotect(s), default)
-            {
-            }
-        }
-
-
         /// <summary>
         /// 配置身份实体集合。
         /// </summary>
@@ -62,6 +53,7 @@ namespace Librame.AspNetCore.Identity
             where TUserToken : IdentityUserToken<TGenId>
             where TGenId : IEquatable<TGenId>
         {
+            //var mapRelationship = options.Stores?.MapRelationship ?? false;
             var maxKeyLength = coreOptions.Stores?.MaxLengthForKeys ?? 0;
             var encryptPersonalData = coreOptions.Stores?.ProtectPersonalData ?? false;
 
@@ -116,7 +108,7 @@ namespace Librame.AspNetCore.Identity
                 {
                     converter = new PersonalDataConverter(dataProtector);
 
-                    ConfigureEncryptPersonalData<TUser, ProtectedPersonalDataAttribute>(b, converter);
+                    b.ConfigureEncryptPersonalData(converter);
                 }
 
                 b.HasMany<TUserClaim>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
@@ -159,13 +151,18 @@ namespace Librame.AspNetCore.Identity
 
                 if (encryptPersonalData)
                 {
-                    ConfigureEncryptPersonalData<TUserToken, ProtectedPersonalDataAttribute>(b, converter);
+                    b.ConfigureEncryptPersonalData(converter);
                 }
             });
         }
 
+        private static void ConfigureEncryptPersonalData<TEntity>(this EntityTypeBuilder<TEntity> builder, ValueConverter converter)
+            where TEntity : class
+        {
+            builder.ConfigureEncryptPersonalData<TEntity, ProtectedPersonalDataAttribute>(converter);
+        }
 
-        private static void ConfigureEncryptPersonalData<TEntity, TAttribute>(EntityTypeBuilder<TEntity> builder, ValueConverter converter)
+        private static void ConfigureEncryptPersonalData<TEntity, TAttribute>(this EntityTypeBuilder<TEntity> builder, ValueConverter converter)
             where TEntity : class
             where TAttribute : PersonalDataAttribute
         {

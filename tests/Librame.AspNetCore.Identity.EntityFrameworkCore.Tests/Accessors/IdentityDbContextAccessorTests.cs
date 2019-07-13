@@ -3,23 +3,28 @@ using Xunit;
 
 namespace Librame.AspNetCore.Identity.Tests
 {
+    using Extensions.Data;
+
     public class IdentityDbContextAccessorTests
     {
         [Fact]
         public void AllTest()
         {
-            using (var store = TestServiceProvider.Current.GetRequiredService<ITestStore>())
+            using (var stores = TestServiceProvider.Current.GetRequiredService<ITestStoreHub>())
             {
-                var roles = store.GetRoles();
+                var initializer = stores.GetRequiredService<IInitializerService<IdentityDbContextAccessor>>();
+                initializer.InitializeService(stores);
+
+                var roles = stores.GetRoles();
                 Assert.Empty(roles);
 
-                roles = store.UseWriteDbConnection().GetRoles();
+                roles = stores.UseWriteDbConnection().GetRoles();
                 Assert.NotEmpty(roles);
 
-                var users = store.UseDefaultDbConnection().GetUsers();
+                var users = stores.UseDefaultDbConnection().GetUsers();
                 Assert.Empty(users);
 
-                users = store.UseWriteDbConnection().GetUsers();
+                users = stores.UseWriteDbConnection().GetUsers();
                 Assert.NotEmpty(users);
             }
         }

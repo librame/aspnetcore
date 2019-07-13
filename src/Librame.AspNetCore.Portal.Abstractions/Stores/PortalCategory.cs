@@ -27,14 +27,14 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户分类。
     /// </summary>
-    /// <typeparam name="TId">指定的标识类型。</typeparam>
-    public class PortalCategory<TId> : AbstractEntity<TId>, IParentId<TId>
-        where TId : IEquatable<TId>
+    /// <typeparam name="TIncremId">指定的标识类型。</typeparam>
+    public class PortalCategory<TIncremId> : AbstractEntityWithIncremId<TIncremId>, IParentId<TIncremId>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 父标识。
         /// </summary>
-        public virtual TId ParentId { get; set; }
+        public virtual TIncremId ParentId { get; set; }
 
         /// <summary>
         /// 名称。

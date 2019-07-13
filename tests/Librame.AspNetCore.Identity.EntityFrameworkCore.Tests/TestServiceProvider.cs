@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -14,6 +15,14 @@ namespace Librame.AspNetCore.Identity.Tests
             Current = Current.EnsureSingleton(() =>
             {
                 var services = new ServiceCollection();
+
+                // Add Authentication
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                })
+                .AddIdentityCookies(cookies => { });
 
                 services.AddLibrameCore()
                     .AddAspNetCoreData(options =>
@@ -36,7 +45,9 @@ namespace Librame.AspNetCore.Identity.Tests
                         };
                     });
 
-                services.AddScoped<ITestStore, TestStore>();
+                services.TryReplace<IIdentifierService, TestIdentifierService>();
+                services.TryReplace(typeof(IInitializerService<>), typeof(TestInitializerService<>));
+                services.AddScoped<ITestStoreHub, TestStoreHub>();
 
                 return services.BuildServiceProvider();
             });

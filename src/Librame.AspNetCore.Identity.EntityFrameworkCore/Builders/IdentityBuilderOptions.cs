@@ -16,13 +16,12 @@ using System;
 namespace Librame.AspNetCore.Identity
 {
     using Extensions;
-    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
     /// 身份构建器选项。
     /// </summary>
-    public class IdentityBuilderOptions : AbstractDataBuilderOptions<StoreOptions, TableSchemaOptions>
+    public class IdentityBuilderOptions : DataBuilderOptionsBase<IdentityTableSchemaOptions>
     {
         /// <summary>
         /// 配置核心身份选项。
@@ -37,9 +36,9 @@ namespace Librame.AspNetCore.Identity
 
 
     /// <summary>
-    /// 表架构选项。
+    /// 身份表架构选项。
     /// </summary>
-    public class TableSchemaOptions : ITableSchemaOptions
+    public class IdentityTableSchemaOptions : ITableSchemaOptions
     {
         /// <summary>
         /// 角色工厂方法。
