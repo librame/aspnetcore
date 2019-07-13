@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户专题声明。
     /// </summary>
-    public class PortalSubjectClaim : PortalSubjectClaim<int, int, int>
+    public class PortalSubjectClaim : PortalSubjectClaim<int>
     {
     }
 
@@ -27,23 +27,19 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户专题声明。
     /// </summary>
-    /// <typeparam name="TId">指定的标识类型。</typeparam>
-    /// <typeparam name="TSubjectId">指定的专题标识类型。</typeparam>
-    /// <typeparam name="TClaimId">指定的声明标识类型。</typeparam>
-    public class PortalSubjectClaim<TId, TSubjectId, TClaimId> : AbstractId<TId>, IAssociation
-        where TId : IEquatable<TId>
-        where TSubjectId : IEquatable<TSubjectId>
-        where TClaimId : IEquatable<TClaimId>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class PortalSubjectClaim<TIncremId> : AbstractIncremId<TIncremId>, IAssociation
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 专题标识。
         /// </summary>
-        public virtual TSubjectId SubjectId { get; set; }
+        public virtual TIncremId SubjectId { get; set; }
 
         /// <summary>
         /// 声明标识。
         /// </summary>
-        public virtual TClaimId ClaimId { get; set; }
+        public virtual TIncremId ClaimId { get; set; }
 
         /// <summary>
         /// 关联标识。

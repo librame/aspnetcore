@@ -21,15 +21,7 @@ namespace Librame.AspNetCore.Portal
     /// </summary>
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     public interface IPortalStoreHub<out TAccessor>
-        : IPortalStoreHub<TAccessor, PortalCategory, PortalPane, PortalTag, PortalSource, PortalEditor, PortalSubject,
-            int, string, int, int>
-        , IClaimStore<TAccessor, PortalClaim>
-        , ICategoryStore<TAccessor, PortalCategory>
-        , IPaneStore<TAccessor, PortalPane, PortalPaneClaim<int, int, int>>
-        , ITagStore<TAccessor, PortalTag, PortalTagClaim<string, string, int>>
-        , ISourceStore<TAccessor, PortalSource>
-        , IEditorStore<TAccessor, PortalEditor, PortalEditorTitle<int, int>>
-        , ISubjectStore<TAccessor, PortalSubject, PortalSubjectBody<int, int>, PortalSubjectClaim<int, int, int>>
+        : IPortalStoreHub<TAccessor, PortalCategory, PortalPane, PortalTag, PortalSource, PortalEditor, PortalSubject, int>
         where TAccessor : IAccessor
     {
     }
@@ -45,20 +37,9 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TSource">指定的来源类型。</typeparam>
     /// <typeparam name="TEditor">指定的编者类型。</typeparam>
     /// <typeparam name="TSubject">指定的专题类型。</typeparam>
-    /// <typeparam name="TPaneId">指定的窗格标识类型。</typeparam>
-    /// <typeparam name="TTagId">指定的标签标识类型。</typeparam>
-    /// <typeparam name="TEditorId">指定的编者标识类型。</typeparam>
-    /// <typeparam name="TSubjectId">指定的专题标识类型。</typeparam>
-    public interface IPortalStoreHub<out TAccessor, TCategory, TPane, TTag, TSource, TEditor, TSubject,
-        TPaneId, TTagId, TEditorId, TSubjectId>
-        : IPortalStoreHub<TAccessor, PortalClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, int>, TTag, PortalTagClaim<string, TTagId, int>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<int, TSubjectId>, PortalSubjectClaim<int, TSubjectId, int>>
-        , IClaimStore<TAccessor, PortalClaim>
-        , ICategoryStore<TAccessor, TCategory>
-        , IPaneStore<TAccessor, TPane, PortalPaneClaim<int, TPaneId, int>>
-        , ITagStore<TAccessor, TTag, PortalTagClaim<string, TTagId, int>>
-        , ISourceStore<TAccessor, TSource>
-        , IEditorStore<TAccessor, TEditor, PortalEditorTitle<int, TEditorId>>
-        , ISubjectStore<TAccessor, TSubject, PortalSubjectBody<int, TSubjectId>, PortalSubjectClaim<int, TSubjectId, int>>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public interface IPortalStoreHub<out TAccessor, TCategory, TPane, TTag, TSource, TEditor, TSubject, TIncremId>
+        : IPortalStoreHub<TAccessor, PortalClaim, TCategory, TPane, PortalPaneClaim<TIncremId>, TTag, PortalTagClaim<TIncremId>, TSource, TEditor, PortalEditorTitle<TIncremId>, TSubject, PortalSubjectBody<TIncremId>, PortalSubjectClaim<TIncremId>>
         where TAccessor : IAccessor
         where TCategory : class
         where TPane : class
@@ -66,10 +47,7 @@ namespace Librame.AspNetCore.Portal
         where TSource : class
         where TEditor : class
         where TSubject : class
-        where TPaneId : IEquatable<TPaneId>
-        where TTagId : IEquatable<TTagId>
-        where TEditorId : IEquatable<TEditorId>
-        where TSubjectId : IEquatable<TSubjectId>
+        where TIncremId : IEquatable<TIncremId>
     {
     }
 

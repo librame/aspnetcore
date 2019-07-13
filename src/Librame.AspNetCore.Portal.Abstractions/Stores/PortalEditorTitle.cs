@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户编者头衔。
     /// </summary>
-    public class PortalEditorTitle : PortalEditorTitle<int, int>
+    public class PortalEditorTitle : PortalEditorTitle<int>
     {
     }
 
@@ -27,15 +27,14 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户编者头衔。
     /// </summary>
-    /// <typeparam name="TId">指定的标识类型。</typeparam>
-    /// <typeparam name="TEditorId">指定的编者标识类型。</typeparam>
-    public class PortalEditorTitle<TId, TEditorId> : AbstractEntity<TId>
-        where TId : IEquatable<TId>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class PortalEditorTitle<TIncremId> : AbstractEntityWithIncremId<TIncremId>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 编者标识。
         /// </summary>
-        public virtual TEditorId EditorId { get; set; }
+        public virtual TIncremId EditorId { get; set; }
 
         /// <summary>
         /// 名称。

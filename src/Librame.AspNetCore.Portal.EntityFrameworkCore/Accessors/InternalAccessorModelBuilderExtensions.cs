@@ -143,7 +143,7 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasIndex(i => i.Name).HasName().IsUnique();
 
-                b.Property(p => p.Id).ValueGeneratedNever();
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
                 //b.Property(p => p.Name).HasMaxLength(50);
 
                 //b.HasMany<TTagClaim>().WithOne().HasForeignKey(fk => fk.TagId).IsRequired();
@@ -156,7 +156,7 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasIndex(i => new { i.TagId, i.ClaimId }).HasName().IsUnique();
 
-                b.Property(p => p.Id).ValueGeneratedNever();
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
                 //b.Property(p => p.TagId).HasMaxLength(50);
             });
 

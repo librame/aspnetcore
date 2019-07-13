@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户窗格声明。
     /// </summary>
-    public class PortalPaneClaim : PortalPaneClaim<int, int, int>
+    public class PortalPaneClaim : PortalPaneClaim<int>
     {
     }
 
@@ -27,23 +27,19 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户窗格声明。
     /// </summary>
-    /// <typeparam name="TId">指定的标识类型。</typeparam>
-    /// <typeparam name="TPaneId">指定的窗格标识类型。</typeparam>
-    /// <typeparam name="TClaimId">指定的声明标识类型。</typeparam>
-    public class PortalPaneClaim<TId, TPaneId, TClaimId> : AbstractId<TId>, IAssociation
-        where TId : IEquatable<TId>
-        where TPaneId : IEquatable<TPaneId>
-        where TClaimId : IEquatable<TClaimId>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class PortalPaneClaim<TIncremId> : AbstractIncremId<TIncremId>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 窗格标识。
         /// </summary>
-        public virtual TPaneId PaneId { get; set; }
+        public virtual TIncremId PaneId { get; set; }
 
         /// <summary>
         /// 声明标识。
         /// </summary>
-        public virtual TClaimId ClaimId { get; set; }
+        public virtual TIncremId ClaimId { get; set; }
 
         /// <summary>
         /// 关联标识。

@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户窗格。
     /// </summary>
-    public class PortalPane : PortalPane<int, int>
+    public class PortalPane : PortalPane<int>
     {
     }
 
@@ -27,16 +27,14 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户窗格。
     /// </summary>
-    /// <typeparam name="TId">指定的标识类型。</typeparam>
-    /// <typeparam name="TCategoryId">指定的分类标识类型。</typeparam>
-    public class PortalPane<TId, TCategoryId> : AbstractEntity<TId>
-        where TId : IEquatable<TId>
-        where TCategoryId : IEquatable<TCategoryId>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class PortalPane<TIncremId> : AbstractEntityWithIncremId<TIncremId>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 分类标识。
         /// </summary>
-        public virtual TCategoryId CategoryId { get; set; }
+        public virtual TIncremId CategoryId { get; set; }
 
         /// <summary>
         /// 名称。

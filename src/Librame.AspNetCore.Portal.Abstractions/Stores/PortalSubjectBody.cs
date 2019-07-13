@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户专题主体。
     /// </summary>
-    public class PortalSubjectBody : PortalSubjectBody<int, int>
+    public class PortalSubjectBody : PortalSubjectBody<int>
     {
     }
 
@@ -27,16 +27,14 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户专题主体。
     /// </summary>
-    /// <typeparam name="TId">指定的标识类型。</typeparam>
-    /// <typeparam name="TSubjectId">指定的专题标识类型。</typeparam>
-    public class PortalSubjectBody<TId, TSubjectId> : AbstractId<TId>
-        where TId : IEquatable<TId>
-        where TSubjectId : IEquatable<TSubjectId>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class PortalSubjectBody<TIncremId> : AbstractIncremId<TIncremId>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 专题标识。
         /// </summary>
-        public virtual TSubjectId SubjectId { get; set; }
+        public virtual TIncremId SubjectId { get; set; }
 
         /// <summary>
         /// 主体散列。

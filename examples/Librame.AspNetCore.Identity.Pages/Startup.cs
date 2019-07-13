@@ -64,13 +64,16 @@ namespace Librame.AspNetCore.Identity.Pages
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
+            var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
+            var writeConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";
+
             // Add Librame for ASP.NET Core
             services.AddLibrameCore()
                 .AddAspNetCoreData(options =>
                 {
-                    options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-                    options.DefaultTenant.WriteConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";
-                    options.DefaultTenant.WriteConnectionSeparation = false;
+                    // 默认使用写入库做为主库
+                    options.DefaultTenant.DefaultConnectionString = writeConnectionString;
+                    options.DefaultTenant.WriteConnectionString = defaultConnectionString;
                 })
                 .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                 {

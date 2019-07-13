@@ -53,7 +53,7 @@ namespace Librame.AspNetCore.Identity
             where TUserToken : IdentityUserToken<TGenId>
             where TGenId : IEquatable<TGenId>
         {
-            //var mapRelationship = options.Stores?.MapRelationship ?? false;
+            var mapRelationship = options.Stores?.MapRelationship ?? true;
             var maxKeyLength = coreOptions.Stores?.MaxLengthForKeys ?? 0;
             var encryptPersonalData = coreOptions.Stores?.ProtectPersonalData ?? false;
 
@@ -71,8 +71,11 @@ namespace Librame.AspNetCore.Identity
                 b.Property(p => p.Name).HasMaxLength(256);
                 b.Property(p => p.NormalizedName).HasMaxLength(256);
 
-                b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
-                b.HasMany<TRoleClaim>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
+                if (mapRelationship)
+                {
+                    b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
+                    b.HasMany<TRoleClaim>().WithOne().HasForeignKey(fk => fk.RoleId).IsRequired();
+                }
             });
 
             modelBuilder.Entity<TRoleClaim>(b =>
@@ -104,17 +107,20 @@ namespace Librame.AspNetCore.Identity
                 b.Property(p => p.Email).HasMaxLength(256);
                 b.Property(p => p.NormalizedEmail).HasMaxLength(256);
 
+                if (mapRelationship)
+                {
+                    b.HasMany<TUserClaim>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                    b.HasMany<TUserLogin>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                    b.HasMany<TUserToken>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                    b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
+                }
+
                 if (encryptPersonalData)
                 {
                     converter = new PersonalDataConverter(dataProtector);
 
                     b.ConfigureEncryptPersonalData(converter);
                 }
-
-                b.HasMany<TUserClaim>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
-                b.HasMany<TUserLogin>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
-                b.HasMany<TUserToken>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
-                b.HasMany<TUserRole>().WithOne().HasForeignKey(fk => fk.UserId).IsRequired();
             });
 
             modelBuilder.Entity<TUserClaim>(b =>

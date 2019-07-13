@@ -37,16 +37,16 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户编者。
     /// </summary>
-    /// <typeparam name="TId">指定的标识类型。</typeparam>
-    /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
-    public class PortalEditor<TId, TUserId> : AbstractEntity<TId>
-        where TId : IEquatable<TId>
-        where TUserId : IEquatable<TUserId>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    public class PortalEditor<TIncremId, TGenId> : AbstractEntityWithIncremId<TIncremId>
+        where TIncremId : IEquatable<TIncremId>
+        where TGenId : IEquatable<TGenId>
     {
         /// <summary>
         /// 用户标识。
         /// </summary>
-        public virtual TUserId UserId { get; set; }
+        public virtual TGenId UserId { get; set; }
 
         /// <summary>
         /// 名称。

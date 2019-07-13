@@ -18,9 +18,9 @@ namespace Librame.AspNetCore.Identity.Pages.Areas.Identity.Pages.Account.Manage
     public class IndexModel : PageModel
     {
         [InjectionService]
-        private UserManager<IdentityUser> _userManager = null;
+        private UserManager<DefaultIdentityUser> _userManager = null;
         [InjectionService]
-        private SignInManager<IdentityUser> _signInManager = null;
+        private SignInManager<DefaultIdentityUser> _signInManager = null;
         [InjectionService]
         private IEmailService _emailService = null;
         //[InjectionService]

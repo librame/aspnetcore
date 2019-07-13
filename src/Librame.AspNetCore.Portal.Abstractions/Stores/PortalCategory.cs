@@ -27,7 +27,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户分类。
     /// </summary>
-    /// <typeparam name="TIncremId">指定的标识类型。</typeparam>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
     public class PortalCategory<TIncremId> : AbstractEntityWithIncremId<TIncremId>, IParentId<TIncremId>
         where TIncremId : IEquatable<TIncremId>
     {

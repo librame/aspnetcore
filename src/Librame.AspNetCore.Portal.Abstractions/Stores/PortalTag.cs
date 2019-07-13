@@ -14,32 +14,22 @@ using System;
 
 namespace Librame.AspNetCore.Portal
 {
-    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
     /// 门户标签。
     /// </summary>
-    public class PortalTag : PortalTag<string>
+    public class PortalTag : PortalTag<int>
     {
-        /// <summary>
-        /// 构造一个 <see cref="PortalTag"/> 实例。
-        /// </summary>
-        public PortalTag()
-            : base()
-        {
-            // 默认使用空标识符，新增推荐使用服务注入
-            Id = GuIdentifier.Empty;
-        }
     }
 
 
     /// <summary>
     /// 门户标签。
     /// </summary>
-    /// <typeparam name="TId">指定的标识类型。</typeparam>
-    public class PortalTag<TId> : AbstractEntity<TId>
-        where TId : IEquatable<TId>
+    /// <typeparam name="TIncremId">指定的标识类型。</typeparam>
+    public class PortalTag<TIncremId> : AbstractEntityWithIncremId<TIncremId>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 名称。

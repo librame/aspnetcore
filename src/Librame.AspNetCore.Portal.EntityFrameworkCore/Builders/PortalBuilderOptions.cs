@@ -14,13 +14,12 @@ using System;
 
 namespace Librame.AspNetCore.Portal
 {
-    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
     /// 门户构建器选项。
     /// </summary>
-    public class PortalBuilderOptions : AbstractDataBuilderOptions<TableSchemaOptions>
+    public class PortalBuilderOptions : DataBuilderOptionsBase<PortalTableSchemaOptions>
     {
     }
 
@@ -28,7 +27,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 表架构选项集合。
     /// </summary>
-    public class TableSchemaOptions : ITableSchemaOptions
+    public class PortalTableSchemaOptions : ITableSchemaOptions
     {
         /// <summary>
         /// 声明工厂方法。

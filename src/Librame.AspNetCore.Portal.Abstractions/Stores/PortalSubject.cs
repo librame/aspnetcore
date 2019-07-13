@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户专题。
     /// </summary>
-    public class PortalSubject : PortalSubject<int, int, DateTimeOffset>
+    public class PortalSubject : PortalSubject<int>
     {
     }
 
@@ -27,23 +27,19 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户专题。
     /// </summary>
-    /// <typeparam name="TId">指定的标识类型。</typeparam>
-    /// <typeparam name="TCategoryId">指定的分类标识类型。</typeparam>
-    /// <typeparam name="TDateTime">指定的日期与时间类型（提供对 DateTime 或 DateTimeOffset 的支持）。</typeparam>
-    public class PortalSubject<TId, TCategoryId, TDateTime> : AbstractEntity<TId>, IPublishing<TDateTime>
-        where TId : IEquatable<TId>
-        where TCategoryId : IEquatable<TCategoryId>
-        where TDateTime : struct
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class PortalSubject<TIncremId> : AbstractEntityWithIncremId<TIncremId>, IPublishing<DateTimeOffset>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 分类标识。
         /// </summary>
-        public virtual TCategoryId CategoryId { get; set; }
+        public virtual TIncremId CategoryId { get; set; }
 
         /// <summary>
         /// 发布时间。
         /// </summary>
-        public virtual TDateTime PublishTime { get; set; }
+        public virtual DateTimeOffset PublishTime { get; set; }
 
         /// <summary>
         /// 发布链接。
