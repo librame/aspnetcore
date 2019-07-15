@@ -136,18 +136,22 @@ namespace Librame.AspNetCore.Portal
         /// <summary>
         /// 异步获取所有标签声明集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TTagClaim}"/> 的异步操作。</returns>
-        Task<List<TTagClaim>> GetAllTagClaimsAsync(CancellationToken cancellationToken = default);
+        Task<List<TTagClaim>> GetAllTagClaimsAsync(Func<IQueryable<TTagClaim>, IQueryable<TTagClaim>> queryFactory = null,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取分页标签声明集合。
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TTagClaim}"/> 的异步操作。</returns>
-        Task<IPageable<TTagClaim>> GetPagingTagClaimsAsync(int index, int size, CancellationToken cancellationToken = default);
+        Task<IPageable<TTagClaim>> GetPagingTagClaimsAsync(int index, int size,
+            Func<IQueryable<TTagClaim>, IQueryable<TTagClaim>> queryFactory = null, CancellationToken cancellationToken = default);
 
 
         /// <summary>

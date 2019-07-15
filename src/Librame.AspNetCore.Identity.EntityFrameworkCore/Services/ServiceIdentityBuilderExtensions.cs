@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Identity
         /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
         public static IIdentityBuilder AddServices(this IIdentityBuilder builder)
         {
-            builder.Services.AddScoped<IIdentityIdentifierService, InternalIdentityIdentifierService>();
+            builder.Services.AddScoped<IIdentityIdentifierService, IdentityIdentifierService>();
 
             return builder;
         }

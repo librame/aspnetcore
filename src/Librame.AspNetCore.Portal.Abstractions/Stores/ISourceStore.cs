@@ -55,14 +55,6 @@ namespace Librame.AspNetCore.Portal
         /// <returns>返回一个包含 <typeparamref name="TSource"/> 的异步操作。</returns>
         Task<TSource> FindSourceAsync(CancellationToken cancellationToken, params object[] keyValues);
 
-        ///// <summary>
-        ///// 异步获取来源集合。
-        ///// </summary>
-        ///// <param name="categoryId">给定的分类标识。</param>
-        ///// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        ///// <returns>返回一个包含 <see cref="List{TSource}"/> 的异步操作。</returns>
-        //Task<List<TSource>> GetSourcesAsync(object categoryId, CancellationToken cancellationToken = default);
-
         /// <summary>
         /// 异步获取所有来源集合。
         /// </summary>

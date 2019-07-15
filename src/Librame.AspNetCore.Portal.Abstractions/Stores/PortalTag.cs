@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户标签。
     /// </summary>
-    public class PortalTag : PortalTag<int>
+    public class PortalTag : PortalTag<string>
     {
     }
 
@@ -27,9 +27,9 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户标签。
     /// </summary>
-    /// <typeparam name="TIncremId">指定的标识类型。</typeparam>
-    public class PortalTag<TIncremId> : AbstractEntityWithIncremId<TIncremId>
-        where TIncremId : IEquatable<TIncremId>
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    public class PortalTag<TGenId> : AbstractEntityWithIncremId<TGenId>
+        where TGenId : IEquatable<TGenId>
     {
         /// <summary>
         /// 名称。

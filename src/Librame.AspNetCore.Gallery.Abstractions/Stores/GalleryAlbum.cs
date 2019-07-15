@@ -29,7 +29,7 @@ namespace Librame.AspNetCore.Gallery
             : base()
         {
             // 默认使用空标识符，新增推荐使用服务注入
-            EditorId = CoverId = Id = GuIdentifier.Empty;
+            EditorId = CoverId = Id = UniqueIdentifier.Empty;
         }
     }
 

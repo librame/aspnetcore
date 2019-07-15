@@ -115,19 +115,19 @@ namespace Librame.AspNetCore.Portal
         /// 异步包含指定专题主体。
         /// </summary>
         /// <param name="subjectId">给定的专题标识。</param>
-        /// <param name="bodyHash">给定的主体散列。</param>
+        /// <param name="textHash">给定的文本散列。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含布尔值的异步操作。</returns>
-        Task<bool> ContainSubjectBodyAsync(object subjectId, string bodyHash, CancellationToken cancellationToken = default);
+        Task<bool> ContainSubjectBodyAsync(object subjectId, string textHash, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步获取指定专题主体。
         /// </summary>
         /// <param name="subjectId">给定的专题标识。</param>
-        /// <param name="bodyHash">给定的主体散列。</param>
+        /// <param name="textHash">给定的文本散列。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TSubjectBody"/> 的异步操作。</returns>
-        Task<TSubjectBody> GetSubjectBodyAsync(object subjectId, string bodyHash, CancellationToken cancellationToken = default);
+        Task<TSubjectBody> GetSubjectBodyAsync(object subjectId, string textHash, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步查找指定专题主体。

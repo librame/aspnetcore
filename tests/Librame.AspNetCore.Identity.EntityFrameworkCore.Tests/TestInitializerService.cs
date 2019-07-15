@@ -8,7 +8,7 @@ namespace Librame.AspNetCore.Identity.Tests
     using Extensions;
     using Extensions.Data;
 
-    public class TestInitializerService<TAccessor> : InitializerServiceBase<TAccessor, TestIdentifierService>
+    public class TestInitializerService<TAccessor> : InitializerServiceBase<TAccessor, IdentityIdentifierService>
         where TAccessor : IdentityDbContextAccessor
     {
         private SignInManager<DefaultIdentityUser> _signInManager;

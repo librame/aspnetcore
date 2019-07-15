@@ -38,7 +38,7 @@ namespace Librame.AspNetCore.Identity
             : base(roleName)
         {
             // 默认使用空标识符，新增推荐使用服务注入
-            Id = GuIdentifier.Empty;
+            Id = UniqueIdentifier.Empty;
             NormalizedName = roleName;
         }
 

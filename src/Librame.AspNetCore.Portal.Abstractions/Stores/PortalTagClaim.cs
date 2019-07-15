@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户标签声明。
     /// </summary>
-    public class PortalTagClaim : PortalTagClaim<int>
+    public class PortalTagClaim : PortalTagClaim<string, int>
     {
     }
 
@@ -27,14 +27,25 @@ namespace Librame.AspNetCore.Portal
     /// <summary>
     /// 门户标签声明。
     /// </summary>
-    /// <typeparam name="TIncremId">指定的标识类型。</typeparam>
-    public class PortalTagClaim<TIncremId> : AbstractIncremId<TIncremId>
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class PortalTagClaim<TGenId, TIncremId> : AbstractGenId<TGenId>
+        where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
+        /// 构造一个门户标签声明实例。
+        /// </summary>
+        public PortalTagClaim()
+        {
+            TagId = Id;
+        }
+
+
+        /// <summary>
         /// 标签标识。
         /// </summary>
-        public virtual TIncremId TagId { get; set; }
+        public virtual TGenId TagId { get; set; }
 
         /// <summary>
         /// 声明标识。

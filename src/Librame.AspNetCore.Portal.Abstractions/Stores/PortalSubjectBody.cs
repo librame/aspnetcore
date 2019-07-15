@@ -37,13 +37,13 @@ namespace Librame.AspNetCore.Portal
         public virtual TIncremId SubjectId { get; set; }
 
         /// <summary>
-        /// 主体散列。
+        /// 文本散列。
         /// </summary>
-        public virtual string BodyHash { get; set; }
+        public virtual string TextHash { get; set; }
 
         /// <summary>
-        /// 正文。
+        /// 文本。
         /// </summary>
-        public virtual string Body { get; set; }
+        public virtual string Text { get; set; }
     }
 }

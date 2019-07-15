@@ -45,7 +45,6 @@ namespace Librame.AspNetCore.Identity.Tests
                         };
                     });
 
-                services.TryReplace<IIdentifierService, TestIdentifierService>();
                 services.TryReplace(typeof(IInitializerService<>), typeof(TestInitializerService<>));
                 services.AddScoped<ITestStoreHub, TestStoreHub>();
 

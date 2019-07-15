@@ -36,7 +36,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Data.Abstractions" Version="6.0.819.202" />
+    <PackageReference Include="Librame.Extensions.Data.Abstractions" Version="6.0.821.201" />
   </ItemGroup>
 
   <ItemGroup>

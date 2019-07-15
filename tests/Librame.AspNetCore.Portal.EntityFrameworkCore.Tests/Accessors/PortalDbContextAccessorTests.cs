@@ -3,24 +3,29 @@ using Xunit;
 
 namespace Librame.AspNetCore.Portal.Tests
 {
+    using Extensions.Data;
+
     public class PortalDbContextAccessorTests
     {
         [Fact]
         public void AllTest()
         {
-            using (var store = TestServiceProvider.Current.GetRequiredService<ITestStore>())
+            using (var stores = TestServiceProvider.Current.GetRequiredService<ITestStoreHub>())
             {
-                var roles = store.GetRoles();
-                Assert.Empty(roles);
+                var initializer = stores.GetRequiredService<IInitializerService<PortalDbContextAccessor>>();
+                initializer.InitializeService(stores);
 
-                roles = store.UseWriteDbConnection().GetRoles();
-                Assert.NotEmpty(roles);
+                var claims = stores.GetClaims();
+                Assert.Empty(claims);
 
-                var users = store.UseDefaultDbConnection().GetUsers();
-                Assert.Empty(users);
+                claims = stores.UseWriteDbConnection().GetClaims();
+                Assert.NotEmpty(claims);
 
-                users = store.UseWriteDbConnection().GetUsers();
-                Assert.NotEmpty(users);
+                var categories = stores.UseDefaultDbConnection().GetCategories();
+                Assert.Empty(categories);
+
+                categories = stores.UseWriteDbConnection().GetCategories();
+                Assert.NotEmpty(categories);
             }
         }
 

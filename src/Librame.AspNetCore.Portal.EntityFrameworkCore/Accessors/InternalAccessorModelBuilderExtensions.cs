@@ -37,52 +37,31 @@ namespace Librame.AspNetCore.Portal
         /// <typeparam name="TSubject">指定的专题类型。</typeparam>
         /// <typeparam name="TSubjectBody">指定的专题主体类型。</typeparam>
         /// <typeparam name="TSubjectClaim">指定的专题声明类型。</typeparam>
-        /// <typeparam name="TClaimId">指定的声明标识类型。</typeparam>
-        /// <typeparam name="TCategoryId">指定的分类标识类型。</typeparam>
-        /// <typeparam name="TPaneId">指定的窗格标识类型。</typeparam>
-        /// <typeparam name="TPaneClaimId">指定的窗格声明标识类型。</typeparam>
-        /// <typeparam name="TTagId">指定的标签标识类型。</typeparam>
-        /// <typeparam name="TTagClaimId">指定的标签声明标识类型。</typeparam>
-        /// <typeparam name="TSourceId">指定的来源标识类型。</typeparam>
-        /// <typeparam name="TEditorId">指定的编者标识类型。</typeparam>
-        /// <typeparam name="TEditorTitleId">指定的编者头衔标识类型。</typeparam>
-        /// <typeparam name="TSubjectId">指定的专题标识类型。</typeparam>
-        /// <typeparam name="TSubjectBodyId">指定的专题主体标识类型。</typeparam>
-        /// <typeparam name="TSubjectClaimId">指定的专题声明标识类型。</typeparam>
-        /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
-        /// <typeparam name="TDateTime">指定的日期与时间类型（提供对 DateTime 或 DateTimeOffset 的支持）。</typeparam>
+        /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+        /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
         /// <param name="options">给定的 <see cref="PortalBuilderOptions"/>。</param>
-        public static void ConfigurePortalEntities<TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim,
-            TClaimId, TCategoryId, TPaneId, TPaneClaimId, TTagId, TTagClaimId, TSourceId, TEditorId, TEditorTitleId, TSubjectId, TSubjectBodyId, TSubjectClaimId, TUserId, TDateTime>
+        public static void ConfigurePortalEntities<TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource,
+            TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim, TGenId, TIncremId>
             (this ModelBuilder modelBuilder, PortalBuilderOptions options)
-            where TClaim : PortalClaim<TClaimId>
-            where TCategory : PortalCategory<TCategoryId>
-            where TPane : PortalPane<TPaneId, TCategoryId>
-            where TPaneClaim : PortalPaneClaim<TPaneClaimId, TPaneId, TClaimId>
-            where TTag : PortalTag<TTagId>
-            where TTagClaim : PortalTagClaim<TTagClaimId, TTagId, TClaimId>
-            where TSource : PortalSource<TSourceId, TCategoryId>
-            where TEditor : PortalEditor<TEditorId, TUserId>
-            where TEditorTitle : PortalEditorTitle<TEditorTitleId, TEditorId>
-            where TSubject : PortalSubject<TSubjectId, TCategoryId, TDateTime>
-            where TSubjectBody : PortalSubjectBody<TSubjectBodyId, TSubjectId>
-            where TSubjectClaim : PortalSubjectClaim<TSubjectClaimId, TSubjectId, TClaimId>
-            where TClaimId : IEquatable<TClaimId>
-            where TCategoryId : IEquatable<TCategoryId>
-            where TPaneId : IEquatable<TPaneId>
-            where TPaneClaimId : IEquatable<TPaneClaimId>
-            where TTagId : IEquatable<TTagId>
-            where TTagClaimId : IEquatable<TTagClaimId>
-            where TSourceId : IEquatable<TSourceId>
-            where TEditorId : IEquatable<TEditorId>
-            where TEditorTitleId : IEquatable<TEditorTitleId>
-            where TSubjectId : IEquatable<TSubjectId>
-            where TSubjectBodyId : IEquatable<TSubjectBodyId>
-            where TSubjectClaimId : IEquatable<TSubjectClaimId>
-            where TUserId : IEquatable<TUserId>
-            where TDateTime : struct
+            where TClaim : PortalClaim<TIncremId>
+            where TCategory : PortalCategory<TIncremId>
+            where TPane : PortalPane<TIncremId>
+            where TPaneClaim : PortalPaneClaim<TIncremId>
+            where TTag : PortalTag<TGenId>
+            where TTagClaim : PortalTagClaim<TGenId, TIncremId>
+            where TSource : PortalSource<TIncremId>
+            where TEditor : PortalEditor<TIncremId, TGenId>
+            where TEditorTitle : PortalEditorTitle<TIncremId>
+            where TSubject : PortalSubject<TIncremId>
+            where TSubjectBody : PortalSubjectBody<TIncremId>
+            where TSubjectClaim : PortalSubjectClaim<TIncremId>
+            where TGenId : IEquatable<TGenId>
+            where TIncremId : IEquatable<TIncremId>
         {
+            var mapRelationship = options.Stores?.MapRelationship ?? true;
+            var maxKeyLength = options.Stores?.MaxLengthForProperties ?? 0;
+
             modelBuilder.Entity<TClaim>(b =>
             {
                 b.ToTable(options.TableSchemas.ClaimFactory);
@@ -92,9 +71,20 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.Type, i.Model }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.Type).HasMaxLength(100);
-                //b.Property(p => p.Model).HasMaxLength(200);
-                //b.Property(p => p.Title).HasMaxLength(100);
+                b.Property(p => p.Type).HasMaxLength(256);
+                b.Property(p => p.Model).HasMaxLength(256);
+
+                if (maxKeyLength > 0)
+                {
+                    b.Property(p => p.Title).HasMaxLength(maxKeyLength);
+                }
+
+                if (mapRelationship)
+                {
+                    b.HasMany<TPaneClaim>().WithOne().HasForeignKey(fk => fk.ClaimId).IsRequired();
+                    b.HasMany<TTagClaim>().WithOne().HasForeignKey(fk => fk.ClaimId).IsRequired();
+                    b.HasMany<TSubjectClaim>().WithOne().HasForeignKey(fk => fk.ClaimId).IsRequired();
+                }
             });
 
             modelBuilder.Entity<TCategory>(b =>
@@ -106,7 +96,19 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.ParentId, i.Name }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.Name).HasMaxLength(100);
+                b.Property(p => p.Name).HasMaxLength(256);
+
+                if (maxKeyLength > 0)
+                {
+                    b.Property(p => p.Descr).HasMaxLength(maxKeyLength);
+                }
+
+                if (mapRelationship)
+                {
+                    b.HasMany<TPane>().WithOne().HasForeignKey(fk => fk.CategoryId).IsRequired();
+                    b.HasMany<TSource>().WithOne().HasForeignKey(fk => fk.CategoryId).IsRequired();
+                    b.HasMany<TSubject>().WithOne().HasForeignKey(fk => fk.CategoryId).IsRequired();
+                }
             });
 
             modelBuilder.Entity<TPane>(b =>
@@ -118,10 +120,17 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.CategoryId, i.Name }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.Name).HasMaxLength(100);
-                //b.Property(p => p.Path).HasMaxLength(200);
+                b.Property(p => p.Name).HasMaxLength(256);
 
-                //b.HasMany<TPaneClaim>().WithOne().HasForeignKey(fk => fk.PaneId).IsRequired();
+                if (maxKeyLength > 0)
+                {
+                    b.Property(p => p.Path).HasMaxLength(maxKeyLength);
+                }
+
+                if (mapRelationship)
+                {
+                    b.HasMany<TPaneClaim>().WithOne().HasForeignKey(fk => fk.PaneId).IsRequired();
+                }
             });
             modelBuilder.Entity<TPaneClaim>(b =>
             {
@@ -132,7 +141,7 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.PaneId, i.ClaimId, i.AssocId }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.AssocId).HasMaxLength(100);
+                b.Property(p => p.AssocId).HasMaxLength(256);
             });
 
             modelBuilder.Entity<TTag>(b =>
@@ -143,10 +152,12 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasIndex(i => i.Name).HasName().IsUnique();
 
-                b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.Name).HasMaxLength(50);
+                b.Property(p => p.Name).HasMaxLength(256);
 
-                //b.HasMany<TTagClaim>().WithOne().HasForeignKey(fk => fk.TagId).IsRequired();
+                if (mapRelationship)
+                {
+                    b.HasMany<TTagClaim>().WithOne().HasForeignKey(fk => fk.TagId).IsRequired();
+                }
             });
             modelBuilder.Entity<TTagClaim>(b =>
             {
@@ -156,8 +167,7 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasIndex(i => new { i.TagId, i.ClaimId }).HasName().IsUnique();
 
-                b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.TagId).HasMaxLength(50);
+                b.Property(p => p.TagId).HasMaxLength(256);
             });
 
             modelBuilder.Entity<TSource>(b =>
@@ -169,10 +179,14 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.CategoryId, i.Name }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.Name).HasMaxLength(100);
-                //b.Property(p => p.Logo).HasMaxLength(100);
-                //b.Property(p => p.Link).HasMaxLength(100);
-                //b.Property(p => p.Descr).HasMaxLength(200);
+                b.Property(p => p.Name).HasMaxLength(256);
+
+                if (maxKeyLength > 0)
+                {
+                    b.Property(p => p.Logo).HasMaxLength(maxKeyLength);
+                    b.Property(p => p.Link).HasMaxLength(maxKeyLength);
+                    b.Property(p => p.Descr).HasMaxLength(maxKeyLength);
+                }
             });
 
             modelBuilder.Entity<TEditor>(b =>
@@ -184,9 +198,13 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.UserId, i.Name }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.Name).HasMaxLength(100);
+                b.Property(p => p.UserId).HasMaxLength(256);
+                b.Property(p => p.Name).HasMaxLength(256);
 
-                //b.HasMany<TEditorTitle>().WithOne().HasForeignKey(fk => fk.EditorId).IsRequired();
+                if (mapRelationship)
+                {
+                    b.HasMany<TEditorTitle>().WithOne().HasForeignKey(fk => fk.EditorId).IsRequired();
+                }
             });
             modelBuilder.Entity<TEditorTitle>(b =>
             {
@@ -197,7 +215,7 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.EditorId, i.Name }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.Name).HasMaxLength(100);
+                b.Property(p => p.Name).HasMaxLength(256);
             });
 
             modelBuilder.Entity<TSubject>(b =>
@@ -209,12 +227,20 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.CategoryId, i.Title }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.PublishLink).HasMaxLength(100);
-                //b.Property(p => p.Title).HasMaxLength(100);
-                //b.Property(p => p.Subtitle).HasMaxLength(100);
-                //b.Property(p => p.Tags).HasMaxLength(100);
+                b.Property(p => p.Title).HasMaxLength(256);
 
-                //b.HasMany<TSubjectClaim>().WithOne().HasForeignKey(fk => fk.SubjectId).IsRequired();
+                if (maxKeyLength > 0)
+                {
+                    b.Property(p => p.PublishLink).HasMaxLength(maxKeyLength);
+                    b.Property(p => p.Subtitle).HasMaxLength(maxKeyLength);
+                    b.Property(p => p.Tags).HasMaxLength(maxKeyLength);
+                }
+
+                if (mapRelationship)
+                {
+                    b.HasMany<TSubjectBody>().WithOne().HasForeignKey(fk => fk.SubjectId).IsRequired();
+                    b.HasMany<TSubjectClaim>().WithOne().HasForeignKey(fk => fk.SubjectId).IsRequired();
+                }
             });
             modelBuilder.Entity<TSubjectBody>(b =>
             {
@@ -222,11 +248,11 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasKey(k => k.Id);
 
-                b.HasIndex(i => new { i.SubjectId, i.BodyHash }).HasName().IsUnique();
+                b.HasIndex(i => new { i.SubjectId, i.TextHash }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.BodyHash).HasMaxLength(100);
-                //b.Property(p => p.Body).HasMaxLength(4000);
+                b.Property(p => p.TextHash).HasMaxLength(256);
+                b.Property(p => p.Text).HasMaxLength(4000);
             });
             modelBuilder.Entity<TSubjectClaim>(b =>
             {
@@ -237,7 +263,7 @@ namespace Librame.AspNetCore.Portal
                 b.HasIndex(i => new { i.SubjectId, i.ClaimId, i.AssocId }).HasName().IsUnique();
 
                 b.Property(p => p.Id).ValueGeneratedOnAdd();
-                //b.Property(p => p.AssocId).HasMaxLength(100);
+                b.Property(p => p.AssocId).HasMaxLength(256);
             });
         }
 

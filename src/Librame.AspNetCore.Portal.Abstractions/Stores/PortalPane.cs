@@ -21,6 +21,23 @@ namespace Librame.AspNetCore.Portal
     /// </summary>
     public class PortalPane : PortalPane<int>
     {
+        /// <summary>
+        /// 构造一个门户窗格实例。
+        /// </summary>
+        public PortalPane()
+            : base()
+        {
+        }
+
+        /// <summary>
+        /// 构造一个门户窗格实例。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="path">给定的路径。</param>
+        public PortalPane(string name, string path)
+            : base(name, path)
+        {
+        }
     }
 
 
@@ -31,6 +48,25 @@ namespace Librame.AspNetCore.Portal
     public class PortalPane<TIncremId> : AbstractEntityWithIncremId<TIncremId>
         where TIncremId : IEquatable<TIncremId>
     {
+        /// <summary>
+        /// 构造一个门户窗格实例。
+        /// </summary>
+        public PortalPane()
+        {
+        }
+
+        /// <summary>
+        /// 构造一个门户窗格实例。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="path">给定的路径。</param>
+        public PortalPane(string name, string path)
+        {
+            Name = name;
+            Path = path;
+        }
+
+
         /// <summary>
         /// 分类标识。
         /// </summary>

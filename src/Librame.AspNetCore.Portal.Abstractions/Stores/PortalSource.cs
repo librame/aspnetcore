@@ -21,6 +21,23 @@ namespace Librame.AspNetCore.Portal
     /// </summary>
     public class PortalSource : PortalSource<int>
     {
+        /// <summary>
+        /// 构造一个 <see cref="PortalSource{TIncremId}"/> 实例。
+        /// </summary>
+        public PortalSource()
+            : base()
+        {
+        }
+
+        /// <summary>
+        /// 构造一个 <see cref="PortalSource{TIncremId}"/> 实例。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="link">给定的链接。</param>
+        public PortalSource(string name, string link)
+            : base(name, link)
+        {
+        }
     }
 
 
@@ -31,6 +48,25 @@ namespace Librame.AspNetCore.Portal
     public class PortalSource<TIncremId> : AbstractEntityWithIncremId<TIncremId>
         where TIncremId : IEquatable<TIncremId>
     {
+        /// <summary>
+        /// 构造一个 <see cref="PortalSource{TIncremId}"/> 实例。
+        /// </summary>
+        public PortalSource()
+        {
+        }
+
+        /// <summary>
+        /// 构造一个 <see cref="PortalSource{TIncremId}"/> 实例。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="link">给定的链接。</param>
+        public PortalSource(string name, string link)
+        {
+            Name = name;
+            Link = link;
+        }
+
+
         /// <summary>
         /// 分类标识。
         /// </summary>

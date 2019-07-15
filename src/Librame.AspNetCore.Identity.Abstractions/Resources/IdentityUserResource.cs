@@ -27,7 +27,7 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 访问失败次数。
         /// </summary>
-        public int AccessFailedCount { get; set; }
+        public string AccessFailedCount { get; set; }
 
         /// <summary>
         /// 密码散列。
@@ -54,7 +54,7 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 邮箱确认。
         /// </summary>
-        public bool EmailConfirmed { get; set; }
+        public string EmailConfirmed { get; set; }
 
         /// <summary>
         /// 电话号码。
@@ -63,12 +63,12 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 电话号码确认。
         /// </summary>
-        public bool PhoneNumberConfirmed { get; set; }
+        public string PhoneNumberConfirmed { get; set; }
 
         /// <summary>
         /// 启用锁定。
         /// </summary>
-        public bool LockoutEnabled { get; set; }
+        public string LockoutEnabled { get; set; }
         /// <summary>
         /// 锁定结束日期。
         /// </summary>
@@ -77,7 +77,7 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 启用双因子验证。
         /// </summary>
-        public bool TwoFactorEnabled { get; set; }
+        public string TwoFactorEnabled { get; set; }
 
         /// <summary>
         /// 并发标志。

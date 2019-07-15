@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Portal
         /// <returns>返回 <see cref="IPortalBuilder"/>。</returns>
         public static IPortalBuilder AddServices(this IPortalBuilder builder)
         {
-            builder.Services.AddScoped<IPortalIdentifierService, InternalPortalIdentifierService>();
+            builder.Services.AddScoped<IPortalIdentifierService, PortalIdentifierService>();
 
             return builder;
         }

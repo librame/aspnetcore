@@ -29,7 +29,7 @@ namespace Librame.AspNetCore.Library
             : base()
         {
             // 默认使用空标识符，新增推荐使用服务注入
-            ArticleId = Id = GuIdentifier.Empty;
+            ArticleId = Id = UniqueIdentifier.Empty;
         }
     }
 

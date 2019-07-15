@@ -14,6 +14,7 @@ using System;
 
 namespace Librame.AspNetCore.Portal
 {
+    using Extensions;
     using Extensions.Data;
 
     /// <summary>
@@ -21,6 +22,23 @@ namespace Librame.AspNetCore.Portal
     /// </summary>
     public class PortalClaim : PortalClaim<int>
     {
+        /// <summary>
+        /// 构造一个门户声明实例。
+        /// </summary>
+        public PortalClaim()
+            : base()
+        {
+        }
+
+        /// <summary>
+        /// 构造一个门户声明实例。
+        /// </summary>
+        /// <param name="entityType">给定的实体类型。</param>
+        /// <param name="title">给定的标题。</param>
+        public PortalClaim(Type entityType, string title)
+            : base(entityType, title)
+        {
+        }
     }
 
 
@@ -28,9 +46,29 @@ namespace Librame.AspNetCore.Portal
     /// 门户声明。
     /// </summary>
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
-    public class PortalClaim<TIncremId> : AbstractIncremId<TIncremId>
+    public class PortalClaim<TIncremId> : AbstractEntityWithIncremId<TIncremId>
         where TIncremId : IEquatable<TIncremId>
     {
+        /// <summary>
+        /// 构造一个门户声明实例。
+        /// </summary>
+        public PortalClaim()
+        {
+        }
+
+        /// <summary>
+        /// 构造一个门户声明实例。
+        /// </summary>
+        /// <param name="entityType">给定的实体类型。</param>
+        /// <param name="title">给定的标题。</param>
+        public PortalClaim(Type entityType, string title)
+        {
+            Type = entityType.GetBodyName();
+            Model = entityType.GetFullName();
+            Title = title;
+        }
+
+
         /// <summary>
         /// 类型。
         /// </summary>

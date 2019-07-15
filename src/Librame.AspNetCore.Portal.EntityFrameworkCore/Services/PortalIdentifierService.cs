@@ -14,56 +14,56 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Portal
 {
     using Extensions;
     using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
-    /// 内部身份标识符服务。
+    /// 门户标识符服务。
     /// </summary>
-    internal class InternalIdentityIdentifierService : IdentifierServiceBase, IIdentityIdentifierService
+    public class PortalIdentifierService : IdentifierServiceBase, IPortalIdentifierService
     {
         /// <summary>
-        /// 构造一个 <see cref="InternalIdentityIdentifierService"/> 实例。
+        /// 构造一个 <see cref="PortalIdentifierService"/> 实例。
         /// </summary>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        public InternalIdentityIdentifierService(ILoggerFactory loggerFactory)
+        public PortalIdentifierService(ILoggerFactory loggerFactory)
             : base(loggerFactory)
         {
         }
 
 
         /// <summary>
-        /// 异步获取角色标识。
+        /// 异步获取标签标识。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回 <see cref="string"/>。</returns>
-        public virtual Task<string> GetRoleIdAsync(CancellationToken cancellationToken = default)
+        public virtual Task<string> GetTagIdAsync(CancellationToken cancellationToken = default)
         {
             return cancellationToken.RunFactoryOrCancellationAsync(() =>
             {
-                string roleId = GuIdentifier.New();
-                Logger.LogInformation($"Get RoleId: {roleId}");
+                string tagId = UniqueIdentifier.New();
+                Logger.LogInformation($"Get TagId: {tagId}");
 
-                return roleId;
+                return tagId;
             });
         }
 
         /// <summary>
-        /// 异步获取用户标识。
+        /// 异步获取标签声明标识。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回 <see cref="string"/>。</returns>
-        public virtual Task<string> GetUserIdAsync(CancellationToken cancellationToken = default)
+        public virtual Task<string> GetTagClaimIdAsync(CancellationToken cancellationToken = default)
         {
             return cancellationToken.RunFactoryOrCancellationAsync(() =>
             {
-                string userId = GuIdentifier.New();
-                Logger.LogInformation($"Get UserId: {userId}");
+                string tagClaimId = UniqueIdentifier.New();
+                Logger.LogInformation($"Get TagClaimId: {tagClaimId}");
 
-                return userId;
+                return tagClaimId;
             });
         }
 

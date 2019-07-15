@@ -137,18 +137,6 @@ namespace Librame.AspNetCore.Portal
         /// <returns>返回一个包含 <typeparamref name="TPaneClaim"/> 的异步操作。</returns>
         Task<TPaneClaim> FindPaneClaimAsync(CancellationToken cancellationToken, params object[] keyValues);
 
-        ///// <summary>
-        ///// 异步获取窗格声明集合。
-        ///// </summary>
-        ///// <param name="paneId">给定的窗格标识。</param>
-        ///// <param name="claimId">给定的声明标识。</param>
-        ///// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
-        ///// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        ///// <returns>返回一个包含 <see cref="List{TPaneClaim}"/> 的异步操作。</returns>
-        //Task<List<TPaneClaim>> GetPaneClaimsAsync(object paneId, object claimId,
-        //    Func<IQueryable<TPaneClaim>, IQueryable<TPaneClaim>> queryFactory = null,
-        //    CancellationToken cancellationToken = default);
-
         /// <summary>
         /// 异步获取所有窗格声明集合。
         /// </summary>

@@ -30,7 +30,8 @@ namespace Librame.AspNetCore.Portal.Tests
                     })
                     .AddPortal<PortalDbContextAccessor>();
 
-                services.AddScoped<ITestStore, TestStore>();
+                services.TryReplace(typeof(IInitializerService<>), typeof(TestInitializerService<>));
+                services.AddScoped<ITestStoreHub, TestStoreHub>();
 
                 return services.BuildServiceProvider();
             });

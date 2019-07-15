@@ -27,14 +27,13 @@ namespace Librame.AspNetCore.Portal
     /// 门户存储中心。
     /// </summary>
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
-    public class PortalStoreHub<TAccessor>
-        : PortalStoreHub<TAccessor, PortalCategory, PortalPane, PortalTag, PortalSource, PortalEditor, PortalSubject,
-            int, int, string, int, int, int, string>
+    public class PortalStoreHub<TAccessor> : PortalStoreHub<TAccessor, PortalClaim, PortalCategory
+        , PortalPane, PortalTag, PortalSource, PortalEditor, PortalSubject, string, int>
         , IPortalStoreHub<TAccessor>
         where TAccessor : PortalDbContextAccessor
     {
         /// <summary>
-        /// 构造一个门户存储中心实例（可用于容器构造）。
+        /// 构造一个 <see cref="PortalStoreHub{TAccessor}"/> 实例（可用于容器构造）。
         /// </summary>
         /// <param name="accessor">给定的 <see cref="IAccessor"/>。</param>
         public PortalStoreHub(IAccessor accessor)
@@ -43,7 +42,7 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 构造一个门户存储中心实例（可用于手动构造）。
+        /// 构造一个 <see cref="PortalStoreHub{TAccessor}"/> 实例（可用于手动构造）。
         /// </summary>
         /// <param name="accessor">给定的 <typeparamref name="TAccessor"/>。</param>
         protected PortalStoreHub(TAccessor accessor)
@@ -57,40 +56,30 @@ namespace Librame.AspNetCore.Portal
     /// 门户存储中心。
     /// </summary>
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
+    /// <typeparam name="TClaim">指定的声明类型。</typeparam>
     /// <typeparam name="TCategory">指定的分类类型。</typeparam>
     /// <typeparam name="TPane">指定的窗格类型。</typeparam>
     /// <typeparam name="TTag">指定的标签类型。</typeparam>
     /// <typeparam name="TSource">指定的来源类型。</typeparam>
     /// <typeparam name="TEditor">指定的编者类型。</typeparam>
     /// <typeparam name="TSubject">指定的专题类型。</typeparam>
-    /// <typeparam name="TCategoryId">指定的分类标识类型。</typeparam>
-    /// <typeparam name="TPaneId">指定的窗格标识类型。</typeparam>
-    /// <typeparam name="TTagId">指定的标签标识类型。</typeparam>
-    /// <typeparam name="TSourceId">指定的来源标识类型。</typeparam>
-    /// <typeparam name="TEditorId">指定的编者标识类型。</typeparam>
-    /// <typeparam name="TSubjectId">指定的专题标识类型。</typeparam>
-    /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
-    public class PortalStoreHub<TAccessor, TCategory, TPane, TTag, TSource, TEditor, TSubject,
-        TCategoryId, TPaneId, TTagId, TSourceId, TEditorId, TSubjectId, TUserId>
-        : PortalStoreHub<TAccessor, PortalClaim, TCategory, TPane, PortalPaneClaim<int, TPaneId, int>, TTag, PortalTagClaim<string, TTagId, int>, TSource, TEditor, PortalEditorTitle<int, TEditorId>, TSubject, PortalSubjectBody<int, TSubjectId>, PortalSubjectClaim<int, TSubjectId, int>,
-            int, TCategoryId, TPaneId, int, TTagId, string, TSourceId, TEditorId, int, TSubjectId, int, int, TUserId, DateTimeOffset>
-        , IPortalStoreHub<TAccessor, TCategory, TPane, TTag, TSource, TEditor, TSubject,
-            TPaneId, TTagId, TEditorId, TSubjectId>
-        where TAccessor : PortalDbContextAccessor<PortalClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject,
-            int, TCategoryId, TPaneId, TTagId, TSourceId, TEditorId, TSubjectId, TUserId>
-        where TCategory : PortalCategory<TCategoryId>
-        where TPane : PortalPane<TPaneId, TCategoryId>
-        where TTag : PortalTag<TTagId>
-        where TSource : PortalSource<TSourceId, TCategoryId>
-        where TEditor : PortalEditor<TEditorId, TUserId>
-        where TSubject : PortalSubject<TSubjectId, TCategoryId, DateTimeOffset>
-        where TCategoryId : IEquatable<TCategoryId>
-        where TPaneId : IEquatable<TPaneId>
-        where TTagId : IEquatable<TTagId>
-        where TSourceId : IEquatable<TSourceId>
-        where TEditorId : IEquatable<TEditorId>
-        where TSubjectId : IEquatable<TSubjectId>
-        where TUserId : IEquatable<TUserId>
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class PortalStoreHub<TAccessor, TClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject, TGenId, TIncremId>
+        : PortalStoreHub<TAccessor, TClaim, TCategory, TPane, PortalPaneClaim<TIncremId>
+            , TTag, PortalTagClaim<TGenId, TIncremId>, TSource, TEditor, PortalEditorTitle<TIncremId>
+            , TSubject, PortalSubjectBody<TIncremId>, PortalSubjectClaim<TIncremId>, TGenId, TIncremId>
+        , IPortalStoreHub<TAccessor, TClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject, TGenId, TIncremId>
+        where TAccessor : PortalDbContextAccessor<TClaim, TCategory, TPane, TTag, TSource, TEditor, TSubject, TGenId, TIncremId>
+        where TClaim : PortalClaim<TIncremId>
+        where TCategory : PortalCategory<TIncremId>
+        where TPane : PortalPane<TIncremId>
+        where TTag : PortalTag<TGenId>
+        where TSource : PortalSource<TIncremId>
+        where TEditor : PortalEditor<TIncremId, TGenId>
+        where TSubject : PortalSubject<TIncremId>
+        where TGenId : IEquatable<TGenId>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 构造一个门户存储中心实例（可用于容器构造）。
@@ -128,51 +117,29 @@ namespace Librame.AspNetCore.Portal
     /// <typeparam name="TSubject">指定的专题类型。</typeparam>
     /// <typeparam name="TSubjectBody">指定的专题主体类型。</typeparam>
     /// <typeparam name="TSubjectClaim">指定的专题声明类型。</typeparam>
-    /// <typeparam name="TClaimId">指定的声明标识类型。</typeparam>
-    /// <typeparam name="TCategoryId">指定的分类标识类型。</typeparam>
-    /// <typeparam name="TPaneId">指定的窗格标识类型。</typeparam>
-    /// <typeparam name="TPaneClaimId">指定的窗格声明标识类型。</typeparam>
-    /// <typeparam name="TTagId">指定的标签标识类型。</typeparam>
-    /// <typeparam name="TTagClaimId">指定的标签声明标识类型。</typeparam>
-    /// <typeparam name="TSourceId">指定的来源标识类型。</typeparam>
-    /// <typeparam name="TEditorId">指定的编者标识类型。</typeparam>
-    /// <typeparam name="TEditorTitleId">指定的编者头衔标识类型。</typeparam>
-    /// <typeparam name="TSubjectId">指定的专题标识类型。</typeparam>
-    /// <typeparam name="TSubjectBodyId">指定的专题主体标识类型。</typeparam>
-    /// <typeparam name="TSubjectClaimId">指定的专题声明标识类型。</typeparam>
-    /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
-    /// <typeparam name="TDateTime">指定的日期与时间类型（提供对 DateTime 或 DateTimeOffset 的支持）。</typeparam>
-    public class PortalStoreHub<TAccessor, TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim,
-        TClaimId, TCategoryId, TPaneId, TPaneClaimId, TTagId, TTagClaimId, TSourceId, TEditorId, TEditorTitleId, TSubjectId, TSubjectBodyId, TSubjectClaimId, TUserId, TDateTime>
-        : StoreHubBase<TAccessor>, IPortalStoreHub<TAccessor, TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim>
-        where TAccessor : PortalDbContextAccessor<TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim, TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim,
-            TClaimId, TCategoryId, TPaneId, TPaneClaimId, TTagId, TTagClaimId, TSourceId, TEditorId, TEditorTitleId, TSubjectId, TSubjectBodyId, TSubjectClaimId, TUserId, TDateTime>
-        where TClaim : PortalClaim<TClaimId>
-        where TCategory : PortalCategory<TCategoryId>
-        where TPane : PortalPane<TPaneId, TCategoryId>
-        where TPaneClaim : PortalPaneClaim<TPaneClaimId, TPaneId, TClaimId>
-        where TTag : PortalTag<TTagId>
-        where TTagClaim : PortalTagClaim<TTagClaimId, TTagId, TClaimId>
-        where TSource : PortalSource<TSourceId, TCategoryId>
-        where TEditor : PortalEditor<TEditorId, TUserId>
-        where TEditorTitle : PortalEditorTitle<TEditorTitleId, TEditorId>
-        where TSubject : PortalSubject<TSubjectId, TCategoryId, TDateTime>
-        where TSubjectBody : PortalSubjectBody<TSubjectBodyId, TSubjectId>
-        where TSubjectClaim : PortalSubjectClaim<TSubjectClaimId, TSubjectId, TClaimId>
-        where TClaimId : IEquatable<TClaimId>
-        where TCategoryId : IEquatable<TCategoryId>
-        where TPaneId : IEquatable<TPaneId>
-        where TPaneClaimId : IEquatable<TPaneClaimId>
-        where TTagId : IEquatable<TTagId>
-        where TTagClaimId : IEquatable<TTagClaimId>
-        where TSourceId : IEquatable<TSourceId>
-        where TEditorId : IEquatable<TEditorId>
-        where TEditorTitleId : IEquatable<TEditorTitleId>
-        where TSubjectId : IEquatable<TSubjectId>
-        where TSubjectBodyId : IEquatable<TSubjectBodyId>
-        where TSubjectClaimId : IEquatable<TSubjectClaimId>
-        where TUserId : IEquatable<TUserId>
-        where TDateTime : struct
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class PortalStoreHub<TAccessor, TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim
+        , TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim, TGenId, TIncremId>
+        : StoreHubBase<TAccessor>
+        , IPortalStoreHub<TAccessor, TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim
+            , TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim>
+        where TAccessor : PortalDbContextAccessor<TClaim, TCategory, TPane, TPaneClaim, TTag, TTagClaim
+            , TSource, TEditor, TEditorTitle, TSubject, TSubjectBody, TSubjectClaim, TGenId, TIncremId>
+        where TClaim : PortalClaim<TIncremId>
+        where TCategory : PortalCategory<TIncremId>
+        where TPane : PortalPane<TIncremId>
+        where TPaneClaim : PortalPaneClaim<TIncremId>
+        where TTag : PortalTag<TGenId>
+        where TTagClaim : PortalTagClaim<TGenId, TIncremId>
+        where TSource : PortalSource<TIncremId>
+        where TEditor : PortalEditor<TIncremId, TGenId>
+        where TEditorTitle : PortalEditorTitle<TIncremId>
+        where TSubject : PortalSubject<TIncremId>
+        where TSubjectBody : PortalSubjectBody<TIncremId>
+        where TSubjectClaim : PortalSubjectClaim<TIncremId>
+        where TGenId : IEquatable<TGenId>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 构造一个门户存储中心实例（可用于容器构造）。
@@ -194,73 +161,23 @@ namespace Librame.AspNetCore.Portal
 
 
         /// <summary>
-        /// 转换为声明标识。
+        /// 转换为生成式标识。
         /// </summary>
-        /// <param name="claimId">给定的声明标识对象。</param>
-        /// <returns>返回 <typeparamref name="TClaimId"/>。</returns>
-        protected virtual TClaimId ToClaimId(object claimId)
+        /// <param name="genId">给定的生成式标识对象。</param>
+        /// <returns>返回 <typeparamref name="TGenId"/>。</returns>
+        protected virtual TGenId ToGenId(object genId)
         {
-            return claimId.CastTo<object, TClaimId>(nameof(claimId));
+            return genId.CastTo<object, TGenId>(nameof(genId));
         }
 
         /// <summary>
-        /// 转换为分类标识。
+        /// 转换为增量式标识。
         /// </summary>
-        /// <param name="categoryId">给定的分类标识对象。</param>
-        /// <returns>返回 <typeparamref name="TCategoryId"/>。</returns>
-        protected virtual TCategoryId ToCategoryId(object categoryId)
+        /// <param name="incremId">给定的增量式标识对象。</param>
+        /// <returns>返回 <typeparamref name="TIncremId"/>。</returns>
+        protected virtual TIncremId ToIncremId(object incremId)
         {
-            return categoryId.CastTo<object, TCategoryId>(nameof(categoryId));
-        }
-
-        /// <summary>
-        /// 转换为窗格标识。
-        /// </summary>
-        /// <param name="paneId">给定的窗格标识对象。</param>
-        /// <returns>返回 <typeparamref name="TPaneId"/>。</returns>
-        protected virtual TPaneId ToPaneId(object paneId)
-        {
-            return paneId.CastTo<object, TPaneId>(nameof(paneId));
-        }
-
-        /// <summary>
-        /// 转换为标签标识。
-        /// </summary>
-        /// <param name="tagId">给定的标签标识对象。</param>
-        /// <returns>返回 <typeparamref name="TTagId"/>。</returns>
-        protected virtual TTagId ToTagId(object tagId)
-        {
-            return tagId.CastTo<object, TTagId>(nameof(tagId));
-        }
-
-        /// <summary>
-        /// 转换为编者标识。
-        /// </summary>
-        /// <param name="editorId">给定的编者标识对象。</param>
-        /// <returns>返回 <typeparamref name="TEditorId"/>。</returns>
-        protected virtual TEditorId ToEditorId(object editorId)
-        {
-            return editorId.CastTo<object, TEditorId>(nameof(editorId));
-        }
-
-        /// <summary>
-        /// 转换为专题标识。
-        /// </summary>
-        /// <param name="subjectId">给定的专题标识对象。</param>
-        /// <returns>返回 <typeparamref name="TSubjectId"/>。</returns>
-        protected virtual TSubjectId ToSubjectId(object subjectId)
-        {
-            return subjectId.CastTo<object, TSubjectId>(nameof(subjectId));
-        }
-
-        /// <summary>
-        /// 转换为用户标识。
-        /// </summary>
-        /// <param name="userId">给定的用户标识对象。</param>
-        /// <returns>返回 <typeparamref name="TUserId"/>。</returns>
-        protected virtual TUserId ToUserId(object userId)
-        {
-            return userId.CastTo<object, TUserId>(nameof(userId));
+            return incremId.CastTo<object, TIncremId>(nameof(incremId));
         }
 
 
@@ -398,7 +315,7 @@ namespace Librame.AspNetCore.Portal
         {
             name.NotNullOrEmpty(nameof(name));
 
-            var _parentId = ToCategoryId(parentId);
+            var _parentId = ToIncremId(parentId);
 
             // ParentId and Name is unique index
             return p => p.ParentId.Equals(_parentId) && p.Name == name;
@@ -521,7 +438,7 @@ namespace Librame.AspNetCore.Portal
         {
             name.NotNullOrEmpty(nameof(name));
 
-            var _categoryId = ToCategoryId(categoryId);
+            var _categoryId = ToIncremId(categoryId);
 
             // CategoryId and Name is unique index
             return p => p.CategoryId.Equals(_categoryId) && p.Name == name;
@@ -645,8 +562,8 @@ namespace Librame.AspNetCore.Portal
         {
             assocId.NotNullOrEmpty(nameof(assocId));
 
-            var _paneId = ToPaneId(paneId);
-            var _claimId = ToClaimId(claimId);
+            var _paneId = ToIncremId(paneId);
+            var _claimId = ToIncremId(claimId);
 
             // PaneId, ClaimId and AssocId is unique index
             return p => p.PaneId.Equals(_paneId) && p.ClaimId.Equals(_claimId) && p.AssocId.Equals(assocId);
@@ -692,24 +609,6 @@ namespace Librame.AspNetCore.Portal
         {
             return Accessor.PaneClaims.FindAsync(keyValues, cancellationToken);
         }
-
-        ///// <summary>
-        ///// 异步获取窗格声明集合。
-        ///// </summary>
-        ///// <param name="paneId">给定的窗格标识。</param>
-        ///// <param name="claimId">给定的声明标识。</param>
-        ///// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
-        ///// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        ///// <returns>返回一个包含 <see cref="List{TPaneClaim}"/> 的异步操作。</returns>
-        //public virtual Task<List<TPaneClaim>> GetPaneClaimsAsync(object paneId, object claimId,
-        //    Func<IQueryable<TPaneClaim>, IQueryable<TPaneClaim>> queryFactory = null,
-        //    CancellationToken cancellationToken = default)
-        //{
-        //    var _paneId = ToPaneId(paneId);
-        //    var _claimId = ToClaimId(claimId);
-
-        //    return Accessor.PaneClaims.Where(p => p.PaneId.Equals(_paneId) && p.ClaimId.Equals(_claimId)).ToListAsync(cancellationToken);
-        //}
 
         /// <summary>
         /// 异步获取所有窗格声明集合。
@@ -906,8 +805,8 @@ namespace Librame.AspNetCore.Portal
         /// <returns>返回查询表达式。</returns>
         protected virtual Expression<Func<TTagClaim, bool>> BuildUniqueTagClaimExpression(object tagId, object claimId)
         {
-            var _tagId = ToTagId(tagId);
-            var _claimId = ToClaimId(claimId);
+            var _tagId = ToGenId(tagId);
+            var _claimId = ToIncremId(claimId);
 
             // TagId and ClaimId is unique index
             return p => p.TagId.Equals(_tagId) && p.ClaimId.Equals(_claimId);
@@ -953,31 +852,17 @@ namespace Librame.AspNetCore.Portal
         }
 
         /// <summary>
-        /// 异步获取标签声明集合。
-        /// </summary>
-        /// <param name="tagId">给定的标签标识。</param>
-        /// <param name="claimId">给定的声明标识。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="List{TTagClaim}"/> 的异步操作。</returns>
-        public virtual Task<List<TTagClaim>> GetTagClaimsAsync(object tagId, object claimId, CancellationToken cancellationToken = default)
-        {
-            var _tagId = ToTagId(tagId);
-            var _claimId = ToClaimId(claimId);
-
-            return cancellationToken.RunFactoryOrCancellationAsync(() =>
-            {
-                return Accessor.TagClaims.Where(p => p.TagId.Equals(_tagId) && p.ClaimId.Equals(_claimId)).ToList();
-            });
-        }
-
-        /// <summary>
         /// 异步获取所有标签声明集合。
         /// </summary>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="List{TTagClaim}"/> 的异步操作。</returns>
-        public virtual Task<List<TTagClaim>> GetAllTagClaimsAsync(CancellationToken cancellationToken = default)
+        public virtual Task<List<TTagClaim>> GetAllTagClaimsAsync(Func<IQueryable<TTagClaim>, IQueryable<TTagClaim>> queryFactory = null,
+            CancellationToken cancellationToken = default)
         {
-            return cancellationToken.RunFactoryOrCancellationAsync(() => Accessor.TagClaims.ToList());
+            var query = queryFactory?.Invoke(Accessor.TagClaims) ?? Accessor.TagClaims;
+
+            return query.ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -985,11 +870,15 @@ namespace Librame.AspNetCore.Portal
         /// </summary>
         /// <param name="index">给定的页索引。</param>
         /// <param name="size">给定的页大小。</param>
+        /// <param name="queryFactory">给定的查询工厂方法（可选）。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPageable{TTagClaim}"/> 的异步操作。</returns>
-        public virtual Task<IPageable<TTagClaim>> GetPagingTagClaimsAsync(int index, int size, CancellationToken cancellationToken = default)
+        public virtual Task<IPageable<TTagClaim>> GetPagingTagClaimsAsync(int index, int size,
+            Func<IQueryable<TTagClaim>, IQueryable<TTagClaim>> queryFactory = null, CancellationToken cancellationToken = default)
         {
-            return Accessor.TagClaims.AsPagingByIndexAsync(ordered => ordered.OrderByDescending(k => k.Id),
+            var query = queryFactory?.Invoke(Accessor.TagClaims) ?? Accessor.TagClaims;
+
+            return query.AsPagingByIndexAsync(ordered => ordered.OrderByDescending(k => k.Id),
                 index, size, cancellationToken);
         }
 
@@ -1040,7 +929,7 @@ namespace Librame.AspNetCore.Portal
         {
             name.NotNullOrEmpty(nameof(name));
 
-            var _categoryId = ToCategoryId(categoryId);
+            var _categoryId = ToIncremId(categoryId);
 
             // CategoryId and Name is unique index
             return p => p.CategoryId.Equals(_categoryId) && p.Name == name;
@@ -1084,22 +973,6 @@ namespace Librame.AspNetCore.Portal
         {
             return Accessor.Sources.FindAsync(keyValues, cancellationToken);
         }
-
-        ///// <summary>
-        ///// 异步获取来源集合。
-        ///// </summary>
-        ///// <param name="categoryId">给定的分类标识。</param>
-        ///// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        ///// <returns>返回一个包含 <see cref="List{TSource}"/> 的异步操作。</returns>
-        //public virtual Task<List<TSource>> GetSourcesAsync(object categoryId, CancellationToken cancellationToken = default)
-        //{
-        //    var _categoryId = ToCategoryId(categoryId);
-
-        //    return cancellationToken.RunFactoryOrCancellationAsync(() =>
-        //    {
-        //        return Accessor.Sources.Where(p => p.CategoryId.Equals(categoryId)).ToList();
-        //    });
-        //}
 
         /// <summary>
         /// 异步获取所有来源集合。
@@ -1179,7 +1052,7 @@ namespace Librame.AspNetCore.Portal
         {
             name.NotNullOrEmpty(nameof(name));
 
-            var _userId = ToUserId(userId);
+            var _userId = ToGenId(userId);
 
             // UserId and Name is unique index
             return p => p.UserId.Equals(_userId) && p.Name == name;
@@ -1302,7 +1175,7 @@ namespace Librame.AspNetCore.Portal
         {
             name.NotNullOrEmpty(nameof(name));
 
-            var _editorId = ToEditorId(editorId);
+            var _editorId = ToIncremId(editorId);
 
             // EditorId and Name is unique index
             return p => p.EditorId.Equals(_editorId) && p.Name == name;
@@ -1425,7 +1298,7 @@ namespace Librame.AspNetCore.Portal
         {
             title.NotNullOrEmpty(nameof(title));
 
-            var _categoryId = ToCategoryId(categoryId);
+            var _categoryId = ToIncremId(categoryId);
 
             // CategoryId and Name is unique index
             return p => p.CategoryId.Equals(_categoryId) && p.Title == title;
@@ -1542,28 +1415,28 @@ namespace Librame.AspNetCore.Portal
         /// 建立唯一专题主体表达式。
         /// </summary>
         /// <param name="subjectId">给定的专题标识。</param>
-        /// <param name="bodyHash">给定的主体散列。</param>
+        /// <param name="textHash">给定的文本散列。</param>
         /// <returns>返回查询表达式。</returns>
-        protected virtual Expression<Func<TSubjectBody, bool>> BuildUniqueSubjectBodyExpression(object subjectId, string bodyHash)
+        protected virtual Expression<Func<TSubjectBody, bool>> BuildUniqueSubjectBodyExpression(object subjectId, string textHash)
         {
-            bodyHash.NotNullOrEmpty(nameof(bodyHash));
+            textHash.NotNullOrEmpty(nameof(textHash));
 
-            var _subjectId = ToSubjectId(subjectId);
+            var _subjectId = ToIncremId(subjectId);
 
             // SubjectId and BodyHash is unique index
-            return p => p.SubjectId.Equals(_subjectId) && p.BodyHash == bodyHash;
+            return p => p.SubjectId.Equals(_subjectId) && p.TextHash == textHash;
         }
 
         /// <summary>
         /// 异步包含指定专题主体。
         /// </summary>
         /// <param name="subjectId">给定的专题标识。</param>
-        /// <param name="bodyHash">给定的主体散列。</param>
+        /// <param name="textHash">给定的文本散列。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含布尔值的异步操作。</returns>
-        public virtual Task<bool> ContainSubjectBodyAsync(object subjectId, string bodyHash, CancellationToken cancellationToken = default)
+        public virtual Task<bool> ContainSubjectBodyAsync(object subjectId, string textHash, CancellationToken cancellationToken = default)
         {
-            var predicate = BuildUniqueSubjectBodyExpression(subjectId, bodyHash);
+            var predicate = BuildUniqueSubjectBodyExpression(subjectId, textHash);
 
             return Accessor.SubjectBodies.AnyAsync(predicate, cancellationToken);
         }
@@ -1601,7 +1474,7 @@ namespace Librame.AspNetCore.Portal
         /// <returns>返回一个包含 <see cref="List{TSubjectBody}"/> 的异步操作。</returns>
         public virtual Task<List<TSubjectBody>> GetSubjectBodiesAsync(object subjectId, CancellationToken cancellationToken = default)
         {
-            var _subjectId = ToSubjectId(subjectId);
+            var _subjectId = ToIncremId(subjectId);
 
             return Accessor.SubjectBodies.Where(p => p.SubjectId.Equals(_subjectId)).ToListAsync(cancellationToken);
         }
@@ -1654,8 +1527,8 @@ namespace Librame.AspNetCore.Portal
         {
             assocId.NotNullOrEmpty(nameof(assocId));
 
-            var _subjectId = ToSubjectId(subjectId);
-            var _claimId = ToClaimId(claimId);
+            var _subjectId = ToIncremId(subjectId);
+            var _claimId = ToIncremId(claimId);
 
             // SubjectId, ClaimId and AssocId is unique index
             return p => p.SubjectId.Equals(_subjectId) && p.ClaimId.Equals(_claimId) && p.AssocId.Equals(assocId);
@@ -1701,24 +1574,6 @@ namespace Librame.AspNetCore.Portal
         {
             return Accessor.SubjectClaims.FindAsync(keyValues, cancellationToken);
         }
-
-        ///// <summary>
-        ///// 异步获取专题声明集合。
-        ///// </summary>
-        ///// <param name="subjectId">给定的专题标识。</param>
-        ///// <param name="claimId">给定的声明标识。</param>
-        ///// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        ///// <returns>返回一个包含 <see cref="List{TSubjectClaim}"/> 的异步操作。</returns>
-        //public virtual Task<List<TSubjectClaim>> GetSubjectClaimsAsync(object subjectId, object claimId, CancellationToken cancellationToken = default)
-        //{
-        //    var _subjectId = ToSubjectId(subjectId);
-        //    var _claimId = ToClaimId(claimId);
-
-        //    return cancellationToken.RunFactoryOrCancellationAsync(() =>
-        //    {
-        //        return Accessor.SubjectClaims.Where(p => p.SubjectId.Equals(_subjectId) && p.ClaimId.Equals(_claimId)).ToList();
-        //    });
-        //}
 
         /// <summary>
         /// 异步获取所有专题声明集合。
