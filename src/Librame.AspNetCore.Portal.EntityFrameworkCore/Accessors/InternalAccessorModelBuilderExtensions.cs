@@ -152,6 +152,7 @@ namespace Librame.AspNetCore.Portal
 
                 b.HasIndex(i => i.Name).HasName().IsUnique();
 
+                b.Property(p => p.Id).HasMaxLength(256);
                 b.Property(p => p.Name).HasMaxLength(256);
 
                 if (mapRelationship)

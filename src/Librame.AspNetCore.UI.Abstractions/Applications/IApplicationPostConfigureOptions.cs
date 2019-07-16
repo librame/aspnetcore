@@ -10,21 +10,14 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Options;
 
 namespace Librame.AspNetCore.UI
 {
     /// <summary>
     /// 应用程序后置配置选项接口。
     /// </summary>
-    public interface IApplicationPostConfigureOptions :
-        IPostConfigureOptions<StaticFileOptions>,
-        IPostConfigureOptions<RazorPagesOptions>,
-        IPostConfigureOptions<RazorViewEngineOptions>
+    public interface IApplicationPostConfigureOptions
     {
         /// <summary>
         /// 主题包信息。

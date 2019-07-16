@@ -21,9 +21,9 @@ using System.Web;
 namespace Librame.Extensions
 {
     /// <summary>
-    /// HTTP 请求静态扩展。
+    /// 抽象 HTTP 请求静态扩展。
     /// </summary>
-    public static class HttpRequestExtensions
+    public static class AbstractionHttpRequestExtensions
     {
         /// <summary>
         /// 异步得到真实 IP 地址。

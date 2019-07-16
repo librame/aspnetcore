@@ -8,15 +8,15 @@
     <Version>6.0.1613.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
-    <Description>Based Librame.AspNetCore.Portal.Abstractions and EntityFrameworkCore with the Portal extension package.</Description>
+    <Description>Based Librame.AspNetCore.Portal.Abstractions on EntityFrameworkCore application implementation.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>EFCore/EntityFrameworkCore,Portal,AspNetCore,Librame,NETStandard</PackageTags>
-    <PackageReleaseNotes>Based Librame.AspNetCore.Portal.Abstractions and EntityFrameworkCore with the Portal extension package.</PackageReleaseNotes>
+    <PackageTags>Librame,AspNetCore,Portal,EFCore/EntityFrameworkCore</PackageTags>
+    <PackageReleaseNotes>Based Librame.AspNetCore.Portal.Abstractions on EntityFrameworkCore application implementation.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
     <AssemblyVersion>6.0.1613.201</AssemblyVersion>
@@ -25,19 +25,16 @@
   </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <BumpLabel>dev</BumpLabel>
-        <BumpLabelDigits>4</BumpLabelDigits>
         <OutputPath>..\..\bin\</OutputPath>
         <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Portal.xml</DocumentationFile>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <BumpResetLabel>dev</BumpResetLabel>
-        <BumpRevision>true</BumpRevision>
         <OutputPath>..\..\bin\</OutputPath>
         <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Portal.xml</DocumentationFile>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
+    
     <ItemGroup>
       <ProjectReference Include="..\Librame.AspNetCore.Data.EntityFrameworkCore\Librame.AspNetCore.Data.EntityFrameworkCore.csproj" />
       <ProjectReference Include="..\Librame.AspNetCore.Portal.Abstractions\Librame.AspNetCore.Portal.Abstractions.csproj" />

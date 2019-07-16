@@ -10,7 +10,6 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Mvc.Razor;
 using System;
 using System.Collections.Generic;
 
@@ -69,18 +68,18 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 可见性工厂方法。
         /// </summary>
-        public Func<IRazorPage, bool> VisibilityFactory { get; set; }
+        public Func<dynamic, bool> VisibilityFactory { get; set; }
             = page => true;
 
         /// <summary>
         /// 激活类名工厂方法。
         /// </summary>
-        public Func<IRazorPage, string> ActiveClassNameFactory { get; set; }
+        public Func<dynamic, string> ActiveClassNameFactory { get; set; }
 
         /// <summary>
         /// 激活样式工厂方法。
         /// </summary>
-        public Func<IRazorPage, string> ActiveStyleFactory { get; set; }
+        public Func<dynamic, string> ActiveStyleFactory { get; set; }
 
 
         private string _id;

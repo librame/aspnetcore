@@ -8,15 +8,15 @@
     <Version>6.0.1613.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
-    <Description>The Simple UI for Librame.AspNetCore</Description>
+    <Description>The Simple for Librame.AspNetCore.UI themepack.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Simple,UI,AspNetCore,Librame,NETStandard</PackageTags>
-    <PackageReleaseNotes>The Simple UI for Librame.AspNetCore</PackageReleaseNotes>
+    <PackageTags>Librame,AspNetCore,UI,Simple</PackageTags>
+    <PackageReleaseNotes>The Simple for Librame.AspNetCore.UI themepack.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
     <AssemblyVersion>6.0.1613.201</AssemblyVersion>

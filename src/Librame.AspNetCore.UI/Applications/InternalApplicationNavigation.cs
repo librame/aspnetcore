@@ -11,6 +11,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,25 +20,25 @@ namespace Librame.AspNetCore.UI
     using Extensions;
 
     /// <summary>
-    /// 应用程序导航。
+    /// 内部应用程序导航。
     /// </summary>
-    public class ApplicationNavigation : IApplicationNavigation
+    internal class InternalApplicationNavigation : IApplicationNavigation
     {
         private readonly IDictionary<string, IList<NavigationDescriptor>> _navigations;
 
 
         /// <summary>
-        /// 构造一个 <see cref="ApplicationNavigation"/> 实例。
+        /// 构造一个 <see cref="InternalApplicationNavigation"/> 实例。
         /// </summary>
-        public ApplicationNavigation()
+        public InternalApplicationNavigation()
             : this(null)
         {
         }
         /// <summary>
-        /// 构造一个 <see cref="ApplicationNavigation"/> 实例。
+        /// 构造一个 <see cref="InternalApplicationNavigation"/> 实例。
         /// </summary>
         /// <param name="navigations">给定的导航字典。</param>
-        public ApplicationNavigation(IDictionary<string, IList<NavigationDescriptor>> navigations)
+        public InternalApplicationNavigation(IDictionary<string, IList<NavigationDescriptor>> navigations)
         {
             _navigations = navigations ?? new Dictionary<string, IList<NavigationDescriptor>>();
         }
@@ -140,6 +141,83 @@ namespace Librame.AspNetCore.UI
         {
             return _navigations.TryGetValue(key, out descriptors);
         }
+
+
+        #region ICollection
+
+        /// <summary>
+        /// 导航列表数。
+        /// </summary>
+        public int Count => _navigations.Count;
+
+        /// <summary>
+        /// 是只读。
+        /// </summary>
+        public bool IsReadOnly => _navigations.IsReadOnly;
+
+
+        /// <summary>
+        /// 添加导航列表项。
+        /// </summary>
+        /// <param name="item">给定的键列表对。</param>
+        public void Add(KeyValuePair<string, IList<NavigationDescriptor>> item)
+        {
+            AddOrUpdate(item.Key, item.Value);
+        }
+
+        /// <summary>
+        /// 清空所有导航列表。
+        /// </summary>
+        public void Clear()
+        {
+            _navigations.Clear();
+        }
+
+        /// <summary>
+        /// 包含指定导航列表项。
+        /// </summary>
+        /// <param name="item">给定的键列表对。</param>
+        /// <returns>返回布尔值。</returns>
+        public bool Contains(KeyValuePair<string, IList<NavigationDescriptor>> item)
+        {
+            return _navigations.Contains(item);
+        }
+
+        /// <summary>
+        /// 复制到目标数组。
+        /// </summary>
+        /// <param name="array">给定的目标数组。</param>
+        /// <param name="arrayIndex">给定的索引。</param>
+        public void CopyTo(KeyValuePair<string, IList<NavigationDescriptor>>[] array, int arrayIndex)
+        {
+            _navigations.CopyTo(array, arrayIndex);
+        }
+
+        /// <summary>
+        /// 移除导航列表项。
+        /// </summary>
+        /// <param name="item">给定的键列表对。</param>
+        /// <returns>返回是否成功移除的布尔值。</returns>
+        public bool Remove(KeyValuePair<string, IList<NavigationDescriptor>> item)
+        {
+            return _navigations.Remove(item);
+        }
+
+        /// <summary>
+        /// 获取枚举器。
+        /// </summary>
+        /// <returns>返回枚举器。</returns>
+        public IEnumerator<KeyValuePair<string, IList<NavigationDescriptor>>> GetEnumerator()
+        {
+            return _navigations.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
 
     }
 }

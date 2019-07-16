@@ -8,15 +8,15 @@
     <Version>6.0.1613.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
-    <Description>UI for Librame.AspNetCore</Description>
+    <Description>Based Librame.AspNetCore.UI.Abstractions on MVC extension implementation.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>UI,AspNetCore,Librame,NETStandard</PackageTags>
-    <PackageReleaseNotes>UI for Librame.AspNetCore</PackageReleaseNotes>
+    <PackageTags>Librame,AspNetCore,UI,MVC</PackageTags>
+    <PackageReleaseNotes>Based Librame.AspNetCore.UI.Abstractions on MVC extension implementation.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
     <AssemblyVersion>6.0.1613.201</AssemblyVersion>
@@ -24,15 +24,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <BumpLabel>dev</BumpLabel>
-    <BumpLabelDigits>4</BumpLabelDigits>
     <OutputPath>..\..\bin\</OutputPath>
     <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.UI.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <BumpResetLabel>dev</BumpResetLabel>
-    <BumpRevision>true</BumpRevision>
     <OutputPath>..\..\bin\</OutputPath>
     <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.UI.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
@@ -45,6 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Librame.AspNetCore.UI.Abstractions\Librame.AspNetCore.UI.Abstractions.csproj" />
     <ProjectReference Include="..\Librame.AspNetCore\Librame.AspNetCore.csproj" />
   </ItemGroup>
 

@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Abstract
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore", "src\Librame.AspNetCore\Librame.AspNetCore.csproj", "{9019A683-B35D-4E61-AAAC-34B50D11F4FF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Data.Abstractions", "src\Librame.AspNetCore.Data.Abstractions\Librame.AspNetCore.Data.Abstractions.csproj", "{2EE011E1-D253-444E-8154-DE301B379A54}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Data.EntityFrameworkCore", "src\Librame.AspNetCore.Data.EntityFrameworkCore\Librame.AspNetCore.Data.EntityFrameworkCore.csproj", "{FA938C81-A91B-4857-BE70-B36B2F6BD994}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Api.Abstractions", "src\Librame.AspNetCore.Api.Abstractions\Librame.AspNetCore.Api.Abstractions.csproj", "{0D68DC9B-9433-468B-8293-AE0F9C67E15C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Api.GraphQL", "src\Librame.AspNetCore.Api.GraphQL\Librame.AspNetCore.Api.GraphQL.csproj", "{98A4DA21-6BFB-4528-9E06-6B830B5D2CA8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.UI", "src\Librame.AspNetCore.UI\Librame.AspNetCore.UI.csproj", "{F8E2BB47-8C29-4CD7-90D1-6E2211202FAE}"
 EndProject
@@ -61,9 +67,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Identity
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityClient", "examples\Librame.AspNetCore.IdentityClient\Librame.AspNetCore.IdentityClient.csproj", "{662B4963-BFEC-4DDF-8D6D-FF8662B8CFFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.Portal.Abstractions.Tests", "tests\Librame.AspNetCore.Portal.Abstractions.Tests\Librame.AspNetCore.Portal.Abstractions.Tests.csproj", "{077AA94A-B67F-4068-A40E-17762BE82FD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Portal.Abstractions.Tests", "tests\Librame.AspNetCore.Portal.Abstractions.Tests\Librame.AspNetCore.Portal.Abstractions.Tests.csproj", "{077AA94A-B67F-4068-A40E-17762BE82FD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.Portal.EntityFrameworkCore.Tests", "tests\Librame.AspNetCore.Portal.EntityFrameworkCore.Tests\Librame.AspNetCore.Portal.EntityFrameworkCore.Tests.csproj", "{06EF49E1-DC26-4BC6-8103-A06C40E695C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Portal.EntityFrameworkCore.Tests", "tests\Librame.AspNetCore.Portal.EntityFrameworkCore.Tests\Librame.AspNetCore.Portal.EntityFrameworkCore.Tests.csproj", "{06EF49E1-DC26-4BC6-8103-A06C40E695C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.UI.Abstractions", "src\Librame.AspNetCore.UI.Abstractions\Librame.AspNetCore.UI.Abstractions.csproj", "{A0FF0D1F-888E-46C1-B478-42CB5FC024B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,10 +87,22 @@ Global
 		{9019A683-B35D-4E61-AAAC-34B50D11F4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9019A683-B35D-4E61-AAAC-34B50D11F4FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9019A683-B35D-4E61-AAAC-34B50D11F4FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EE011E1-D253-444E-8154-DE301B379A54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EE011E1-D253-444E-8154-DE301B379A54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EE011E1-D253-444E-8154-DE301B379A54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EE011E1-D253-444E-8154-DE301B379A54}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FA938C81-A91B-4857-BE70-B36B2F6BD994}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FA938C81-A91B-4857-BE70-B36B2F6BD994}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA938C81-A91B-4857-BE70-B36B2F6BD994}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA938C81-A91B-4857-BE70-B36B2F6BD994}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D68DC9B-9433-468B-8293-AE0F9C67E15C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D68DC9B-9433-468B-8293-AE0F9C67E15C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D68DC9B-9433-468B-8293-AE0F9C67E15C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D68DC9B-9433-468B-8293-AE0F9C67E15C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98A4DA21-6BFB-4528-9E06-6B830B5D2CA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98A4DA21-6BFB-4528-9E06-6B830B5D2CA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98A4DA21-6BFB-4528-9E06-6B830B5D2CA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98A4DA21-6BFB-4528-9E06-6B830B5D2CA8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F8E2BB47-8C29-4CD7-90D1-6E2211202FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F8E2BB47-8C29-4CD7-90D1-6E2211202FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8E2BB47-8C29-4CD7-90D1-6E2211202FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -183,6 +203,10 @@ Global
 		{06EF49E1-DC26-4BC6-8103-A06C40E695C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06EF49E1-DC26-4BC6-8103-A06C40E695C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06EF49E1-DC26-4BC6-8103-A06C40E695C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0FF0D1F-888E-46C1-B478-42CB5FC024B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0FF0D1F-888E-46C1-B478-42CB5FC024B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0FF0D1F-888E-46C1-B478-42CB5FC024B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0FF0D1F-888E-46C1-B478-42CB5FC024B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,7 +214,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{08B8168C-7ECD-4606-B67E-201C97038BBA} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 		{9019A683-B35D-4E61-AAAC-34B50D11F4FF} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
+		{2EE011E1-D253-444E-8154-DE301B379A54} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 		{FA938C81-A91B-4857-BE70-B36B2F6BD994} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
+		{0D68DC9B-9433-468B-8293-AE0F9C67E15C} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
+		{98A4DA21-6BFB-4528-9E06-6B830B5D2CA8} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 		{F8E2BB47-8C29-4CD7-90D1-6E2211202FAE} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 		{14CD62D2-4CFF-44E9-A5CF-0CDD1AD405B1} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 		{AB135681-2183-4751-90B9-1073CCFF78D2} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
@@ -216,6 +243,7 @@ Global
 		{662B4963-BFEC-4DDF-8D6D-FF8662B8CFFA} = {7CE5401D-2698-4096-AC2C-EF5F842571E4}
 		{077AA94A-B67F-4068-A40E-17762BE82FD0} = {64F541DF-34A5-4451-B3F2-AB1A7592B652}
 		{06EF49E1-DC26-4BC6-8103-A06C40E695C8} = {64F541DF-34A5-4451-B3F2-AB1A7592B652}
+		{A0FF0D1F-888E-46C1-B478-42CB5FC024B4} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C045FFCB-A85F-4F5E-9830-8F503D71513E}

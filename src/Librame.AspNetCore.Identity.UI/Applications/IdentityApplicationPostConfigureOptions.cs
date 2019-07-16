@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Identity.UI
     /// 身份应用程序后置配置选项。
     /// </summary>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
-    public class IdentityApplicationPostConfigureOptions<TUser> : AbstractApplicationPostConfigureOptions,
+    public class IdentityApplicationPostConfigureOptions<TUser> : ApplicationPostConfigureOptionsBase,
         IIdentityApplicationPostConfigureOptions
         where TUser : class
     {
@@ -42,7 +42,7 @@ namespace Librame.AspNetCore.Identity.UI
         }
 
         /// <summary>
-        /// 构造一个 <see cref="AbstractApplicationPostConfigureOptions"/> 实例。
+        /// 构造一个 <see cref="ApplicationPostConfigureOptionsBase"/> 实例。
         /// </summary>
         /// <param name="themepack">给定的 <see cref="IThemepackInfo"/>。</param>
         /// <param name="environment">给定的 <see cref="IHostingEnvironment"/>。</param>

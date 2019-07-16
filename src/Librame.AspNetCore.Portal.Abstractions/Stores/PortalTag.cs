@@ -28,7 +28,7 @@ namespace Librame.AspNetCore.Portal
     /// 门户标签。
     /// </summary>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
-    public class PortalTag<TGenId> : AbstractEntityWithIncremId<TGenId>
+    public class PortalTag<TGenId> : AbstractEntityWithGenId<TGenId>
         where TGenId : IEquatable<TGenId>
     {
         /// <summary>

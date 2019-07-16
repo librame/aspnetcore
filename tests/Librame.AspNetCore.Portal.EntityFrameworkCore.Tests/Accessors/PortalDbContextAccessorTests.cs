@@ -26,6 +26,18 @@ namespace Librame.AspNetCore.Portal.Tests
 
                 categories = stores.UseWriteDbConnection().GetCategories();
                 Assert.NotEmpty(categories);
+
+                var panes = stores.UseDefaultDbConnection().GetPanes();
+                Assert.Empty(panes);
+
+                panes = stores.UseWriteDbConnection().GetPanes();
+                Assert.NotEmpty(panes);
+
+                var sources = stores.UseDefaultDbConnection().GetSources();
+                Assert.Empty(sources);
+
+                sources = stores.UseWriteDbConnection().GetSources();
+                Assert.NotEmpty(sources);
             }
         }
 

@@ -8,15 +8,15 @@
     <Version>6.0.1613.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
-    <Description>Based Librame.AspNetCore.Library.Abstractions and EntityFrameworkCore with the Library extension package.</Description>
+    <Description>Based Librame.AspNetCore.Library.Abstractions on EntityFrameworkCore application implementation.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>EFCore/EntityFrameworkCore,Library,AspNetCore,Librame,NETStandard</PackageTags>
-    <PackageReleaseNotes>Based Librame.AspNetCore.Library.Abstractions and EntityFrameworkCore with the Library extension package.</PackageReleaseNotes>
+    <PackageTags>Librame,AspNetCore,Library,EFCore/EntityFrameworkCore</PackageTags>
+    <PackageReleaseNotes>Based Librame.AspNetCore.Library.Abstractions on EntityFrameworkCore application implementation.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
     <AssemblyVersion>6.0.1613.201</AssemblyVersion>

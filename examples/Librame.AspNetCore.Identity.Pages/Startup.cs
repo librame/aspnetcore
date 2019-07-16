@@ -11,9 +11,10 @@ using System.Globalization;
 
 namespace Librame.AspNetCore.Identity.Pages
 {
+    using AspNetCore.UI;
+    using AspNetCore.Identity.UI;
     using Extensions.Data;
     using Extensions.Network;
-    using UI;
 
     public class Startup
     {
@@ -87,12 +88,8 @@ namespace Librame.AspNetCore.Identity.Pages
                     {
                         core.Stores.MaxLengthForKeys = 128;
                     };
-
-                    options.ConfigureUIMode = builder =>
-                    {
-                        builder.AddUIPages(mvcBuilder);
-                    };
                 })
+                .AddIdentityUI().AddPages(mvcBuilder)
                 .AddNetwork();
         }
 

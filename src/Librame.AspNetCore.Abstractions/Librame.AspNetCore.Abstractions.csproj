@@ -8,15 +8,15 @@
     <Version>6.0.1613.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
-    <Description>Use Librame.Extensions.Core.Abstractions with the ASP.NET Core platform.</Description>
+    <Description>Based Librame.Extensions.Core.Abstractions on ASP.NET Core extension package.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Abstractions,AspNetCore,Extensions,Librame,NETStandard</PackageTags>
-    <PackageReleaseNotes>Use Librame.Extensions.Core.Abstractions with the ASP.NET Core platform.</PackageReleaseNotes>
+    <PackageTags>Librame,Extensions,Core,AspNetCore,Abstractions</PackageTags>
+    <PackageReleaseNotes>Based Librame.Extensions.Core.Abstractions on ASP.NET Core extension package.</PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
     <AssemblyVersion>6.0.1613.201</AssemblyVersion>

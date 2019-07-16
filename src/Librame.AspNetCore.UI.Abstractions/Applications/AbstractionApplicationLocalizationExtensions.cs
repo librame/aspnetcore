@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// <see cref="IApplicationLocalization"/> 静态扩展。
     /// </summary>
-    public static class ApplicationLocalizationExtensions
+    public static class AbstractionApplicationLocalizationExtensions
     {
         private const string KEY_COMMON_LAYOUT = "CommonLayout";
         private const string KEY_MANAGE_LAYOUT = "ManageLayout";

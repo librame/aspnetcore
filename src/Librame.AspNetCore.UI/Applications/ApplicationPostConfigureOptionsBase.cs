@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,17 +27,20 @@ namespace Librame.AspNetCore.UI
     using Extensions;
 
     /// <summary>
-    /// 抽象应用程序后置配置选项。
+    /// 应用程序后置配置选项基类。
     /// </summary>
-    public abstract class AbstractApplicationPostConfigureOptions : IApplicationPostConfigureOptions
+    public class ApplicationPostConfigureOptionsBase : IApplicationPostConfigureOptionsBase,
+        IPostConfigureOptions<StaticFileOptions>,
+        IPostConfigureOptions<RazorPagesOptions>,
+        IPostConfigureOptions<RazorViewEngineOptions>
     {
         /// <summary>
-        /// 构造一个 <see cref="AbstractApplicationPostConfigureOptions"/> 实例。
+        /// 构造一个 <see cref="ApplicationPostConfigureOptionsBase"/> 实例。
         /// </summary>
         /// <param name="themepack">给定的 <see cref="IThemepackInfo"/>。</param>
         /// <param name="environment">给定的 <see cref="IHostingEnvironment"/>。</param>
         /// <param name="areaName">指定的区域名称。</param>
-        protected AbstractApplicationPostConfigureOptions(IThemepackInfo themepack,
+        protected ApplicationPostConfigureOptionsBase(IThemepackInfo themepack,
             IHostingEnvironment environment, string areaName)
         {
             Themepack = themepack.NotNull(nameof(themepack));

@@ -28,6 +28,12 @@ namespace Librame.AspNetCore.Identity
         {
             builder.Services.AddScoped<IIdentityIdentifierService, IdentityIdentifierService>();
 
+            //builder.Services.TryReplace<IIdentifierService, IdentityIdentifierService>();
+            //builder.Services.AddScoped(serviceProvider =>
+            //{
+            //    return (IIdentityIdentifierService)serviceProvider.GetRequiredService<IIdentifierService>();
+            //});
+
             return builder;
         }
 

@@ -12,6 +12,7 @@
 
 using Librame.AspNetCore;
 using Librame.Extensions.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 
@@ -40,7 +41,16 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return builder
                 .AddAspNetCoreLocalizations()
-                .AddApplications();
+                .AddApplications()
+                .AddHttpContextAccessor();
+        }
+
+
+        private static ICoreBuilder AddHttpContextAccessor(this ICoreBuilder builder)
+        {
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            return builder;
         }
 
     }

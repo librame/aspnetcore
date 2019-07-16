@@ -19,7 +19,7 @@ namespace Librame.AspNetCore
     /// <summary>
     /// 应用程序本地化接口。
     /// </summary>
-    public interface IApplicationLocalization
+    public interface IApplicationLocalization : ICollection<KeyValuePair<string, IStringLocalizer>>
     {
         /// <summary>
         /// 所有键集合。

@@ -8,36 +8,35 @@
     <Version>6.0.1613.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
-    <Description>Based Librame.AspNetCore.Abstractions on Portal application package.</Description>
+    <Description>Based Librame.AspNetCore.Abstractions on API extension package.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/librame/Librame</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Librame,AspNetCore,Portal,Abstractions</PackageTags>
-    <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions on Portal application package.</PackageReleaseNotes>
+    <PackageTags>Librame,AspNetCore,Api,Abstractions</PackageTags>
+    <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions on API extension package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
     <AssemblyVersion>6.0.1613.201</AssemblyVersion>
     <FileVersion>6.0.1906.181</FileVersion>
-    <RootNamespace>Librame.AspNetCore.Portal</RootNamespace>
+    <RootNamespace>Librame.AspNetCore.Api</RootNamespace>
   </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <OutputPath>..\..\bin\</OutputPath>
-        <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Portal.Abstractions.xml</DocumentationFile>
+        <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Api.Abstractions.xml</DocumentationFile>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <OutputPath>..\..\bin\</OutputPath>
-        <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Portal.Abstractions.xml</DocumentationFile>
+        <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Api.Abstractions.xml</DocumentationFile>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Librame.AspNetCore.Abstractions\Librame.AspNetCore.Abstractions.csproj" />
-        <ProjectReference Include="..\Librame.AspNetCore.Data.Abstractions\Librame.AspNetCore.Data.Abstractions.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Librame.AspNetCore.Abstractions\Librame.AspNetCore.Abstractions.csproj" />
+  </ItemGroup>
 
 </Project>

@@ -27,11 +27,6 @@ namespace Librame.AspNetCore.Identity
         /// 配置核心身份选项。
         /// </summary>
         public Action<IdentityOptions> ConfigureCoreIdentity { get; set; }
-
-        /// <summary>
-        /// 配置 UI 模式。
-        /// </summary>
-        public Action<IIdentityBuilder> ConfigureUIMode { get; set; }
     }
 
 

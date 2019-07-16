@@ -8,14 +8,14 @@
     <Version>6.0.1613.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
-    <Description>Based Librame.AspNetCore.Abstractions with the Gallery extension package.</Description>
+    <Description>Based Librame.AspNetCore.Abstractions on Gallery application package.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Abstractions,Gallery,AspNetCore,Librame,NETStandard</PackageTags>
+    <PackageTags>Librame,AspNetCore,Gallery,Abstractions</PackageTags>
     <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions with the Gallery extension package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
@@ -36,11 +36,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Librame.Extensions.Data.Abstractions" Version="6.0.821.201" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Librame.AspNetCore.Abstractions\Librame.AspNetCore.Abstractions.csproj" />
+        <ProjectReference Include="..\Librame.AspNetCore.Data.Abstractions\Librame.AspNetCore.Data.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

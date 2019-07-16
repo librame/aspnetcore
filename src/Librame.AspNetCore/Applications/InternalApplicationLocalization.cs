@@ -12,6 +12,7 @@
 
 using Microsoft.Extensions.Localization;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Librame.AspNetCore
@@ -133,6 +134,83 @@ namespace Librame.AspNetCore
         {
             return _localizations.TryGetValue(key, out localizer);
         }
+
+
+        #region ICollection
+
+        /// <summary>
+        /// 字符串定位器数。
+        /// </summary>
+        public int Count => _localizations.Count;
+
+        /// <summary>
+        /// 是只读。
+        /// </summary>
+        public bool IsReadOnly => _localizations.IsReadOnly;
+
+
+        /// <summary>
+        /// 添加字符串定位器项。
+        /// </summary>
+        /// <param name="item">给定的键值对。</param>
+        public void Add(KeyValuePair<string, IStringLocalizer> item)
+        {
+            AddOrUpdate(item.Key, item.Value);
+        }
+
+        /// <summary>
+        /// 清除所有字符串定位器项。
+        /// </summary>
+        public void Clear()
+        {
+            _localizations.Clear();
+        }
+
+        /// <summary>
+        /// 包含指定字符串定位器项。
+        /// </summary>
+        /// <param name="item">给定的键值对。</param>
+        /// <returns>返回布尔值。</returns>
+        public bool Contains(KeyValuePair<string, IStringLocalizer> item)
+        {
+            return _localizations.Contains(item);
+        }
+
+        /// <summary>
+        /// 复制到目标数组。
+        /// </summary>
+        /// <param name="array">给定的目标数组。</param>
+        /// <param name="arrayIndex">给定的索引。</param>
+        public void CopyTo(KeyValuePair<string, IStringLocalizer>[] array, int arrayIndex)
+        {
+            _localizations.CopyTo(array, arrayIndex);
+        }
+
+        /// <summary>
+        /// 移除字符串定位器项。
+        /// </summary>
+        /// <param name="item">给定的键列表对。</param>
+        /// <returns>返回是否成功移除的布尔值。</returns>
+        public bool Remove(KeyValuePair<string, IStringLocalizer> item)
+        {
+            return _localizations.Remove(item);
+        }
+
+        /// <summary>
+        /// 获取枚举器。
+        /// </summary>
+        /// <returns>返回枚举器。</returns>
+        public IEnumerator<KeyValuePair<string, IStringLocalizer>> GetEnumerator()
+        {
+            return _localizations.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
 
     }
 }

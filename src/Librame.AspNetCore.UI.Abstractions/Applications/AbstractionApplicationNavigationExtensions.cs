@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// <see cref="IApplicationNavigation"/> 静态扩展。
     /// </summary>
-    public static class ApplicationNavigationExtensions
+    public static class AbstractionApplicationNavigationExtensions
     {
         private const string KEY_COMMON_HEADER = "CommonHeader";
         private const string KEY_COMMON_FOOTER = "CommonFooter";

@@ -18,7 +18,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 应用程序导航接口。
     /// </summary>
-    public interface IApplicationNavigation
+    public interface IApplicationNavigation : ICollection<KeyValuePair<string, IList<NavigationDescriptor>>>
     {
         /// <summary>
         /// 所有键集合。

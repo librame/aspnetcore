@@ -28,6 +28,12 @@ namespace Librame.AspNetCore.Portal
         {
             builder.Services.AddScoped<IPortalIdentifierService, PortalIdentifierService>();
 
+            //builder.Services.TryReplace<IIdentifierService, PortalIdentifierService>();
+            //builder.Services.AddScoped(serviceProvider =>
+            //{
+            //    return (IPortalIdentifierService)serviceProvider.GetRequiredService<IIdentifierService>();
+            //});
+
             return builder;
         }
 

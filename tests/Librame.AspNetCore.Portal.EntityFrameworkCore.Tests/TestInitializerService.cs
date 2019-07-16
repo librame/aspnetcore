@@ -15,7 +15,7 @@ namespace Librame.AspNetCore.Portal.Tests
         private IList<PortalSource> _sources;
 
 
-        public TestInitializerService(IIdentifierService identifier, ILoggerFactory loggerFactory)
+        public TestInitializerService(IPortalIdentifierService identifier, ILoggerFactory loggerFactory)
             : base(identifier, loggerFactory)
         {
         }

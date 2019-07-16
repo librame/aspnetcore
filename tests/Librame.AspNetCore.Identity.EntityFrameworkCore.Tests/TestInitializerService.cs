@@ -18,7 +18,7 @@ namespace Librame.AspNetCore.Identity.Tests
 
 
         public TestInitializerService(SignInManager<DefaultIdentityUser> signInManager,
-            IIdentifierService identifier, ILoggerFactory loggerFactory)
+            IIdentityIdentifierService identifier, ILoggerFactory loggerFactory)
             : base(identifier, loggerFactory)
         {
             _signInManager = signInManager.NotNull(nameof(signInManager));

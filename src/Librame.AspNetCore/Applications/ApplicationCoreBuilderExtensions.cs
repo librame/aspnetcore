@@ -17,9 +17,9 @@ namespace Librame.AspNetCore
     using Extensions.Core;
 
     /// <summary>
-    /// 应用程序构建器静态扩展。
+    /// 应用程序核心构建器静态扩展。
     /// </summary>
-    public static class ApplicationBuilderExtensions
+    public static class ApplicationCoreBuilderExtensions
     {
         /// <summary>
         /// 注册应用程序集合。
@@ -28,10 +28,7 @@ namespace Librame.AspNetCore
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
         public static ICoreBuilder AddApplications(this ICoreBuilder builder)
         {
-            // Add ApplicationLocalization
             builder.Services.AddSingleton<IApplicationLocalization, InternalApplicationLocalization>();
-
-            // Add ApplicationPrincipal
             builder.Services.AddSingleton<IApplicationPrincipal, InternalApplicationPrincipal>();
 
             return builder;
