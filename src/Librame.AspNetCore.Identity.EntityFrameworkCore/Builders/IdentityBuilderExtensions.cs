@@ -73,9 +73,6 @@ namespace Librame.AspNetCore.Identity
             });
 
             identityBuilder.CoreIdentityBuilder.AddSignInManager();
-
-            options.ConfigureUIMode?.Invoke(identityBuilder);
-
             identityBuilder.CoreIdentityBuilder.AddDefaultTokenProviders();
 
             return identityBuilder

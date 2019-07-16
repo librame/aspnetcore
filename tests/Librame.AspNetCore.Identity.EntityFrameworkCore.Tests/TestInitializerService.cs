@@ -12,16 +12,19 @@ namespace Librame.AspNetCore.Identity.Tests
         where TAccessor : IdentityDbContextAccessor
     {
         private SignInManager<DefaultIdentityUser> _signInManager;
+        private RoleManager<DefaultIdentityRole> _roleMananger;
 
         private IList<DefaultIdentityRole> _roles;
         private IList<DefaultIdentityUser> _users;
 
 
         public TestInitializerService(SignInManager<DefaultIdentityUser> signInManager,
+            RoleManager<DefaultIdentityRole> roleMananger,
             IIdentityIdentifierService identifier, ILoggerFactory loggerFactory)
             : base(identifier, loggerFactory)
         {
             _signInManager = signInManager.NotNull(nameof(signInManager));
+            _roleMananger = roleMananger.NotNull(nameof(roleMananger));
         }
 
 
@@ -50,7 +53,8 @@ namespace Librame.AspNetCore.Identity.Tests
                     }
                 };
 
-                stores.Accessor.Roles.AddRange(_roles);
+                foreach (var role in _roles)
+                    _roleMananger.CreateAsync(role).Wait();
             }
             else
             {

@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>6.0.1613.201</Version>
+    <Version>6.0.1641.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
     <Description>Based Librame.AspNetCore.Abstractions and Librame.Extensions.Core on ASP.NET Core extension implementation.</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions and Librame.Extensions.Core on ASP.NET Core extension implementation.</PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>6.0.1613.201</AssemblyVersion>
-    <FileVersion>6.0.1906.181</FileVersion>
+    <AssemblyVersion>6.0.1641.201</AssemblyVersion>
+    <FileVersion>6.0.1907.161</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,7 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Core" Version="6.0.821.201" />
+    <PackageReference Include="Librame.Extensions.Core" Version="6.0.822.201" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Localization.Routing" Version="2.2.0" />
   </ItemGroup>

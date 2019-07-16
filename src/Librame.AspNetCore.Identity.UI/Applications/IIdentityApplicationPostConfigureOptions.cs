@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Identity.UI
     /// <summary>
     /// 身份应用程序后置配置选项接口。
     /// </summary>
-    public interface IIdentityApplicationPostConfigureOptions : IApplicationPostConfigureOptions, IPostConfigureOptions<CookieAuthenticationOptions>
+    public interface IIdentityApplicationPostConfigureOptions : IApplicationPostConfigureOptionsBase, IPostConfigureOptions<CookieAuthenticationOptions>
     {
     }
 }

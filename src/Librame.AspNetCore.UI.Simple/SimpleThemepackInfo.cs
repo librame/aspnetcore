@@ -16,9 +16,9 @@ using System.Reflection;
 namespace Librame.AspNetCore.UI
 {
     /// <summary>
-    /// 主题包信息。
+    /// 简约主题包信息。
     /// </summary>
-    public class ThemepackInfo : AbstractApplicationInfo, IThemepackInfo
+    public class SimpleThemepackInfo : AbstractApplicationInfo, IThemepackInfo
     {
         /// <summary>
         /// 名称。

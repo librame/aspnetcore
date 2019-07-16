@@ -10,44 +10,27 @@
 
 #endregion
 
-//using Microsoft.Extensions.DependencyInjection;
-//using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
-//namespace Librame.AspNetCore.UI
-//{
-//    using Extensions;
-//    using Extensions.Core;
+namespace Librame.AspNetCore.UI
+{
+    /// <summary>
+    /// 主题 UI 构建器静态扩展。
+    /// </summary>
+    public static class ThemepackUIBuilderExtensions
+    {
+        /// <summary>
+        /// 添加主题集合。
+        /// </summary>
+        /// <param name="builder">给定的 <see cref="IUIBuilder"/>。</param>
+        /// <param name="info">给定的 <see cref="IThemepackInfo"/>。</param>
+        /// <returns>返回 <see cref="IUIBuilder"/>。</returns>
+        public static IUIBuilder AddThemepacks(this IUIBuilder builder, IThemepackInfo info)
+        {
+            builder.Services.AddSingleton(info);
 
-//    /// <summary>
-//    /// 主题 UI 构建器静态扩展。
-//    /// </summary>
-//    public static class ThemepackUIBuilderExtensions
-//    {
-//        /// <summary>
-//        /// 添加主题集合。
-//        /// </summary>
-//        /// <param name="builder">给定的 <see cref="IUIBuilder"/>。</param>
-//        /// <returns>返回 <see cref="IUIBuilder"/>。</returns>
-//        public static IUIBuilder AddThemepacks(this IUIBuilder builder)
-//        {
-//            builder.Services.AddScoped<IThemepackProvider, InternalThemepackProvider>();
+            return builder;
+        }
 
-//            builder.Services.AddThemepackInfos();
-
-//            return builder;
-//        }
-
-//        private static void AddThemepackInfos(this IServiceCollection services)
-//        {
-//            var interfaceType = typeof(IThemepackInfo);
-
-//            BuilderGlobalization.RegisterTypes(type =>
-//            {
-//                services.AddSingleton(interfaceType, type);
-//            },
-//            types => types
-//                .Where(type => interfaceType.IsAssignableFrom(type) && type.IsConcreteType()));
-//        }
-
-//    }
-//}
+    }
+}

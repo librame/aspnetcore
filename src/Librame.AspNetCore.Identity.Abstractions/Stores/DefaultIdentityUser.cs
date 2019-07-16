@@ -39,7 +39,7 @@ namespace Librame.AspNetCore.Identity
         {
             // 默认使用空标识符，新增推荐使用服务注入
             Id = UniqueIdentifier.Empty;
-            NormalizedUserName = userName;
+            //NormalizedUserName = userName;
         }
 
     }

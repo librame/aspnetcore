@@ -32,10 +32,14 @@ namespace Librame.AspNetCore.Identity.UI
         public static IUIBuilder AddPages(this IUIBuilder builder, IMvcBuilder mvcBuilder)
         {
             // Add Assemblies Pages（需引用 Microsoft.AspNetCore.Mvc 程序集才能正常被路由解析）
-            var options = builder.Options.CastTo<IBuilderOptions, UIBuilderOptions>(nameof(builder.Options));
-            var themepackAssembly = options.Themepacks.DefaultInfo.NotNull(nameof(options.Themepacks.DefaultInfo)).Assembly;
+            var options = builder.Options.CastTo<IBuilderOptions,
+                UIBuilderOptions>(nameof(builder.Options));
+
+            var themepackAssembly = options.Themepacks.DefaultInfo
+                .NotNull(nameof(options.Themepacks.DefaultInfo)).Assembly;
             
-            mvcBuilder.AddRazorRelatedParts(themepackAssembly, typeof(IdentityPagesUIBuilderExtensions).Assembly);
+            mvcBuilder.AddRazorRelatedParts(themepackAssembly,
+                typeof(IdentityPagesUIBuilderExtensions).Assembly);
 
             return builder;
         }

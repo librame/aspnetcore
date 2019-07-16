@@ -95,6 +95,7 @@ namespace Librame.AspNetCore.UI
             return uiBuilder
                 .AddApplications()
                 .AddLocalizations()
+                .AddThemepacks(options.Themepacks.DefaultInfo)
                 .ResetDataAnnotations();
         }
 

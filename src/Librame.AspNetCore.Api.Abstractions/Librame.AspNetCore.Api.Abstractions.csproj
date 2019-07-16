@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>6.0.1613.201</Version>
+    <Version>6.0.1641.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.Abstractions on API extension package.</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions on API extension package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>6.0.1613.201</AssemblyVersion>
-    <FileVersion>6.0.1906.181</FileVersion>
+    <AssemblyVersion>6.0.1641.201</AssemblyVersion>
+    <FileVersion>6.0.1907.161</FileVersion>
     <RootNamespace>Librame.AspNetCore.Api</RootNamespace>
   </PropertyGroup>
 

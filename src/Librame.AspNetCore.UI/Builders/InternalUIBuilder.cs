@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System;
 
 namespace Librame.AspNetCore.UI
@@ -75,10 +74,9 @@ namespace Librame.AspNetCore.UI
             where TAppPostConfigureOptions : class, IApplicationPostConfigureOptions
         {
             ApplicationPostConfigureOptionsType = typeof(TAppPostConfigureOptions);
-            //Services.TryReplace<IConfigureOptions<>, TAppPostConfigureOptions>();
+            Services.TryReplaceConfigureOptions<TAppPostConfigureOptions>();
 
             return this;
         }
-
     }
 }

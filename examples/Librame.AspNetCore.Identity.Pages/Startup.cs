@@ -65,7 +65,7 @@ namespace Librame.AspNetCore.Identity.Pages
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
-            var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
+            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
             var writeConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";
 
             // Add Librame for ASP.NET Core
@@ -74,7 +74,7 @@ namespace Librame.AspNetCore.Identity.Pages
                 {
                     // 默认使用写入库做为主库
                     options.DefaultTenant.DefaultConnectionString = writeConnectionString;
-                    options.DefaultTenant.WriteConnectionString = defaultConnectionString;
+                    options.DefaultTenant.WriteConnectionString = writeConnectionString;
                 })
                 .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                 {
@@ -89,7 +89,12 @@ namespace Librame.AspNetCore.Identity.Pages
                         core.Stores.MaxLengthForKeys = 128;
                     };
                 })
-                .AddIdentityUI().AddPages(mvcBuilder)
+                .AddIdentityUI(options =>
+                {
+                    options.Themepacks.DefaultInfo = new SimpleThemepackInfo();
+                        // ThemepackGlobalization.GetInfo();
+                })
+                .AddPages(mvcBuilder)
                 .AddNetwork();
         }
 
