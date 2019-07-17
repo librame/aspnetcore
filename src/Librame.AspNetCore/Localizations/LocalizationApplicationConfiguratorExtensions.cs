@@ -15,21 +15,21 @@ using Microsoft.AspNetCore.Builder;
 namespace Librame.AspNetCore
 {
     /// <summary>
-    /// 本地化应用程序构建器包装静态扩展。
+    /// 本地化应用程序配置器静态扩展。
     /// </summary>
-    public static class LocalizationApplicationBuilderWrapperExtensions
+    public static class LocalizationApplicationConfiguratorExtensions
     {
         /// <summary>
-        /// 使用本地化。
+        /// 使用本地化应用程序。
         /// </summary>
-        /// <param name="wrapper">给定的 <see cref="IApplicationBuilderWrapper"/>。</param>
-        /// <returns>返回 <see cref="IApplicationBuilderWrapper"/>。</returns>
-        public static IApplicationBuilderWrapper UseLocalization(this IApplicationBuilderWrapper wrapper)
+        /// <param name="configurator">给定的 <see cref="IApplicationConfigurator"/>。</param>
+        /// <returns>返回 <see cref="IApplicationConfigurator"/>。</returns>
+        public static IApplicationConfigurator UseLocalization(this IApplicationConfigurator configurator)
         {
             // var requestLocalizationOptions = app.ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>();
-            wrapper.Builder.UseRequestLocalization(); //requestLocalizationOptions.Value
+            configurator.Builder.UseRequestLocalization(); //requestLocalizationOptions.Value
 
-            return wrapper;
+            return configurator;
         }
 
     }

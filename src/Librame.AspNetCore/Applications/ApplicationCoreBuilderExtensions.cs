@@ -26,7 +26,7 @@ namespace Librame.AspNetCore
         /// </summary>
         /// <param name="builder">给定的 <see cref="ICoreBuilder"/>。</param>
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
-        public static ICoreBuilder AddApplications(this ICoreBuilder builder)
+        public static ICoreBuilder AddPartApplications(this ICoreBuilder builder)
         {
             builder.Services.AddSingleton<IApplicationLocalization, InternalApplicationLocalization>();
             builder.Services.AddSingleton<IApplicationPrincipal, InternalApplicationPrincipal>();

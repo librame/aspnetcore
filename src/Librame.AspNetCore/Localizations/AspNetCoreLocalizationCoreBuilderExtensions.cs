@@ -18,9 +18,9 @@ namespace Librame.AspNetCore
     using Extensions.Core;
 
     /// <summary>
-    /// ASP.NET Core 本地化构建器静态扩展。
+    /// ASP.NET Core 本地化核心构建器静态扩展。
     /// </summary>
-    public static class AspNetCoreLocalizationBuilderExtensions
+    public static class AspNetCoreLocalizationCoreBuilderExtensions
     {
         /// <summary>
         /// 注册 ASP.NET Core 本地化集合。

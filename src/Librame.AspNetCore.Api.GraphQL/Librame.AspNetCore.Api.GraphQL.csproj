@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Librame.AspNetCore.Api.Abstractions\Librame.AspNetCore.Api.Abstractions.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore\Librame.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

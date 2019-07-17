@@ -10,12 +10,16 @@
 
 #endregion
 
-namespace Librame.AspNetCore.Apis
+namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// 文档写入器接口。
+    /// API 架构接口。
     /// </summary>
-    public interface IDocumentWriter
+    public interface IApiSchema
     {
+        /// <summary>
+        /// API 查询。
+        /// </summary>
+        IApiQuery Query { get; }
     }
 }

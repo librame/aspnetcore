@@ -57,6 +57,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Identity
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.UI.Abstractions", "src\Librame.AspNetCore.UI.Abstractions\Librame.AspNetCore.UI.Abstractions.csproj", "{A0FF0D1F-888E-46C1-B478-42CB5FC024B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.Api.Examples", "examples\Librame.AspNetCore.Api.Examples\Librame.AspNetCore.Api.Examples.csproj", "{3AC07933-67A2-45C0-9BC2-4811B9E5873E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{A0FF0D1F-888E-46C1-B478-42CB5FC024B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0FF0D1F-888E-46C1-B478-42CB5FC024B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0FF0D1F-888E-46C1-B478-42CB5FC024B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AC07933-67A2-45C0-9BC2-4811B9E5873E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AC07933-67A2-45C0-9BC2-4811B9E5873E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AC07933-67A2-45C0-9BC2-4811B9E5873E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AC07933-67A2-45C0-9BC2-4811B9E5873E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +194,7 @@ Global
 		{8770B033-B2F3-4D2D-9A15-FB7F46590C4E} = {7CE5401D-2698-4096-AC2C-EF5F842571E4}
 		{662B4963-BFEC-4DDF-8D6D-FF8662B8CFFA} = {7CE5401D-2698-4096-AC2C-EF5F842571E4}
 		{A0FF0D1F-888E-46C1-B478-42CB5FC024B4} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
+		{3AC07933-67A2-45C0-9BC2-4811B9E5873E} = {7CE5401D-2698-4096-AC2C-EF5F842571E4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C045FFCB-A85F-4F5E-9830-8F503D71513E}

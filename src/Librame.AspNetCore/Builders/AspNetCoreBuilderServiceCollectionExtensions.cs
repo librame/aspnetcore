@@ -41,7 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return builder
                 .AddAspNetCoreLocalizations()
-                .AddApplications()
+                .AddPartApplications()
                 .AddHttpContextAccessor();
         }
 

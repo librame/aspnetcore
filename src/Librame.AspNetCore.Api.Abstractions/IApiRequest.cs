@@ -10,21 +10,16 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Builder;
-
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// 应用程序构建器包装接口。
+    /// API 请求接口。
     /// </summary>
-    public interface IApplicationBuilderWrapper
+    public interface IApiRequest
     {
         /// <summary>
-        /// 应用构建器。
+        /// 请求查询。
         /// </summary>
-        /// <value>
-        /// 返回 <see cref="IApplicationBuilder"/>。
-        /// </value>
-        IApplicationBuilder Builder { get; }
+        string Query { get; set; }
     }
 }
