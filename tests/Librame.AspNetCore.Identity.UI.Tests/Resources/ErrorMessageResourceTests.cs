@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 using Xunit;
 
 namespace Librame.AspNetCore.Identity.UI.Tests
@@ -19,7 +20,9 @@ namespace Librame.AspNetCore.Identity.UI.Tests
 
         private void RunTest(IExpressionStringLocalizer<ErrorMessageResource> localizer, string cultureName)
         {
-            BuilderGlobalization.RegisterCultureInfos(cultureName);
+            CultureInfo.CurrentCulture
+                = CultureInfo.CurrentUICulture
+                = new CultureInfo(cultureName);
 
             var password = localizer[r => r.Password];
             Assert.False(password.ResourceNotFound);

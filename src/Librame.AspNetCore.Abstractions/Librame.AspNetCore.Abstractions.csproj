@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>6.0.1641.201</Version>
+    <Version>6.0.1643.201</Version>
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
     <Description>Based Librame.Extensions.Core.Abstractions on ASP.NET Core extension package.</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.Extensions.Core.Abstractions on ASP.NET Core extension package.</PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>6.0.1641.201</AssemblyVersion>
-    <FileVersion>6.0.1907.161</FileVersion>
+    <AssemblyVersion>6.0.1643.201</AssemblyVersion>
+    <FileVersion>6.0.1907.181</FileVersion>
     <RootNamespace>Librame.AspNetCore</RootNamespace>
   </PropertyGroup>
 
@@ -36,7 +36,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Core.Abstractions" Version="6.0.822.201" />
+    <PackageReference Include="Librame.Extensions.Core.Abstractions" Version="6.0.824.201" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />
   </ItemGroup>

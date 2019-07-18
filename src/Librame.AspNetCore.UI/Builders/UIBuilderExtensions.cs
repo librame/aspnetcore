@@ -10,7 +10,7 @@
 
 #endregion
 
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Librame.AspNetCore.UI
@@ -28,75 +28,67 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         /// <typeparam name="TAppContext">指定的应用程序上下文类型（推荐从 <see cref="AbstractApplicationContext"/> 派生）。</typeparam>
         /// <typeparam name="TAppPostConfigureOptions">指定的应用程序后置配置选项类型（推荐从 <see cref="ApplicationPostConfigureOptionsBase"/> 派生）。</typeparam>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="configureOptions">给定的 <see cref="Action{UIBuilderOptions}"/>（可选；高优先级）。</param>
-        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
-        /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="themepack">给定的 <see cref="IThemepackInfo"/>。</param>
+        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IUIBuilder"/>。</returns>
-        public static IUIBuilder AddUI<TAppContext, TAppPostConfigureOptions>(this IBuilder builder,
-            Action<UIBuilderOptions> configureOptions = null,
-            IConfiguration configuration = null,
-            Action<BinderOptions> configureBinderOptions = null)
+        public static IUIBuilder AddUI<TAppContext, TAppPostConfigureOptions>(this IExtensionBuilder builder,
+            IThemepackInfo themepack, Action<UIBuilderOptions> setupAction = null)
             where TAppContext : class, IApplicationContext
             where TAppPostConfigureOptions : class, IApplicationPostConfigureOptionsBase
         {
-            return builder.AddUICore(options =>
-            {
-                return new InternalUIBuilder(typeof(TAppContext),
-                typeof(TAppPostConfigureOptions), builder, options);
-            },
-            configureOptions, configuration, configureBinderOptions);
+            return builder.AddUI(typeof(TAppContext), typeof(TAppPostConfigureOptions),
+                themepack, setupAction);
         }
 
         /// <summary>
-        /// 添加 UI 扩展（需确保构建器选项中的 <see cref="UIBuilderOptions.ApplicationContextType"/> 与 <see cref="UIBuilderOptions.ApplicationPostConfigureOptionsType"/> 已配置）。
+        /// 添加 UI 扩展。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="configureOptions">给定的 <see cref="Action{UIBuilderOptions}"/>（可选；高优先级）。</param>
-        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
-        /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="applicationContextType">给定的应用程序上下文类型（推荐从 <see cref="AbstractApplicationContext"/> 派生）。</param>
+        /// <param name="applicationPostConfigureOptionsType">给定的应用程序后置配置选项类型（推荐从 <see cref="ApplicationPostConfigureOptionsBase"/> 派生）。</param>
+        /// <param name="themepack">给定的 <see cref="IThemepackInfo"/>。</param>
+        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IUIBuilder"/>。</returns>
-        public static IUIBuilder AddUI(this IBuilder builder,
-            Action<UIBuilderOptions> configureOptions = null,
-            IConfiguration configuration = null,
-            Action<BinderOptions> configureBinderOptions = null)
+        public static IUIBuilder AddUI(this IExtensionBuilder builder,
+            Type applicationContextType, Type applicationPostConfigureOptionsType,
+            IThemepackInfo themepack, Action<UIBuilderOptions> setupAction = null)
         {
-            return builder.AddUICore(options =>
+            return builder.AddUI(b =>
             {
-                var applicationContextType = options.ApplicationContextType;
-                var applicationPostConfigureOptionsType = options.ApplicationPostConfigureOptionsType;
-
-                applicationContextType.AssignableToBase(typeof(IApplicationContext));
-                applicationPostConfigureOptionsType.AssignableToBase(typeof(IApplicationPostConfigureOptionsBase));
-
                 return new InternalUIBuilder(applicationContextType,
-                    applicationPostConfigureOptionsType, builder, options);
+                    applicationPostConfigureOptionsType, themepack, b);
             },
-            configureOptions, configuration, configureBinderOptions);
+            setupAction);
         }
 
-        private static IUIBuilder AddUICore(this IBuilder builder,
-            Func<UIBuilderOptions, IUIBuilder> builderFactory,
-            Action<UIBuilderOptions> configureOptions = null,
-            IConfiguration configuration = null,
-            Action<BinderOptions> configureBinderOptions = null)
+        /// <summary>
+        /// 添加 UI 扩展。
+        /// </summary>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="createFactory">给定创建 UI 构建器的工厂方法。</param>
+        /// <param name="setupAction">给定的选项配置动作。</param>
+        /// <returns>返回 <see cref="IUIBuilder"/>。</returns>
+        public static IUIBuilder AddUI(this IExtensionBuilder builder,
+            Func<IExtensionBuilder, IUIBuilder> createFactory,
+            Action<UIBuilderOptions> setupAction = null)
         {
-            var options = builder.Configure(configureOptions,
-                configuration, configureBinderOptions);
+            createFactory.NotNull(nameof(createFactory));
 
-            var applicationContextType = options.ApplicationContextType;
-            var applicationPostConfigureOptionsType = options.ApplicationPostConfigureOptionsType;
+            builder.Services.OnlyConfigure(setupAction);
 
-            applicationContextType.AssignableToBase(typeof(IApplicationContext));
-            applicationPostConfigureOptionsType.AssignableToBase(typeof(IApplicationPostConfigureOptionsBase));
+            var uiBuilder = createFactory.Invoke(builder);
 
-            var uiBuilder = builderFactory.Invoke(options);
+            uiBuilder.ApplicationContextType.AssignableToBase(typeof(IApplicationContext));
+            uiBuilder.ApplicationPostConfigureOptionsType
+                .AssignableToBase(typeof(IApplicationPostConfigureOptionsBase));
+            uiBuilder.Themepack.NotNull(nameof(uiBuilder.Themepack));
 
             return uiBuilder
                 .AddApplications()
+                .AddDataAnnotations()
                 .AddLocalizations()
-                .AddThemepacks(options.Themepacks.DefaultInfo)
-                .ResetDataAnnotations();
+                .AddThemepacks();
         }
 
     }

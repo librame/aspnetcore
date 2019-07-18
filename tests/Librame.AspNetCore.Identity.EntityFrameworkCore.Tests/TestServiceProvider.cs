@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Identity.Tests
                 .AddIdentityCookies(cookies => { });
 
                 services.AddLibrameCore()
-                    .AddAspNetCoreData(options =>
+                    .AddDataCore(options =>
                     {
                         options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
                         options.DefaultTenant.WriteConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";

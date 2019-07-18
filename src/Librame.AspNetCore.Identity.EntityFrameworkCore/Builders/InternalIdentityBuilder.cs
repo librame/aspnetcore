@@ -12,7 +12,6 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Librame.AspNetCore.Identity
 {
@@ -22,48 +21,34 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 内部身份构建器。
     /// </summary>
-    internal class InternalIdentityBuilder : AbstractBuilder<IdentityBuilderOptions>, IIdentityBuilder
+    internal class InternalIdentityBuilder : AbstractExtensionBuilder, IIdentityBuilder
     {
         /// <summary>
         /// 构造一个 <see cref="InternalIdentityBuilder"/> 实例。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="options">给定的 <see cref="IdentityBuilderOptions"/>。</param>
-        public InternalIdentityBuilder(IBuilder builder, IdentityBuilderOptions options)
-            : base(builder, options)
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        public InternalIdentityBuilder(IExtensionBuilder builder)
+            : base(builder)
         {
             Services.AddSingleton<IIdentityBuilder>(this);
         }
 
 
         /// <summary>
-        /// 核心身份构建器。
+        /// 身份构建器核心。
         /// </summary>
         /// <value>返回 <see cref="IdentityBuilder"/>。</value>
-        public IdentityBuilder CoreIdentityBuilder { get; private set; }
+        public IdentityBuilder IdentityCore { get; private set; }
 
 
         /// <summary>
         /// 添加身份核心。
         /// </summary>
-        /// <typeparam name="TUser">指定的用户类型。</typeparam>
-        /// <param name="configureCoreIdentity">配置核心身份构建器（可选）。</param>
+        /// <param name="identityCore">给定的 <see cref="IdentityBuilder"/>。</param>
         /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public IIdentityBuilder AddIdentityCore<TUser>(Action<IdentityBuilder> configureCoreIdentity = null)
-            where TUser : class
+        public IIdentityBuilder AddIdentityCore(IdentityBuilder identityCore)
         {
-            Action<IdentityOptions> configureCoreOptions = null;
-
-            if (Options is IdentityBuilderOptions options)
-                configureCoreOptions = options.ConfigureCoreIdentity;
-
-            if (configureCoreOptions.IsNull())
-                CoreIdentityBuilder = Services.AddIdentityCore<TUser>();
-            else
-                CoreIdentityBuilder = Services.AddIdentityCore<TUser>(configureCoreOptions);
-
-            configureCoreIdentity?.Invoke(CoreIdentityBuilder);
-
+            IdentityCore = identityCore.NotNull(nameof(identityCore));
             return this;
         }
 

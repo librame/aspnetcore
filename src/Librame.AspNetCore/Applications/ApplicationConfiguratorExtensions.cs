@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Builder;
+using System;
 
 namespace Librame.AspNetCore
 {
@@ -23,12 +24,14 @@ namespace Librame.AspNetCore
         /// 使用 Librame for ASP.NET Core。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IApplicationBuilder"/>。</param>
+        /// <param name="optionsAction">给定的选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IApplicationConfigurator"/>。</returns>
-        public static IApplicationConfigurator UseLibrameCore(this IApplicationBuilder builder)
+        public static IApplicationConfigurator UseLibrameCore(this IApplicationBuilder builder,
+            Action<RequestLocalizationOptions> optionsAction = null)
         {
             var loader = new InternalApplicationConfigurator(builder);
 
-            return loader.UseLocalization();
+            return loader.UseLocalization(optionsAction);
         }
 
     }

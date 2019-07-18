@@ -11,12 +11,12 @@
 #endregion
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Librame.AspNetCore.Identity
 {
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
@@ -27,19 +27,17 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 添加身份扩展。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="configureOptions">给定的 <see cref="Action{IdentityBuilderOptions}"/>（可选；高优先级）。</param>
-        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
-        /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
+        /// <param name="setupCoreAction">给定的身份核心选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public static IIdentityBuilder AddIdentity<TAccessor>(this IBuilder builder,
-            Action<IdentityBuilderOptions> configureOptions = null,
-            IConfiguration configuration = null,
-            Action<BinderOptions> configureBinderOptions = null)
+        public static IIdentityBuilder AddIdentity<TAccessor>(this IExtensionBuilder builder,
+            Action<IdentityBuilderOptions> setupAction = null,
+            Action<IdentityOptions> setupCoreAction = null)
             where TAccessor : IdentityDbContextAccessor
         {
             return builder.AddIdentity<TAccessor, DefaultIdentityUser,
-                DefaultIdentityRole>(configureOptions, configuration, configureBinderOptions);
+                DefaultIdentityRole>(b => new InternalIdentityBuilder(b), setupAction, setupCoreAction);
         }
 
         /// <summary>
@@ -48,34 +46,36 @@ namespace Librame.AspNetCore.Identity
         /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
         /// <typeparam name="TRole">指定的角色类型。</typeparam>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="configureOptions">给定的 <see cref="Action{IdentityBuilderOptions}"/>（可选；高优先级）。</param>
-        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
-        /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="createFactory">给定创建身份构建器的工厂方法。</param>
+        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
+        /// <param name="setupCoreAction">给定的身份核心选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public static IIdentityBuilder AddIdentity<TAccessor, TUser, TRole>(this IBuilder builder,
-            Action<IdentityBuilderOptions> configureOptions = null,
-            IConfiguration configuration = null,
-            Action<BinderOptions> configureBinderOptions = null)
+        public static IIdentityBuilder AddIdentity<TAccessor, TUser, TRole>(this IExtensionBuilder builder,
+            Func<IExtensionBuilder, IIdentityBuilder> createFactory,
+            Action<IdentityBuilderOptions> setupAction = null,
+            Action<IdentityOptions> setupCoreAction = null)
             where TAccessor : IdentityDbContextAccessor
             where TUser : class
             where TRole : class
         {
-            var options = builder.Configure(configureOptions,
-                configuration, configureBinderOptions);
+            createFactory.NotNull(nameof(createFactory));
 
-            var identityBuilder = new InternalIdentityBuilder(builder, options);
+            builder.Services.OnlyConfigure(setupAction);
 
-            identityBuilder.AddIdentityCore<TUser>(core =>
-            {
-                core.AddRoles<TRole>()
-                    .AddEntityFrameworkStores<TAccessor>();
-            });
+            // Add IdentityCore
+            var identityCore = builder.Services
+                .AddIdentityCore<TUser>(setupCoreAction ?? (_ => { }))
+                .AddRoles<TRole>()
+                .AddEntityFrameworkStores<TAccessor>()
+                .AddSignInManager()
+                .AddDefaultTokenProviders();
 
-            identityBuilder.CoreIdentityBuilder.AddSignInManager();
-            identityBuilder.CoreIdentityBuilder.AddDefaultTokenProviders();
+            // Add IIdentityBuilder
+            var identityBuilder = createFactory.Invoke(builder);
 
             return identityBuilder
+                .AddIdentityCore(identityCore)
                 .AddServices();
         }
 

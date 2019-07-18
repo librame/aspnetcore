@@ -273,7 +273,16 @@ namespace Librame.AspNetCore
         /// <returns>·µ»Ø <see cref="RootNamespaceAttribute"/>¡£</returns>
         protected virtual RootNamespaceAttribute GetRootNamespaceAttribute(Assembly assembly)
         {
-            return assembly.GetCustomAttribute<RootNamespaceAttribute>();
+            var attribute = assembly.GetCustomAttribute<RootNamespaceAttribute>();
+
+            if (attribute.IsNotNull())
+                return attribute;
+
+            var copy = assembly.GetCustomAttribute<AbstractionRootNamespaceAttribute>();
+            if (copy.IsNotNull())
+                attribute = new RootNamespaceAttribute(copy.RootNamespace);
+
+            return attribute;
         }
 
 

@@ -10,7 +10,6 @@
 
 #endregion
 
-using Microsoft.Extensions.Configuration;
 using System;
 
 namespace Librame.Extensions.Data
@@ -25,21 +24,29 @@ namespace Librame.Extensions.Data
         /// <summary>
         /// 添加 ASP.NET Core 数据扩展。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="configureOptions">给定的 <see cref="Action{DataBuilderOptions}"/>（可选；高优先级）。</param>
-        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
-        /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
-        public static IDataBuilder AddAspNetCoreData(this IBuilder builder,
-            Action<DataBuilderOptions> configureOptions = null,
-            IConfiguration configuration = null,
-            Action<BinderOptions> configureBinderOptions = null)
+        public static IDataBuilder AddDataCore(this IExtensionBuilder builder,
+            Action<DataBuilderOptions> setupAction = null)
         {
-            var dataBuilder = builder.AddData(configureOptions,
-                configuration, configureBinderOptions);
+            return builder.AddData(setupAction)
+                .AddServices();
+        }
 
-            return dataBuilder
-                .AddAspNetCoreServices();
+        /// <summary>
+        /// 添加 ASP.NET Core 数据扩展。
+        /// </summary>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="createFactory">给定创建数据构建器的工厂方法。</param>
+        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
+        /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
+        public static IDataBuilder AddDataCore(this IExtensionBuilder builder,
+            Func<IExtensionBuilder, IDataBuilder> createFactory,
+            Action<DataBuilderOptions> setupAction = null)
+        {
+            return builder.AddData(createFactory, setupAction)
+                .AddServices();
         }
 
     }

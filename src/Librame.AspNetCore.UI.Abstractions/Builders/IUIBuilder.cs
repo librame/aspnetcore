@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// UI 构建器接口。
     /// </summary>
-    public interface IUIBuilder : IBuilder
+    public interface IUIBuilder : IExtensionBuilder
     {
         /// <summary>
         /// 应用程序上下文类型。
@@ -30,6 +30,11 @@ namespace Librame.AspNetCore.UI
         /// 应用程序后置配置选项类型。
         /// </summary>
         Type ApplicationPostConfigureOptionsType { get; }
+
+        /// <summary>
+        /// 主题包。
+        /// </summary>
+        IThemepackInfo Themepack { get; }
 
 
         /// <summary>
@@ -47,5 +52,13 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回 <see cref="IUIBuilder"/>。</returns>
         IUIBuilder AddApplicationPostConfigureOptions<TAppPostConfigureOptions>()
             where TAppPostConfigureOptions : class, IApplicationPostConfigureOptions;
+
+
+        /// <summary>
+        /// 添加主题包。
+        /// </summary>
+        /// <param name="themepackInfo">给定的 <see cref="IThemepackInfo"/>。</param>
+        /// <returns>返回 <see cref="IUIBuilder"/>。</returns>
+        IUIBuilder AddThemepack(IThemepackInfo themepackInfo);
     }
 }

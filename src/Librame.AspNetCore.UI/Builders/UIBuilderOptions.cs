@@ -19,17 +19,17 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// UI 构建器选项。
     /// </summary>
-    public class UIBuilderOptions : AbstractBuilderOptions
+    public class UIBuilderOptions : AbstractExtensionBuilderOptions
     {
-        /// <summary>
-        /// 应用程序上下文类型（推荐从 <see cref="AbstractApplicationContext"/> 派生）。
-        /// </summary>
-        public Type ApplicationContextType { get; set; }
+        ///// <summary>
+        ///// 应用程序上下文类型（推荐从 <see cref="AbstractApplicationContext"/> 派生）。
+        ///// </summary>
+        //public Type ApplicationContextType { get; set; }
 
-        /// <summary>
-        /// 应用程序后置配置选项类型（推荐从 <see cref="ApplicationPostConfigureOptionsBase"/> 派生）。
-        /// </summary>
-        public Type ApplicationPostConfigureOptionsType { get; set; }
+        ///// <summary>
+        ///// 应用程序后置配置选项类型（推荐从 <see cref="ApplicationPostConfigureOptionsBase"/> 派生）。
+        ///// </summary>
+        //public Type ApplicationPostConfigureOptionsType { get; set; }
 
 
         /// <summary>

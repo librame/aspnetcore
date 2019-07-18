@@ -19,15 +19,14 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// 内部身份构建器。
     /// </summary>
-    internal class InternalApiBuilder : AbstractBuilder<ApiBuilderOptions>, IApiBuilder
+    internal class InternalApiBuilder : AbstractExtensionBuilder, IApiBuilder
     {
         /// <summary>
         /// 构造一个 <see cref="InternalApiBuilder"/> 实例。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="options">给定的 <see cref="ApiBuilderOptions"/>。</param>
-        public InternalApiBuilder(IBuilder builder, ApiBuilderOptions options)
-            : base(builder, options)
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        public InternalApiBuilder(IExtensionBuilder builder)
+            : base(builder)
         {
             Services.AddSingleton<IApiBuilder>(this);
         }

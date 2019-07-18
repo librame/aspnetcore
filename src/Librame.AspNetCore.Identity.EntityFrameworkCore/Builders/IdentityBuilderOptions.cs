@@ -33,7 +33,7 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 身份表架构选项。
     /// </summary>
-    public class IdentityTableSchemaOptions : ITableSchemaOptions
+    public class IdentityTableSchemaOptions : TableSchemaOptions
     {
         /// <summary>
         /// 角色工厂方法。

@@ -15,8 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Librame.AspNetCore.Identity.UI
 {
     using AspNetCore.UI;
-    using Extensions;
-    using Extensions.Core;
 
     /// <summary>
     /// 身份页面集合 UI 构建器静态扩展。
@@ -32,13 +30,7 @@ namespace Librame.AspNetCore.Identity.UI
         public static IUIBuilder AddPages(this IUIBuilder builder, IMvcBuilder mvcBuilder)
         {
             // Add Assemblies Pages（需引用 Microsoft.AspNetCore.Mvc 程序集才能正常被路由解析）
-            var options = builder.Options.CastTo<IBuilderOptions,
-                UIBuilderOptions>(nameof(builder.Options));
-
-            var themepackAssembly = options.Themepacks.DefaultInfo
-                .NotNull(nameof(options.Themepacks.DefaultInfo)).Assembly;
-            
-            mvcBuilder.AddRazorRelatedParts(themepackAssembly,
+            mvcBuilder.AddRazorRelatedParts(builder.Themepack.Assembly,
                 typeof(IdentityPagesUIBuilderExtensions).Assembly);
 
             return builder;

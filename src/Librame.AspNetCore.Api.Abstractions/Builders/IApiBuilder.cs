@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// API 构建器接口。
     /// </summary>
-    public interface IApiBuilder : IBuilder
+    public interface IApiBuilder : IExtensionBuilder
     {
     }
 }

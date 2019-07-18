@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// API 应用程序配置器静态扩展。
     /// </summary>
-    public static class ApiApplicationBuilderWrapperExtensions
+    public static class ApiApplicationConfiguratorExtensions
     {
         /// <summary>
         /// 使用 API 应用程序。

@@ -57,7 +57,7 @@ namespace Librame.AspNetCore.Identity
             var maxKeyLength = coreOptions.Stores?.MaxLengthForKeys ?? 0;
             var encryptPersonalData = coreOptions.Stores?.ProtectPersonalData ?? false;
 
-            PersonalDataConverter converter = null;
+            InternalPersonalDataConverter converter = null;
 
             modelBuilder.Entity<TRole>(b =>
             {
@@ -117,7 +117,7 @@ namespace Librame.AspNetCore.Identity
 
                 if (encryptPersonalData)
                 {
-                    converter = new PersonalDataConverter(dataProtector);
+                    converter = new InternalPersonalDataConverter(dataProtector);
 
                     b.ConfigureEncryptPersonalData(converter);
                 }

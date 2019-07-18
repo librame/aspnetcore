@@ -20,21 +20,22 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 内部存储构建器。
     /// </summary>
-    internal class InternalUIBuilder : AbstractBuilder<UIBuilderOptions>, IUIBuilder
+    internal class InternalUIBuilder : AbstractExtensionBuilder, IUIBuilder
     {
         /// <summary>
         /// 构造一个 <see cref="InternalUIBuilder"/> 实例。
         /// </summary>
         /// <param name="applicationContextType">给定的应用程序上下文类型。</param>
         /// <param name="applicationPostConfigureOptionsType">给定的应用程序后置配置选项类型。</param>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="options">给定的 <see cref="UIBuilderOptions"/>。</param>
+        /// <param name="themepack">给定的 <see cref="IThemepackInfo"/>。</param>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
         public InternalUIBuilder(Type applicationContextType, Type applicationPostConfigureOptionsType,
-            IBuilder builder, UIBuilderOptions options)
-            : base(builder, options)
+            IThemepackInfo themepack, IExtensionBuilder builder)
+            : base(builder)
         {
             ApplicationContextType = applicationContextType;
             ApplicationPostConfigureOptionsType = applicationPostConfigureOptionsType;
+            Themepack = themepack;
 
             Services.AddSingleton<IUIBuilder>(this);
         }
@@ -50,6 +51,11 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         public Type ApplicationPostConfigureOptionsType { get; private set; }
 
+        /// <summary>
+        /// 主题包。
+        /// </summary>
+        public IThemepackInfo Themepack { get; private set; }
+
 
         /// <summary>
         /// 添加应用程序上下文类型。
@@ -61,7 +67,6 @@ namespace Librame.AspNetCore.UI
         {
             ApplicationContextType = typeof(TAppContext);
             Services.TryReplace<IApplicationContext, TAppContext>();
-
             return this;
         }
 
@@ -75,8 +80,21 @@ namespace Librame.AspNetCore.UI
         {
             ApplicationPostConfigureOptionsType = typeof(TAppPostConfigureOptions);
             Services.TryReplaceConfigureOptions<TAppPostConfigureOptions>();
-
             return this;
         }
+
+
+        /// <summary>
+        /// 添加主题包。
+        /// </summary>
+        /// <param name="themepackInfo">给定的 <see cref="IThemepackInfo"/>。</param>
+        /// <returns>返回 <see cref="IUIBuilder"/>。</returns>
+        public IUIBuilder AddThemepack(IThemepackInfo themepackInfo)
+        {
+            Themepack = themepackInfo;
+            Services.TryReplace(themepackInfo);
+            return this;
+        }
+
     }
 }

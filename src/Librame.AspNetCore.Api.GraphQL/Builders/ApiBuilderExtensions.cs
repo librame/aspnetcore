@@ -12,12 +12,12 @@
 
 using GraphQL;
 using GraphQL.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Librame.AspNetCore.Api
 {
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
@@ -28,28 +28,31 @@ namespace Librame.AspNetCore.Api
         /// <summary>
         /// 添加 API 扩展。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IBuilder"/>。</param>
-        /// <param name="configureOptions">给定的 <see cref="Action{ApiBuilderOptions}"/>（可选；高优先级）。</param>
-        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
-        /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
-        public static IApiBuilder AddApi(this IBuilder builder,
-            Action<ApiBuilderOptions> configureOptions = null,
-            IConfiguration configuration = null,
-            Action<BinderOptions> configureBinderOptions = null)
+        public static IApiBuilder AddApi(this IExtensionBuilder builder,
+            Action<ApiBuilderOptions> setupAction = null)
         {
-            var options = builder.Configure(configureOptions,
-                configuration, configureBinderOptions);
-
-            var apiBuilder = new InternalApiBuilder(builder, options);
-
-            return apiBuilder
-                .AddGraphQL();
+            return builder.AddApi(b => new InternalApiBuilder(b), setupAction);
         }
 
-        public static IApiBuilder AddApi(this IBuilder builder, Func<IBuilder, IApiBuilder> factory)
+        /// <summary>
+        /// 添加 API 扩展。
+        /// </summary>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="createFactory">给定创建 API 构建器的工厂方法。</param>
+        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
+        /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
+        public static IApiBuilder AddApi(this IExtensionBuilder builder,
+            Func<IExtensionBuilder, IApiBuilder> createFactory,
+            Action<ApiBuilderOptions> setupAction = null)
         {
-            var apiBuilder = factory.Invoke(builder);
+            createFactory.NotNull(nameof(createFactory));
+
+            builder.Services.OnlyConfigure(setupAction);
+
+            var apiBuilder = createFactory.Invoke(builder);
 
             return apiBuilder
                 .AddGraphQL();

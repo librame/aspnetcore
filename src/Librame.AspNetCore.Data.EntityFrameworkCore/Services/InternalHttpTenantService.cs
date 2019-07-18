@@ -20,12 +20,10 @@ using System.Threading.Tasks;
 
 namespace Librame.Extensions.Data
 {
-    using Core;
-
     /// <summary>
     /// 内部 HTTP 租户服务。
     /// </summary>
-    internal class InternalHttpTenantService : AbstractService<DataBuilderOptions>, ITenantService
+    internal class InternalHttpTenantService : DataServiceBase, ITenantService
     {
         private readonly IHttpContextAccessor _accessor;
 

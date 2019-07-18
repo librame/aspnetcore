@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.AspNetCore.Identity;
-using System;
 
 namespace Librame.AspNetCore.Identity
 {
@@ -20,24 +19,22 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 身份构建器接口。
     /// </summary>
-    public interface IIdentityBuilder : IBuilder
+    public interface IIdentityBuilder : IExtensionBuilder
     {
         /// <summary>
-        /// 核心身份构建器。
+        /// 身份构建器核心。
         /// </summary>
         /// <value>
         /// 返回 <see cref="IdentityBuilder"/>。
         /// </value>
-        IdentityBuilder CoreIdentityBuilder { get; }
+        IdentityBuilder IdentityCore { get; }
 
 
         /// <summary>
         /// 添加身份核心。
         /// </summary>
-        /// <typeparam name="TUser">指定的用户类型。</typeparam>
-        /// <param name="configureCoreIdentity">配置核心身份构建器（可选）。</param>
+        /// <param name="identityCore">给定的 <see cref="IdentityBuilder"/>。</param>
         /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        IIdentityBuilder AddIdentityCore<TUser>(Action<IdentityBuilder> configureCoreIdentity = null)
-            where TUser : class;
+        IIdentityBuilder AddIdentityCore(IdentityBuilder identityCore);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Librame.Extensions.Core;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 using Xunit;
 
 namespace Librame.AspNetCore.Identity.Tests
@@ -18,7 +19,9 @@ namespace Librame.AspNetCore.Identity.Tests
 
         private void RunTest(IExpressionStringLocalizer<IdentityUserClaimResource> localizer, string cultureName)
         {
-            BuilderGlobalization.RegisterCultureInfos(cultureName);
+            CultureInfo.CurrentCulture
+                = CultureInfo.CurrentUICulture
+                = new CultureInfo(cultureName);
 
             var id = localizer[r => r.Id];
             Assert.False(id.ResourceNotFound);

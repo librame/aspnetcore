@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// API 构建器选项。
     /// </summary>
-    public class ApiBuilderOptions : AbstractBuilderOptions
+    public class ApiBuilderOptions : AbstractExtensionBuilderOptions
     {
     }
 }

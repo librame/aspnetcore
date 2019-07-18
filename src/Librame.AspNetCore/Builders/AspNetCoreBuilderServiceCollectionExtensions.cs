@@ -13,44 +13,57 @@
 using Librame.AspNetCore;
 using Librame.Extensions.Core;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// ASP.NET 构建器服务集合静态扩展。
+    /// ASP.NET 核心构建器服务集合静态扩展。
     /// </summary>
-    public static class AspNetBuilderServiceCollectionExtensions
+    public static class AspNetCoreBuilderServiceCollectionExtensions
     {
         /// <summary>
         /// 注册 Librame for ASP.NET Core 服务集合。
         /// </summary>
         /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
-        /// <param name="configureOptions">给定的 <see cref="Action{CoreBuilderOptions}"/>（可选；高优先级）。</param>
-        /// <param name="configuration">给定的 <see cref="IConfiguration"/>（可选；次优先级）。</param>
-        /// <param name="configureBinderOptions">给定的配置绑定器选项动作（可选）。</param>
+        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
+        /// <param name="setupLoggingAction">给定的日志配置动作（可选）。</param>
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
         public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
-            Action<CoreBuilderOptions> configureOptions = null,
-            IConfiguration configuration = null,
-            Action<BinderOptions> configureBinderOptions = null)
+            Action<CoreBuilderOptions> setupAction = null,
+            Action<ILoggingBuilder> setupLoggingAction = null)
         {
-            var builder = services.AddLibrame(configureOptions,
-                configuration, configureBinderOptions);
+            var builder = services.AddLibrame(setupAction, setupLoggingAction);
 
-            return builder
-                .AddAspNetCoreLocalizations()
-                .AddPartApplications()
-                .AddHttpContextAccessor();
+            return builder.AddAspNetCore();
         }
 
+        /// <summary>
+        /// 注册 Librame for ASP.NET Core 服务集合。
+        /// </summary>
+        /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
+        /// <param name="createFactory">给定创建核心构建器的工厂方法。</param>
+        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
+        /// <param name="setupLoggingAction">给定的日志配置动作（可选）。</param>
+        /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
+        public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
+            Func<IServiceCollection, ICoreBuilder> createFactory,
+            Action<CoreBuilderOptions> setupAction = null,
+            Action<ILoggingBuilder> setupLoggingAction = null)
+        {
+            var builder = services.AddLibrame(createFactory, setupAction, setupLoggingAction);
 
-        private static ICoreBuilder AddHttpContextAccessor(this ICoreBuilder builder)
+            return builder.AddAspNetCore();
+        }
+
+        private static ICoreBuilder AddAspNetCore(this ICoreBuilder builder)
         {
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            return builder;
+            return builder
+                .AddApplications()
+                .AddLocalizations();
         }
 
     }
