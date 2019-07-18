@@ -23,7 +23,8 @@ namespace Librame.AspNetCore.Api.Examples
             services.AddLibrameCore()
                 .AddApi();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -49,6 +50,9 @@ namespace Librame.AspNetCore.Api.Examples
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+
+            //app.UseLibrameCore()
+            //    .UseApi();
 
             app.UseMvc(routes =>
             {
