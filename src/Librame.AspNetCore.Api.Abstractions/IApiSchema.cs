@@ -16,12 +16,19 @@ namespace Librame.AspNetCore.Api
     /// API 架构接口。
     /// </summary>
     /// <typeparam name="TQuery">指定的查询类型。</typeparam>
-    public interface IApiSchema<out TQuery>
+    /// <typeparam name="TMutation">指定的变化类型。</typeparam>
+    public interface IApiSchema<out TQuery, out TMutation>
         where TQuery : class
+        where TMutation : class
     {
         /// <summary>
         /// 查询实例。
         /// </summary>
         TQuery Query { get; }
+		
+		/// <summary>
+        /// 变化实例。
+        /// </summary>
+		TMutation Mutation { get; }
     }
 }

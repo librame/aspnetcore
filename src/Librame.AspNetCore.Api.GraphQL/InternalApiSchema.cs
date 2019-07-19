@@ -19,15 +19,17 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// 内部 API 架构。
     /// </summary>
-    internal class InternalApiSchema : Schema, IApiSchema<IObjectGraphType>
+    internal class InternalApiSchema : Schema, IApiSchema<IObjectGraphType, IObjectGraphType>
     {
         /// <summary>
         /// 构造一个 <see cref="InternalApiSchema"/> 实例。
         /// </summary>
         /// <param name="query">给定的 <see cref="IApiQuery"/>。</param>
-        public InternalApiSchema(IApiQuery query)
+        /// <param name="mutation">给定的 <see cref="IApiMutation"/>。</param>
+        public InternalApiSchema(IApiQuery query, IApiMutation mutation)
         {
             Query = query.NotNull(nameof(query));
+            Mutation = mutation.NotNull(nameof(mutation));
         }
     }
 }
