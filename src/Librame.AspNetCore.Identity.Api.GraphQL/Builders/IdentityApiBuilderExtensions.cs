@@ -10,63 +10,51 @@
 
 #endregion
 
-using GraphQL;
-using GraphQL.Http;
-using GraphQL.Types;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace Librame.AspNetCore.Api
+namespace Librame.AspNetCore.Identity.Api
 {
-    using Extensions;
+    using AspNetCore.Api;
     using Extensions.Core;
 
     /// <summary>
-    /// API 构建器静态扩展。
+    /// 身份 API 构建器静态扩展。
     /// </summary>
-    public static class ApiBuilderExtensions
+    public static class IdentityApiBuilderExtensions
     {
         /// <summary>
-        /// 添加 API 扩展。
+        /// 添加 Identity API 扩展。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="setupAction">给定的选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
-        public static IApiBuilder AddApi(this IExtensionBuilder builder,
+        public static IApiBuilder AddIdentityApi(this IExtensionBuilder builder,
             Action<ApiBuilderOptions> setupAction = null)
         {
-            return builder.AddApi(b => new InternalApiBuilder(b), setupAction);
+            return builder.AddApi(setupAction)
+                .AddIdentityApiCore();
         }
 
         /// <summary>
-        /// 添加 API 扩展。
+        /// 添加 Identity API 扩展。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="createFactory">给定创建 API 构建器的工厂方法。</param>
         /// <param name="setupAction">给定的选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
-        public static IApiBuilder AddApi(this IExtensionBuilder builder,
+        public static IApiBuilder AddIdentityApi(this IExtensionBuilder builder,
             Func<IExtensionBuilder, IApiBuilder> createFactory,
             Action<ApiBuilderOptions> setupAction = null)
         {
-            createFactory.NotNull(nameof(createFactory));
-
-            builder.Services.OnlyConfigure(setupAction);
-
-            var apiBuilder = createFactory.Invoke(builder);
-
-            return apiBuilder
-                .AddGraphQL();
+            return builder.AddApi(createFactory, setupAction)
+                .AddIdentityApiCore();
         }
 
-        private static IApiBuilder AddGraphQL(this IApiBuilder builder)
+        private static IApiBuilder AddIdentityApiCore(this IApiBuilder builder)
         {
-            builder.Services.AddSingleton<IDocumentWriter, DocumentWriter>();
-            builder.Services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
-
-            builder.Services.AddScoped<IApiSchema<IObjectGraphType>, InternalApiSchema>();
-            builder.Services.AddScoped<IApiMutation, InternalApiMutation>();
-            builder.Services.AddScoped<IApiQuery, InternalApiQuery>();
+            builder.Services.TryReplace<IApiMutation, InternalIdentityApiMutation>();
+            builder.Services.TryReplace<IApiQuery, InternalIdentityApiQuery>();
 
             return builder;
         }

@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// 内部 API 架构。
     /// </summary>
-    internal class InternalApiSchema : Schema, IApiSchema
+    internal class InternalApiSchema : Schema, IApiSchema<IObjectGraphType>
     {
         /// <summary>
         /// 构造一个 <see cref="InternalApiSchema"/> 实例。
@@ -29,11 +29,5 @@ namespace Librame.AspNetCore.Api
         {
             Query = query.NotNull(nameof(query));
         }
-
-
-        /// <summary>
-        /// API 查询。
-        /// </summary>
-        public new IApiQuery Query { get; }
     }
 }

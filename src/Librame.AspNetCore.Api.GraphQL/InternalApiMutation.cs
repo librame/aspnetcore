@@ -10,18 +10,25 @@
 
 #endregion
 
+using GraphQL.Types;
+
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// API 架构接口。
+    /// 内部 API 变化。
     /// </summary>
-    /// <typeparam name="TQuery">指定的查询类型。</typeparam>
-    public interface IApiSchema<out TQuery>
-        where TQuery : class
+    internal class InternalApiMutation : ObjectGraphType, IApiMutation
     {
         /// <summary>
-        /// 查询实例。
+        /// 构造一个 <see cref="InternalApiMutation"/> 实例。
         /// </summary>
-        TQuery Query { get; }
+        public InternalApiMutation()
+        {
+            Field<StringGraphType>
+            (
+                name: "hello",
+                resolve: context => "Librame"
+            );
+        }
     }
 }

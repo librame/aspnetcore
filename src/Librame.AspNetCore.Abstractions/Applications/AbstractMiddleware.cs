@@ -73,8 +73,6 @@ namespace Librame.AspNetCore
             }
 
             await InvokeCore(context);
-
-            await _next.Invoke(context);
         }
 
         /// <summary>

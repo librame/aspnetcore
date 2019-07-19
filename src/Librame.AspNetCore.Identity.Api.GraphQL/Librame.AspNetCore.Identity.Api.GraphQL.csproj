@@ -7,41 +7,37 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Version>6.0.1643.201</Version>
     <Authors>Librame Pang</Authors>
-    <Company>Librame.net</Company>
-    <Description>Based Librame.AspNetCore.Abstractions and Librame.Extensions.Core on ASP.NET Core extension implementation.</Description>
+    <Company>librame.net</Company>
+    <Description>Based Librame.AspNetCore.Api.GraphQL on Identity API package.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
-    <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;amp;s=460</PackageIconUrl>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Librame,Extensions,Core,AspNetCore</PackageTags>
-    <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions and Librame.Extensions.Core on ASP.NET Core extension implementation.</PackageReleaseNotes>
-    <SignAssembly>True</SignAssembly>
+    <PackageTags>Librame,AspNetCore,Identity,API,GraphQL</PackageTags>
+    <PackageReleaseNotes>Based Librame.AspNetCore.Api.GraphQL on Identity API package.</PackageReleaseNotes>
+    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
     <AssemblyVersion>6.0.1643.201</AssemblyVersion>
     <FileVersion>6.0.1907.181</FileVersion>
+    <RootNamespace>Librame.AspNetCore.Identity.Api</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Identity.Api.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Identity.Api.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Core" Version="6.0.825.201" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Localization.Routing" Version="2.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Librame.AspNetCore.Abstractions\Librame.AspNetCore.Abstractions.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore.Api.GraphQL\Librame.AspNetCore.Api.GraphQL.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore.Identity.EntityFrameworkCore\Librame.AspNetCore.Identity.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
 </Project>

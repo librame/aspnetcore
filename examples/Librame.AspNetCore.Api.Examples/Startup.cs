@@ -3,11 +3,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Librame.AspNetCore.Api.Examples
 {
+    using Extensions.Data;
+    using Identity;
+    using Identity.Api;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -20,8 +25,31 @@ namespace Librame.AspNetCore.Api.Examples
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
+            var writeConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";
+
+            // Add Librame for ASP.NET Core
             services.AddLibrameCore()
-                .AddApi();
+                .AddDataCore(options =>
+                {
+                    // 默认使用写入库做为主库
+                    options.DefaultTenant.DefaultConnectionString = writeConnectionString;
+                    options.DefaultTenant.WriteConnectionString = writeConnectionString;
+                })
+                .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
+                {
+                    var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
+                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
+                        sql => sql.MigrationsAssembly(migrationsAssembly));
+                })
+                .AddIdentity<IdentityDbContextAccessor>(options =>
+                {
+                    options.ConfigureCoreIdentity = core =>
+                    {
+                        core.Stores.MaxLengthForKeys = 128;
+                    };
+                })
+                .AddIdentityApi();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -51,8 +79,8 @@ namespace Librame.AspNetCore.Api.Examples
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            //app.UseLibrameCore()
-            //    .UseApi();
+            app.UseLibrameCore()
+                .UseApi();
 
             app.UseMvc(routes =>
             {

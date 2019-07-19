@@ -16,12 +16,6 @@ namespace Librame.AspNetCore.Api.Examples.Controllers
         };
 
         [HttpGet("[action]")]
-        public IFormCollection GraphQL()
-        {
-            return Request.ReadFormAsync().Result;
-        }
-
-        [HttpGet("[action]")]
         public IEnumerable<WeatherForecast> WeatherForecasts()
         {
             var rng = new Random();

@@ -10,10 +10,12 @@
 
 #endregion
 
+using Newtonsoft.Json.Linq;
+
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// API 请求基类。
+    /// 内部 API 请求。
     /// </summary>
     internal class InternalApiRequest : IApiRequest
     {
@@ -21,5 +23,10 @@ namespace Librame.AspNetCore.Api
         /// 请求查询。
         /// </summary>
         public string Query { get; set; }
+
+        /// <summary>
+        /// 查询参数集合。
+        /// </summary>
+        public JObject Variables { get; set; }
     }
 }

@@ -10,12 +10,14 @@
 
 #endregion
 
+using GraphQL.Types;
+
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
     /// API 查询接口。
     /// </summary>
-    public interface IApiQuery
+    public interface IApiQuery : IObjectGraphType
     {
     }
 }

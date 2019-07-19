@@ -14,38 +14,25 @@ using GraphQL;
 using GraphQL.Http;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Api
 {
-    using Extensions;
-
     /// <summary>
     /// 内部 API 中间件。
     /// </summary>
     internal class InternalApiMiddleware : AbstractApiMiddleware
     {
-        private readonly Schema _schema;
-        private readonly IDocumentWriter _writer;
-        private readonly IDocumentExecuter _executor;
-
-
         /// <summary>
         /// 构造一个 <see cref="InternalApiMiddleware"/> 中间件。
         /// </summary>
         /// <param name="next">给定的 <see cref="RequestDelegate"/>。</param>
-        /// <param name="schema">给定的 <see cref="IApiSchema"/>。</param>
-        /// <param name="writer">给定的 <see cref="IDocumentWriter"/>。</param>
-        /// <param name="executor">给定的 <see cref="IDocumentExecuter"/>。</param>
-        public InternalApiMiddleware(RequestDelegate next, IApiSchema schema,
-            IDocumentWriter writer, IDocumentExecuter executor)
+        public InternalApiMiddleware(RequestDelegate next)
             : base(next)
         {
-            _schema = schema.CastTo<IApiSchema, Schema>(nameof(schema));
-            _writer = writer.NotNull(nameof(writer));
-            _executor = executor.NotNull(nameof(executor));
         }
 
 
@@ -62,15 +49,20 @@ namespace Librame.AspNetCore.Api
                 body = await sr.ReadToEndAsync();
             }
 
+            var executor = context.RequestServices.GetRequiredService<IDocumentExecuter>();
+            var schema = (Schema)context.RequestServices.GetRequiredService<IApiSchema<IObjectGraphType>>();
+
             var request = JsonConvert.DeserializeObject<InternalApiRequest>(body);
-            var result = await _executor.ExecuteAsync(doc =>
+            var result = await executor.ExecuteAsync(options =>
             {
-                doc.Schema = _schema;
-                doc.Query = request.Query;
+                options.Schema = schema;
+                options.Query = request.Query;
+                options.Inputs = request.Variables.ToInputs();
             })
             .ConfigureAwait(false);
 
-            await _writer.WriteAsync(context.Response.Body, result);
+            var writer = context.RequestServices.GetRequiredService<IDocumentWriter>();
+            await writer.WriteAsync(context.Response.Body, result);
         }
 
     }

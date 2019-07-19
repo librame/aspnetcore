@@ -59,6 +59,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.UI.Abstr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Api.Examples", "examples\Librame.AspNetCore.Api.Examples\Librame.AspNetCore.Api.Examples.csproj", "{3AC07933-67A2-45C0-9BC2-4811B9E5873E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.Identity.Api.GraphQL", "src\Librame.AspNetCore.Identity.Api.GraphQL\Librame.AspNetCore.Identity.Api.GraphQL.csproj", "{439E9B85-21B4-453F-BEB0-5D6E13E532AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,10 @@ Global
 		{3AC07933-67A2-45C0-9BC2-4811B9E5873E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AC07933-67A2-45C0-9BC2-4811B9E5873E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AC07933-67A2-45C0-9BC2-4811B9E5873E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{439E9B85-21B4-453F-BEB0-5D6E13E532AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{439E9B85-21B4-453F-BEB0-5D6E13E532AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{439E9B85-21B4-453F-BEB0-5D6E13E532AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{439E9B85-21B4-453F-BEB0-5D6E13E532AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,6 +201,7 @@ Global
 		{662B4963-BFEC-4DDF-8D6D-FF8662B8CFFA} = {7CE5401D-2698-4096-AC2C-EF5F842571E4}
 		{A0FF0D1F-888E-46C1-B478-42CB5FC024B4} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 		{3AC07933-67A2-45C0-9BC2-4811B9E5873E} = {7CE5401D-2698-4096-AC2C-EF5F842571E4}
+		{439E9B85-21B4-453F-BEB0-5D6E13E532AA} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C045FFCB-A85F-4F5E-9830-8F503D71513E}

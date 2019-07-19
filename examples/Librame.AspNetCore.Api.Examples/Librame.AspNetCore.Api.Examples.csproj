@@ -22,8 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Librame.AspNetCore.Api.GraphQL\Librame.AspNetCore.Api.GraphQL.csproj" />
-    <ProjectReference Include="..\..\src\Librame.AspNetCore.Identity.EntityFrameworkCore\Librame.AspNetCore.Identity.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\src\Librame.AspNetCore.Identity.Api.GraphQL\Librame.AspNetCore.Identity.Api.GraphQL.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
