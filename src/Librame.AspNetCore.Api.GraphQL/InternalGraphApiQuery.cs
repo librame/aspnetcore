@@ -15,14 +15,14 @@ using GraphQL.Types;
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// 内部 API 变化。
+    /// 内部 Graph API 查询。
     /// </summary>
-    internal class InternalApiMutation : ObjectGraphType, IApiMutation
+    internal class InternalGraphApiQuery : ObjectGraphType, IGraphApiQuery
     {
         /// <summary>
-        /// 构造一个 <see cref="InternalApiMutation"/> 实例。
+        /// 构造一个 <see cref="InternalGraphApiQuery"/> 实例。
         /// </summary>
-        public InternalApiMutation()
+        public InternalGraphApiQuery()
         {
             Field<StringGraphType>
             (

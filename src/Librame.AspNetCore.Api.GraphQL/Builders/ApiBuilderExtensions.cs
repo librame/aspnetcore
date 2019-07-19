@@ -12,7 +12,6 @@
 
 using GraphQL;
 using GraphQL.Http;
-using GraphQL.Types;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -64,9 +63,9 @@ namespace Librame.AspNetCore.Api
             builder.Services.AddSingleton<IDocumentWriter, DocumentWriter>();
             builder.Services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
 
-            builder.Services.AddScoped<IApiSchema<IObjectGraphType>, InternalApiSchema>();
-            builder.Services.AddScoped<IApiMutation, InternalApiMutation>();
-            builder.Services.AddScoped<IApiQuery, InternalApiQuery>();
+            builder.Services.AddScoped<IGraphApiMutation, InternalGraphApiMutation>();
+            builder.Services.AddScoped<IGraphApiQuery, InternalGraphApiQuery>();
+            builder.Services.AddScoped<IGraphApiSchema, InternalGraphApiSchema>();
 
             return builder;
         }

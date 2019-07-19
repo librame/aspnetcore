@@ -15,16 +15,16 @@ using GraphQL.Types;
 namespace Librame.AspNetCore.Identity.Api
 {
     /// <summary>
-    /// 身份用户类型。
+    /// 身份用户变化类型。
     /// </summary>
-    public class IdentityUserGraphType : ObjectGraphType<DefaultIdentityUser>
+    public class IdentityUserMutationType : ObjectGraphType<DefaultIdentityUser>
     {
         /// <summary>
-        /// 构造一个 <see cref="IdentityUserGraphType"/> 实例。
+        /// 构造一个 <see cref="IdentityUserMutationType"/> 实例。
         /// </summary>
-        public IdentityUserGraphType()
+        public IdentityUserMutationType()
         {
-            Field(f => f.UserName, true);
+            Field(f => f.UserName);
             Field(f => f.NormalizedUserName, true);
             Field(f => f.Email, true);
             Field(f => f.NormalizedEmail, true);

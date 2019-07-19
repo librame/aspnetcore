@@ -18,26 +18,30 @@ namespace Librame.AspNetCore.Identity.Api
     using AspNetCore.Api;
 
     /// <summary>
-    /// 内部身份 API 变化。
+    /// 内部身份 Graph API 变化。
     /// </summary>
-    internal class InternalIdentityApiMutation : ObjectGraphType, IApiMutation
+    internal class InternalIdentityGraphApiMutation : ObjectGraphType, IGraphApiMutation
     {
         /// <summary>
-        /// 构造一个 <see cref="InternalIdentityApiMutation"/> 实例。
+        /// 构造一个 <see cref="InternalIdentityGraphApiMutation"/> 实例。
         /// </summary>
         /// <param name="signInManager">给定的 <see cref="SignInManager{DefaultIdentityUser}"/></param>
-        public InternalIdentityApiMutation(SignInManager<DefaultIdentityUser> signInManager)
+        /// <param name="identifierService">给定的 <see cref="IIdentityIdentifierService"/>。</param>
+        public InternalIdentityGraphApiMutation(SignInManager<DefaultIdentityUser> signInManager,
+            IIdentityIdentifierService identifierService)
         {
-            Field<IdentityUserGraphType>
+            Field<IdentityUserMutationType>
             (
                 name: "addUser",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<IdentityUserGraphType>> { Name = "user" }
+                    new QueryArgument<NonNullGraphType<IdentityUserMutationType>> { Name = "user" }
                 ),
                 resolve: context =>
                 {
                     var user = context.GetArgument<DefaultIdentityUser>("user");
-                    var result = signInManager.UserManager.CreateAsync(user).Result;
+                    user.Id = identifierService.GetUserIdAsync().Result;
+
+                    var result = signInManager.UserManager.CreateAsync(user, "Password!123456").Result;
                     return user;
                 }
             );

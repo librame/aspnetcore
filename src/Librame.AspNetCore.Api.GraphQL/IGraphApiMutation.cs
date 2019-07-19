@@ -15,20 +15,9 @@ using GraphQL.Types;
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// 内部 API 查询。
+    /// Graph API 变化接口。
     /// </summary>
-    internal class InternalApiQuery : ObjectGraphType, IApiQuery
+    public interface IGraphApiMutation : IObjectGraphType
     {
-        /// <summary>
-        /// 构造一个 <see cref="InternalApiQuery"/> 实例。
-        /// </summary>
-        public InternalApiQuery()
-        {
-            Field<StringGraphType>
-            (
-                name: "hello",
-                resolve: context => "Librame"
-            );
-        }
     }
 }

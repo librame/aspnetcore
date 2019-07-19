@@ -50,7 +50,7 @@ namespace Librame.AspNetCore.Api
             }
 
             var executor = context.RequestServices.GetRequiredService<IDocumentExecuter>();
-            var schema = (Schema)context.RequestServices.GetRequiredService<IApiSchema<IObjectGraphType>>();
+            var schema = (Schema)context.RequestServices.GetRequiredService<IGraphApiSchema>();
 
             var request = JsonConvert.DeserializeObject<InternalApiRequest>(body);
             var result = await executor.ExecuteAsync(options =>

@@ -10,23 +10,25 @@
 
 #endregion
 
-using Newtonsoft.Json.Linq;
+using GraphQL.Types;
 
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// API 请求接口。
+    /// 内部 Graph API 变化。
     /// </summary>
-    public interface IApiRequest
+    internal class InternalGraphApiMutation : ObjectGraphType, IGraphApiMutation
     {
         /// <summary>
-        /// 请求查询。
+        /// 构造一个 <see cref="InternalGraphApiMutation"/> 实例。
         /// </summary>
-        string Query { get; set; }
-
-        /// <summary>
-        /// 查询参数集合。
-        /// </summary>
-        JObject Variables { get; set; }
+        public InternalGraphApiMutation()
+        {
+            Field<StringGraphType>
+            (
+                name: "hello",
+                resolve: context => "Librame"
+            );
+        }
     }
 }
