@@ -26,11 +26,6 @@ namespace Librame.AspNetCore.Identity.Api
         {
             Field(f => f.UserName, true);
             Field(f => f.NormalizedUserName, true);
-            Field(f => f.Email, true);
-            Field(f => f.NormalizedEmail, true);
-            Field(f => f.PhoneNumber, true);
-            Field(f => f.PhoneNumberConfirmed);
-            Field(f => f.LockoutEnabled);
         }
     }
 }

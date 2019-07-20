@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -25,16 +26,98 @@ namespace Librame.Extensions
     /// </summary>
     public static class AbstractionHttpRequestExtensions
     {
+
+        #region Validation
+
         /// <summary>
-        /// 异步得到真实 IP 地址。
+        /// 是否为 AJAX 请求。
         /// </summary>
-        /// <param name="request">给定的 HTTP 请求。</param>
+        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsAjaxRequest(this HttpRequest request)
+        {
+            return request.Headers.IsAjaxRequest();
+        }
+        /// <summary>
+        /// 是否为 AJAX 请求。
+        /// </summary>
+        /// <param name="headers">给定的 <see cref="IHeaderDictionary"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsAjaxRequest(this IHeaderDictionary headers)
+        {
+            if ((bool)headers?.TryGetValue("X-Requested-With", out StringValues value))
+                return "XMLHttpRequest".Equals(value, StringComparison.OrdinalIgnoreCase);
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// 是否为绝对虚拟路径。
+        /// </summary>
+        /// <example>
+        /// ~/VirtualPath or /VirtualPath.
+        /// </example>
+        /// <param name="path">给定的路径。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsAbsoluteVirtualPath(this string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            return path.StartsWith("~/") || path.StartsWith("/");
+        }
+
+
+        /// <summary>
+        /// 是否为本地虚拟路径。
+        /// </summary>
+        /// <param name="pathOrUrl">给定的路径或 URL 字符串。</param>
+        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsLocalUrl(this string pathOrUrl, HttpRequest request)
+        {
+            return IsLocalUrl(pathOrUrl, request.Host.ToString());
+        }
+        /// <summary>
+        /// 是否为本地虚拟路径。
+        /// </summary>
+        /// <param name="pathOrUrl">给定的路径或 URL 字符串。</param>
+        /// <param name="authority">给定的 DNS 主机名或 IP 地址及端口号（如：localhost:80）。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsLocalUrl(this string pathOrUrl, string authority)
+        {
+            if (pathOrUrl.IsAbsoluteVirtualPath())
+                return true; // Local
+
+            if (pathOrUrl.StartsWith("//") || pathOrUrl.StartsWith("/\\"))
+                return false;
+
+            try
+            {
+                var uri = new Uri(pathOrUrl);
+                return uri.Authority.Equals(authority, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// 异步获取真实 IP 地址。
+        /// </summary>
+        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
         /// <returns>返回字符串。</returns>
-        public static async Task<string> AsRealIpAddressAsync(this HttpRequest request)
+        public static async Task<string> GetIpAddressAsync(this HttpRequest request)
         {
             string ipAddress = request.Headers["X-Original-For"];
 
-            if (ipAddress.IsNullOrEmpty()) return ipAddress;
+            if (ipAddress.IsNullOrEmpty())
+                return ipAddress;
 
             if (ipAddress.Contains(":"))
                 ipAddress = ipAddress.Substring(0, ipAddress.IndexOf(":"));
@@ -71,7 +154,7 @@ namespace Librame.Extensions
         /// <example>
         /// http://localhost:80/path?query
         /// </example>
-        /// <param name="request">给定的 HTTP 请求。</param>
+        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
         /// <returns>返回字符串。</returns>
         public static string AsAbsoluteUrl(this HttpRequest request)
         {
@@ -86,58 +169,7 @@ namespace Librame.Extensions
         }
 
         /// <summary>
-        /// 表现为绝对 URL 字符串。
-        /// </summary>
-        /// <param name="pathOrUrl">给定的路径或 URL 字符串。</param>
-        /// <param name="request">给定的 HTTP 请求。</param>
-        /// <param name="returnUrlParameter">给定的返回 URL 参数。</param>
-        /// <param name="queries">给定的查询参数集合。</param>
-        /// <returns>返回字符串。</returns>
-        public static string AsAbsoluteUrl(this string pathOrUrl, HttpRequest request,
-            string returnUrlParameter, params KeyValuePair<string, string>[] queries)
-        {
-            if (!pathOrUrl.IsLocalUrl(request))
-            {
-                var uri = new Uri(pathOrUrl);
-
-                // 跨域模式
-                if (!uri.Authority.Equals(request.Host.ToString(), StringComparison.OrdinalIgnoreCase))
-                {
-                    var requestUrl = request.AsAbsoluteUrl();
-
-                    return new StringBuilder()
-                        .Append(pathOrUrl)
-                        .Append("?")
-                        .Append(returnUrlParameter)
-                        .Append("=")
-                        .Append(HttpUtility.UrlEncode(requestUrl))
-                        .ToString();
-                }
-
-                // 本域 URL 直接返回
-                return pathOrUrl;
-            }
-
-            var sb = new StringBuilder()
-                .Append(request.Scheme)
-                .Append(Uri.SchemeDelimiter)
-                .Append(request.Host)
-                .Append(pathOrUrl); // Path
-
-            if (queries.Length > 0)
-            {
-                sb.Append("?");
-
-                foreach (var query in queries)
-                    sb.Append($"{query.Key}={HttpUtility.UrlEncode(query.Value)}&");
-            }
-
-            return sb.ToString().TrimEnd("&");
-        }
-
-
-        /// <summary>
-        /// 表现为根 URL 格式字符串。
+        /// 表现为根 URL 字符串。
         /// </summary>
         /// <example>
         /// http://localhost:80
@@ -153,68 +185,25 @@ namespace Librame.Extensions
                 .ToString();
         }
 
-
         /// <summary>
-        /// 是否为 AJAX 请求。
+        /// 表现为 URI。
         /// </summary>
-        /// <param name="request">给定的 HTTP 请求。</param>
-        /// <returns>返回布尔值。</returns>
-        public static bool IsAjaxRequest(this HttpRequest request)
+        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
+        /// <returns>返回 <see cref="Uri"/>。</returns>
+        public static Uri AsUri(this HttpRequest request)
         {
-            return request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            return new Uri(request.AsAbsoluteUrl());
         }
 
-
         /// <summary>
-        /// 是否为绝对虚拟路径。
+        /// 新建 URI。
         /// </summary>
-        /// <example>
-        /// ~/VirtualPath or /VirtualPath.
-        /// </example>
-        /// <param name="path">给定的路径。</param>
-        /// <returns>返回布尔值。</returns>
-        public static bool IsAbsoluteVirtualPath(this string path)
+        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
+        /// <param name="pathString">给定的 <see cref="PathString"/>。</param>
+        /// <returns>返回 <see cref="Uri"/>。</returns>
+        public static Uri NewUri(this HttpRequest request, PathString pathString)
         {
-            if (string.IsNullOrWhiteSpace(path))
-                return false;
-
-            return (path.StartsWith("~/") || path.StartsWith("/"));
-        }
-
-
-        /// <summary>
-        /// 是否为本地虚拟路径。
-        /// </summary>
-        /// <param name="pathOrUrl">给定的路径或 URL 字符串。</param>
-        /// <param name="request">给定的 HTTP 请求。</param>
-        /// <returns>返回布尔值。</returns>
-        public static bool IsLocalUrl(this string pathOrUrl, HttpRequest request)
-        {
-            return IsLocalUrl(pathOrUrl, request.Host.ToString());
-        }
-        /// <summary>
-        /// 是否为本地虚拟路径。
-        /// </summary>
-        /// <param name="pathOrUrl">给定的路径或 URL 字符串。</param>
-        /// <param name="localhost">给定的本地主机名（如：localhost:80）。</param>
-        /// <returns>返回布尔值。</returns>
-        public static bool IsLocalUrl(this string pathOrUrl, string localhost)
-        {
-            if (pathOrUrl.IsAbsoluteVirtualPath())
-                return true; // Local
-
-            if (pathOrUrl.StartsWith("//") || pathOrUrl.StartsWith("/\\"))
-                return false;
-            
-            try
-            {
-                var uri = new Uri(pathOrUrl);
-                return uri.Authority.Equals(localhost, StringComparison.OrdinalIgnoreCase);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return new Uri(request.AsUri(), pathString.ToString());
         }
 
     }

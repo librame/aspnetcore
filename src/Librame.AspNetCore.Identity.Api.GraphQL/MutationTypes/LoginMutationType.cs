@@ -15,22 +15,18 @@ using GraphQL.Types;
 namespace Librame.AspNetCore.Identity.Api
 {
     /// <summary>
-    /// 身份用户变化类型。
+    /// 登入变化类型。
     /// </summary>
-    public class IdentityUserMutationType : ObjectGraphType<DefaultIdentityUser>
+    public class LoginMutationType : InputObjectGraphType<LoginModel>
     {
         /// <summary>
-        /// 构造一个 <see cref="IdentityUserMutationType"/> 实例。
+        /// 构造一个 <see cref="LoginMutationType"/> 实例。
         /// </summary>
-        public IdentityUserMutationType()
+        public LoginMutationType()
         {
-            Field(f => f.UserName);
-            Field(f => f.NormalizedUserName, true);
-            Field(f => f.Email, true);
-            Field(f => f.NormalizedEmail, true);
-            Field(f => f.PhoneNumber, true);
-            Field(f => f.PhoneNumberConfirmed);
-            Field(f => f.LockoutEnabled);
+            Field(f => f.Name);
+            Field(f => f.Password);
+            Field(f => f.RememberMe);
         }
     }
 }
