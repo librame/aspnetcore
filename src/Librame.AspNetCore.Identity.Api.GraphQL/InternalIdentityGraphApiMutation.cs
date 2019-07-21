@@ -30,17 +30,17 @@ namespace Librame.AspNetCore.Identity.Api
         /// </summary>
         /// <param name="signInManager">给定的 <see cref="SignInManager{DefaultIdentityUser}"/></param>
         /// <param name="identifierService">给定的 <see cref="IIdentityIdentifierService"/>。</param>
-        /// <param name="userEmailStore">给定的 <see cref="IUserEmailStore{TUser}"/>。</param>
+        /// <param name="userStore">给定的 <see cref="IUserStore{TUser}"/>。</param>
         /// <param name="logger">给定的 <see cref="ILogger{InternalIdentityGraphApiMutation}"/>。</param>
         public InternalIdentityGraphApiMutation(SignInManager<DefaultIdentityUser> signInManager,
-            IIdentityIdentifierService identifierService, IUserEmailStore<DefaultIdentityUser> userEmailStore,
+            IIdentityIdentifierService identifierService, IUserStore<DefaultIdentityUser> userStore,
             ILogger<InternalIdentityGraphApiMutation> logger)
         {
-            Field<LoginMutationType>
+            Field<LoginInputType>
             (
                 name: "login",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<LoginMutationType>> { Name = "user" }
+                    new QueryArgument<NonNullGraphType<LoginInputType>> { Name = "user" }
                 ),
                 resolve: context =>
                 {
@@ -73,11 +73,11 @@ namespace Librame.AspNetCore.Identity.Api
                 }
             );
 
-            Field<RegisterMutationType>
+            Field<RegisterInputType>
             (
                 name: "addUser",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<RegisterMutationType>> { Name = "user" }
+                    new QueryArgument<NonNullGraphType<RegisterInputType>> { Name = "user" }
                 ),
                 resolve: context =>
                 {
@@ -92,13 +92,12 @@ namespace Librame.AspNetCore.Identity.Api
                     if (result.Succeeded)
                     {
                         model.Message = "User created a new account with password.";
-
-                        var userId = signInManager.UserManager.GetUserIdAsync(user).Result;
-                        var token = signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user).Result;
+                        model.UserId = signInManager.UserManager.GetUserIdAsync(user).Result;
+                        model.Token = signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user).Result;
 
                         //var path = new PathString("/Account/ConfirmEmail");
-                        //path.Add(QueryString.Create("userId", userId));
-                        //path.Add(QueryString.Create("token", token));
+                        //path.Add(QueryString.Create("userId", model.UserId));
+                        //path.Add(QueryString.Create("token", model.Token));
 
                         //var url = httpContextAccessor.HttpContext.Request.NewUri(path);
 
@@ -106,7 +105,7 @@ namespace Librame.AspNetCore.Identity.Api
                         //    Localizer[r => r.ConfirmYourEmail]?.Value,
                         //    Localizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value);
 
-                        userEmailStore.SetEmailAsync(user, model.Email, default).Wait();
+                        userStore.GetUserEmailStore(signInManager).SetEmailAsync(user, model.Email, default).Wait();
 
                         signInManager.SignInAsync(user, isPersistent: false).Wait();
                     }

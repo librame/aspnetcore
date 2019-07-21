@@ -10,23 +10,26 @@
 
 #endregion
 
-using GraphQL.Types;
-
 namespace Librame.AspNetCore.Identity.Api
 {
+    using AspNetCore.Api;
+
     /// <summary>
-    /// 注册变化类型。
+    /// 注册输入类型。
     /// </summary>
-    public class RegisterMutationType : InputObjectGraphType<RegisterModel>
+    public class RegisterInputType : ApiModelInputTypeBase<RegisterModel>
     {
         /// <summary>
-        /// 构造一个 <see cref="RegisterMutationType"/> 实例。
+        /// 构造一个 <see cref="RegisterInputType"/> 实例。
         /// </summary>
-        public RegisterMutationType()
+        public RegisterInputType()
+            : base()
         {
             Field(f => f.Email);
             Field(f => f.Name);
             Field(f => f.Password);
+            Field(f => f.UserId, true);
+            Field(f => f.Token, true);
         }
     }
 }

@@ -33,5 +33,15 @@ namespace Librame.AspNetCore.Identity.Api
         /// 记住我。
         /// </summary>
         public bool RememberMe { get; set; }
+
+        /// <summary>
+        /// 用户标识。
+        /// </summary>
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// 令牌。
+        /// </summary>
+        public string Token { get; set; }
     }
 }

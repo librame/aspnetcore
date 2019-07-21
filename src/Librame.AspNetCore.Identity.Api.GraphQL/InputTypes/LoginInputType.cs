@@ -10,23 +10,25 @@
 
 #endregion
 
-using GraphQL.Types;
-
 namespace Librame.AspNetCore.Identity.Api
 {
+    using AspNetCore.Api;
+
     /// <summary>
-    /// 登入变化类型。
+    /// 登入输入类型。
     /// </summary>
-    public class LoginMutationType : InputObjectGraphType<LoginModel>
+    public class LoginInputType : ApiModelInputTypeBase<LoginModel>
     {
         /// <summary>
-        /// 构造一个 <see cref="LoginMutationType"/> 实例。
+        /// 构造一个 <see cref="LoginInputType"/> 实例。
         /// </summary>
-        public LoginMutationType()
+        public LoginInputType()
         {
             Field(f => f.Name);
             Field(f => f.Password);
-            Field(f => f.RememberMe);
+            Field(f => f.RememberMe, true);
+            Field(f => f.UserId, true);
+            Field(f => f.Token, true);
         }
     }
 }
