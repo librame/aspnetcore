@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Api
         /// </summary>
         /// <param name="query">给定的 <see cref="IGraphApiQuery"/>。</param>
         /// <param name="mutation">给定的 <see cref="IGraphApiMutation"/>。</param>
-        public InternalGraphApiSchema(IGraphApiQuery query, IGraphApiMutation mutation)
+        public InternalGraphApiSchema(IGraphApiQuery query, InputObjectGraphType mutation)
         {
             Query = query.NotNull(nameof(query));
             Mutation = mutation.NotNull(nameof(mutation));

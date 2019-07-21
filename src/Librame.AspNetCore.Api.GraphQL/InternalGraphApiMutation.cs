@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// 内部 Graph API 变化。
     /// </summary>
-    internal class InternalGraphApiMutation : ObjectGraphType, IGraphApiMutation
+    internal class InternalGraphApiMutation : InputObjectGraphType, IGraphApiMutation
     {
         /// <summary>
         /// 构造一个 <see cref="InternalGraphApiMutation"/> 实例。
