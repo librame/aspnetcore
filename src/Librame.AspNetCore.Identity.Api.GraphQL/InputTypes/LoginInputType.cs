@@ -17,18 +17,21 @@ namespace Librame.AspNetCore.Identity.Api
     /// <summary>
     /// 登入输入类型。
     /// </summary>
-    public class LoginInputType : ApiModelInputTypeBase<LoginModel>
+    public class LoginInputType : ApiModelInputGraphTypeBase<LoginApiModel>
     {
         /// <summary>
         /// 构造一个 <see cref="LoginInputType"/> 实例。
         /// </summary>
         public LoginInputType()
+            : base()
         {
+            Name = GetInputTypeName<LoginInputType>();
+
             Field(f => f.Name);
             Field(f => f.Password);
-            Field(f => f.RememberMe, true);
-            Field(f => f.UserId, true);
-            Field(f => f.Token, true);
+            Field(f => f.RememberMe, nullable: true);
+            Field(f => f.UserId, nullable: true);
+            Field(f => f.Token, nullable: true);
         }
     }
 }

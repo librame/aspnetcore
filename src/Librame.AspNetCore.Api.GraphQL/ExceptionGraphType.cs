@@ -11,25 +11,26 @@
 #endregion
 
 using GraphQL.Types;
+using System;
 
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// API 模型输入类型基类。
+    /// 异常 Graph 类型。
     /// </summary>
-    /// <typeparam name="TModel">指定的模型类型。</typeparam>
-    public class ApiModelInputTypeBase<TModel> : InputObjectGraphType<TModel>
-        where TModel : AbstractApiModel
+    public class ExceptionGraphType : ObjectGraphType<Exception>
     {
         /// <summary>
-        /// 构造一个 <see cref="ApiModelInputTypeBase{TModel}"/> 实例。
+        /// 构造一个 <see cref="ExceptionGraphType"/>。
         /// </summary>
-        public ApiModelInputTypeBase()
+        public ExceptionGraphType()
         {
-            Field<ListGraphType<ExceptionType>>(nameof(AbstractApiModel.Errors));
-            Field(f => f.IsError, true);
+            Field(f => f.HResult, true);
+            Field(f => f.HelpLink, true);
             Field(f => f.Message, true);
-            Field(f => f.RedirectUrl, true);
+            Field(f => f.Source, true);
+            Field(f => f.StackTrace, true);
+            Field<ExceptionGraphType>(nameof(Exception.InnerException));
         }
     }
 }

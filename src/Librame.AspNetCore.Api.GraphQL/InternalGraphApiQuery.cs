@@ -24,6 +24,8 @@ namespace Librame.AspNetCore.Api
         /// </summary>
         public InternalGraphApiQuery()
         {
+            Name = nameof(ISchema.Query);
+
             Field<StringGraphType>
             (
                 name: "hello",

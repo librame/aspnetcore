@@ -24,12 +24,16 @@ namespace Librame.AspNetCore.Api
         /// <summary>
         /// 构造一个 <see cref="InternalGraphApiSchema"/> 实例。
         /// </summary>
-        /// <param name="query">给定的 <see cref="IGraphApiQuery"/>。</param>
         /// <param name="mutation">给定的 <see cref="IGraphApiMutation"/>。</param>
-        public InternalGraphApiSchema(IGraphApiQuery query, InputObjectGraphType mutation)
+        /// <param name="query">给定的 <see cref="IGraphApiQuery"/>。</param>
+        /// <param name="subscription">给定的 <see cref="IGraphApiSubscription"/>。</param>
+        public InternalGraphApiSchema(IGraphApiMutation mutation,
+            IGraphApiQuery query, IGraphApiSubscription subscription)
         {
-            Query = query.NotNull(nameof(query));
             Mutation = mutation.NotNull(nameof(mutation));
+            Query = query.NotNull(nameof(query));
+            Subscription = subscription.NotNull(nameof(subscription));
         }
+
     }
 }

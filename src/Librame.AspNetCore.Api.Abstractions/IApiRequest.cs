@@ -20,6 +20,11 @@ namespace Librame.AspNetCore.Api
     public interface IApiRequest
     {
         /// <summary>
+        /// 操作名称。
+        /// </summary>
+        string OperationName { get; set; }
+
+        /// <summary>
         /// 请求查询。
         /// </summary>
         string Query { get; set; }

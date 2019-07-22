@@ -13,6 +13,7 @@
 using GraphQL;
 using GraphQL.Http;
 using GraphQL.Types;
+using GraphQL.Validation.Complexity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -57,7 +58,13 @@ namespace Librame.AspNetCore.Api
             {
                 options.Schema = schema;
                 options.Query = request.Query;
+                options.OperationName = request.OperationName;
                 options.Inputs = request.Variables.ToInputs();
+
+                options.ComplexityConfiguration = new ComplexityConfiguration
+                {
+                    MaxDepth = 15
+                };
             })
             .ConfigureAwait(false);
 

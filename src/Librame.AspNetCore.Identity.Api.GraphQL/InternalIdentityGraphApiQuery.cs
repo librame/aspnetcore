@@ -29,6 +29,8 @@ namespace Librame.AspNetCore.Identity.Api
         /// <param name="stores">给定的 <see cref="IStoreHub{IdentityDbContextAccessor}"/></param>
         public InternalIdentityGraphApiQuery(IStoreHub<IdentityDbContextAccessor> stores)
         {
+            Name = nameof(GraphQL.Types.ISchema.Query);
+
             Field<IdentityUserQueryType>
             (
                 name: "user",

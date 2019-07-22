@@ -11,25 +11,13 @@
 #endregion
 
 using GraphQL.Types;
-using System;
 
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// 异常类型。
+    /// Graph API 订阅接口。
     /// </summary>
-    public class ExceptionType : ObjectGraphType<Exception>
+    public interface IGraphApiSubscription : IObjectGraphType
     {
-        /// <summary>
-        /// 构造一个 <see cref="ExceptionType"/>。
-        /// </summary>
-        public ExceptionType()
-        {
-            Field(f => f.HelpLink, true);
-            Field(f => f.Message, true);
-            Field(f => f.Source, true);
-            Field(f => f.StackTrace, true);
-            Field(f => f.InnerException, true);
-        }
     }
 }

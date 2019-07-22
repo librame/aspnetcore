@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// Graph API 变化接口。
     /// </summary>
-    public interface IGraphApiMutation : IInputObjectGraphType
+    public interface IGraphApiMutation : IObjectGraphType
     {
     }
 }

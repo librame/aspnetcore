@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// Graph API 架构接口。
     /// </summary>
-    public interface IGraphApiSchema : IApiSchema<IObjectGraphType, IObjectGraphType>, ISchema
+    public interface IGraphApiSchema : ISchema
     {
     }
 }

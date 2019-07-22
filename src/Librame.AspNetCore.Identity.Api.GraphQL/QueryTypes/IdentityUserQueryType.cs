@@ -25,8 +25,8 @@ namespace Librame.AspNetCore.Identity.Api
         public IdentityUserQueryType()
         {
             Field(f => f.UserName);
-            Field(f => f.NormalizedUserName, true);
-            Field(f => f.Email, true);
+            Field(f => f.NormalizedUserName, nullable: true);
+            Field(f => f.Email, nullable: true);
         }
     }
 }

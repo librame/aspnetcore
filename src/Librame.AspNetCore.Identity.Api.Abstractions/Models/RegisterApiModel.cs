@@ -15,9 +15,9 @@ namespace Librame.AspNetCore.Identity.Api
     using AspNetCore.Api;
 
     /// <summary>
-    /// 注册模型。
+    /// 注册 API 模型。
     /// </summary>
-    public class RegisterModel : AbstractApiModel
+    public class RegisterApiModel : AbstractApiModel
     {
         /// <summary>
         /// 邮箱。

@@ -34,9 +34,8 @@
         <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Data.Abstractions.xml</DocumentationFile>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Data.Abstractions" Version="6.0.825.201" />
-  </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Librame.Extensions.Data.Abstractions" Version="6.0.825.201" />
+    </ItemGroup>
 
 </Project>

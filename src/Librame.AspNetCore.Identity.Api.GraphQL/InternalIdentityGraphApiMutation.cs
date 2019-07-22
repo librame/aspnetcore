@@ -36,6 +36,8 @@ namespace Librame.AspNetCore.Identity.Api
             IIdentityIdentifierService identifierService, IUserStore<DefaultIdentityUser> userStore,
             ILogger<InternalIdentityGraphApiMutation> logger)
         {
+            Name = nameof(ISchema.Mutation);
+
             Field<LoginInputType>
             (
                 name: "login",
@@ -44,7 +46,7 @@ namespace Librame.AspNetCore.Identity.Api
                 ),
                 resolve: context =>
                 {
-                    var model = context.GetArgument<LoginModel>("user");
+                    var model = context.GetArgument<LoginApiModel>("user");
 
                     var result = signInManager.PasswordSignInAsync(model.Name,
                         model.Password, model.RememberMe, lockoutOnFailure: true).Result;
@@ -81,7 +83,7 @@ namespace Librame.AspNetCore.Identity.Api
                 ),
                 resolve: context =>
                 {
-                    var model = context.GetArgument<RegisterModel>("user");
+                    var model = context.GetArgument<RegisterApiModel>("user");
                     var user = new DefaultIdentityUser(model.Name)
                     {
                         Id = identifierService.GetUserIdAsync().Result,

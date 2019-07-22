@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Identity.Api
     /// <summary>
     /// 注册输入类型。
     /// </summary>
-    public class RegisterInputType : ApiModelInputTypeBase<RegisterModel>
+    public class RegisterInputType : ApiModelInputGraphTypeBase<RegisterApiModel>
     {
         /// <summary>
         /// 构造一个 <see cref="RegisterInputType"/> 实例。
@@ -25,11 +25,13 @@ namespace Librame.AspNetCore.Identity.Api
         public RegisterInputType()
             : base()
         {
+            Name = GetInputTypeName<RegisterInputType>();
+
             Field(f => f.Email);
             Field(f => f.Name);
             Field(f => f.Password);
-            Field(f => f.UserId, true);
-            Field(f => f.Token, true);
+            Field(f => f.UserId, nullable: true);
+            Field(f => f.Token, nullable: true);
         }
     }
 }

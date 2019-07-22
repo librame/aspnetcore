@@ -65,6 +65,7 @@ namespace Librame.AspNetCore.Api
 
             builder.Services.AddScoped<IGraphApiMutation, InternalGraphApiMutation>();
             builder.Services.AddScoped<IGraphApiQuery, InternalGraphApiQuery>();
+            builder.Services.AddScoped<IGraphApiSubscription, InternalGraphApiSubscription>();
             builder.Services.AddScoped<IGraphApiSchema, InternalGraphApiSchema>();
 
             return builder;

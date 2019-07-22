@@ -15,9 +15,9 @@ namespace Librame.AspNetCore.Identity.Api
     using AspNetCore.Api;
 
     /// <summary>
-    /// 登入模型。
+    /// 登入 API 模型。
     /// </summary>
-    public class LoginModel : AbstractApiModel
+    public class LoginApiModel : AbstractApiModel
     {
         /// <summary>
         /// 称呼。

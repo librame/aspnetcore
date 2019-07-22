@@ -20,6 +20,11 @@ namespace Librame.AspNetCore.Api
     internal class InternalApiRequest : IApiRequest
     {
         /// <summary>
+        /// 操作名称。
+        /// </summary>
+        public string OperationName { get; set; }
+
+        /// <summary>
         /// 请求查询。
         /// </summary>
         public string Query { get; set; }
