@@ -10,25 +10,28 @@
 
 #endregion
 
-using GraphQL.Types;
-
 namespace Librame.AspNetCore.Identity.Api
 {
+    using AspNetCore.Api;
+
     /// <summary>
-    /// 身份用户查询类型。
+    /// 登入查询类型。
     /// </summary>
-    public class IdentityUserQueryType : ObjectGraphType<DefaultIdentityUser>
+    public class LoginQueryType : ApiModelQueryGraphTypeBase<LoginApiModel>
     {
         /// <summary>
-        /// 构造一个 <see cref="IdentityUserQueryType"/> 实例。
+        /// 构造一个 <see cref="LoginQueryType"/> 实例。
         /// </summary>
-        public IdentityUserQueryType()
+        public LoginQueryType()
+            : base()
         {
-            Name = "UserQuery";
+            Name = GetQueryTypeName<LoginQueryType>();
 
-            Field(f => f.UserName);
-            Field(f => f.NormalizedUserName, nullable: true);
-            Field(f => f.Email, nullable: true);
+            Field(f => f.Name);
+            Field(f => f.Password);
+            Field(f => f.RememberMe, nullable: true);
+            Field(f => f.UserId, nullable: true);
+            Field(f => f.Token, nullable: true);
         }
     }
 }

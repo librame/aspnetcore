@@ -29,11 +29,11 @@ namespace Librame.AspNetCore.Identity.Api
         /// 构造一个 <see cref="InternalIdentityGraphApiMutation"/> 实例。
         /// </summary>
         /// <param name="signInManager">给定的 <see cref="SignInManager{DefaultIdentityUser}"/></param>
-        /// <param name="identifierService">给定的 <see cref="IIdentityIdentifierService"/>。</param>
+        /// <param name="identifier">给定的 <see cref="IIdentityIdentifierService"/>。</param>
         /// <param name="userStore">给定的 <see cref="IUserStore{TUser}"/>。</param>
         /// <param name="logger">给定的 <see cref="ILogger{InternalIdentityGraphApiMutation}"/>。</param>
         public InternalIdentityGraphApiMutation(SignInManager<DefaultIdentityUser> signInManager,
-            IIdentityIdentifierService identifierService, IUserStore<DefaultIdentityUser> userStore,
+            IIdentityIdentifierService identifier, IUserStore<DefaultIdentityUser> userStore,
             ILogger<InternalIdentityGraphApiMutation> logger)
         {
             Name = nameof(ISchema.Mutation);
@@ -86,7 +86,7 @@ namespace Librame.AspNetCore.Identity.Api
                     var model = context.GetArgument<RegisterApiModel>("user");
                     var user = new DefaultIdentityUser(model.Name)
                     {
-                        Id = identifierService.GetUserIdAsync().Result,
+                        Id = identifier.GetUserIdAsync().Result,
                         Email = model.Email
                     };
 

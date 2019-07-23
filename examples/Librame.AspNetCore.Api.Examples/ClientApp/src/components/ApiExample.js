@@ -8,6 +8,7 @@ export class ApiExample extends Component {
     static displayName = ApiExample.name;
 
     static graphQLFetcher(graphQLParams) {
+        console.log(graphQLParams);
         return fetch('api/graphql', {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
