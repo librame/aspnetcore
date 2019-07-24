@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
-using System.Net;
 using Xunit;
 
 namespace Librame.Extensions
@@ -16,29 +15,6 @@ namespace Librame.Extensions
 
             var headers = new HeaderDictionary(dict);
             Assert.True(headers.IsAjaxRequest());
-        }
-
-        [Fact]
-        public void IsAbsoluteVirtualPathTest()
-        {
-            var path = "/path";
-            Assert.True(path.IsAbsoluteVirtualPath());
-
-            path = "~" + path;
-            Assert.True(path.IsAbsoluteVirtualPath());
-
-            var url = "http://localhost" + path;
-            Assert.False(url.IsAbsoluteVirtualPath());
-        }
-
-        [Fact]
-        public void IsAuthorityUrlTest()
-        {
-            var url = "http://localhost/path";
-            Assert.True(url.IsAuthorityUrl("localhost"));
-
-            url = "http://localhost:8080/path";
-            Assert.False(url.IsAuthorityUrl("localhost"));
         }
 
         [Fact]

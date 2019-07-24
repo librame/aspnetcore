@@ -15,7 +15,7 @@ using GraphQL.Types;
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// 内部 Graph API 订阅。
+    /// 内部图形 API 订阅。
     /// </summary>
     internal class InternalGraphApiSubscription : ObjectGraphType, IGraphApiSubscription
     {

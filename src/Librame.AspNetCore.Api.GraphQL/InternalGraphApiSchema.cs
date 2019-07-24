@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Api
     using Extensions;
 
     /// <summary>
-    /// 内部 Graph API 架构。
+    /// 内部图形 API 架构。
     /// </summary>
     internal class InternalGraphApiSchema : Schema, IGraphApiSchema
     {

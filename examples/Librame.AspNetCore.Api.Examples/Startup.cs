@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 
 namespace Librame.AspNetCore.Api.Examples
 {
@@ -25,10 +29,41 @@ namespace Librame.AspNetCore.Api.Examples
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var cultures = new[]
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("zh-CN"),
+                    new CultureInfo("zh-TW")
+                };
+
+                var defaultCulture = cultures[0];
+                options.DefaultRequestCulture = new RequestCulture(defaultCulture, defaultCulture);
+                options.SupportedCultures = cultures;
+                options.SupportedUICultures = cultures;
+            });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+            .AddIdentityCookies(cookies => { });
+
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
             var writeConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";
 
-            // Add Librame for ASP.NET Core
             services.AddLibrameCore()
                 .AddDataCore(options =>
                 {
@@ -50,9 +85,6 @@ namespace Librame.AspNetCore.Api.Examples
                     };
                 })
                 .AddIdentityApi();
-
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -80,6 +112,7 @@ namespace Librame.AspNetCore.Api.Examples
             app.UseSpaStaticFiles();
 
             app.UseLibrameCore()
+                .UseIdentity()
                 .UseApi();
 
             app.UseMvc(routes =>
@@ -99,5 +132,6 @@ namespace Librame.AspNetCore.Api.Examples
                 }
             });
         }
+
     }
 }

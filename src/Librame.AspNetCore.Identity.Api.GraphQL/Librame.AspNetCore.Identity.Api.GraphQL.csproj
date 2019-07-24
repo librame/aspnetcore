@@ -34,6 +34,9 @@
     <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Identity.Api.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="6.0.825.201" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Librame.AspNetCore.Api.GraphQL\Librame.AspNetCore.Api.GraphQL.csproj" />

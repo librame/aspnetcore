@@ -12,41 +12,29 @@
 
 namespace Librame.AspNetCore.Identity.Api
 {
-    using AspNetCore.Api;
+    using Extensions.Core;
 
     /// <summary>
-    /// 注册 API 模型。
+    /// 注册 API 模型资源。
     /// </summary>
-    public class RegisterApiModel : AbstractApiModel
+    public class RegisterApiModelResource : IResource
     {
         /// <summary>
-        /// 邮箱。
+        /// 确认您的邮箱。
         /// </summary>
-        public string Email { get; set; }
+        public string ConfirmYourEmail { get; set; }
+        /// <summary>
+        /// 确认您的邮箱格式。
+        /// </summary>
+        public string ConfirmYourEmailFormat { get; set; }
 
         /// <summary>
-        /// 称呼。
+        /// 确认您的手机。
         /// </summary>
-        public string Name { get; set; }
-
+        public string ConfirmYourPhone { get; set; }
         /// <summary>
-        /// 密码。
+        /// 确认您的手机格式。
         /// </summary>
-        public string Password { get; set; }
-
-        /// <summary>
-        /// 确认邮件 URL。
-        /// </summary>
-        public string ConfirmEmailUrl { get; set; }
-
-        /// <summary>
-        /// 用户标识。
-        /// </summary>
-        public string UserId { get; set; }
-
-        /// <summary>
-        /// 令牌。
-        /// </summary>
-        public string Token { get; set; }
+        public string ConfirmYourPhoneFormat { get; set; }
     }
 }

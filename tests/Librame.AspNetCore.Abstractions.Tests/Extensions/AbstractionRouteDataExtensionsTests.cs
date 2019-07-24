@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Routing;
+﻿using Librame.Extensions;
+using Microsoft.AspNetCore.Routing;
 using Xunit;
 
 namespace Librame.AspNetCore.Core.Tests.Extensions

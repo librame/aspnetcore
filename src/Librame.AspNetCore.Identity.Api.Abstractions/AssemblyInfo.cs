@@ -10,14 +10,9 @@
 
 #endregion
 
-using GraphQL.Types;
+using Microsoft.Extensions.Localization;
+using System.Reflection;
 
-namespace Librame.AspNetCore.Api
-{
-    /// <summary>
-    /// 图形 API 架构接口。
-    /// </summary>
-    public interface IGraphApiSchema : ISchema
-    {
-    }
-}
+[assembly: RootNamespace("Librame.AspNetCore.Identity.Api")]
+//[assembly: ResourceLocation("Resources")]
+[assembly: ResourceMapping]

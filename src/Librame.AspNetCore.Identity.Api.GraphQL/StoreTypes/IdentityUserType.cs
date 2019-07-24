@@ -15,20 +15,19 @@ using GraphQL.Types;
 namespace Librame.AspNetCore.Identity.Api
 {
     /// <summary>
-    /// 身份用户查询类型。
+    /// 身份用户类型。
     /// </summary>
-    public class IdentityUserQueryType : ObjectGraphType<DefaultIdentityUser>
+    public class IdentityUserType : ObjectGraphType<DefaultIdentityUser>
     {
         /// <summary>
-        /// 构造一个 <see cref="IdentityUserQueryType"/> 实例。
+        /// 构造一个 <see cref="IdentityUserType"/> 实例。
         /// </summary>
-        public IdentityUserQueryType()
+        public IdentityUserType()
         {
-            Name = "UserQuery";
-
-            Field(f => f.UserName);
+            // 支持三选一查询
             Field(f => f.NormalizedUserName, nullable: true);
             Field(f => f.Email, nullable: true);
+            Field(f => f.PhoneNumber, nullable: true);
         }
     }
 }

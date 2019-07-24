@@ -1,23 +1,21 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) zwbwl All rights reserved.
  * 
- * http://librame.net
+ * http://51zwb.com
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
 
 #endregion
 
-using GraphQL.Types;
-
-namespace Librame.AspNetCore.Api
+namespace Librame.AspNetCore
 {
     /// <summary>
-    /// 图形 API 架构接口。
+    /// URI 定位符。
     /// </summary>
-    public interface IGraphApiSchema : ISchema
+    public class UriLocator : IUriLocator
     {
     }
 }

@@ -15,7 +15,7 @@ using GraphQL.Types;
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// Graph API 查询接口。
+    /// 图形 API 查询接口。
     /// </summary>
     public interface IGraphApiQuery : IObjectGraphType
     {

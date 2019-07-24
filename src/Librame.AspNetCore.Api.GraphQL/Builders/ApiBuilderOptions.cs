@@ -10,6 +10,8 @@
 
 #endregion
 
+using System;
+
 namespace Librame.AspNetCore.Api
 {
     using Extensions.Core;

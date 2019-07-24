@@ -16,7 +16,7 @@ using System;
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// 异常 Graph 类型。
+    /// 异常图形类型。
     /// </summary>
     public class ExceptionGraphType : ObjectGraphType<Exception>
     {

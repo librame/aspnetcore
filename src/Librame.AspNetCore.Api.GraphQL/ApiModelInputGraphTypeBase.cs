@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Api
     using Extensions;
 
     /// <summary>
-    /// API 模型输入 Graph 类型基类。
+    /// API 模型输入图形类型基类。
     /// </summary>
     /// <typeparam name="TModel">指定的模型类型。</typeparam>
     public class ApiModelInputGraphTypeBase<TModel> : InputObjectGraphType<TModel>
@@ -28,10 +28,7 @@ namespace Librame.AspNetCore.Api
         /// </summary>
         protected ApiModelInputGraphTypeBase()
         {
-            Field(f => f.IsError, nullable: true);
-            Field(f => f.Message, nullable: true);
-            Field(f => f.RedirectUrl, nullable: true);
-            Field<ListGraphType<ExceptionGraphType>>(nameof(AbstractApiModel.Errors));
+            this.AddApiModelBaseFields();
         }
 
 

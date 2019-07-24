@@ -27,11 +27,8 @@ namespace Librame.AspNetCore.Identity.Api
         {
             Name = GetInputTypeName<LoginInputType>();
 
-            Field(f => f.Name);
-            Field(f => f.Password);
-            Field(f => f.RememberMe, nullable: true);
-            Field(f => f.UserId, nullable: true);
-            Field(f => f.Token, nullable: true);
+            this.AddLoginApiModelFields();
         }
+
     }
 }

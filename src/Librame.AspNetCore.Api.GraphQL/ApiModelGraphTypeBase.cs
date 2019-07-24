@@ -15,22 +15,19 @@ using GraphQL.Types;
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// 内部图形 API 变化。
+    /// API 模型图形类型基类。
     /// </summary>
-    internal class InternalGraphApiMutation : ObjectGraphType, IGraphApiMutation
+    /// <typeparam name="TModel">指定的模型类型。</typeparam>
+    public class ApiModelGraphTypeBase<TModel> : ObjectGraphType<TModel>
+        where TModel : AbstractApiModel
     {
         /// <summary>
-        /// 构造一个 <see cref="InternalGraphApiMutation"/> 实例。
+        /// 构造一个 <see cref="ApiModelGraphTypeBase{TModel}"/> 实例。
         /// </summary>
-        public InternalGraphApiMutation()
+        protected ApiModelGraphTypeBase()
         {
-            Name = nameof(ISchema.Mutation);
-
-            Field<StringGraphType>
-            (
-                name: "hello",
-                resolve: context => "Librame"
-            );
+            this.AddApiModelBaseFields();
         }
+
     }
 }

@@ -10,27 +10,23 @@
 
 #endregion
 
-using GraphQL.Types;
-
-namespace Librame.AspNetCore.Api
+namespace Librame.AspNetCore.Identity.Api
 {
+    using AspNetCore.Api;
+
     /// <summary>
-    /// 内部图形 API 变化。
+    /// 登入类型。
     /// </summary>
-    internal class InternalGraphApiMutation : ObjectGraphType, IGraphApiMutation
+    public class LoginType : ApiModelGraphTypeBase<LoginApiModel>
     {
         /// <summary>
-        /// 构造一个 <see cref="InternalGraphApiMutation"/> 实例。
+        /// 构造一个 <see cref="LoginType"/> 实例。
         /// </summary>
-        public InternalGraphApiMutation()
+        public LoginType()
+            : base()
         {
-            Name = nameof(ISchema.Mutation);
-
-            Field<StringGraphType>
-            (
-                name: "hello",
-                resolve: context => "Librame"
-            );
+            this.AddLoginApiModelFields();
         }
+
     }
 }

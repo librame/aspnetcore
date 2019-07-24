@@ -50,7 +50,6 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                 options.SupportedUICultures = cultures;
             });
 
-            // Add Authentication
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
@@ -58,7 +57,6 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
             })
             .AddIdentityCookies(cookies => { });
 
-            // Add Mvc
             var mvcBuilder = services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddViewLocalization()
@@ -67,7 +65,6 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
             //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
             var writeConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";
 
-            // Add Librame for ASP.NET Core
             services.AddLibrameCore()
                 .AddDataCore(options =>
                 {
