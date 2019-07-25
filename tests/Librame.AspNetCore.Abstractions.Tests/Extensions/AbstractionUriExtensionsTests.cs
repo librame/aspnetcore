@@ -25,10 +25,10 @@ namespace Librame.Extensions
         public void IsAuthorityUrlTest()
         {
             var url = "http://localhost/path";
-            Assert.True(url.IsAuthorityUrl("localhost"));
+            Assert.True(url.IsHostUrl("localhost"));
 
             url = "http://localhost:8080/path";
-            Assert.False(url.IsAuthorityUrl("localhost"));
+            Assert.False(url.IsHostUrl("localhost"));
         }
 
         [Fact]

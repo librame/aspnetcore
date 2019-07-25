@@ -15,29 +15,36 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Text.Encodings.Web;
 
 namespace Librame.AspNetCore.Identity.Api
 {
     using AspNetCore.Api;
     using Extensions;
     using Extensions.Core;
-    using Microsoft.AspNetCore.Http;
+    using Extensions.Network;
 
     /// <summary>
-    /// 内部身份 Graph API 变化。
+    /// 内部身份图形 API 变化。
     /// </summary>
     internal class InternalIdentityGraphApiMutation : ObjectGraphType, IGraphApiMutation
     {
         [InjectionService]
-        private ILogger<InternalIdentityGraphApiMutation> _logger;
+        private ILogger<InternalIdentityGraphApiMutation> _logger = null;
 
         [InjectionService]
-        private IIdentityIdentifierService _identifierService;
+        private IIdentityIdentifierService _identifierService = null;
 
         [InjectionService]
-        private SignInManager<DefaultIdentityUser> _signInManager;
+        private IEmailService _emailService = null;
 
-        private UserManager<DefaultIdentityUser> _userManager;
+        [InjectionService]
+        private IExpressionStringLocalizer<RegisterApiModelResource> _localizer = null;
+
+        [InjectionService]
+        private SignInManager<DefaultIdentityUser> _signInManager = null;
+
+        private UserManager<DefaultIdentityUser> _userManager = null;
 
 
         /// <summary>
@@ -120,25 +127,24 @@ namespace Librame.AspNetCore.Identity.Api
                     {
                         model.Message = "User created a new account with password.";
                         model.UserId = await _userManager.GetUserIdAsync(user);
-                        model.Token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                         // 确认邮件
-                        var confirmEmail = model.ConfirmEmailUrl.TryGetPath(out Uri confirmEmailUri);
-                        //if (confirmEmail.Value)
+                        var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                        //confirmEmail.Add(QueryString.Create("userId", model.UserId));
-                        //confirmEmail.Add(QueryString.Create("token", model.Token));
+                        var confirmEmailLocator = model.ConfirmEmailUrl.AsUriLocator();
+                        confirmEmailLocator.ChangeQueries(queries =>
+                        {
+                            queries.AddOrUpdate("userId", model.UserId, (key, value) => model.UserId);
+                            queries.AddOrUpdate("token", emailToken, (key, value) => emailToken);
+                        });
+                        var confirmEmailExternalLink = HtmlEncoder.Default.Encode(confirmEmailLocator.ToString());
 
-                        //var confirmEmailUri = _httpContextAccessor.HttpContext.Request.NewUri(confirmEmail);
-                        //var confirmEmailExternalLink = HtmlEncoder.Default.Encode(confirmEmailUri.ToString());
+                        await _emailService.SendAsync(user.Email,
+                            _localizer[r => r.ConfirmYourEmail]?.Value,
+                            _localizer[r => r.ConfirmYourEmailFormat, confirmEmailExternalLink]?.Value);
+                        //await userStore.GetUserEmailStore(signInManager).SetEmailAsync(user, model.Email, default);
 
-                        //await _emailService.SendAsync(user.Email,
-                        //    _localizer[r => r.ConfirmYourEmail]?.Value,
-                        //    _localizer[r => r.ConfirmYourEmailFormat, confirmEmailExternalLink]?.Value);
-
-                        //IUserStore.GetUserEmailStore(signInManager).SetEmailAsync(user, model.Email, default).Wait();
-
-                        _signInManager.SignInAsync(user, isPersistent: false).Wait();
+                        await _signInManager.SignInAsync(user, isPersistent: false);
                     }
                     else
                     {

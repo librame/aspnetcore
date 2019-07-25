@@ -42,20 +42,20 @@ namespace Librame.Extensions
         /// <param name="uriString">给定的路径或 URL 字符串。</param>
         /// <param name="host">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
-        public static bool IsAuthorityUrl(this string uriString, HostString host)
+        public static bool IsHostUrl(this string uriString, HostString host)
         {
-            return uriString.IsAuthorityUrl(host.ToString());
+            return uriString.IsHostUrl(host.ToString());
         }
         /// <summary>
         /// 是否为指定 DNS 主机名或 IP 地址及端口号的 URL。
         /// </summary>
         /// <param name="uriString">给定的路径或 URL 字符串。</param>
-        /// <param name="authority">给定的 DNS 主机名或 IP 地址及端口号（如：localhost:80）。</param>
+        /// <param name="host">给定的 DNS 主机名或 IP 地址及端口号（如：localhost:80）。</param>
         /// <returns>返回布尔值。</returns>
-        public static bool IsAuthorityUrl(this string uriString, string authority)
+        public static bool IsHostUrl(this string uriString, string host)
         {
             if (Uri.TryCreate(uriString, UriKind.Absolute, out Uri uri))
-                return uri.Authority.Equals(authority, StringComparison.OrdinalIgnoreCase);
+                return uri.Authority.Equals(host, StringComparison.OrdinalIgnoreCase);
 
             return false;
         }

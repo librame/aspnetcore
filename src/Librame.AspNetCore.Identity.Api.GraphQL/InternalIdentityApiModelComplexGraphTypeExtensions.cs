@@ -15,7 +15,7 @@ using GraphQL.Types;
 namespace Librame.AspNetCore.Identity.Api
 {
     /// <summary>
-    /// 内部身份 API 模型复合 Graph 类型静态扩展。
+    /// 内部身份 API 模型复合图形类型静态扩展。
     /// </summary>
     internal static class InternalIdentityApiModelComplexGraphTypeExtensions
     {

@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Identity.Api
     using Extensions.Data;
 
     /// <summary>
-    /// 内部身份 Graph API 查询。
+    /// 内部身份图形 API 查询。
     /// </summary>
     internal class InternalIdentityGraphApiQuery : ObjectGraphType, IGraphApiQuery
     {

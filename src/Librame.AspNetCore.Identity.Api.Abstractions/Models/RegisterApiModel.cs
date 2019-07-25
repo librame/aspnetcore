@@ -43,10 +43,5 @@ namespace Librame.AspNetCore.Identity.Api
         /// 用户标识。
         /// </summary>
         public string UserId { get; set; }
-
-        /// <summary>
-        /// 令牌。
-        /// </summary>
-        public string Token { get; set; }
     }
 }
