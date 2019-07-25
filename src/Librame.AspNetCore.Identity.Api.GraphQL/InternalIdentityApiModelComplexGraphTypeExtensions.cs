@@ -31,6 +31,8 @@ namespace Librame.AspNetCore.Identity.Api
             graphType.Field(f => f.Name);
             graphType.Field(f => f.Password);
             graphType.Field(f => f.RememberMe, nullable: true);
+            graphType.Field(f => f.UserId, nullable: true);
+            graphType.Field(f => f.Token, nullable: true);
 
             return graphType;
         }
@@ -48,6 +50,7 @@ namespace Librame.AspNetCore.Identity.Api
             graphType.Field(f => f.Name);
             graphType.Field(f => f.Password);
             graphType.Field(f => f.ConfirmEmailUrl);
+            graphType.Field(f => f.UserId, nullable: true);
 
             return graphType;
         }

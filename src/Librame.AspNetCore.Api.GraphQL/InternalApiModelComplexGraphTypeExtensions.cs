@@ -28,9 +28,9 @@ namespace Librame.AspNetCore.Api
         public static ComplexGraphType<TModel> AddApiModelBaseFields<TModel>(this ComplexGraphType<TModel> graphType)
             where TModel : AbstractApiModel
         {
-            //graphType.Field(f => f.IsError, nullable: true);
-            //graphType.Field(f => f.Message, nullable: true);
-            //graphType.Field(f => f.RedirectUrl, nullable: true);
+            graphType.Field(f => f.IsError, nullable: true);
+            graphType.Field(f => f.Message, nullable: true);
+            graphType.Field(f => f.RedirectUrl, nullable: true);
             graphType.Field<ListGraphType<ExceptionGraphType>>(nameof(AbstractApiModel.Errors));
 
             return graphType;

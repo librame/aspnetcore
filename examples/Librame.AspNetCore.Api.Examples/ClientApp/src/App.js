@@ -5,6 +5,7 @@ import { Home } from './components/Home';
 import { Counter } from './components/Counter';
 import { FetchData } from './components/FetchData';
 import { ApiExample } from './components/ApiExample';
+import { Login } from './components/Login'
 
 export default class App extends Component {
     static displayName = App.name;
@@ -16,6 +17,7 @@ export default class App extends Component {
                 <Route path='/counter' component={Counter} />
                 <Route path='/fetch-data' component={FetchData} />
                 <Route path='/api-example' component={ApiExample} />
+                <Route path='/login' component={Login} />
             </Layout>
         );
     }
