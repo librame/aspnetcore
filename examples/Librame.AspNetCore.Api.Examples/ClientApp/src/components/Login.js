@@ -1,80 +1,107 @@
-import React, { Component } from 'react';
+Ôªøimport React, { Component } from 'react';
+import { Checkbox, TextField, Label, CompoundButton, PrimaryButton } from 'office-ui-fabric-react';
+import 'bootstrap/dist/css/bootstrap.css';
 
 export class Login extends Component {
     static displayName = Login.name;
 
     constructor(props) {
         super(props);
-        this.state = { model: {}, loading: true };
-        this.submitForm = this.submitForm.bind(this);
-    }
+        this.state = {
+            name: "",
+            password: "",
+            rememberMe: false,
+            message: "Ready"
+        };
+    };
 
-    submitForm() {
-        const query = `{
-            mutation($user: LoginInput!) {
-                login(user: $user) {
+    submitForm = () => {
+        const query = `
+            mutation($model: LoginInput!) {
+                login(user: $model) {
                     name
-                    userId
-                    token
                     message
                     isError
                 }
             }
-        }`;
+        `;
 
-        const variables = `{
-            "user": {
-                "name": "GraphUser",
-                "password": "Password!123456",
-                "rememberMe": false
-            }
-        }`;
+        this.setState({
+            message: "Loading..."
+        });
 
         fetch('api/graphql', {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query, variables })
+            body: JSON.stringify({ query, variables: { model: this.state } })
         })
-        .then(response => response.json())
-        .then(data => {
-            this.setState({ model: data, loading: false });
+            .then(response => response.json())
+            .then(data => {
+                this.setState(data.data.login); // GraphiQL Response Schema
+            });
+    };
+
+    inputChange = event => {
+        var changed = (event.target.checked)
+            ? event.target.checked
+            : event.target.value;
+
+        this.setState({
+            [event.target.name]: changed
         });
-    }
-
-    static renderForecastsTable(forecasts) {
-
-    }
+    };
 
     render() {
-        let status = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : FetchData.renderForecastsTable(this.state.forecasts);
-
         return (
             <div>
-                <h1>µ«»Î</h1>
-                {status}
-                <form id="login">
-                    <div>
-                        <label>”√ªß£∫</label>
-                        <input type='text' name='Name' />
+                <h1>GraphiQL Login</h1>
+
+                <form className="form-horizontal">
+                    <div>{this.state.message}</div>
+
+                    <div className="form-group">
+                        <Label>Áî®Êà∑Ôºö</Label>
+                        <TextField label="name" required
+                            onChange={this.inputChange}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <Label>ÂØÜÁ†ÅÔºö</Label>
+                        <TextField label="password" required
+                            onChange={this.inputChange}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <Checkbox
+                            label="rememberMe"
+                            onChange={this.inputChange}
+                        />
                     </div>
 
                     <div>
-                        <label>√‹¬Î£∫</label>
-                        <input type='password' name='Password' />
+                        <PrimaryButton
+                            data-automation-id="test"
+                            text="Login"
+                            onClick={this.submitForm}
+                        />
                     </div>
 
                     <div>
-                        <label>º«◊°Œ“£ø</label>
-                        <input type='checkbox' name='RememberMe' />
-                    </div>
-
-                    <div>
-                        <button className="btn btn-primary" onClick={this.submitForm}>µ«»Î</button>
+                        <div>
+                            <CompoundButton secondaryText="You can create a new account here.">
+                                Register
+                            </CompoundButton>
+                        </div>
+                        <div>
+                            <CompoundButton secondaryText="You can reset a account here.">
+                                ForgotPassword
+                            </CompoundButton>
+                        </div>
                     </div>
                 </form>
             </div>
         );
-    }
+    };
 };
