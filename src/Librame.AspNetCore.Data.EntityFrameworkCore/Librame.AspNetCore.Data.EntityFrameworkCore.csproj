@@ -15,7 +15,7 @@
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Librame,Extensions,Data,AspNetCore,EFCore/EntityFrameworkCore</PackageTags>
+    <PackageTags>Librame,Extensions,Data,AspNetCore,EntityFrameworkCore</PackageTags>
     <PackageReleaseNotes>Based Librame.AspNetCore.Data.Abstractions and EntityFrameworkCore on ASP.NET Core extension implementation.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
@@ -36,7 +36,7 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Data.EntityFrameworkCore" Version="6.0.825.201" />
+    <PackageReference Include="Librame.Extensions.Data.EntityFrameworkCore" Version="6.0.835.201" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
   </ItemGroup>

@@ -10,21 +10,16 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Identity
 {
+    using Extensions.Core;
+
     /// <summary>
-    /// 应用程序配置器接口。
+    /// <see cref="IdentityBuilder"/> 封装器接口。
     /// </summary>
-    public interface IApplicationConfigurator
+    public interface IIdentityBuilderWrapper : IExtensionBuilderWrapper<IdentityBuilder>
     {
-        /// <summary>
-        /// 应用程序构建器。
-        /// </summary>
-        /// <value>
-        /// 返回 <see cref="IApplicationBuilder"/>。
-        /// </value>
-        IApplicationBuilder Builder { get; }
     }
 }

@@ -15,20 +15,20 @@ using Microsoft.AspNetCore.Builder;
 namespace Librame.AspNetCore.Api
 {
     /// <summary>
-    /// API 应用程序配置器静态扩展。
+    /// API <see cref="IApplicationBuilderWrapper"/> 静态扩展。
     /// </summary>
-    public static class ApiApplicationConfiguratorExtensions
+    public static class ApiApplicationBuilderWrapperExtensions
     {
         /// <summary>
         /// 使用 API 应用程序。
         /// </summary>
-        /// <param name="configurator">给定的 <see cref="IApplicationConfigurator"/>。</param>
-        /// <returns>返回 <see cref="IApplicationConfigurator"/>。</returns>
-        public static IApplicationConfigurator UseApi(this IApplicationConfigurator configurator)
+        /// <param name="builderWrapper">给定的 <see cref="IApplicationBuilderWrapper"/>。</param>
+        /// <returns>返回 <see cref="IApplicationBuilderWrapper"/>。</returns>
+        public static IApplicationBuilderWrapper UseApi(this IApplicationBuilderWrapper builderWrapper)
         {
-            configurator.Builder.UseMiddleware<InternalApiMiddleware>();
+            builderWrapper.RawBuilder.UseMiddleware<InternalApiMiddleware>();
 
-            return configurator;
+            return builderWrapper;
         }
 
     }

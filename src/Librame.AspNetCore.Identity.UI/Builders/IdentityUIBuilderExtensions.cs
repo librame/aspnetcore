@@ -24,11 +24,11 @@ namespace Librame.AspNetCore.Identity.UI
         /// <summary>
         /// 添加身份 UI 扩展。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IIdentityBuilder"/>。</param>
+        /// <param name="builder">给定的 <see cref="IIdentityBuilderWrapper"/>。</param>
         /// <param name="themepack">给定的 <see cref="IThemepackInfo"/>。</param>
         /// <param name="setupAction">给定的选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IUIBuilder"/>。</returns>
-        public static IUIBuilder AddIdentityUI(this IIdentityBuilder builder,
+        public static IUIBuilder AddIdentityUI(this IIdentityBuilderWrapper builder,
             IThemepackInfo themepack, Action<UIBuilderOptions> setupAction = null)
         {
             var applicationContextType = typeof(IdentityApplicationContext<>)

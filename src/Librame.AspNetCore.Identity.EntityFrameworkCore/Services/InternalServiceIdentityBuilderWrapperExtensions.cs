@@ -15,26 +15,26 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Librame.AspNetCore.Identity
 {
     /// <summary>
-    /// 内部服务身份构建器静态扩展。
+    /// 内部服务 <see cref="IIdentityBuilderWrapper"/> 静态扩展。
     /// </summary>
-    internal static class InternalServiceIdentityBuilderExtensions
+    internal static class InternalServiceIdentityBuilderWrapperExtensions
     {
         /// <summary>
         /// 添加服务集合。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IIdentityBuilder"/>。</param>
-        /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public static IIdentityBuilder AddServices(this IIdentityBuilder builder)
+        /// <param name="builderWrapper">给定的 <see cref="IIdentityBuilderWrapper"/>。</param>
+        /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
+        public static IIdentityBuilderWrapper AddServices(this IIdentityBuilderWrapper builderWrapper)
         {
-            builder.Services.AddScoped<IIdentityIdentifierService, IdentityIdentifierService>();
+            builderWrapper.Services.AddScoped<IIdentityIdentifierService, IdentityIdentifierService>();
 
-            //builder.Services.TryReplace<IIdentifierService, IdentityIdentifierService>();
-            //builder.Services.AddScoped(serviceProvider =>
+            //builderWrapper.Services.TryReplace<IIdentifierService, IdentityIdentifierService>();
+            //builderWrapper.Services.AddScoped(serviceProvider =>
             //{
             //    return (IIdentityIdentifierService)serviceProvider.GetRequiredService<IIdentifierService>();
             //});
 
-            return builder;
+            return builderWrapper;
         }
 
     }

@@ -7,39 +7,40 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Version>6.0.1643.201</Version>
     <Authors>Librame Pang</Authors>
-    <Company>Librame.net</Company>
-    <Description>Based Librame.Extensions.Core.Abstractions on ASP.NET Core extension package.</Description>
+    <Company>librame.net</Company>
+    <Description>Based Librame.AspNetCore.Abstractions on IdentityServer application package.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
-    <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;amp;s=460</PackageIconUrl>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Librame,Extensions,Core,AspNetCore,Abstractions</PackageTags>
-    <PackageReleaseNotes>Based Librame.Extensions.Core.Abstractions on ASP.NET Core extension package.</PackageReleaseNotes>
-    <SignAssembly>True</SignAssembly>
+    <PackageTags>Librame,AspNetCore,IdentityServer,Abstractions</PackageTags>
+    <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions on IdentityServer application package.</PackageReleaseNotes>
+    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
     <AssemblyVersion>6.0.1643.201</AssemblyVersion>
     <FileVersion>6.0.1907.181</FileVersion>
-    <RootNamespace>Librame.AspNetCore</RootNamespace>
+    <RootNamespace>Librame.AspNetCore.IdentityServer</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Abstractions.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.IdentityServer.Abstractions.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Abstractions.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.IdentityServer.Abstractions.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Core" Version="6.0.835.201" />
-    <PackageReference Include="Librame.Extensions.Core.Abstractions" Version="6.0.835.201" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />
+    <PackageReference Include="IdentityServer4" Version="2.5.0" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <ProjectReference Include="..\Librame.AspNetCore.Abstractions\Librame.AspNetCore.Abstractions.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore.Data.Abstractions\Librame.AspNetCore.Data.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

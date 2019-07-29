@@ -78,12 +78,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                     optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
-                .AddIdentity<IdentityDbContextAccessor>(options =>
+                .AddIdentity<IdentityDbContextAccessor>(rawBuilderAction: options =>
                 {
-                    options.ConfigureCoreIdentity = core =>
-                    {
-                        core.Stores.MaxLengthForKeys = 128;
-                    };
+                    options.Stores.MaxLengthForKeys = 128;
                 })
                 .AddIdentityUI(new SimpleThemepackInfo())
                 .AddPages(mvcBuilder)

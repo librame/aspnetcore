@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -27,17 +28,21 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 添加身份扩展。
         /// </summary>
+        /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
-        /// <param name="setupCoreAction">给定的身份核心选项配置动作（可选）。</param>
-        /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public static IIdentityBuilder AddIdentity<TAccessor>(this IExtensionBuilder builder,
+        /// <param name="setupAction">给定的封装器选项配置动作（可选）。</param>
+        /// <param name="rawBuilderAction">给定的原始构建器选项配置动作（可选）。</param>
+        /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
+        public static IIdentityBuilderWrapper AddIdentity<TAccessor>(this IExtensionBuilder builder,
             Action<IdentityBuilderOptions> setupAction = null,
-            Action<IdentityOptions> setupCoreAction = null)
+            Action<IdentityOptions> rawBuilderAction = null)
             where TAccessor : IdentityDbContextAccessor
         {
-            return builder.AddIdentity<TAccessor, DefaultIdentityUser,
-                DefaultIdentityRole>(b => new InternalIdentityBuilder(b), setupAction, setupCoreAction);
+            return builder.AddIdentity<TAccessor, DefaultIdentityUser, DefaultIdentityRole, string>((b, r) =>
+            {
+                return new InternalIdentityBuilderWrapper(b, r);
+            },
+            setupAction, rawBuilderAction);
         }
 
         /// <summary>
@@ -46,36 +51,37 @@ namespace Librame.AspNetCore.Identity
         /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
         /// <typeparam name="TRole">指定的角色类型。</typeparam>
+        /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="createFactory">给定创建身份构建器的工厂方法。</param>
-        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
-        /// <param name="setupCoreAction">给定的身份核心选项配置动作（可选）。</param>
-        /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
-        public static IIdentityBuilder AddIdentity<TAccessor, TUser, TRole>(this IExtensionBuilder builder,
-            Func<IExtensionBuilder, IIdentityBuilder> createFactory,
+        /// <param name="setupAction">给定的封装器选项配置动作（可选）。</param>
+        /// <param name="rawBuilderAction">给定的原始构建器选项配置动作（可选）。</param>
+        /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
+        public static IIdentityBuilderWrapper AddIdentity<TAccessor, TUser, TRole, TGenId>(this IExtensionBuilder builder,
+            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> createFactory,
             Action<IdentityBuilderOptions> setupAction = null,
-            Action<IdentityOptions> setupCoreAction = null)
-            where TAccessor : IdentityDbContextAccessor
+            Action<IdentityOptions> rawBuilderAction = null)
+            where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TUser, TGenId>
             where TUser : class
             where TRole : class
+            where TGenId : IEquatable<TGenId>
         {
             createFactory.NotNull(nameof(createFactory));
 
             builder.Services.OnlyConfigure(setupAction);
 
-            // Add IdentityCore
-            var identityCore = builder.Services
-                .AddIdentityCore<TUser>(setupCoreAction ?? (_ => { }))
+            // Add IdentityBuilder
+            var rawBuilder = builder.Services
+                .AddIdentityCore<TUser>(rawBuilderAction ?? (_ => { }))
                 .AddRoles<TRole>()
                 .AddEntityFrameworkStores<TAccessor>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
-            // Add IIdentityBuilder
-            var identityBuilder = createFactory.Invoke(builder);
+            // Add IIdentityBuilderWrapper
+            var builderWrapper = createFactory.Invoke(builder, rawBuilder);
 
-            return identityBuilder
-                .AddIdentityCore(identityCore)
+            return builderWrapper
                 .AddServices();
         }
 

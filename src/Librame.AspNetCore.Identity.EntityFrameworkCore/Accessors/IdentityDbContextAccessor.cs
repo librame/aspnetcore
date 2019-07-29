@@ -25,6 +25,7 @@ namespace Librame.AspNetCore.Identity
     /// 身份数据库上下文访问器。
     /// </summary>
     public class IdentityDbContextAccessor : IdentityDbContextAccessor<DefaultIdentityRole, DefaultIdentityUser, string>
+        , IIdentityDbContextAccessor
     {
         /// <summary>
         /// 构造一个身份数据库上下文访问器实例。
@@ -46,6 +47,7 @@ namespace Librame.AspNetCore.Identity
     public class IdentityDbContextAccessor<TRole, TUser, TGenId>
         : IdentityDbContextAccessor<TRole, IdentityRoleClaim<TGenId>, IdentityUserRole<TGenId>,
             TUser, IdentityUserClaim<TGenId>, IdentityUserLogin<TGenId>, IdentityUserToken<TGenId>, TGenId>
+        , IIdentityDbContextAccessor<TRole, TUser, TGenId>
         where TRole : IdentityRole<TGenId>
         where TUser : IdentityUser<TGenId>
         where TGenId : IEquatable<TGenId>
@@ -73,7 +75,7 @@ namespace Librame.AspNetCore.Identity
     /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     public class IdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TGenId>
-        : DbContextAccessor
+        : DbContextAccessor, IIdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>
         where TRole : IdentityRole<TGenId>
         where TRoleClaim : IdentityRoleClaim<TGenId>
         where TUserRole : IdentityUserRole<TGenId>

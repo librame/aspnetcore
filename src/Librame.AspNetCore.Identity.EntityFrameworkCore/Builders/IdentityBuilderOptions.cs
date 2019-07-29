@@ -10,7 +10,6 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Identity;
 using System;
 
 namespace Librame.AspNetCore.Identity
@@ -23,10 +22,6 @@ namespace Librame.AspNetCore.Identity
     /// </summary>
     public class IdentityBuilderOptions : DataBuilderOptionsBase<IdentityTableSchemaOptions>
     {
-        /// <summary>
-        /// 配置核心身份选项。
-        /// </summary>
-        public Action<IdentityOptions> ConfigureCoreIdentity { get; set; }
     }
 
 

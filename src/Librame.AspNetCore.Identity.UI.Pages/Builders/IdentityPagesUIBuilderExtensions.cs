@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Identity.UI
         /// </summary>
         /// <param name="builder">给定的 <see cref="IUIBuilder"/>。</param>
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
-        /// <returns>返回 <see cref="IIdentityBuilder"/>。</returns>
+        /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
         public static IUIBuilder AddPages(this IUIBuilder builder, IMvcBuilder mvcBuilder)
         {
             // Add Assemblies Pages（需引用 Microsoft.AspNetCore.Mvc 程序集才能正常被路由解析）
