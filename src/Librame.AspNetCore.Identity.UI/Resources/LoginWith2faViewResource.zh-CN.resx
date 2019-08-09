@@ -121,7 +121,7 @@
     <value>登入</value>
   </data>
   <data name="Descr" xml:space="preserve">
-    <value>您的登入被一个身份验证应用程序保护。请在下面输入您的身份验证代码。</value>
+    <value>您的登入被一个身份验证应用保护。请在下面输入您的身份验证代码。</value>
   </data>
   <data name="LoginWithRecoveryCodeDescr" xml:space="preserve">
     <value>无法访问您的身份验证设备？你可以&lt;a id="recovery-code-login" asp-page="./LoginWithRecoveryCode" asp-route-returnUrl="{0}"&gt;使用恢复码登入&lt;/a&gt;。</value>

@@ -12,6 +12,8 @@
 
 namespace Librame.AspNetCore.Identity.UI
 {
+    using AspNetCore.UI;
+
     /// <summary>
     /// 修改密码视图资源。
     /// </summary>

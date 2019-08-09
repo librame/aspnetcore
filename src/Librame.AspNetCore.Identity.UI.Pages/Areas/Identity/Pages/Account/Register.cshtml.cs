@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 抽象注册页面模型。
     /// </summary>
     [AllowAnonymous]
-    [ThemepackTemplate(typeof(RegisterPageModel<>))]
+    [PageApplicationModelWithUser(typeof(RegisterPageModel<>))]
     public abstract class AbstractRegisterPageModel : PageModel
     {
         /// <summary>

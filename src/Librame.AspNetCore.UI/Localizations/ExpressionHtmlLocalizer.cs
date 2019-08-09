@@ -53,6 +53,6 @@ namespace Librame.AspNetCore.UI
         {
             get { return this.GetString(propertyExpression, arguments); }
         }
-        
+
     }
 }

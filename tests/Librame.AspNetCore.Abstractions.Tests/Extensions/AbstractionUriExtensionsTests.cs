@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using Xunit;
 
 namespace Librame.Extensions
@@ -9,37 +6,40 @@ namespace Librame.Extensions
     public class AbstractionUriExtensionsTests
     {
         [Fact]
-        public void IsAbsoluteVirtualPathTest()
+        public void SameHostTest()
         {
-            var path = "/path";
-            Assert.True(path.IsAbsoluteVirtualPath());
-
-            path = "~" + path;
-            Assert.True(path.IsAbsoluteVirtualPath());
-
-            var url = "http://localhost" + path;
-            Assert.False(url.IsAbsoluteVirtualPath());
+            var url = "http://localhost/path";
+            var host = "http://localhost:8080/path".GetHostString();
+            Assert.False(url.SameHost(host));
         }
 
         [Fact]
-        public void IsAuthorityUrlTest()
+        public void GetHostTest()
         {
             var url = "http://localhost/path";
-            Assert.True(url.IsHostUrl("localhost"));
-
-            url = "http://localhost:8080/path";
-            Assert.False(url.IsHostUrl("localhost"));
+            var host = url.GetHostString(out Uri uri);
+            Assert.Equal("localhost", host.ToString());
+            Assert.NotNull(uri);
         }
 
         [Fact]
-        public void TryGetPathTest()
+        public void GetPathTest()
         {
             var url = "http://localhost/path";
-            var path = url.TryGetPath(out Uri uri);
+            var path = url.GetPathString(out Uri uri);
             Assert.NotNull(uri);
 
-            var path1 = "/path".TryGetPath();
+            var path1 = "/path".GetPathString();
             Assert.Equal(path, path1);
+        }
+
+        [Fact]
+        public void GetQueryTest()
+        {
+            var url = "http://localhost/path?q=123#456";
+            var query = url.GetQueryString(out Uri uri);
+            Assert.Equal("?q=123", query.ToString());
+            Assert.NotNull(uri);
         }
 
     }

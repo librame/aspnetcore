@@ -1,17 +1,17 @@
 ﻿@model IApplicationContext
 @{
-    var descriptors = Model.Navigation.GetManageFooterDescriptors();
+    var navs = Model.Navigations.GetManageFooterNavigation();
+    var uiInfo = Model.GetUserInterface(ViewContext.RouteData.AsRouteDescriptor());
 }
-
 <nav class="pull-left">
     <ul class="nav">
-        @if (descriptors != null && descriptors.Any())
+        @if (navs.IsNotNullOrEmpty())
         {
-            foreach (var descr in descriptors)
+            foreach (var nav in navs)
             {
                 <li class="nav-item">
-                    <a class="nav-link" href="@descr.Href" title="@descr.Title" @descr.Target>
-                        @descr.Text
+                    <a class="nav-link" href="@nav.Href" title="@nav.Title" @nav.Target>
+                        @nav.Text
                     </a>
                 </li>
             }
@@ -19,5 +19,5 @@
     </ul>
 </nav>
 <div class="copyright ml-auto">
-    &copy; @DateTime.Now.ToString("yyyy") - @Model.Copyright [@Model.Version]
+    &copy; @DateTime.Now.ToString("yyyy") - @uiInfo?.Copyright [@uiInfo?.Version]
 </div>

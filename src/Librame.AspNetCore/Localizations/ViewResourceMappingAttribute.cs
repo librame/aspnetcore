@@ -49,33 +49,38 @@ namespace Librame.AspNetCore
         /// <summary>
         /// 获取资源基础名称。
         /// </summary>
-        /// <param name="sourceViewType">给定的源视图类型。</param>
+        /// <param name="viewResourceType">给定的视图资源类型。</param>
         /// <returns>返回字符串。</returns>
-        public virtual string GetResourceBaseName(Type sourceViewType)
+        public virtual string GetResourceBaseName(Type viewResourceType)
         {
             if (ViewLocation.IsNullOrEmpty())
-                return $"{sourceViewType.Namespace}.{ViewName}";
+                return $"{viewResourceType.Namespace}.{ViewName}";
 
             if (ViewLocation.Contains(Path.AltDirectorySeparatorChar.ToString()) ||
                 ViewLocation.Contains(Path.DirectorySeparatorChar.ToString()))
             {
-                ViewLocation = ViewLocation.Replace(Path.AltDirectorySeparatorChar, '.')
+                // 格式化为点分隔符（如：Resources.）
+                ViewLocation = ViewLocation
+                    .Replace(Path.AltDirectorySeparatorChar, '.')
                     .Replace(Path.DirectorySeparatorChar, '.') + ".";
             }
 
-            var baseNamespace = GetBaseNamespace(sourceViewType);
-            return $"{baseNamespace}.{ViewLocation}{sourceViewType.Name}"; // 已格式化为点分隔符（如：Resources.）
+            var rootNamespace = GetRootNamespace(viewResourceType);
+            return $"{rootNamespace}.{ViewLocation}{viewResourceType.Name}";
         }
 
         /// <summary>
-        /// 获取基础命名空间。
+        /// 获取根命名空间。
         /// </summary>
         /// <param name="sourceViewType">给定的源视图类型。</param>
         /// <returns>返回字符串。</returns>
-        protected virtual string GetBaseNamespace(Type sourceViewType)
+        protected virtual string GetRootNamespace(Type sourceViewType)
         {
-            if (sourceViewType.Assembly.TryGetCustomAttribute(out RootNamespaceAttribute rootNamespaceAttribute))
-                return rootNamespaceAttribute.RootNamespace;
+            if (sourceViewType.Assembly.TryGetCustomAttribute(out RootNamespaceAttribute rootNamespace))
+                return rootNamespace.RootNamespace;
+
+            if (sourceViewType.Assembly.TryGetCustomAttribute(out AbstractionRootNamespaceAttribute abstractionRootNamespace))
+                return abstractionRootNamespace.RootNamespace;
 
             return new AssemblyName(sourceViewType.Assembly.FullName).Name;
         }

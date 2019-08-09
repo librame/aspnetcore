@@ -12,6 +12,8 @@
 
 namespace Librame.AspNetCore.Identity.UI
 {
+    using AspNetCore.UI;
+
     /// <summary>
     /// 错误视图资源。
     /// </summary>

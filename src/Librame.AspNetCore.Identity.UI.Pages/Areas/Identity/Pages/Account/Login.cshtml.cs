@@ -23,16 +23,16 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
-    using Extensions;
     using AspNetCore.UI;
     using Models;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 抽象登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [ThemepackTemplate(typeof(LoginPageModel<>))]
+    [PageApplicationModelWithUser(typeof(LoginPageModel<>))]
     public abstract class AbstractLoginPageModel : PageModel
     {
         /// <summary>

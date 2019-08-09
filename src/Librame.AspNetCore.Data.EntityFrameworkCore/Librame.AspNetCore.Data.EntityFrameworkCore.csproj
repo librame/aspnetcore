@@ -36,13 +36,14 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Data.EntityFrameworkCore" Version="6.0.835.201" />
+    <PackageReference Include="Librame.Extensions.Data.EntityFrameworkCore" Version="6.0.842.201" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Librame.AspNetCore.Data.Abstractions\Librame.AspNetCore.Data.Abstractions.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore\Librame.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

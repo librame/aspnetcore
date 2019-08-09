@@ -28,7 +28,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 抽象忘记密码页面模型。
     /// </summary>
     [AllowAnonymous]
-    [ThemepackTemplate(typeof(ForgotPasswordPageModel<>))]
+    [PageApplicationModelWithUser(typeof(ForgotPasswordPageModel<>))]
     public abstract class AbstractForgotPasswordPageModel : PageModel
     {
         /// <summary>

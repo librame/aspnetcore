@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="6.0.842.201" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Librame.AspNetCore.IdentityServer.Abstractions\Librame.AspNetCore.IdentityServer.Abstractions.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore.UI\Librame.AspNetCore.UI.csproj" />
+  </ItemGroup>
+
+</Project>

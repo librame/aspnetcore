@@ -24,7 +24,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 抽象个人数据页面模型。
     /// </summary>
-    [ThemepackTemplate(typeof(PersonalDataPageModel<>))]
+    [PageApplicationModelWithUser(typeof(PersonalDataPageModel<>))]
     public abstract class AbstractPersonalDataPageModel : PageModel
     {
         /// <summary>

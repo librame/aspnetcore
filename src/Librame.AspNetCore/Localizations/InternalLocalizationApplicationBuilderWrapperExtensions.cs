@@ -21,7 +21,7 @@ namespace Librame.AspNetCore
     internal static class InternalLocalizationApplicationBuilderWrapperExtensions
     {
         /// <summary>
-        /// 使用本地化应用程序。
+        /// 使用本地化应用。
         /// </summary>
         /// <param name="builderWrapper">给定的 <see cref="IApplicationBuilderWrapper"/>。</param>
         /// <param name="optionsAction">给定的请求本地化选项配置动作（可选）。</param>

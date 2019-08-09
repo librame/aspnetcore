@@ -12,6 +12,8 @@
 
 namespace Librame.AspNetCore.Identity.UI
 {
+    using AspNetCore.UI;
+
     /// <summary>
     /// 外部登入集合视图资源。
     /// </summary>

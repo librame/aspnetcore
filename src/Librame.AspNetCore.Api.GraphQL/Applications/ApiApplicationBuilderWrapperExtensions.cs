@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Api
     public static class ApiApplicationBuilderWrapperExtensions
     {
         /// <summary>
-        /// 使用 API 应用程序。
+        /// 使用 API 应用。
         /// </summary>
         /// <param name="builderWrapper">给定的 <see cref="IApplicationBuilderWrapper"/>。</param>
         /// <returns>返回 <see cref="IApplicationBuilderWrapper"/>。</returns>

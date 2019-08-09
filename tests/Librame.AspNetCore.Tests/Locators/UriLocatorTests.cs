@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Microsoft.AspNetCore.Http;
+using Xunit;
 
 namespace Librame.AspNetCore.Tests
 {
@@ -9,30 +10,21 @@ namespace Librame.AspNetCore.Tests
         {
             var uriString = "https://developer.microsoft.com/en-us/fabric#/get-started";
 
-            var locator = (UriLocator)uriString;
+            var locator = (UriLocatorCore)uriString;
             Assert.Equal("https", locator.Scheme);
-            Assert.Equal("developer.microsoft.com", locator.HostString);
-            Assert.Equal("/en-us/fabric", locator.PathString);
-            Assert.False(locator.Query.HasValue);
+            Assert.Equal("developer.microsoft.com", locator.HostString.ToString());
+            Assert.Equal("/en-us/fabric", locator.PathString.ToString());
+            Assert.False(locator.QueryString.HasValue);
             Assert.Equal("#/get-started", locator.Anchor);
 
-            Assert.Equal("http", locator.ChangeScheme("http").Scheme);
-            Assert.Equal("www.microsoft.com", locator.ChangeHost("www.microsoft.com").HostString);
-            Assert.Equal("/zh-cn/fabric", locator.ChangePath("/zh-cn/fabric").PathString);
-            Assert.Equal("#/styles", locator.ChangeAnchor("#/styles").Anchor);
+            Assert.Equal("www.microsoft.com", locator.ChangeHost(new HostString("www.microsoft.com")).HostString.ToString());
+            Assert.Equal("/zh-cn/fabric", locator.ChangePath(new PathString("/zh-cn/fabric")).PathString.ToString());
 
-            Assert.NotEqual(locator, locator.NewScheme("https"));
-            Assert.NotEqual(locator, locator.NewHost("developer.microsoft.com"));
-            Assert.NotEqual(locator, locator.NewPath("/en-us/fabric"));
-            Assert.False(locator == locator.NewAnchor("#/get-started")); // BUG: Assert.NotEqual
+            Assert.NotEqual(locator, locator.NewHost(new HostString("developer.microsoft.com")));
+            Assert.NotEqual(locator, locator.NewPath(new PathString("/en-us/fabric")));
 
-            Assert.Equal("?query=testQuery", locator.ChangeQuery("?query=testQuery").QueryString);
-            var newQueriesLocator = locator.NewQueries(queries =>
-            {
-                Assert.True(queries.ContainsKey("query"));
-                queries["query"] = "newQuery";
-            });
-            Assert.NotEqual(locator, newQueriesLocator);
+            Assert.Equal("?query=testQuery", locator.ChangeQuery(new QueryString("?query=testQuery")).QueryString.ToString());
+            Assert.NotEmpty(locator.Queries);
         }
     }
 }

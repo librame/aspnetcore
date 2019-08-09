@@ -37,11 +37,11 @@ namespace Librame.AspNetCore.Identity.Tests
                         optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                     })
-                    .AddIdentity<IdentityDbContextAccessor>(options =>
+                    .AddIdentity<IdentityDbContextAccessor>(dependency =>
                     {
-                        options.ConfigureCoreIdentity = core =>
+                        dependency.BaseSetupAction = options =>
                         {
-                            core.Stores.MaxLengthForKeys = 128;
+                            options.Stores.MaxLengthForKeys = 128;
                         };
                     });
 

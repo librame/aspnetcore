@@ -29,7 +29,7 @@ namespace Librame.AspNetCore
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
         public static ICoreBuilder AddLocalizations(this ICoreBuilder builder)
         {
-            builder.Services.TryReplace<IStringLocalizerFactory, AspNetCoreResourceManagerStringLocalizerFactory>();
+            builder.Services.TryReplace<IStringLocalizerFactory, ExpressionStringLocalizerFactoryCore>();
 
             return builder;
         }

@@ -127,7 +127,7 @@
     <value>使用其他服务登入。</value>
   </data>
   <data name="ExternalLoginInfo" xml:space="preserve">
-    <value>没有配置外部身份验证服务。参考&lt;a href="https://go.microsoft.com/fwlink/?LinkID=532715"&gt;本文&lt;/a&gt;详情为此 ASP.NET 应用程序配置支持通过外部服务登入。</value>
+    <value>没有配置外部身份验证服务。参考&lt;a href="https://go.microsoft.com/fwlink/?LinkID=532715"&gt;本文&lt;/a&gt;详情为此 ASP.NET 应用配置支持通过外部服务登入。</value>
   </data>
   <data name="ExternalLoginTitle" xml:space="preserve">
     <value>使用您的{0}帐户登入</value>

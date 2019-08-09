@@ -29,7 +29,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 抽象启用验证器页面模型。
     /// </summary>
-    [ThemepackTemplate(typeof(EnableAuthenticatorPageModel<>))]
+    [PageApplicationModelWithUser(typeof(EnableAuthenticatorPageModel<>))]
     public abstract class AbstractEnableAuthenticatorPageModel : PageModel
     {
         /// <summary>

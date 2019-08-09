@@ -35,7 +35,10 @@
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="Librame.Extensions.Data.Abstractions" Version="6.0.835.201" />
+      <PackageReference Include="Librame.Extensions.Data.Abstractions" Version="6.0.842.201" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Librame.AspNetCore.Abstractions\Librame.AspNetCore.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

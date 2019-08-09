@@ -12,6 +12,8 @@
 
 namespace Librame.AspNetCore.Identity.UI
 {
+    using AspNetCore.UI;
+
     /// <summary>
     /// 启用验证器视图资源。
     /// </summary>

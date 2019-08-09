@@ -14,13 +14,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI
 {
+    using Extensions;
+
     /// <summary>
-    /// 身份应用程序外部登入集合页过滤器。
+    /// 身份应用外部登入集合页过滤器。
     /// </summary>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     internal class IdentityApplicationExternalLoginsPageFilter<TUser> : IAsyncPageFilter
@@ -34,14 +35,13 @@ namespace Librame.AspNetCore.Identity.UI
         /// <returns>返回一个异步操作。</returns>
         public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context, PageHandlerExecutionDelegate next)
         {
-            var result = await next();
-            if (result.Result is PageResult page)
+            var executedContext = await next();
+            if (executedContext.Result is PageResult pageResult)
             {
                 var signInManager = context.HttpContext.RequestServices.GetRequiredService<SignInManager<TUser>>();
                 var schemes = await signInManager.GetExternalAuthenticationSchemesAsync();
-                var hasExternalLogins = schemes.Any();
 
-                page.ViewData["ManageNav.HasExternalLogins"] = hasExternalLogins;
+                pageResult.ViewData["ManageNav.HasExternalLogins"] = schemes.IsNotNullOrEmpty();
             }
         }
 

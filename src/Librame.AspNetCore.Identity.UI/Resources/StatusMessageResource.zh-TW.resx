@@ -139,7 +139,7 @@
     <value>個人資料已更新。</value>
   </data>
   <data name="ResetAuthenticator" xml:space="preserve">
-    <value>您的 Authenticator 應用程式密鑰已重置，您將需要使用新密鑰重新配置 Authenticator 应用程序。</value>
+    <value>您的 Authenticator 應用程式密鑰已重置，您將需要使用新密鑰重新配置 Authenticator 应用。</value>
   </data>
   <data name="SetPassword" xml:space="preserve">
     <value>您的口令已設定。</value>

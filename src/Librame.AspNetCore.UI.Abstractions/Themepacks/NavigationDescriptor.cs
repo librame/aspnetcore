@@ -115,5 +115,6 @@ namespace Librame.AspNetCore.UI
             get { return _title.IsNullOrEmpty() ? Text : _title; }
             set { _title = value; }
         }
+
     }
 }

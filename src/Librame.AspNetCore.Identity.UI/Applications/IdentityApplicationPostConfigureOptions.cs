@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -23,33 +22,28 @@ namespace Librame.AspNetCore.Identity.UI
     using AspNetCore.UI;
 
     /// <summary>
-    /// 身份应用程序后置配置选项。
+    /// 身份应用后置配置选项。
     /// </summary>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
-    public class IdentityApplicationPostConfigureOptions<TUser> : ApplicationPostConfigureOptionsBase,
-        IIdentityApplicationPostConfigureOptions
+    public class IdentityApplicationPostConfigureOptions<TUser> : UserInterfaceApplicationPostConfigureOptionsWithCookieBase
         where TUser : class
     {
         /// <summary>
         /// 构造一个 <see cref="IdentityApplicationPostConfigureOptions{TUser}"/> 实例。
         /// </summary>
-        /// <param name="themepack">给定的 <see cref="IThemepackInfo"/>。</param>
-        /// <param name="environment">给定的 <see cref="IHostingEnvironment"/>。</param>
-        public IdentityApplicationPostConfigureOptions(IThemepackInfo themepack,
-            IHostingEnvironment environment)
-            : this(themepack, environment, "Identity")
+        /// <param name="context">给定的 <see cref="IApplicationContext"/>。</param>
+        public IdentityApplicationPostConfigureOptions(IApplicationContext context)
+            : this(context, "Identity")
         {
         }
 
         /// <summary>
-        /// 构造一个 <see cref="ApplicationPostConfigureOptionsBase"/> 实例。
+        /// 构造一个 <see cref="IdentityApplicationPostConfigureOptions{TUser}"/> 实例。
         /// </summary>
-        /// <param name="themepack">给定的 <see cref="IThemepackInfo"/>。</param>
-        /// <param name="environment">给定的 <see cref="IHostingEnvironment"/>。</param>
+        /// <param name="context">给定的 <see cref="IApplicationContext"/>。</param>
         /// <param name="areaName">指定的区域名称。</param>
-        protected IdentityApplicationPostConfigureOptions(IThemepackInfo themepack,
-            IHostingEnvironment environment, string areaName)
-            : base(themepack, environment, areaName)
+        protected IdentityApplicationPostConfigureOptions(IApplicationContext context, string areaName)
+            : base(context, areaName)
         {
         }
 
@@ -59,7 +53,7 @@ namespace Librame.AspNetCore.Identity.UI
         /// </summary>
         /// <param name="name">给定的名称。</param>
         /// <param name="options">给定的 <see cref="CookieAuthenticationOptions"/>。</param>
-        public void PostConfigure(string name, CookieAuthenticationOptions options)
+        public override void PostConfigure(string name, CookieAuthenticationOptions options)
         {
             options = options ?? new CookieAuthenticationOptions();
 
@@ -102,7 +96,7 @@ namespace Librame.AspNetCore.Identity.UI
         /// <returns>返回 <see cref="IPageApplicationModelConvention"/>。</returns>
         protected override IPageApplicationModelConvention GetPageApplicationModelConvention()
         {
-            return new IdentityApplicationPageModelConvention<TUser>();
+            return new PageApplicationModelConventionWithUser<TUser>();
         }
 
     }

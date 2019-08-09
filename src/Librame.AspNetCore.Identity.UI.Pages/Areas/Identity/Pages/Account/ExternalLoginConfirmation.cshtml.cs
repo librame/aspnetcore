@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 抽象外部登入确认页面模型。
     /// </summary>
     [AllowAnonymous]
-    [ThemepackTemplate(typeof(ExternalLoginPageModel<>))]
+    [PageApplicationModelWithUser(typeof(ExternalLoginPageModel<>))]
     public abstract class AbstractExternalLoginConfirmationPageModel : PageModel
     {
         /// <summary>

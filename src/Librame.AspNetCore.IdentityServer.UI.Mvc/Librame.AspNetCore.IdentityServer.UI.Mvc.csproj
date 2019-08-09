@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Areas\IdentityServer\Views\Account\LoggedOut.cshtml" />
+    <None Remove="Areas\IdentityServer\Views\Account\Login.cshtml" />
+    <None Remove="Areas\IdentityServer\Views\Account\Logout.cshtml" />
+    <None Remove="Areas\IdentityServer\Views\Consent\Index.cshtml" />
+    <None Remove="Areas\IdentityServer\Views\Consent\_ScopeListItem.cshtml" />
+    <None Remove="Areas\IdentityServer\Views\Diagnostics\Index.cshtml" />
+    <None Remove="Areas\IdentityServer\Views\Grants\Index.cshtml" />
+    <None Remove="Areas\IdentityServer\Views\Home\Index.cshtml" />
+    <None Remove="Areas\IdentityServer\Views\_ViewImports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Areas\IdentityServer\Views\Account\LoggedOut.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\IdentityServer\Views\Account\Login.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\IdentityServer\Views\Account\Logout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\IdentityServer\Views\Consent\Index.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\IdentityServer\Views\Consent\_ScopeListItem.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\IdentityServer\Views\Diagnostics\Index.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\IdentityServer\Views\Grants\Index.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\IdentityServer\Views\Home\Index.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\IdentityServer\Views\_ViewImports.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Antiforgery" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Librame.AspNetCore.IdentityServer.EntityFrameworkCore\Librame.AspNetCore.IdentityServer.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore.IdentityServer.UI\Librame.AspNetCore.IdentityServer.UI.csproj" />
+  </ItemGroup>
+
+</Project>

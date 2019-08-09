@@ -28,7 +28,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 抽象恢复码登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [ThemepackTemplate(typeof(LoginWithRecoveryCodePageModel<>))]
+    [PageApplicationModelWithUser(typeof(LoginWithRecoveryCodePageModel<>))]
     public abstract class AbstractLoginWithRecoveryCodePageModel : PageModel
     {
         /// <summary>

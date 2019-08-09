@@ -1,11 +1,14 @@
 ﻿@inject IApplicationContext Application
+@{
+    var uiInfo = Application.GetUserInterface(ViewContext.RouteData.AsRouteDescriptor());
+}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @Application.Title</title>
+    <title>@ViewData["Title"] - @uiInfo?.Title</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">

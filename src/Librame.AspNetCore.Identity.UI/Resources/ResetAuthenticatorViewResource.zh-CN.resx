@@ -121,10 +121,10 @@
     <value>重置验证器密钥</value>
   </data>
   <data name="Descr" xml:space="preserve">
-    <value>如果重置了验证器密钥，则验证器应用程序在重新配置之前不会工作。</value>
+    <value>如果重置了验证器密钥，则验证器应用在重新配置之前不会工作。</value>
   </data>
   <data name="Info" xml:space="preserve">
-    <value>在您验证身份认证应用程序之前，此过程禁用2FA。如果您没有完成身份验证应用程序配置，您可能会失去对帐户的访问权。</value>
+    <value>在您验证身份认证应用之前，此过程禁用2FA。如果您没有完成身份验证应用配置，您可能会失去对帐户的访问权。</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>重置验证器密钥</value>

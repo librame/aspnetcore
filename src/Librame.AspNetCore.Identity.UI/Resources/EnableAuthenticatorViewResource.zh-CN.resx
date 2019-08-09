@@ -121,7 +121,7 @@
     <value>验证</value>
   </data>
   <data name="Descr" xml:space="preserve">
-    <value>要使用验证器应用程序，请执行以下步骤：</value>
+    <value>要使用验证器应用，请执行以下步骤：</value>
   </data>
   <data name="DownloadAuthenticator" xml:space="preserve">
     <value>下载支持双因子验证的手机应用如 Microsoft Authenticator （微软验证器） &lt;a href="https://go.microsoft.com/fwlink/?Linkid=825071"&gt;Windows Phone&lt;/a&gt;，&lt;a href="https://go.microsoft.com/fwlink/?Linkid=825072"&gt;Android&lt;/a&gt;，&lt;a href="https://go.microsoft.com/fwlink/?Linkid=825073"&gt;iOS&lt;/a&gt; 或 Google Authenticator （谷歌验证器） &lt;a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;amp;hl=en"&gt;Android&lt;/a&gt;，&lt;a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8"&gt;iOS&lt;/a&gt;。</value>
@@ -130,7 +130,7 @@
     <value>若要生成二维码，请阅读我们的&lt;a href="https://go.microsoft.com/fwlink/?Linkid=852423"&gt;文档&lt;/a&gt;。</value>
   </data>
   <data name="ScanQRCode" xml:space="preserve">
-    <value>扫描二维码或将此密钥&lt;kbd&gt;{0}&lt;/kbd&gt;输入到您的双因子身份验证应用程序。空格和大小写无关。</value>
+    <value>扫描二维码或将此密钥&lt;kbd&gt;{0}&lt;/kbd&gt;输入到您的双因子身份验证应用。空格和大小写无关。</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>配置验证器应用</value>
@@ -139,6 +139,6 @@
     <value>验证码</value>
   </data>
   <data name="VerificationCodeInfo" xml:space="preserve">
-    <value>扫描二维码或输入上述密钥后，您的双因子验证应用程序将为您提供唯一的代码。在下面的确认框中输入代码。</value>
+    <value>扫描二维码或输入上述密钥后，您的双因子验证应用将为您提供唯一的代码。在下面的确认框中输入代码。</value>
   </data>
 </root>

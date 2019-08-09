@@ -65,7 +65,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Identity
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityServer.EntityFrameworkCore", "src\Librame.AspNetCore.IdentityServer.EntityFrameworkCore\Librame.AspNetCore.IdentityServer.EntityFrameworkCore.csproj", "{05C383E0-0A35-4FDA-A545-5C12E6E907F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.IdentityServer.Abstractions.Tests", "tests\Librame.AspNetCore.IdentityServer.Abstractions.Tests\Librame.AspNetCore.IdentityServer.Abstractions.Tests.csproj", "{224A4B9E-354C-4576-8326-586D89E19586}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityServer.Abstractions.Tests", "tests\Librame.AspNetCore.IdentityServer.Abstractions.Tests\Librame.AspNetCore.IdentityServer.Abstractions.Tests.csproj", "{224A4B9E-354C-4576-8326-586D89E19586}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.IdentityServer.EntityFrameworkCore.Tests", "tests\Librame.AspNetCore.IdentityServer.EntityFrameworkCore.Tests\Librame.AspNetCore.IdentityServer.EntityFrameworkCore.Tests.csproj", "{245C2EEF-DCA6-4771-A23B-372666662303}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.IdentityServer.UI", "src\Librame.AspNetCore.IdentityServer.UI\Librame.AspNetCore.IdentityServer.UI.csproj", "{36E9B4F2-0DB9-4D52-8B55-69B51DB2D839}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.IdentityServer.UI.Mvc", "src\Librame.AspNetCore.IdentityServer.UI.Mvc\Librame.AspNetCore.IdentityServer.UI.Mvc.csproj", "{9FE954F6-B335-419D-B169-E7B7A979F326}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -189,6 +195,18 @@ Global
 		{224A4B9E-354C-4576-8326-586D89E19586}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{224A4B9E-354C-4576-8326-586D89E19586}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{224A4B9E-354C-4576-8326-586D89E19586}.Release|Any CPU.Build.0 = Release|Any CPU
+		{245C2EEF-DCA6-4771-A23B-372666662303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{245C2EEF-DCA6-4771-A23B-372666662303}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{245C2EEF-DCA6-4771-A23B-372666662303}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{245C2EEF-DCA6-4771-A23B-372666662303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36E9B4F2-0DB9-4D52-8B55-69B51DB2D839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36E9B4F2-0DB9-4D52-8B55-69B51DB2D839}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36E9B4F2-0DB9-4D52-8B55-69B51DB2D839}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36E9B4F2-0DB9-4D52-8B55-69B51DB2D839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FE954F6-B335-419D-B169-E7B7A979F326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FE954F6-B335-419D-B169-E7B7A979F326}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FE954F6-B335-419D-B169-E7B7A979F326}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FE954F6-B335-419D-B169-E7B7A979F326}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -223,6 +241,9 @@ Global
 		{1EC9E8B8-66F7-4D5B-A15E-6265A319F9C7} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 		{05C383E0-0A35-4FDA-A545-5C12E6E907F3} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 		{224A4B9E-354C-4576-8326-586D89E19586} = {64F541DF-34A5-4451-B3F2-AB1A7592B652}
+		{245C2EEF-DCA6-4771-A23B-372666662303} = {64F541DF-34A5-4451-B3F2-AB1A7592B652}
+		{36E9B4F2-0DB9-4D52-8B55-69B51DB2D839} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
+		{9FE954F6-B335-419D-B169-E7B7A979F326} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C045FFCB-A85F-4F5E-9830-8F503D71513E}

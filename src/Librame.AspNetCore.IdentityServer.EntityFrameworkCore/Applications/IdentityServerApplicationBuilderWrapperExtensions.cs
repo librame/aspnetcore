@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.IdentityServer
     public static class IdentityServerApplicationBuilderWrapperExtensions
     {
         /// <summary>
-        /// 使用身份服务器应用程序。
+        /// 使用身份服务器应用。
         /// </summary>
         /// <param name="builderWrapper">给定的 <see cref="IApplicationBuilderWrapper"/>。</param>
         /// <param name="options">给定的 <see cref="IdentityServerMiddlewareOptions"/>。</param>

@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 抽象生成恢复码集合页面模型。
     /// </summary>
-    [ThemepackTemplate(typeof(GenerateRecoveryCodesPageModel<>))]
+    [PageApplicationModelWithUser(typeof(GenerateRecoveryCodesPageModel<>))]
     public abstract class AbstractGenerateRecoveryCodesPageModel : PageModel
     {
         /// <summary>

@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 抽象登出页面模型。
     /// </summary>
     [AllowAnonymous]
-    [ThemepackTemplate(typeof(LogoutPageModel<>))]
+    [PageApplicationModelWithUser(typeof(LogoutPageModel<>))]
     public abstract class AbstractLogoutPageModel : PageModel
     {
         /// <summary>

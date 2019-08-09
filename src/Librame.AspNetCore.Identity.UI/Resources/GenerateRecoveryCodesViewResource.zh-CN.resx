@@ -124,7 +124,7 @@
     <value>把这些密码放在安全的地方。</value>
   </data>
   <data name="Info" xml:space="preserve">
-    <value>生成新的恢复码不会更改验证器应用程序中使用的密钥。如果您希望更改身份验证程序中使用的密钥，您应该&lt;a asp-page="。/ResetAuthenticator"&gt;重置您的身份验证器密钥&lt;/a&gt;。</value>
+    <value>生成新的恢复码不会更改验证器应用中使用的密钥。如果您希望更改身份验证程序中使用的密钥，您应该&lt;a asp-page="。/ResetAuthenticator"&gt;重置您的身份验证器密钥&lt;/a&gt;。</value>
   </data>
   <data name="Remark" xml:space="preserve">
     <value>如果您丢失了您的设备，并且没有恢复码，您将无法访问您的帐户。</value>

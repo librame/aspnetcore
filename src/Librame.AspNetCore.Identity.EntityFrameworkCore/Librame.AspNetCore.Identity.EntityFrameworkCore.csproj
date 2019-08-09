@@ -42,7 +42,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Librame.AspNetCore.Data.EntityFrameworkCore\Librame.AspNetCore.Data.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\Librame.AspNetCore.Identity.Abstractions\Librame.AspNetCore.Identity.Abstractions.csproj" />
-    <ProjectReference Include="..\Librame.AspNetCore\Librame.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

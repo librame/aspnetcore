@@ -20,12 +20,6 @@ namespace Librame.AspNetCore.UI
     public interface IThemepackInfo : IApplicationInfo
     {
         /// <summary>
-        /// 作者。
-        /// </summary>
-        string Author { get; }
-
-
-        /// <summary>
         /// 获取静态文件提供程序。
         /// </summary>
         /// <remarks>

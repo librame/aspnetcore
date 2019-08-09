@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.Extensions.FileProviders;
+using System;
 using System.Reflection;
 
 namespace Librame.AspNetCore.UI
@@ -18,43 +19,55 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 简约主题包信息。
     /// </summary>
-    public class SimpleThemepackInfo : AbstractApplicationInfo, IThemepackInfo
+    public class SimpleThemepackInfo : IThemepackInfo
     {
         /// <summary>
         /// 名称。
         /// </summary>
-        public override string Name => "Simple";
+        public string Name
+            => "Simple";
 
         /// <summary>
         /// 标题。
         /// </summary>
-        public override string Title => "简约";
-
-        /// <summary>
-        /// 联系。
-        /// </summary>
-        public override string Contact => "https://github.com/librame";
-
-        /// <summary>
-        /// 版权。
-        /// </summary>
-        public override string Copyright => "Librame Pang";
-
-        /// <summary>
-        /// 版本。
-        /// </summary>
-        public override string Version => "1.0.0";
-
-        /// <summary>
-        /// 程序集。
-        /// </summary>
-        public override Assembly Assembly => GetType().Assembly;
-
+        public string Title
+            => "简约";
 
         /// <summary>
         /// 作者。
         /// </summary>
-        public string Author => nameof(Librame);
+        public string Author
+            => nameof(Librame);
+
+        /// <summary>
+        /// 联系。
+        /// </summary>
+        public string Contact
+            => "https://github.com/librame";
+
+        /// <summary>
+        /// 版权。
+        /// </summary>
+        public string Copyright
+            => "Librame Pang";
+
+        /// <summary>
+        /// 版本。
+        /// </summary>
+        public string Version
+            => "1.0.0";
+
+        /// <summary>
+        /// 程序集。
+        /// </summary>
+        public Assembly Assembly
+            => GetType().Assembly;
+
+        /// <summary>
+        /// 程序集版本。
+        /// </summary>
+        public Version AssemblyVersion
+            => Assembly.GetName().Version;
 
 
         /// <summary>
@@ -68,5 +81,6 @@ namespace Librame.AspNetCore.UI
         {
             return new ManifestEmbeddedFileProvider(Assembly, "wwwroot");
         }
+
     }
 }

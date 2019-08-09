@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore
 {
     /// <summary>
-    /// 应用程序中间件接口。
+    /// 应用中间件接口。
     /// </summary>
     public interface IApplicationMiddleware
     {

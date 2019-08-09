@@ -30,19 +30,17 @@ namespace Librame.AspNetCore.Identity
         /// </summary>
         /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="setupAction">给定的封装器选项配置动作（可选）。</param>
-        /// <param name="rawBuilderAction">给定的原始构建器选项配置动作（可选）。</param>
+        /// <param name="dependencySetupAction">给定的依赖选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
         public static IIdentityBuilderWrapper AddIdentity<TAccessor>(this IExtensionBuilder builder,
-            Action<IdentityBuilderOptions> setupAction = null,
-            Action<IdentityOptions> rawBuilderAction = null)
+            Action<IdentityBuilderDependencyOptions> dependencySetupAction = null)
             where TAccessor : IdentityDbContextAccessor
         {
             return builder.AddIdentity<TAccessor, DefaultIdentityUser, DefaultIdentityRole, string>((b, r) =>
             {
                 return new InternalIdentityBuilderWrapper(b, r);
             },
-            setupAction, rawBuilderAction);
+            dependencySetupAction);
         }
 
         /// <summary>
@@ -54,13 +52,11 @@ namespace Librame.AspNetCore.Identity
         /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="createFactory">给定创建身份构建器的工厂方法。</param>
-        /// <param name="setupAction">给定的封装器选项配置动作（可选）。</param>
-        /// <param name="rawBuilderAction">给定的原始构建器选项配置动作（可选）。</param>
+        /// <param name="dependencySetupAction">给定的依赖选项配置动作（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
         public static IIdentityBuilderWrapper AddIdentity<TAccessor, TUser, TRole, TGenId>(this IExtensionBuilder builder,
             Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> createFactory,
-            Action<IdentityBuilderOptions> setupAction = null,
-            Action<IdentityOptions> rawBuilderAction = null)
+            Action<IdentityBuilderDependencyOptions> dependencySetupAction = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TUser, TGenId>
             where TUser : class
             where TRole : class
@@ -68,17 +64,19 @@ namespace Librame.AspNetCore.Identity
         {
             createFactory.NotNull(nameof(createFactory));
 
-            builder.Services.OnlyConfigure(setupAction);
+            // Add Dependencies
+            var dependencyOptions = dependencySetupAction.ConfigureDependencyOptions();
 
-            // Add IdentityBuilder
             var rawBuilder = builder.Services
-                .AddIdentityCore<TUser>(rawBuilderAction ?? (_ => { }))
+                .AddIdentityCore<TUser>(dependencyOptions.BaseSetupAction)
                 .AddRoles<TRole>()
                 .AddEntityFrameworkStores<TAccessor>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
-            // Add IIdentityBuilderWrapper
+            // Add Builder
+            builder.Services.OnlyConfigure(dependencySetupAction);
+
             var builderWrapper = createFactory.Invoke(builder, rawBuilder);
 
             return builderWrapper

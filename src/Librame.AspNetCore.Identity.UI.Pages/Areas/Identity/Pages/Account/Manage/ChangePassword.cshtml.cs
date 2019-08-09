@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 抽象修改密码页面模型。
     /// </summary>
-    [ThemepackTemplate(typeof(ChangePasswordPageModel<>))]
+    [PageApplicationModelWithUser(typeof(ChangePasswordPageModel<>))]
     public abstract class AbstractChangePasswordPageModel : PageModel
     {
         /// <summary>

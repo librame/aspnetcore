@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Librame.AspNetCore.IdentityServer
 {
@@ -21,5 +22,9 @@ namespace Librame.AspNetCore.IdentityServer
     /// </summary>
     public interface IIdentityServerBuilderWrapper : IExtensionBuilderWrapper<IIdentityServerBuilder>
     {
+        /// <summary>
+        /// 用户类型。
+        /// </summary>
+        Type UserType { get; }
     }
 }

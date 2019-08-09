@@ -121,10 +121,10 @@
     <value>您的密码已更改。</value>
   </data>
   <data name="DisableTwoFactor" xml:space="preserve">
-    <value>双因子验证已被禁用。当你安装 Authenticator 应用程序后，可以重新启用此功能。</value>
+    <value>双因子验证已被禁用。当你安装 Authenticator 应用后，可以重新启用此功能。</value>
   </data>
   <data name="EnableAuthenticator" xml:space="preserve">
-    <value>您的 Authenticator 应用程序已经过验证。</value>
+    <value>您的 Authenticator 应用已经过验证。</value>
   </data>
   <data name="ExternalLoginAdded" xml:space="preserve">
     <value>此外部登入已增加。</value>
@@ -139,7 +139,7 @@
     <value>个人资料已更新。</value>
   </data>
   <data name="ResetAuthenticator" xml:space="preserve">
-    <value>您的 Authenticator 应用程序密钥已重置，您将需要使用新密钥重新配置 Authenticator 应用程序。</value>
+    <value>您的 Authenticator 应用密钥已重置，您将需要使用新密钥重新配置 Authenticator 应用。</value>
   </data>
   <data name="SetPassword" xml:space="preserve">
     <value>您的密码已设置。</value>

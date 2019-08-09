@@ -19,7 +19,7 @@ namespace Librame.AspNetCore
     using Extensions;
 
     /// <summary>
-    /// 抽象应用程序中间件。
+    /// 抽象应用中间件。
     /// </summary>
     public abstract class AbstractApplicationMiddleware : IApplicationMiddleware
     {

@@ -11,37 +11,25 @@
 #endregion
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Localization;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Librame.AspNetCore.UI
 {
     /// <summary>
-    /// 应用程序上下文接口。
+    /// 应用上下文接口。
     /// </summary>
-    public interface IApplicationContext : IApplicationInfo
+    public interface IApplicationContext
     {
         /// <summary>
-        /// 本地化。
+        /// 服务提供程序。
         /// </summary>
         /// <value>
-        /// 返回 <see cref="IApplicationLocalization"/>。
+        /// 返回 <see cref="IServiceProvider"/>。
         /// </value>
-        IApplicationLocalization Localization { get; }
-
-        /// <summary>
-        /// 导航。
-        /// </summary>
-        /// <value>
-        /// 返回 <see cref="IApplicationNavigation"/>。
-        /// </value>
-        IApplicationNavigation Navigation { get; }
-
-        /// <summary>
-        /// 当事人。
-        /// </summary>
-        /// <value>
-        /// 返回 <see cref="IApplicationPrincipal"/>。
-        /// </value>
-        IApplicationPrincipal Principal { get; }
+        IServiceProvider ServiceProvider { get; }
 
         /// <summary>
         /// 主机环境。
@@ -52,11 +40,31 @@ namespace Librame.AspNetCore.UI
         IHostingEnvironment Environment { get; }
 
         /// <summary>
-        /// 信息。
+        /// 用户界面集合。
         /// </summary>
-        /// <value>
-        /// 返回 <see cref="IThemepackInfo"/>。
-        /// </value>
-        IThemepackInfo Info { get; }
+        ConcurrentDictionary<string, IUserInterfaceInfo> UserInterfaces { get; }
+
+        /// <summary>
+        /// 主题包集合。
+        /// </summary>
+        ConcurrentDictionary<string, IThemepackInfo> Themepacks { get; }
+
+        /// <summary>
+        /// 本地化定位器集合。
+        /// </summary>
+        ConcurrentDictionary<string, IStringLocalizer> Localizers { get; }
+
+        /// <summary>
+        /// 导航集合。
+        /// </summary>
+        ConcurrentDictionary<string, List<NavigationDescriptor>> Navigations { get; }
+
+
+        /// <summary>
+        /// 获取指定路由的用户界面信息。
+        /// </summary>
+        /// <param name="routeDescriptor">给定的 <see cref="RouteDescriptor"/>。</param>
+        /// <returns>返回 <see cref="IUserInterfaceInfo"/>。</returns>
+        IUserInterfaceInfo GetUserInterface(RouteDescriptor routeDescriptor);
     }
 }

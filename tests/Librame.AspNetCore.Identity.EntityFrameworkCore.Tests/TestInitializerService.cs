@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Librame.AspNetCore.Identity.Tests
 {
@@ -35,6 +36,8 @@ namespace Librame.AspNetCore.Identity.Tests
             InitializeRoles(stores);
 
             InitializeUsers(stores);
+
+            InitializeClaims(stores);
         }
 
         private void InitializeRoles(IStoreHub<TAccessor> stores)
@@ -99,5 +102,23 @@ namespace Librame.AspNetCore.Identity.Tests
                 _users = stores.Accessor.Users.ToList();
             }
         }
+
+        private void InitializeClaims(IStoreHub<TAccessor> stores)
+        {
+            if (!stores.Accessor.UserClaims.Any())
+            {
+                foreach (var user in _users)
+                {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Gender, "male"),
+                        new Claim(ClaimTypes.Country, "China")
+                    };
+
+                    _signInManager.UserManager.AddClaimsAsync(user, claims).Wait();
+                }
+            }
+        }
+
     }
 }

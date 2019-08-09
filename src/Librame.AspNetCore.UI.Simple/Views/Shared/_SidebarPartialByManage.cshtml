@@ -1,18 +1,18 @@
 ﻿@model IApplicationContext
 @{
-    var descriptors = Model.Navigation.GetManageSidebarDescriptors();
+    var navs = Model.Navigations.GetManageSidebarNavigation();
 }
 <ul class="nav">
-    @if (descriptors != null && descriptors.Any())
+    @if (navs.IsNotNullOrEmpty())
     {
-        foreach (var descr in descriptors)
+        foreach (var nav in navs)
         {
-            if ((descr.VisibilityFactory?.Invoke(this)).Value)
+            if ((nav.VisibilityFactory?.Invoke(this)).Value)
             {
-                <li class="nav-item @descr.ActiveClassNameFactory?.Invoke(this)">
-                    <a id="@descr.Id" asp-page="@descr.Href" title="@descr.Title">
-                        <i class="@descr.Icon"></i>
-                        <p>@descr.Text</p>
+                <li class="nav-item @nav.ActiveClassNameFactory?.Invoke(this)">
+                    <a id="@nav.Id" asp-page="@nav.Href" title="@nav.Title">
+                        <i class="@nav.Icon"></i>
+                        <p>@nav.Text</p>
                     </a>
                 </li>
             }

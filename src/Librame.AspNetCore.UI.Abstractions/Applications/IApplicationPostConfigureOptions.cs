@@ -10,30 +10,20 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Hosting;
-
 namespace Librame.AspNetCore.UI
 {
     /// <summary>
-    /// 应用程序后置配置选项接口。
+    /// 应用后置配置选项接口。
     /// </summary>
     public interface IApplicationPostConfigureOptions
     {
         /// <summary>
-        /// 主题包信息。
+        /// 应用上下文。
         /// </summary>
         /// <value>
-        /// 返回 <see cref="IThemepackInfo"/>。
+        /// 返回 <see cref="IApplicationContext"/>。
         /// </value>
-        IThemepackInfo Themepack { get; }
-
-        /// <summary>
-        /// 主机环境。
-        /// </summary>
-        /// <value>
-        /// 返回 <see cref="IHostingEnvironment"/>。
-        /// </value>
-        IHostingEnvironment Environment { get; }
+        IApplicationContext Context { get; }
 
         /// <summary>
         /// 区域名称。

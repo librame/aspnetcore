@@ -9,11 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Quickstart\Diagnostics\" />
+    <Folder Include="Quickstart\Grants\" />
+    <Folder Include="Quickstart\Home\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityServer4" Version="2.5.0" />
+    <PackageReference Include="IdentityServer4" Version="2.5.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

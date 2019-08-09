@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
+using System.Net;
 using Xunit;
 
 namespace Librame.Extensions
@@ -18,19 +19,17 @@ namespace Librame.Extensions
         }
 
         [Fact]
-        public async void GetLocalIpAddressesAsyncTest()
+        public async void GetLocalIPAddressTupleAsyncTest()
         {
-            var ipAddresses = await AbstractionHttpRequestExtensions.GetLocalIpAddressesAsync();
-            Assert.NotNull(ipAddresses.V4);
-            Assert.NotNull(ipAddresses.V6);
-
             var dict = new Dictionary<string, StringValues>();
-            dict.Add("X-Original-For", "::1");
+            dict.Add("X-Original-For", IPAddress.Loopback.ToString() + "," + IPAddress.IPv6Loopback.ToString());
 
             var headers = new HeaderDictionary(dict);
-            ipAddresses = await headers.GetIpAddressesAsync();
-            Assert.NotNull(ipAddresses.V4); //ipAddresses.V4.IsNullOrNone();
-            Assert.NotNull(ipAddresses.V6);
+            var tuple = await headers.GetIPAddressTupleAsync();
+            Assert.NotNull(tuple.IPv4);
+            Assert.NotNull(tuple.IPv6);
+            Assert.False(tuple.IPv4.IsNullOrNone());
+            Assert.False(tuple.IPv6.IsNullOrNone());
         }
 
     }

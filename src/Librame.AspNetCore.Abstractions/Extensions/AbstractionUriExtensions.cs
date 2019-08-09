@@ -12,6 +12,7 @@
 
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Net;
 
 namespace Librame.Extensions
 {
@@ -21,79 +22,195 @@ namespace Librame.Extensions
     public static class AbstractionUriExtensions
     {
         /// <summary>
-        /// 是否为绝对虚拟路径。
-        /// </summary>
-        /// <example>
-        /// ~/VirtualPath or /VirtualPath.
-        /// </example>
-        /// <param name="path">给定的路径。</param>
-        /// <returns>返回布尔值。</returns>
-        public static bool IsAbsoluteVirtualPath(this string path)
-        {
-            path.NotNullOrEmpty(nameof(path));
-
-            return path.StartsWith("~/") || path.StartsWith("/");
-        }
-
-
-        /// <summary>
-        /// 是否为指定 DNS 主机名或 IP 地址及端口号的 URL。
+        /// 同一 DNS 主机名或 IP 地址及端口号。
         /// </summary>
         /// <param name="uriString">给定的路径或 URL 字符串。</param>
         /// <param name="host">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
-        public static bool IsHostUrl(this string uriString, HostString host)
+        public static bool SameHost(this string uriString, HostString host)
         {
-            return uriString.IsHostUrl(host.ToString());
+            return uriString.SameHost(host.ToString());
         }
+
+
         /// <summary>
-        /// 是否为指定 DNS 主机名或 IP 地址及端口号的 URL。
+        /// 获取 URI 字符串中的主机。
         /// </summary>
-        /// <param name="uriString">给定的路径或 URL 字符串。</param>
-        /// <param name="host">给定的 DNS 主机名或 IP 地址及端口号（如：localhost:80）。</param>
-        /// <returns>返回布尔值。</returns>
-        public static bool IsHostUrl(this string uriString, string host)
+        /// <param name="uriString">给定的 URI 字符串。</param>
+        /// <returns>返回 <see cref="HostString"/>。</returns>
+        public static HostString GetHostString(this string uriString)
         {
-            if (Uri.TryCreate(uriString, UriKind.Absolute, out Uri uri))
-                return uri.Authority.Equals(host, StringComparison.OrdinalIgnoreCase);
-
-            return false;
+            return uriString.GetHostString(out _);
+        }
+        /// <summary>
+        /// 获取 URI 字符串中的主机。
+        /// </summary>
+        /// <param name="uriString">给定的 URI 字符串。</param>
+        /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
+        /// <returns>返回 <see cref="HostString"/>。</returns>
+        public static HostString GetHostString(this string uriString, out Uri result)
+        {
+            return uriString.IsAbsoluteUri(out result)
+                ? new HostString(result.Authority) : default;
         }
 
 
         /// <summary>
-        /// 尝试从指定路径或 URI 中得到路径字符串。
+        /// 获取指定路径或 URI 中的路径。
         /// </summary>
         /// <param name="pathOrUri">给定的路径或 URI。</param>
         /// <returns>返回 <see cref="PathString"/>。</returns>
-        public static PathString TryGetPath(this string pathOrUri)
+        public static PathString GetPathString(this string pathOrUri)
         {
-            return pathOrUri.TryGetPath(out _);
+            return pathOrUri.GetPathString(out _);
         }
         /// <summary>
-        /// 尝试从指定路径或 URI 中得到路径字符串。
+        /// 获取指定路径或 URI 中的路径。
         /// </summary>
         /// <param name="pathOrUri">给定的路径或 URI。</param>
-        /// <param name="uri">输出可能存在的 <see cref="Uri"/>。</param>
+        /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
         /// <returns>返回 <see cref="PathString"/>。</returns>
-        public static PathString TryGetPath(this string pathOrUri, out Uri uri)
+        public static PathString GetPathString(this string pathOrUri, out Uri result)
         {
             PathString path;
 
-            if (Uri.TryCreate(pathOrUri, UriKind.Absolute, out uri))
+            if (pathOrUri.IsAbsoluteUri(out result))
             {
-                path = PathString.FromUriComponent(uri);
+                path = PathString.FromUriComponent(result);
             }
             else
             {
                 if (pathOrUri.StartsWith("~/"))
-                    pathOrUri = pathOrUri.TrimStart('~'); // 不支持 ~/ 路径模式
+                    pathOrUri = pathOrUri.TrimStart('~'); // PathString 不支持 ~/ 路径模式
 
                 path = new PathString(pathOrUri);
             }
 
             return path;
         }
+
+
+        /// <summary>
+        /// 获取 URI 字符串中的查询。
+        /// </summary>
+        /// <param name="uriString">给定的 URI 字符串。</param>
+        /// <returns>返回 <see cref="HostString"/>。</returns>
+        public static QueryString GetQueryString(this string uriString)
+        {
+            return uriString.GetQueryString(out _);
+        }
+        /// <summary>
+        /// 获取 URI 字符串中的查询。
+        /// </summary>
+        /// <param name="uriString">给定的 URI 字符串。</param>
+        /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
+        /// <returns>返回 <see cref="HostString"/>。</returns>
+        public static QueryString GetQueryString(this string uriString, out Uri result)
+        {
+            return uriString.IsAbsoluteUri(out result)
+                ? new QueryString(result.Query) : default;
+        }
+
+
+        #region IPAddress
+
+        /// <summary>
+        /// 是本机 IPv6 地址。
+        /// </summary>
+        /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsLocalIPv6(this HostString hostString)
+        {
+            return hostString.Host.IsLocalIPv6();
+        }
+
+        /// <summary>
+        /// 是本机 IPv4 地址。
+        /// </summary>
+        /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsLocalIPv4(this HostString hostString)
+        {
+            return hostString.Host.IsLocalIPv4();
+        }
+
+        /// <summary>
+        /// 是本机 IP 地址。
+        /// </summary>
+        /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsLocalIPAddress(this HostString hostString)
+        {
+            return hostString.Host.IsLocalIPAddress();
+        }
+
+
+        /// <summary>
+        /// 是 IPv6 地址。
+        /// </summary>
+        /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsIPv6(this HostString hostString)
+        {
+            return hostString.Host.IsIPv6();
+        }
+
+        /// <summary>
+        /// 是 IPv6 地址。
+        /// </summary>
+        /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
+        /// <param name="address">输出 <see cref="IPAddress"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsIPv6(this HostString hostString, out IPAddress address)
+        {
+            return hostString.Host.IsIPv6(out address);
+        }
+
+
+        /// <summary>
+        /// 是 IPv4 地址。
+        /// </summary>
+        /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsIPv4(this HostString hostString)
+        {
+            return hostString.Host.IsIPv4();
+        }
+
+        /// <summary>
+        /// 是 IPv4 地址。
+        /// </summary>
+        /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
+        /// <param name="address">输出 <see cref="IPAddress"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsIPv4(this HostString hostString, out IPAddress address)
+        {
+            return hostString.Host.IsIPv4(out address);
+        }
+
+
+        /// <summary>
+        /// 是 IP 地址。
+        /// </summary>
+        /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsIPAddress(this HostString hostString)
+        {
+            return hostString.IsIPAddress(out _);
+        }
+
+        /// <summary>
+        /// 是 IP 地址。
+        /// </summary>
+        /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
+        /// <param name="address">输出 <see cref="IPAddress"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool IsIPAddress(this HostString hostString, out IPAddress address)
+        {
+            return hostString.Host.IsIPAddress(out address);
+        }
+
+        #endregion
 
     }
 }

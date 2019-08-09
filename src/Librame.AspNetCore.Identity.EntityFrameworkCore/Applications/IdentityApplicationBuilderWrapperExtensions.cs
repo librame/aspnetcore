@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Identity
     public static class IdentityApplicationBuilderWrapperExtensions
     {
         /// <summary>
-        /// 使用身份应用程序。
+        /// 使用身份应用。
         /// </summary>
         /// <param name="builderWrapper">给定的 <see cref="IApplicationBuilderWrapper"/>。</param>
         /// <returns>返回 <see cref="IApplicationBuilderWrapper"/>。</returns>

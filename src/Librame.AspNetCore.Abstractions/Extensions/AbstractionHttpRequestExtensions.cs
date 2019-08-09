@@ -22,6 +22,8 @@ using System.Threading.Tasks;
 
 namespace Librame.Extensions
 {
+    using Extensions.Core;
+
     /// <summary>
     /// 抽象 HTTP 请求静态扩展。
     /// </summary>
@@ -111,199 +113,119 @@ namespace Librame.Extensions
 
         #region GetIpAddress
 
-        private static string _localIpAddressV4
-            = "127.0.0.1";
-
-        private static string _localIpAddressV6
-            = "::1";
-
-
         /// <summary>
-        /// 是否为 NULL、IPv4.None 或 IPv6.None。
+        /// 异步获取 IPv4 地址。
         /// </summary>
-        /// <param name="ipAddress">给定的 <see cref="IPAddress"/>。</param>
-        /// <returns>返回布尔值。</returns>
-        public static bool IsNullOrNone(this IPAddress ipAddress)
-        {
-            return ipAddress.IsNull()
-                || IPAddress.None.Equals(ipAddress)
-                || IPAddress.IPv6None.Equals(ipAddress);
-        }
-
-
-        /// <summary>
-        /// 异步获取本机 IP 地址的 V4 版本。
-        /// </summary>
+        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
+        /// <param name="addressKey">给定的头部 IP 地址键（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPAddress"/> 的异步操作。</returns>
-        public static async Task<IPAddress> GetLocalIpAddressV4Async()
+        public static async Task<IPAddress> GetIPv4Async(this HttpRequest request,
+            string addressKey = null)
         {
-            var addresses = await GetLocalIpAddressesAsync();
-
-            return addresses.V6;
+            var tuple = await request.GetIPAddressTupleAsync(addressKey);
+            return tuple.IPv4;
         }
 
         /// <summary>
-        /// 异步获取本机 IP 地址的 V6 版本。
+        /// 异步获取 IPv6 地址。
         /// </summary>
+        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
+        /// <param name="addressKey">给定的头部 IP 地址键（可选）。</param>
         /// <returns>返回一个包含 <see cref="IPAddress"/> 的异步操作。</returns>
-        public static async Task<IPAddress> GetLocalIpAddressV6Async()
+        public static async Task<IPAddress> GetIPv6Async(this HttpRequest request,
+            string addressKey = null)
         {
-            var addresses = await GetLocalIpAddressesAsync();
-
-            return addresses.V4;
+            var tuple = await request.GetIPAddressTupleAsync(addressKey);
+            return tuple.IPv6;
         }
 
         /// <summary>
-        /// 异步获取本机 IP 地址的 V4 及 V6 版本集合。
+        /// 异步获取 IPv4 和 IPv6 地址的元组。
         /// </summary>
-        /// <returns>返回一个包含 <see cref="IPAddress"/> 的元组。</returns>
-        public static async Task<(IPAddress V4, IPAddress V6)> GetLocalIpAddressesAsync()
+        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
+        /// <param name="addressKey">给定的 IP 地址键（可选）。</param>
+        /// <returns>返回一个包含 <see cref="Tuple{IPAddress, IPAddress}"/> 的元组。</returns>
+        public static Task<(IPAddress IPv4, IPAddress IPv6)> GetIPAddressTupleAsync(this HttpRequest request,
+            string addressKey = null)
         {
-            var v4 = IPAddress.None;
-            var v6 = IPAddress.None;
+            return request.Headers.GetIPAddressTupleAsync(addressKey);
+        }
 
-            var addresses = await Dns.GetHostAddressesAsync(Dns.GetHostName());
-            foreach (var address in addresses)
+
+        /// <summary>
+        /// 异步获取 IPv4 地址。
+        /// </summary>
+        /// <param name="headers">给定的 <see cref="IHeaderDictionary"/>。</param>
+        /// <param name="ipAddressKey">给定的 IP 地址键（可选）。</param>
+        /// <returns>返回一个包含 <see cref="IPAddress"/> 的异步操作。</returns>
+        public static async Task<IPAddress> GetIPv4Async(this IHeaderDictionary headers,
+            string ipAddressKey = null)
+        {
+            var tuple = await headers.GetIPAddressTupleAsync(ipAddressKey);
+            return tuple.IPv4;
+        }
+
+        /// <summary>
+        /// 异步获取 IPv6 地址。
+        /// </summary>
+        /// <param name="headers">给定的 <see cref="IHeaderDictionary"/>。</param>
+        /// <param name="addressKey">给定的 IP 地址键（可选）。</param>
+        /// <returns>返回一个包含 <see cref="IPAddress"/> 的异步操作。</returns>
+        public static async Task<IPAddress> GetIPv6Async(this IHeaderDictionary headers,
+            string addressKey = null)
+        {
+            var tuple = await headers.GetIPAddressTupleAsync(addressKey);
+            return tuple.IPv6;
+        }
+
+        /// <summary>
+        /// 异步获取 IPv4 和 IPv6 地址的元组。
+        /// </summary>
+        /// <param name="headers">给定的 <see cref="IHeaderDictionary"/>。</param>
+        /// <param name="addressKey">给定的 IP 地址键（可选）。</param>
+        /// <returns>返回一个包含 <see cref="Tuple{IPAddress, IPAddress}"/> 的元组。</returns>
+        public static async Task<(IPAddress IPv4, IPAddress IPv6)> GetIPAddressTupleAsync(this IHeaderDictionary headers,
+            string addressKey = null)
+        {
+            if (addressKey.IsNullOrEmpty())
+                addressKey = "X-Original-For";
+
+            if (!(bool)headers?.TryGetValue(addressKey, out StringValues value))
+                return (null, null);
+
+            var address = value.ToString();
+            if (address.IndexOf(",") > 0)
             {
-                if (address.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    v4 = address;
-                    continue;
-                }
+                var dictionary = new Dictionary<string, string>();
 
-                if (address.AddressFamily == AddressFamily.InterNetworkV6)
+                // 拆分多个 IP 地址
+                var addresses = address.Split(',').Select(str =>
                 {
-                    v6 = address;
-                    continue;
-                }
+                    return IPAddress.TryParse(str, out IPAddress a) ? a : null;
+                })
+                .Where(a => a.IsNotNull());
 
-                if (!IPAddress.None.Equals(v4) && !IPAddress.None.Equals(v6))
-                    return (v4, v6);
+                var ipv4s = addresses.Where(p => p.AddressFamily == AddressFamily.InterNetwork);
+                var ipv6s = addresses.Where(p => p.AddressFamily == AddressFamily.InterNetworkV6);
+
+                // 默认返回第一组 IP 地址
+                return (ipv4s.FirstOrDefault(), ipv6s.FirstOrDefault());
             }
 
-            return (v4, v6);
-        }
+            var host = new HostString(address);
+            if (host.IsLocalIPAddress())
+                return await DnsHelper.GetLocalIPAddressTupleAsync();
 
-
-        /// <summary>
-        /// 异步获取真实 IP 地址的 V4 版本。
-        /// </summary>
-        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
-        /// <param name="headerIpAddressKey">给定的头部 IP 地址键（可选）。</param>
-        /// <returns>返回一个包含 <see cref="IPAddress"/> 的异步操作。</returns>
-        public static async Task<IPAddress> GetRealIpAddressV4Async(this HttpRequest request,
-            string headerIpAddressKey = null)
-        {
-            var ipAddresses = await request.GetIpAddressesAsync(headerIpAddressKey);
-            return ipAddresses.V4;
-        }
-
-        /// <summary>
-        /// 异步获取真实 IP 地址的 V6 版本。
-        /// </summary>
-        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
-        /// <param name="headerIpAddressKey">给定的头部 IP 地址键（可选）。</param>
-        /// <returns>返回一个包含 <see cref="IPAddress"/> 的异步操作。</returns>
-        public static async Task<IPAddress> GetRealIpAddressV6Async(this HttpRequest request,
-            string headerIpAddressKey = null)
-        {
-            var ipAddresses = await request.GetIpAddressesAsync(headerIpAddressKey);
-            return ipAddresses.V6;
-        }
-
-        /// <summary>
-        /// 异步获取真实 IP 地址的 V4 及 V6 版本集合。
-        /// </summary>
-        /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
-        /// <param name="headerIpAddressKey">给定的头部 IP 地址键（可选）。</param>
-        /// <returns>返回一个包含 <see cref="IPAddress"/> 元组的异步操作。</returns>
-        public static Task<(IPAddress V4, IPAddress V6)> GetIpAddressesAsync(this HttpRequest request,
-            string headerIpAddressKey = null)
-        {
-            return request.Headers.GetIpAddressesAsync(headerIpAddressKey);
-        }
-
-
-        /// <summary>
-        /// 异步获取 IP 地址的 V4 版本。
-        /// </summary>
-        /// <param name="headers">给定的 <see cref="IHeaderDictionary"/>。</param>
-        /// <param name="ipAddressKey">给定的 IP 地址键（可选）。</param>
-        /// <returns>返回一个包含 <see cref="IPAddress"/> 的异步操作。</returns>
-        public static async Task<IPAddress> GetIpAddressV4Async(this IHeaderDictionary headers,
-            string ipAddressKey = null)
-        {
-            var ipAddresses = await headers.GetIpAddressesAsync(ipAddressKey);
-            return ipAddresses.V4;
-        }
-
-        /// <summary>
-        /// 异步获取 IP 地址的 V6 版本。
-        /// </summary>
-        /// <param name="headers">给定的 <see cref="IHeaderDictionary"/>。</param>
-        /// <param name="ipAddressKey">给定的 IP 地址键（可选）。</param>
-        /// <returns>返回一个包含 <see cref="IPAddress"/> 的异步操作。</returns>
-        public static async Task<IPAddress> GetIpAddressV6Async(this IHeaderDictionary headers,
-            string ipAddressKey = null)
-        {
-            var ipAddresses = await headers.GetIpAddressesAsync(ipAddressKey);
-            return ipAddresses.V6;
-        }
-
-        /// <summary>
-        /// 异步获取 IP 地址的 V4 及 V6 版本集合。
-        /// </summary>
-        /// <param name="headers">给定的 <see cref="IHeaderDictionary"/>。</param>
-        /// <param name="ipAddressKey">给定的 IP 地址键（可选）。</param>
-        /// <returns>返回一个包含 <see cref="IPAddress"/> 元组的异步操作。</returns>
-        public static async Task<(IPAddress V4, IPAddress V6)> GetIpAddressesAsync(this IHeaderDictionary headers,
-            string ipAddressKey = null)
-        {
-            if (ipAddressKey.IsNullOrEmpty())
-                ipAddressKey = "X-Original-For";
-
-            if ((bool)headers?.TryGetValue(ipAddressKey, out StringValues value))
+            if (IPAddress.TryParse(host.Host, out IPAddress current))
             {
-                var ipAddress = (string)value;
-
-                // [::1]:8080
-                // 127.0.0.1:8080
-                if (ipAddress.Contains(_localIpAddressV4) || ipAddress.Contains(_localIpAddressV6))
-                {
-                    // 根据网卡取本机配置的 IP
-                    var addresses = await GetLocalIpAddressesAsync();
-                    return (addresses.V4, addresses.V6);
-                }
-
-                if (ipAddress.IndexOf(",") > 0)
-                {
-                    var dictionary = new Dictionary<string, string>();
-
-                    // 对于通过多个代理的情况，默认 IP 按照英文逗号分割
-                    var ipAddresses = ipAddress.Split(',').Select(s => IPAddress.Parse(s));
-                    var v4s = ipAddresses.Where(p => p.AddressFamily == AddressFamily.InterNetwork);
-                    var v6s = ipAddresses.Where(p => p.AddressFamily == AddressFamily.InterNetworkV6);
-
-                    // 通常第一个IP为客户端真实 IP
-                    return (v4s.FirstOrDefault(), v6s.FirstOrDefault());
-                }
-
-                var current = IPAddress.Parse(ipAddress);
                 if (current.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return (current, IPAddress.None);
-                }
-                else if (current.AddressFamily == AddressFamily.InterNetworkV6)
-                {
-                    return (IPAddress.None, current);
-                }
-                else
-                {
-                    return (IPAddress.None, IPAddress.None);
-                }
+                    return (current, null);
+
+                if (current.AddressFamily == AddressFamily.InterNetworkV6)
+                    return (null, current);
             }
 
-            return (IPAddress.None, IPAddress.None);
+            return (null, null);
         }
 
         #endregion

@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 抽象重置验证器页面模型。
     /// </summary>
-    [ThemepackTemplate(typeof(ResetAuthenticatorPageModel<>))]
+    [PageApplicationModelWithUser(typeof(ResetAuthenticatorPageModel<>))]
     public abstract class AbstractResetAuthenticatorPageModel : PageModel
     {
         /// <summary>
