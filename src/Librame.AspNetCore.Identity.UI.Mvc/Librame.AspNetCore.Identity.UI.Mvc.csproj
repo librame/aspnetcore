@@ -22,18 +22,15 @@
     <AssemblyVersion>6.0.1643.201</AssemblyVersion>
     <FileVersion>6.0.1907.181</FileVersion>
     <RootNamespace>Librame.AspNetCore.Identity.UI</RootNamespace>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <BumpLabel>dev</BumpLabel>
-    <BumpLabelDigits>4</BumpLabelDigits>
     <OutputPath>..\..\bin\</OutputPath>
     <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Identity.UI.Mvc.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <BumpResetLabel>dev</BumpResetLabel>
-    <BumpRevision>true</BumpRevision>
     <OutputPath>..\..\bin\</OutputPath>
     <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Identity.UI.Mvc.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>

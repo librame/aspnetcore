@@ -21,15 +21,14 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
-    using Models;
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象恢复码登入页面模型。
+    /// 恢复码登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(LoginWithRecoveryCodePageModel<>))]
-    public abstract class AbstractLoginWithRecoveryCodePageModel : PageModel
+    [UiTemplateWithUser(typeof(LoginWithRecoveryCodePageModel<>))]
+    public class LoginWithRecoveryCodePageModel : PageModel
     {
         /// <summary>
         /// 输入模型。
@@ -61,17 +60,19 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     }
 
 
-    internal class LoginWithRecoveryCodePageModel<TUser> : AbstractLoginWithRecoveryCodePageModel where TUser: class
+    internal class LoginWithRecoveryCodePageModel<TUser> : LoginWithRecoveryCodePageModel
+        where TUser: class
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<AbstractLoginWithRecoveryCodePageModel> _logger;
+        private readonly ILogger<LoginWithRecoveryCodePageModel> _logger;
         private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
+
 
         public LoginWithRecoveryCodePageModel(
             SignInManager<TUser> signInManager,
             UserManager<TUser> userManager,
-            ILogger<AbstractLoginWithRecoveryCodePageModel> logger,
+            ILogger<LoginWithRecoveryCodePageModel> logger,
             IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
@@ -79,6 +80,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             _logger = logger;
             _errorLocalizer = errorLocalizer;
         }
+
 
         public override async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {

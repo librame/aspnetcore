@@ -41,7 +41,7 @@ namespace Librame.AspNetCore.IdentityServer
         {
             return builder.AddIdentityServer<TIdentityServerAccessor, TPersistedGrantAccessor, TUser>((b, r) =>
             {
-                return new InternalIdentityServerBuilderWrapper(typeof(TUser), b, r);
+                return new IdentityServerBuilderWrapper(typeof(TUser), b, r);
             },
             dependencySetupAction);
         }

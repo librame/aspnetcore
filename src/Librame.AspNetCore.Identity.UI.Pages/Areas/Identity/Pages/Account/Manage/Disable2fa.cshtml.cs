@@ -23,10 +23,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象禁用双因子验证页面模型。
+    /// 禁用双因子验证页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(Disable2faPageModel<>))]
-    public abstract class AbstractDisable2faPageModel : PageModel
+    [UiTemplateWithUser(typeof(Disable2faPageModel<>))]
+    public class Disable2faPageModel : PageModel
     {
         /// <summary>
         /// 状态消息。
@@ -50,21 +50,24 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
     }
 
-    internal class Disable2faPageModel<TUser> : AbstractDisable2faPageModel where TUser : class
+
+    internal class Disable2faPageModel<TUser> : Disable2faPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<AbstractDisable2faPageModel> _logger;
+        private readonly ILogger<Disable2faPageModel> _logger;
         private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+
 
         public Disable2faPageModel(
             UserManager<TUser> userManager,
-            ILogger<AbstractDisable2faPageModel> logger,
+            ILogger<Disable2faPageModel> logger,
             IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _logger = logger;
             _statusLocalizer = statusLocalizer;
         }
+
 
         public override async Task<IActionResult> OnGetAsync()
         {

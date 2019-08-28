@@ -38,11 +38,6 @@ namespace Librame.AspNetCore
         /// </summary>
         QueryString QueryString { get; }
 
-        /// <summary>
-        /// 查询参数集合。
-        /// </summary>
-        ConcurrentDictionary<string, string> Queries { get; }
-
 
         /// <summary>
         /// 改变主机。

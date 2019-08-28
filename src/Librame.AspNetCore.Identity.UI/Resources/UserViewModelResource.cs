@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Identity.UI
         public string Name { get; set; }
 
         /// <summary>
-        /// 邮箱。
+        /// 电邮。
         /// </summary>
         public string Email { get; set; }
 

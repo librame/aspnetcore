@@ -25,10 +25,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象外部登入页面模型。
+    /// 外部登入页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(ExternalLoginsPageModel<>))]
-    public abstract class AbstractExternalLoginsPageModel : PageModel
+    [UiTemplateWithUser(typeof(ExternalLoginsPageModel<>))]
+    public class ExternalLoginsPageModel : PageModel
     {
         /// <summary>
         /// 当前登入信息列表。
@@ -84,12 +84,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
     }
 
-    internal class ExternalLoginsPageModel<TUser> : AbstractExternalLoginsPageModel where TUser : class
+
+    internal class ExternalLoginsPageModel<TUser> : ExternalLoginsPageModel
+        where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly IUserStore<TUser> _userStore;
         private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+
 
         public ExternalLoginsPageModel(
             UserManager<TUser> userManager,
@@ -102,6 +105,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             _userStore = userStore;
             _statusLocalizer = statusLocalizer;
         }
+
 
         public override async Task<IActionResult> OnGetAsync()
         {

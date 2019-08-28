@@ -15,7 +15,7 @@ namespace Librame.AspNetCore.Identity.UI
     using AspNetCore.UI;
 
     /// <summary>
-    /// 已锁定邮箱视图资源。
+    /// 已锁定电邮视图资源。
     /// </summary>
     public class LockoutViewResource : AbstractViewResource
     {

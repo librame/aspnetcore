@@ -23,11 +23,11 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     using AspNetCore.UI;
 
     /// <summary>
-    /// 抽象登出页面模型。
+    /// 登出页面模型。
     /// </summary>
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(LogoutPageModel<>))]
-    public abstract class AbstractLogoutPageModel : PageModel
+    [UiTemplateWithUser(typeof(LogoutPageModel<>))]
+    public class LogoutPageModel : PageModel
     {
         /// <summary>
         /// 获取方法。
@@ -47,17 +47,19 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     }
 
 
-    internal class LogoutPageModel<TUser> : AbstractLogoutPageModel where TUser : class
+    internal class LogoutPageModel<TUser> : LogoutPageModel where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
-        private readonly ILogger<AbstractLogoutPageModel> _logger;
+        private readonly ILogger<LogoutPageModel> _logger;
+
 
         public LogoutPageModel(SignInManager<TUser> signInManager,
-            ILogger<AbstractLogoutPageModel> logger)
+            ILogger<LogoutPageModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
         }
+
 
         public override async Task<IActionResult> OnPost(string returnUrl = null)
         {

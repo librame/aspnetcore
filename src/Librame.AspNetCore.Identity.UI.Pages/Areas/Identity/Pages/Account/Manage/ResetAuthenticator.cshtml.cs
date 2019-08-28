@@ -23,10 +23,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象重置验证器页面模型。
+    /// 重置验证器页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(ResetAuthenticatorPageModel<>))]
-    public abstract class AbstractResetAuthenticatorPageModel : PageModel
+    [UiTemplateWithUser(typeof(ResetAuthenticatorPageModel<>))]
+    public class ResetAuthenticatorPageModel : PageModel
     {
         /// <summary>
         /// 状态消息。
@@ -50,17 +50,20 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
     }
 
-    internal class ResetAuthenticatorPageModel<TUser> : AbstractResetAuthenticatorPageModel where TUser : class
+
+    internal class ResetAuthenticatorPageModel<TUser> : ResetAuthenticatorPageModel
+        where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
-        private readonly ILogger<AbstractResetAuthenticatorPageModel> _logger;
+        private readonly ILogger<ResetAuthenticatorPageModel> _logger;
         private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+
 
         public ResetAuthenticatorPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
-            ILogger<AbstractResetAuthenticatorPageModel> logger,
+            ILogger<ResetAuthenticatorPageModel> logger,
             IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
@@ -68,6 +71,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             _logger = logger;
             _statusLocalizer = statusLocalizer;
         }
+
 
         public override async Task<IActionResult> OnGetAsync()
         {

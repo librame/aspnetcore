@@ -1,8 +1,13 @@
 ﻿@inject IApplicationContext Application
 @inject ICompositeViewEngine Engine
 @{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
+    {
+        Layout = (string)parentLayout;
+    }
+
     var localizer = Application.Localizers.GetManageLayoutLocalizer();
-    var uiInfo = Application.GetUserInterface(ViewContext.RouteData.AsRouteDescriptor());
+    var uiInfo = Application.GetUi(ViewContext.RouteData.AsRouteDescriptor());
 }
 <!DOCTYPE html>
 <html>

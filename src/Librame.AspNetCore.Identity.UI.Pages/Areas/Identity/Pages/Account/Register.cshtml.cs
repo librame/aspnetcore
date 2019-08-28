@@ -22,22 +22,22 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
-    using Models;
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Network;
 
     /// <summary>
-    /// 抽象注册页面模型。
+    /// 注册页面模型。
     /// </summary>
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(RegisterPageModel<>))]
-    public abstract class AbstractRegisterPageModel : PageModel
+    [UiTemplateWithUser(typeof(RegisterPageModel<>))]
+    public class RegisterPageModel : PageModel
     {
         /// <summary>
-        /// 构造一个 <see cref="AbstractRegisterPageModel"/> 实例。
+        /// 构造一个 <see cref="RegisterPageModel"/> 实例。
         /// </summary>
         /// <param name="localizer">给定的 <see cref="IExpressionHtmlLocalizer{RegisterViewResource}"/>。</param>
-        protected AbstractRegisterPageModel(IExpressionHtmlLocalizer<RegisterViewResource> localizer)
+        protected RegisterPageModel(IExpressionHtmlLocalizer<RegisterViewResource> localizer)
         {
             Localizer = localizer;
         }
@@ -77,19 +77,20 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     }
 
 
-    internal class RegisterPageModel<TUser> : AbstractRegisterPageModel where TUser : class
+    internal class RegisterPageModel<TUser> : RegisterPageModel where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
         private readonly IUserEmailStore<TUser> _emailStore;
-        private readonly ILogger<AbstractLoginPageModel> _logger;
+        private readonly ILogger<LoginPageModel> _logger;
         private readonly IEmailService _emailService;
+
 
         public RegisterPageModel(
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
-            ILogger<AbstractLoginPageModel> logger,
+            ILogger<LoginPageModel> logger,
             IEmailService emailService,
             IExpressionHtmlLocalizer<RegisterViewResource> localizer)
             : base(localizer)
@@ -101,6 +102,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             _logger = logger;
             _emailService = emailService;
         }
+
 
         public override void OnGet(string returnUrl = null)
         {
@@ -115,7 +117,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 var user = CreateUser();
                 
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                await _userStore.SetUserNameAsync(user, Input.Name, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
@@ -152,7 +154,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         {
             try
             {
-                return Activator.CreateInstance<TUser>();
+                return typeof(TUser).EnsureCreate<TUser>();
             }
             catch
             {

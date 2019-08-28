@@ -8,10 +8,10 @@
 <h1 class="text-danger">@ViewData["Title"]</h1>
 <h2 class="text-danger">@Localizer[r => r.Descr]</h2>
 
-@if (Model.ShowRequestId)
+@if (Model.ViewModel.ShowRequestId)
 {
     <p>
-        <strong>@Localizer[r => r.RequestId]: </strong> <code>@Model.RequestId</code>
+        <strong>@Localizer[r => r.RequestId]: </strong> <code>@Model.ViewModel.RequestId</code>
     </p>
 }
 

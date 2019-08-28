@@ -53,8 +53,8 @@ namespace Librame.AspNetCore.Identity.Api
 
         private static IApiBuilder AddIdentityApiCore(this IApiBuilder builder)
         {
-            builder.Services.TryReplace<IGraphApiMutation, InternalIdentityGraphApiMutation>();
-            builder.Services.TryReplace<IGraphApiQuery, InternalIdentityGraphApiQuery>();
+            builder.Services.TryReplace<IGraphApiMutation, IdentityGraphApiMutation>();
+            builder.Services.TryReplace<IGraphApiQuery, IdentityGraphApiQuery>();
 
             return builder;
         }

@@ -14,31 +14,32 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
-    using Models;
     using Extensions.Core;
     using Extensions.Network;
 
     /// <summary>
-    /// 抽象首页页面模型。
+    /// 首页页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(IndexPageModel<>))]
-    public abstract class AbstractIndexPageModel : PageModel
+    [UiTemplateWithUser(typeof(IndexPageModel<>))]
+    public class IndexPageModel : PageModel
     {
         /// <summary>
-        /// 是否已确认邮箱。
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public bool IsEmailConfirmed { get; set; }
+        public string Username { get; set; }
 
         /// <summary>
-        /// 是否已确认电话。
+        /// 是否已确认电邮。
         /// </summary>
-        public bool IsPhoneConfirmed { get; set; }
+        public bool IsEmailConfirmed { get; set; }
 
         /// <summary>
         /// 状态消息。
@@ -50,7 +51,27 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         /// 输入模型。
         /// </summary>
         [BindProperty]
-        public IndexViewModel Input { get; set; }
+        public InputModel Input { get; set; }
+
+        /// <summary>
+        /// 输入模型。
+        /// </summary>
+        public class InputModel
+        {
+            /// <summary>
+            /// 电邮。
+            /// </summary>
+            [EmailAddress(ErrorMessageResourceName = nameof(EmailAddressAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
+            [Display(Name = nameof(Email), ResourceType = typeof(UserViewModelResource))]
+            public string Email { get; set; }
+
+            /// <summary>
+            /// 电话。
+            /// </summary>
+            //[Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
+            [Display(Name = nameof(Phone), ResourceType = typeof(UserViewModelResource))]
+            public string Phone { get; set; }
+        }
 
 
         /// <summary>
@@ -68,7 +89,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
 
         /// <summary>
-        /// 提交发送邮箱验证码方法。
+        /// 提交发送电邮验证码方法。
         /// </summary>
         /// <returns></returns>
         public virtual Task<IActionResult> OnPostSendVerificationEmailAsync()
@@ -82,7 +103,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
     }
 
-    internal class IndexPageModel<TUser> : AbstractIndexPageModel where TUser : class
+
+    internal class IndexPageModel<TUser> : IndexPageModel where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
@@ -90,6 +112,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly ISmsService _smsService;
         private readonly IExpressionStringLocalizer<RegisterViewResource> _registerLocalizer;
         private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+
 
         public IndexPageModel(SignInManager<TUser> signInManager,
             IEmailService emailService,
@@ -105,6 +128,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             _statusLocalizer = statusLocalizer;
         }
 
+
         public override async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -117,15 +141,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             var email = await _userManager.GetEmailAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             
-            Input = new IndexViewModel
+            Input = new InputModel
             {
-                Name = userName,
                 Email = email,
                 Phone = phoneNumber
             };
 
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
-            IsPhoneConfirmed = await _userManager.IsPhoneNumberConfirmedAsync(user);
 
             return Page();
         }
@@ -210,41 +232,6 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
                 _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.ToString());
 
             StatusMessage = _statusLocalizer[r => r.VerificationEmailSent]?.ToString();
-
-            return RedirectToPage();
-        }
-
-        public override async Task<IActionResult> OnPostSendVerificationPhoneAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var userId = await _userManager.GetUserIdAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            //var callbackUrl = Url.Page(
-            //    "/Account/ConfirmPhone",
-            //    pageHandler: null,
-            //    values: new { userId, token },
-            //    protocol: Request.Scheme);
-
-            //await _smsSender.SendAsync(token);
-
-            //await _emailSender.SendAsync(
-            //    email,
-            //    _registerLocalizer[r => r.ConfirmYourEmail]?.ToString(),
-            //    _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.ToString());
-
-            StatusMessage = _statusLocalizer[r => r.VerificationSmsSent];
 
             return RedirectToPage();
         }

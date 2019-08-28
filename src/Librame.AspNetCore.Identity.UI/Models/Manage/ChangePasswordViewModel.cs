@@ -12,7 +12,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Librame.AspNetCore.Identity.UI.Models
+namespace Librame.AspNetCore.Identity.UI
 {
     /// <summary>
     /// 更改密码视图模型。
@@ -37,11 +37,11 @@ namespace Librame.AspNetCore.Identity.UI.Models
         public string NewPassword { get; set; }
 
         /// <summary>
-        /// 确认新密码。
+        /// 确认密码。
         /// </summary>
         [Compare(nameof(NewPassword), ErrorMessageResourceName = nameof(RegisterViewModel.ConfirmPassword), ErrorMessageResourceType = typeof(ErrorMessageResource))]
         [DataType(DataType.Password)]
-        [Display(Name = nameof(ConfirmNewPassword), ResourceType = typeof(UserViewModelResource))]
-        public string ConfirmNewPassword { get; set; }
+        [Display(Name = nameof(ConfirmPassword), ResourceType = typeof(UserViewModelResource))]
+        public string ConfirmPassword { get; set; }
     }
 }

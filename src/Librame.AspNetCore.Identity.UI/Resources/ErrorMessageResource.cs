@@ -40,7 +40,7 @@ namespace Librame.AspNetCore.Identity.UI
         public string TwoFactorCode { get; set; }
 
         /// <summary>
-        /// 邮箱地址特性。
+        /// 电邮地址特性。
         /// </summary>
         public string EmailAddressAttribute { get; set; }
 

@@ -10,34 +10,72 @@
 
 #endregion
 
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Librame.AspNetCore.Identity.UI.Models
+namespace Librame.AspNetCore.Identity.UI
 {
     /// <summary>
-    /// 索引视图模型。
+    /// 首页视图模型。
     /// </summary>
     public class IndexViewModel
     {
         /// <summary>
-        /// 称呼。
+        /// 有密码。
         /// </summary>
-        [Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
-        [Display(Name = nameof(Name), ResourceType = typeof(UserViewModelResource))]
-        public string Name { get; set; }
+        public bool HasPassword { get; set; }
 
         /// <summary>
-        /// 邮箱。
+        /// 用户登入信息列表。
         /// </summary>
-        [EmailAddress(ErrorMessageResourceName = nameof(EmailAddressAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
-        [Display(Name = nameof(Email), ResourceType = typeof(UserViewModelResource))]
-        public string Email { get; set; }
+        public IList<UserLoginInfo> Logins { get; set; }
 
         /// <summary>
-        /// 电话。
+        /// 手机号。
         /// </summary>
-        //[Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
-        [Display(Name = nameof(Phone), ResourceType = typeof(UserViewModelResource))]
-        public string Phone { get; set; }
+        public string PhoneNumber { get; set; }
+
+        /// <summary>
+        /// 双因子。
+        /// </summary>
+        public bool TwoFactor { get; set; }
+
+        /// <summary>
+        /// 记住浏览器。
+        /// </summary>
+        public bool BrowserRemembered { get; set; }
+
+        /// <summary>
+        /// 认证器密钥。
+        /// </summary>
+        public string AuthenticatorKey { get; set; }
     }
+
+    ///// <summary>
+    ///// 索引视图模型。
+    ///// </summary>
+    //public class IndexViewModel
+    //{
+    //    /// <summary>
+    //    /// 称呼。
+    //    /// </summary>
+    //    [Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
+    //    [Display(Name = nameof(Name), ResourceType = typeof(UserViewModelResource))]
+    //    public string Name { get; set; }
+
+    //    /// <summary>
+    //    /// 电邮。
+    //    /// </summary>
+    //    [EmailAddress(ErrorMessageResourceName = nameof(EmailAddressAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
+    //    [Display(Name = nameof(Email), ResourceType = typeof(UserViewModelResource))]
+    //    public string Email { get; set; }
+
+    //    /// <summary>
+    //    /// 电话。
+    //    /// </summary>
+    //    //[Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
+    //    [Display(Name = nameof(Phone), ResourceType = typeof(UserViewModelResource))]
+    //    public string Phone { get; set; }
+    //}
 }

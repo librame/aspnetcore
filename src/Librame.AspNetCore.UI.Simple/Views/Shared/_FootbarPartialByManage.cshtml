@@ -1,7 +1,7 @@
 ﻿@model IApplicationContext
 @{
     var navs = Model.Navigations.GetManageFooterNavigation();
-    var uiInfo = Model.GetUserInterface(ViewContext.RouteData.AsRouteDescriptor());
+    var uiInfo = Model.GetUi(ViewContext.RouteData.AsRouteDescriptor());
 }
 <nav class="pull-left">
     <ul class="nav">

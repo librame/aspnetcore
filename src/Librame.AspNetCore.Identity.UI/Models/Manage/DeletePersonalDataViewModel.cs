@@ -12,7 +12,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Librame.AspNetCore.Identity.UI.Models
+namespace Librame.AspNetCore.Identity.UI
 {
     /// <summary>
     /// 删除个人数据视图模型。

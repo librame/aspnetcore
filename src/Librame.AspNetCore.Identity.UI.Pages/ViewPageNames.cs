@@ -23,6 +23,21 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         public static readonly string ChangePassword = nameof(ChangePassword);
 
         /// <summary>
+        /// 外部登入。
+        /// </summary>
+        public static readonly string ExternalLogins = nameof(ExternalLogins);
+
+        /// <summary>
+        /// 首页。
+        /// </summary>
+        public static readonly string Index = nameof(Index);
+
+        /// <summary>
+        /// 个人数据。
+        /// </summary>
+        public static readonly string PersonalData = nameof(PersonalData);
+
+        /// <summary>
         /// 双因子验证。
         /// </summary>
         public static readonly string TwoFactorAuthentication = nameof(TwoFactorAuthentication);

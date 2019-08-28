@@ -21,15 +21,14 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
-    using Models;
     using Extensions.Core;
 
     /// <summary>
     /// 抽象双因子登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(LoginWith2faPageModel<>))]
-    public abstract class AbstractLoginWith2faPageModel : PageModel
+    [UiTemplateWithUser(typeof(LoginWith2faPageModel<>))]
+    public class LoginWith2faPageModel : PageModel
     {
         /// <summary>
         /// 输入模型。
@@ -68,16 +67,17 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     }
 
 
-    internal class LoginWith2faPageModel<TUser> : AbstractLoginWith2faPageModel where TUser : class
+    internal class LoginWith2faPageModel<TUser> : LoginWith2faPageModel where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<AbstractLoginWith2faPageModel> _logger;
+        private readonly ILogger<LoginWith2faPageModel> _logger;
         private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
+
 
         public LoginWith2faPageModel(
             SignInManager<TUser> signInManager,
-            ILogger<AbstractLoginWith2faPageModel> logger,
+            ILogger<LoginWith2faPageModel> logger,
             IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
@@ -85,6 +85,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             _logger = logger;
             _errorLocalizer = errorLocalizer;
         }
+
 
         public override async Task<IActionResult> OnGetAsync(bool rememberMe, string returnUrl = null)
         {

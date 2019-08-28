@@ -38,7 +38,7 @@ namespace Librame.AspNetCore.Identity
         {
             return builder.AddIdentity<TAccessor, DefaultIdentityUser, DefaultIdentityRole, string>((b, r) =>
             {
-                return new InternalIdentityBuilderWrapper(b, r);
+                return new IdentityBuilderWrapper(b, r);
             },
             dependencySetupAction);
         }

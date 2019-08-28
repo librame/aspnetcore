@@ -123,7 +123,7 @@ namespace Librame.AspNetCore
 
             var resourceNames = cultureAssembly.GetManifestResourceNames();
             if (resourceNames.IsNullOrEmpty())
-                return base.InternalGetResourceSet(culture, createIfNotExists, tryParents);
+                return null;
 
             var resourceName = resourceNames.SingleOrDefault(name => name.StartsWith(BaseName))
                 ?? resourceNames.FirstOrDefault();

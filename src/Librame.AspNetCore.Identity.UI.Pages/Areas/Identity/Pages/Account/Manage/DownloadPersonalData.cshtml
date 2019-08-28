@@ -1,8 +1,9 @@
 ﻿@page
-@model AbstractDownloadPersonalDataPageModel
+@model DownloadPersonalDataPageModel
 @inject IExpressionHtmlLocalizer<DownloadPersonalDataViewResource> Localizer
 @{
     ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["ActivePage"] = ViewPageNames.PersonalData;
 }
 
 <!-- DownloadPersonalData -->

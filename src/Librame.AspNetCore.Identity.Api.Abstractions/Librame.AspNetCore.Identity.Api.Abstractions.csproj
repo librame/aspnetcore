@@ -34,6 +34,7 @@
     <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Identity.Api.Abstractions.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+    
   <ItemGroup>
     <ProjectReference Include="..\Librame.AspNetCore.Api.Abstractions\Librame.AspNetCore.Api.Abstractions.csproj" />
   </ItemGroup>

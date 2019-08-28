@@ -73,11 +73,13 @@ namespace Librame.AspNetCore.Identity.Tests
                 {
                     new DefaultIdentityUser("Librame")
                     {
-                        Id = Identifier.GetUserIdAsync(default).Result
+                        Id = Identifier.GetUserIdAsync(default).Result,
+                        Email = "librame@librame.net"
                     },
                     new DefaultIdentityUser("LibrameCore")
                     {
-                        Id = Identifier.GetUserIdAsync(default).Result
+                        Id = Identifier.GetUserIdAsync(default).Result,
+                        Email = "libramecore@librame.net"
                     }
                 };
 

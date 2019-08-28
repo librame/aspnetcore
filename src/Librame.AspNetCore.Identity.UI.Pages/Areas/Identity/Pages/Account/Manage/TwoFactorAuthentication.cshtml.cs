@@ -23,10 +23,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象双因子验证页面模型。
+    /// 双因子验证页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(TwoFactorAuthenticationPageModel<>))]
-    public abstract class AbstractTwoFactorAuthenticationPageModel : PageModel
+    [UiTemplateWithUser(typeof(TwoFactorAuthenticationPageModel<>))]
+    public class TwoFactorAuthenticationPageModel : PageModel
     {
         /// <summary>
         /// 包含验证器。
@@ -72,17 +72,20 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
     }
 
-    internal class TwoFactorAuthenticationPageModel<TUser> : AbstractTwoFactorAuthenticationPageModel where TUser : class
+
+    internal class TwoFactorAuthenticationPageModel<TUser> : TwoFactorAuthenticationPageModel
+        where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
-        private readonly ILogger<AbstractTwoFactorAuthenticationPageModel> _logger;
+        private readonly ILogger<TwoFactorAuthenticationPageModel> _logger;
         private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+
 
         public TwoFactorAuthenticationPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
-            ILogger<AbstractTwoFactorAuthenticationPageModel> logger,
+            ILogger<TwoFactorAuthenticationPageModel> logger,
             IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
@@ -90,6 +93,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             _logger = logger;
             _statusLocalizer = statusLocalizer;
         }
+
 
         public override async Task<IActionResult> OnGetAsync()
         {

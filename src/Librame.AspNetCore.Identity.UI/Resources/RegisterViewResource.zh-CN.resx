@@ -121,7 +121,7 @@
     <value>注册</value>
   </data>
   <data name="ConfirmYourEmail" xml:space="preserve">
-    <value>确认您的邮箱</value>
+    <value>确认您的电邮</value>
   </data>
   <data name="ConfirmYourEmailFormat" xml:space="preserve">
     <value>请通过 &lt;a href='{0}'&gt;点击此处&lt;/a&gt; 来激活您的帐户。</value>

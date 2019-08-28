@@ -11,6 +11,23 @@ namespace Librame.AspNetCore.IdentityServer.UI
     public class ErrorViewModel
     {
         /// <summary>
+        /// 构造一个 <see cref="ErrorViewModel"/>。
+        /// </summary>
+        public ErrorViewModel()
+        {
+        }
+
+        /// <summary>
+        /// 构造一个 <see cref="ErrorViewModel"/>。
+        /// </summary>
+        /// <param name="error">给定的错误。</param>
+        public ErrorViewModel(string error)
+        {
+            Error = new ErrorMessage { Error = error };
+        }
+
+
+        /// <summary>
         /// 错误消息。
         /// </summary>
         public ErrorMessage Error { get; set; }

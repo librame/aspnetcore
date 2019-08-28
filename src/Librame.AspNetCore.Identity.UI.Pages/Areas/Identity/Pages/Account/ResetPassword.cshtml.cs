@@ -20,14 +20,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
-    using Models;
 
     /// <summary>
-    /// 抽象重置密码页面模型。
+    /// 重置密码页面模型。
     /// </summary>
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(ResetPasswordPageModel<>))]
-    public abstract class AbstractResetPasswordPageModel : PageModel
+    [UiTemplateWithUser(typeof(ResetPasswordPageModel<>))]
+    public class ResetPasswordPageModel : PageModel
     {
         /// <summary>
         /// 输入模型。
@@ -53,14 +52,16 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     }
 
 
-    internal class ResetPasswordPageModel<TUser> : AbstractResetPasswordPageModel where TUser : class
+    internal class ResetPasswordPageModel<TUser> : ResetPasswordPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
+
 
         public ResetPasswordPageModel(UserManager<TUser> userManager)
         {
             _userManager = userManager;
         }
+
 
         public override IActionResult OnGet(string token = null)
         {
@@ -72,7 +73,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             {
                 Input = new ResetPasswordViewModel
                 {
-                    Token = token
+                    Code = token
                 };
 
                 return Page();
@@ -86,14 +87,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 return Page();
             }
 
-            var user = await _userManager.FindByNameAsync(Input.Name);
+            var user = await _userManager.FindByNameAsync(Input.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, Input.Token, Input.Password);
+            var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
             if (result.Succeeded)
             {
                 return RedirectToPage("./ResetPasswordConfirmation");

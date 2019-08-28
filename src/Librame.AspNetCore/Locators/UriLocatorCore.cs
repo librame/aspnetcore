@@ -69,12 +69,6 @@ namespace Librame.AspNetCore
         /// </summary>
         public QueryString QueryString { get; private set; }
 
-        /// <summary>
-        /// 查询参数集合。
-        /// </summary>
-        public ConcurrentDictionary<string, string> Queries
-            => FromQuery(Query);
-
 
         /// <summary>
         /// 改变主机。
@@ -95,7 +89,7 @@ namespace Librame.AspNetCore
         /// <returns>返回 <see cref="IUriLocatorCore"/>。</returns>
         public IUriLocatorCore ChangePath(PathString newPath)
         {
-            ChangePath(newPath.ToString());
+            base.ChangePath(newPath);
             PathString = newPath;
             return this;
         }
@@ -197,7 +191,7 @@ namespace Librame.AspNetCore
         public static Uri CombineUri(string scheme, HostString host,
             PathString path = default, QueryString query = default, string anchor = null)
         {
-            return CombineUri(scheme, host.ToString(), path.ToString(), query.ToString(), anchor);
+            return CombineUri(scheme, host.ToString(), path, query.ToString(), anchor);
         }
 
     }

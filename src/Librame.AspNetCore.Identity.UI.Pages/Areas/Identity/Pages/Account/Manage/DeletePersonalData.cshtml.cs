@@ -20,14 +20,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
-    using Models;
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象删除个人数据页面模型。
+    /// 删除个人数据页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(DeletePersonalDataPageModel<>))]
-    public abstract class AbstractDeletePersonalDataPageModel : PageModel
+    [UiTemplateWithUser(typeof(DeletePersonalDataPageModel<>))]
+    public class DeletePersonalDataPageModel : PageModel
     {
         /// <summary>
         /// 输入模型。
@@ -56,16 +55,19 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
     }
 
-    internal class DeletePersonalDataPageModel<TUser> : AbstractDeletePersonalDataPageModel where TUser: class
+
+    internal class DeletePersonalDataPageModel<TUser> : DeletePersonalDataPageModel
+        where TUser: class
     {
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
-        private readonly ILogger<AbstractDeletePersonalDataPageModel> _logger;
+        private readonly ILogger<DeletePersonalDataPageModel> _logger;
         private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
+
 
         public DeletePersonalDataPageModel(
             SignInManager<TUser> signInManager,
-            ILogger<AbstractDeletePersonalDataPageModel> logger,
+            ILogger<DeletePersonalDataPageModel> logger,
             IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
@@ -73,6 +75,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             _logger = logger;
             _errorLocalizer = errorLocalizer;
         }
+
 
         public override async Task<IActionResult> OnGetAsync()
         {

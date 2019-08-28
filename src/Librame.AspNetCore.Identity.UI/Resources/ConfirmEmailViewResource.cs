@@ -15,7 +15,7 @@ namespace Librame.AspNetCore.Identity.UI
     using AspNetCore.UI;
 
     /// <summary>
-    /// 确认邮箱视图资源。
+    /// 确认电邮视图资源。
     /// </summary>
     public class ConfirmEmailViewResource : AbstractViewResource
     {

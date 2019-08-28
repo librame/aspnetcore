@@ -24,16 +24,15 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
-    using Models;
     using Extensions;
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象登入页面模型。
+    /// 登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(LoginPageModel<>))]
-    public abstract class AbstractLoginPageModel : PageModel
+    [UiTemplateWithUser(typeof(LoginPageModel<>))]
+    public class LoginPageModel : PageModel
     {
         /// <summary>
         /// 登入视图模型。
@@ -76,15 +75,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     }
 
 
-    internal class LoginPageModel<TUser> : AbstractLoginPageModel where TUser : class
+    internal class LoginPageModel<TUser> : LoginPageModel where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
-        private readonly ILogger<AbstractLoginPageModel> _logger;
+        private readonly ILogger<LoginPageModel> _logger;
         private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
+
         public LoginPageModel(SignInManager<TUser> signInManager,
-            IUserStore<TUser> userStore,
-            ILogger<AbstractLoginPageModel> logger,
+            ILogger<LoginPageModel> logger,
             IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
@@ -116,7 +115,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Name, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

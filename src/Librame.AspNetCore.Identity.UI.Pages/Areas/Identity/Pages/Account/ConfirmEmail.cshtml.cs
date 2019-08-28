@@ -22,11 +22,11 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     using AspNetCore.UI;
 
     /// <summary>
-    /// 抽象确认邮箱页面模型。
+    /// 确认电邮页面模型。
     /// </summary>
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(ConfirmEmailPageModel<>))]
-    public abstract class AbstractConfirmEmailPageModel : PageModel
+    [UiTemplateWithUser(typeof(ConfirmEmailPageModel<>))]
+    public class ConfirmEmailPageModel : PageModel
     {
         /// <summary>
         /// 异步获取方法。
@@ -39,14 +39,17 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     }
 
 
-    internal class ConfirmEmailPageModel<TUser> : AbstractConfirmEmailPageModel where TUser : class
+    internal class ConfirmEmailPageModel<TUser> : ConfirmEmailPageModel
+        where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
+
 
         public ConfirmEmailPageModel(UserManager<TUser> userManager)
         {
             _userManager = userManager;
         }
+
 
         public override async Task<IActionResult> OnGetAsync(string userId, string token)
         {

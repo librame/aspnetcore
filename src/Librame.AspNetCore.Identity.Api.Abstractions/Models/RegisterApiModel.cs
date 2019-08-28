@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Identity.Api
     public class RegisterApiModel : AbstractApiModel
     {
         /// <summary>
-        /// 邮箱。
+        /// 电邮。
         /// </summary>
         public string Email { get; set; }
 

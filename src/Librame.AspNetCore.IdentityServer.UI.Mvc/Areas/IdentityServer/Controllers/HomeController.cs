@@ -13,26 +13,37 @@ namespace Librame.AspNetCore.IdentityServer.UI
     using Extensions;
     using Extensions.Core;
 
+    /// <summary>
+    /// 主页控制器。
+    /// </summary>
     [SecurityHeaders]
     [AllowAnonymous]
     public class HomeController : Controller
     {
         [InjectionService]
-        private IIdentityServerInteractionService _interaction;
+        private IIdentityServerInteractionService _interaction = null;
 
         [InjectionService]
-        private IHostingEnvironment _environment;
+        private IHostingEnvironment _environment = null;
 
         [InjectionService]
-        private ILogger<HomeController> _logger;
+        private ILogger<HomeController> _logger = null;
 
 
-        public HomeController(IInjectionService injection)
+        /// <summary>
+        /// 构造一个 <see cref="HomeController"/>。
+        /// </summary>
+        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
+        public HomeController(IInjectionService injectionService)
         {
-            injection.NotNull(nameof(injection)).Inject(this);
+            injectionService.NotNull(nameof(injectionService)).Inject(this);
         }
 
 
+        /// <summary>
+        /// GET: /
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             if (_environment.IsDevelopment())

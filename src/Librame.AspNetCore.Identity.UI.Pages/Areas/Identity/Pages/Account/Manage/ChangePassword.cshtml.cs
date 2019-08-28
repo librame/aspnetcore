@@ -19,15 +19,14 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
-    using Models;
     using AspNetCore.UI;
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象修改密码页面模型。
+    /// 修改密码页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(ChangePasswordPageModel<>))]
-    public abstract class AbstractChangePasswordPageModel : PageModel
+    [UiTemplateWithUser(typeof(ChangePasswordPageModel<>))]
+    public class ChangePasswordPageModel : PageModel
     {
         /// <summary>
         /// 输入模型。
@@ -57,16 +56,19 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
     }
 
-    internal class ChangePasswordPageModel<TUser> : AbstractChangePasswordPageModel where TUser : class
+
+    internal class ChangePasswordPageModel<TUser> : ChangePasswordPageModel
+        where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<AbstractChangePasswordPageModel> _logger;
+        private readonly ILogger<ChangePasswordPageModel> _logger;
         private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+
 
         public ChangePasswordPageModel(
             SignInManager<TUser> signInManager,
-            ILogger<AbstractChangePasswordPageModel> logger,
+            ILogger<ChangePasswordPageModel> logger,
             IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _signInManager = signInManager;
@@ -74,6 +76,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             _logger = logger;
             _statusLocalizer = statusLocalizer;
         }
+
 
         public override async Task<IActionResult> OnGetAsync()
         {

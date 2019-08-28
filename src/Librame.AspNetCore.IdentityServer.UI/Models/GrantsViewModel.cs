@@ -11,6 +11,9 @@ namespace Librame.AspNetCore.IdentityServer.UI
     /// </summary>
     public class GrantsViewModel
     {
+        /// <summary>
+        /// 授予集合。
+        /// </summary>
         public IEnumerable<GrantViewModel> Grants { get; set; }
     }
 

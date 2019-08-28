@@ -12,24 +12,33 @@
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Localization;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Librame.AspNetCore.UI
 {
+    using Extensions.Core;
+
     /// <summary>
     /// 应用上下文接口。
     /// </summary>
     public interface IApplicationContext
     {
         /// <summary>
-        /// 服务提供程序。
+        /// 服务工厂。
         /// </summary>
         /// <value>
-        /// 返回 <see cref="IServiceProvider"/>。
+        /// 返回 <see cref="ServiceFactoryDelegate"/>。
         /// </value>
-        IServiceProvider ServiceProvider { get; }
+        ServiceFactoryDelegate ServiceFactory { get; }
+
+        /// <summary>
+        /// 应用当事人。
+        /// </summary>
+        /// <value>
+        /// 返回 <see cref="IApplicationPrincipal"/>。
+        /// </value>
+        IApplicationPrincipal Principal { get; }
 
         /// <summary>
         /// 主机环境。
@@ -39,15 +48,12 @@ namespace Librame.AspNetCore.UI
         /// </value>
         IHostingEnvironment Environment { get; }
 
-        /// <summary>
-        /// 用户界面集合。
-        /// </summary>
-        ConcurrentDictionary<string, IUserInterfaceInfo> UserInterfaces { get; }
 
         /// <summary>
         /// 主题包集合。
         /// </summary>
         ConcurrentDictionary<string, IThemepackInfo> Themepacks { get; }
+
 
         /// <summary>
         /// 本地化定位器集合。
@@ -63,8 +69,15 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 获取指定路由的用户界面信息。
         /// </summary>
-        /// <param name="routeDescriptor">给定的 <see cref="RouteDescriptor"/>。</param>
-        /// <returns>返回 <see cref="IUserInterfaceInfo"/>。</returns>
-        IUserInterfaceInfo GetUserInterface(RouteDescriptor routeDescriptor);
+        /// <param name="route">给定的 <see cref="RouteDescriptor"/>。</param>
+        /// <returns>返回 <see cref="IUiInfo"/>。</returns>
+        IUiInfo GetUi(RouteDescriptor route);
+
+        /// <summary>
+        /// 获取指定名称的用户界面信息。
+        /// </summary>
+        /// <param name="name">给定的用户界面名称。</param>
+        /// <returns>返回 <see cref="IUiInfo"/>。</returns>
+        IUiInfo GetUi(string name);
     }
 }

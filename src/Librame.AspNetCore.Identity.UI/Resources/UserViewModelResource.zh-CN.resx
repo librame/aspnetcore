@@ -124,7 +124,7 @@
     <value>确认密码</value>
   </data>
   <data name="Email" xml:space="preserve">
-    <value>邮箱</value>
+    <value>电邮</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>称呼</value>

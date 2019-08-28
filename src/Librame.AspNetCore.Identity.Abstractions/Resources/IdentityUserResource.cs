@@ -44,15 +44,15 @@ namespace Librame.AspNetCore.Identity
         public string UserName { get; set; }
 
         /// <summary>
-        /// 标准化邮箱。
+        /// 标准化电邮。
         /// </summary>
         public string NormalizedEmail { get; set; }
         /// <summary>
-        /// 邮箱。
+        /// 电邮。
         /// </summary>
         public string Email { get; set; }
         /// <summary>
-        /// 邮箱确认。
+        /// 电邮确认。
         /// </summary>
         public string EmailConfirmed { get; set; }
 

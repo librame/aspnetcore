@@ -1,8 +1,9 @@
 ﻿@page
-@model AbstractPersonalDataPageModel
+@model PersonalDataPageModel
 @inject IExpressionHtmlLocalizer<PersonalDataViewResource> Localizer
 @{
     ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["ActivePage"] = ViewPageNames.PersonalData;
 }
 
 <!-- PersonalData -->

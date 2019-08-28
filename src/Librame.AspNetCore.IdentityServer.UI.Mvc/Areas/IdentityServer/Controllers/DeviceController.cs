@@ -20,29 +20,36 @@ namespace Librame.AspNetCore.IdentityServer.UI
     using Extensions;
     using Extensions.Core;
 
+    /// <summary>
+    /// 设备控制器。
+    /// </summary>
     [Authorize]
     [SecurityHeaders]
     public class DeviceController : Controller
     {
         [InjectionService]
-        private IDeviceFlowInteractionService _interaction;
+        private IDeviceFlowInteractionService _interaction = null;
 
         [InjectionService]
-        private IClientStore _clientStore;
+        private IClientStore _clientStore = null;
 
         [InjectionService]
-        private IResourceStore _resourceStore;
+        private IResourceStore _resourceStore = null;
 
         [InjectionService]
-        private IEventService _events;
+        private IEventService _events = null;
 
         [InjectionService]
-        private ILogger<DeviceController> _logger;
+        private ILogger<DeviceController> _logger = null;
 
         [InjectionService]
-        private IOptions<IdentityServerBuilderOptions> _builderOptions;
+        private IOptions<IdentityServerBuilderOptions> _builderOptions = null;
 
 
+        /// <summary>
+        /// 构造一个 <see cref="DeviceController"/>。
+        /// </summary>
+        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
         public DeviceController(IInjectionService injectionService)
         {
             injectionService.NotNull(nameof(injectionService)).Inject(this);
@@ -53,6 +60,11 @@ namespace Librame.AspNetCore.IdentityServer.UI
             => _builderOptions.Value.Consents;
 
 
+        /// <summary>
+        /// GET: /Device
+        /// </summary>
+        /// <param name="userCode"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery(Name = "user_code")] string userCode)
         {
@@ -65,6 +77,12 @@ namespace Librame.AspNetCore.IdentityServer.UI
             return View("UserCodeConfirmation", vm);
         }
 
+
+        /// <summary>
+        /// POST: /Device/UserCodeCapture
+        /// </summary>
+        /// <param name="userCode"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserCodeCapture(string userCode)
@@ -75,6 +93,12 @@ namespace Librame.AspNetCore.IdentityServer.UI
             return View("UserCodeConfirmation", vm);
         }
 
+
+        /// <summary>
+        /// POST: /Device/Callback
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Callback(DeviceAuthorizationInputModel model)
@@ -86,6 +110,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
 
             return View("Success");
         }
+
 
         private async Task<ProcessConsentResult> ProcessConsent(DeviceAuthorizationInputModel model)
         {
@@ -221,7 +246,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             };
         }
 
-        public ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
+        private ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
         {
             return new ScopeViewModel
             {

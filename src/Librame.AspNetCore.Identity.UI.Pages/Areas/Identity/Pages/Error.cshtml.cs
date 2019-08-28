@@ -17,6 +17,8 @@ using System.Diagnostics;
 
 namespace Librame.AspNetCore.Identity.UI.Pages
 {
+    using AspNetCore.UI;
+
     /// <summary>
     /// 错误页面模型。
     /// </summary>
@@ -25,22 +27,17 @@ namespace Librame.AspNetCore.Identity.UI.Pages
     public class ErrorPageModel : PageModel
     {
         /// <summary>
-        /// 请求标识。
+        /// 视图模型。
         /// </summary>
-        public string RequestId { get; set; }
-
-        /// <summary>
-        /// 显示请求标识。
-        /// </summary>
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-
+        public ErrorViewModel ViewModel
+            => new ErrorViewModel();
 
         /// <summary>
         /// 获取方法。
         /// </summary>
         public void OnGet()
         {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            ViewModel.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         }
 
     }

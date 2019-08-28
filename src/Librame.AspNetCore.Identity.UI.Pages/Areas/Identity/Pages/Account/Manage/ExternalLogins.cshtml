@@ -1,8 +1,9 @@
 ﻿@page
-@model AbstractExternalLoginsPageModel
+@model ExternalLoginsPageModel
 @inject IExpressionHtmlLocalizer<ExternalLoginsViewResource> Localizer
 @{
     ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["ActivePage"] = ViewPageNames.ExternalLogins;
 }
 
 <partial name="_StatusMessagePartial" model="Model.StatusMessage" />

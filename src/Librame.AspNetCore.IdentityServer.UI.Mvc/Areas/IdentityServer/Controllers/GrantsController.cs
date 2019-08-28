@@ -24,18 +24,22 @@ namespace Librame.AspNetCore.IdentityServer.UI
     public class GrantsController : Controller
     {
         [InjectionService]
-        private IIdentityServerInteractionService _interaction;
+        private IIdentityServerInteractionService _interaction = null;
 
         [InjectionService]
-        private IClientStore _clients;
+        private IClientStore _clients = null;
 
         [InjectionService]
-        private IResourceStore _resources;
+        private IResourceStore _resources = null;
 
         [InjectionService]
-        private IEventService _events;
+        private IEventService _events = null;
 
 
+        /// <summary>
+        /// 构造一个 <see cref="GrantsController"/>。
+        /// </summary>
+        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
         public GrantsController(IInjectionService injectionService)
         {
             injectionService.NotNull(nameof(injectionService)).Inject(this);

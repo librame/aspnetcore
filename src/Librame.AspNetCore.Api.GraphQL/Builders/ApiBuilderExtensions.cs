@@ -34,7 +34,7 @@ namespace Librame.AspNetCore.Api
         public static IApiBuilder AddApi(this IExtensionBuilder builder,
             Action<ApiBuilderOptions> setupAction = null)
         {
-            return builder.AddApi(b => new InternalApiBuilder(b), setupAction);
+            return builder.AddApi(b => new ApiBuilder(b), setupAction);
         }
 
         /// <summary>
@@ -63,10 +63,10 @@ namespace Librame.AspNetCore.Api
             builder.Services.AddSingleton<IDocumentWriter, DocumentWriter>();
             builder.Services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
 
-            builder.Services.AddScoped<IGraphApiMutation, InternalGraphApiMutation>();
-            builder.Services.AddScoped<IGraphApiQuery, InternalGraphApiQuery>();
-            builder.Services.AddScoped<IGraphApiSubscription, InternalGraphApiSubscription>();
-            builder.Services.AddScoped<IGraphApiSchema, InternalGraphApiSchema>();
+            builder.Services.AddScoped<IGraphApiMutation, GraphApiMutation>();
+            builder.Services.AddScoped<IGraphApiQuery, GraphApiQuery>();
+            builder.Services.AddScoped<IGraphApiSubscription, GraphApiSubscription>();
+            builder.Services.AddScoped<IGraphApiSchema, GraphApiSchema>();
 
             return builder;
         }

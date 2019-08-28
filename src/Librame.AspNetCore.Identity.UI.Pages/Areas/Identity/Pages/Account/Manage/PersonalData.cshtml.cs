@@ -22,10 +22,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     using AspNetCore.UI;
 
     /// <summary>
-    /// 抽象个人数据页面模型。
+    /// 个人数据页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(PersonalDataPageModel<>))]
-    public abstract class AbstractPersonalDataPageModel : PageModel
+    [UiTemplateWithUser(typeof(PersonalDataPageModel<>))]
+    public class PersonalDataPageModel : PageModel
     {
         /// <summary>
         /// 获取方法。
@@ -35,18 +35,21 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
     }
 
-    internal class PersonalDataPageModel<TUser> : AbstractPersonalDataPageModel where TUser : class
+
+    internal class PersonalDataPageModel<TUser> : PersonalDataPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<AbstractPersonalDataPageModel> _logger;
+        private readonly ILogger<PersonalDataPageModel> _logger;
+
 
         public PersonalDataPageModel(
             UserManager<TUser> userManager,
-            ILogger<AbstractPersonalDataPageModel> logger)
+            ILogger<PersonalDataPageModel> logger)
         {
             _userManager = userManager;
             _logger = logger;
         }
+
 
         public override async Task<IActionResult> OnGetAsync()
         {

@@ -30,32 +30,36 @@ namespace Librame.AspNetCore.IdentityServer.UI
     /// </summary>
     [SecurityHeaders]
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(ExternalController<>))]
+    [UiTemplateWithUser(typeof(ExternalController<>))]
     public class AccountController<TUser> : Controller
         where TUser : IdentityUser<string>, new()
     {
         [InjectionService]
-        private SignInManager<TUser> _signInManager;
+        private SignInManager<TUser> _signInManager = null;
 
         [InjectionService]
-        private IIdentityServerInteractionService _interaction;
+        private IIdentityServerInteractionService _interaction = null;
 
         [InjectionService]
-        private IClientStore _clientStore;
+        private IClientStore _clientStore = null;
 
         [InjectionService]
-        private IAuthenticationSchemeProvider _schemeProvider;
+        private IAuthenticationSchemeProvider _schemeProvider = null;
 
         [InjectionService]
-        private IEventService _events;
+        private IEventService _events = null;
 
         [InjectionService]
-        private IOptions<IdentityServerBuilderOptions> _builderOptions;
+        private IOptions<IdentityServerBuilderOptions> _builderOptions = null;
 
-
-        public AccountController(IInjectionService injection)
+        
+        /// <summary>
+        /// 构造一个 <see cref="AccountController{TUser}"/>。
+        /// </summary>
+        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
+        public AccountController(IInjectionService injectionService)
         {
-            injection.NotNull(nameof(injection)).Inject(this);
+            injectionService.NotNull(nameof(injectionService)).Inject(this);
         }
 
 

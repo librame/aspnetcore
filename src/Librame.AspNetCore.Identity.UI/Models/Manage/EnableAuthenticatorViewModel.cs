@@ -12,7 +12,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Librame.AspNetCore.Identity.UI.Models
+namespace Librame.AspNetCore.Identity.UI
 {
     /// <summary>
     /// 启用验证器视图模型。

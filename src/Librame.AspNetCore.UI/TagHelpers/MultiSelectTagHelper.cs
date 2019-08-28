@@ -140,10 +140,9 @@ namespace Microsoft.AspNetCore.Razor.TagHelpers
             var selectList = new MultiSelectList(DataSource, DataTextField, DataValueField, SelectedValues, DataGroupField);
             var builder = new HtmlContentBuilder();
 
-            var id = string.Empty;
             if (For.IsNull())
             {
-                id = output.Attributes["id"].Value.ToString();
+                var id = output.Attributes["id"].Value.ToString();
                 output.Attributes.Remove(output.Attributes["id"]);
 
                 var options = string.Empty;
@@ -156,8 +155,6 @@ namespace Microsoft.AspNetCore.Razor.TagHelpers
             }
             else
             {
-                id = For.Name;
-
                 var dropDown = _generator.GenerateSelect(ViewContext, For.ModelExplorer, For.Name, string.Empty, selectList, true, null);
                 builder.AppendHtml(dropDown);
             }

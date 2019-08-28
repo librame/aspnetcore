@@ -26,10 +26,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     using AspNetCore.UI;
 
     /// <summary>
-    /// 抽象下载个人数据页面模型。
+    /// 下载个人数据页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(DownloadPersonalDataModel<>))]
-    public abstract class AbstractDownloadPersonalDataPageModel : PageModel
+    [UiTemplateWithUser(typeof(DownloadPersonalDataModel<>))]
+    public class DownloadPersonalDataPageModel : PageModel
     {
         /// <summary>
         /// 获取方法。
@@ -46,18 +46,22 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
     }
 
-    internal class DownloadPersonalDataModel<TUser> : AbstractDownloadPersonalDataPageModel where TUser : class
+
+    internal class DownloadPersonalDataModel<TUser> : DownloadPersonalDataPageModel
+        where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<AbstractDownloadPersonalDataPageModel> _logger;
+        private readonly ILogger<DownloadPersonalDataPageModel> _logger;
+
 
         public DownloadPersonalDataModel(
             UserManager<TUser> userManager,
-            ILogger<AbstractDownloadPersonalDataPageModel> logger)
+            ILogger<DownloadPersonalDataPageModel> logger)
         {
             _userManager = userManager;
             _logger = logger;
         }
+
 
         public override IActionResult OnGet()
         {

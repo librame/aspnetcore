@@ -29,7 +29,7 @@ namespace Librame.AspNetCore
         public static IApplicationBuilderWrapper UseLibrameCore(this IApplicationBuilder rawBuilder,
             Action<RequestLocalizationOptions> optionsAction = null)
         {
-            var builderWrapper = new InternalApplicationBuilderWrapper(rawBuilder);
+            var builderWrapper = new ApplicationBuilderWrapper(rawBuilder);
 
             return builderWrapper.UseLocalization(optionsAction);
         }

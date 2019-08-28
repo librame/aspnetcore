@@ -9,10 +9,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Librame.AspNetCore.IdentityServer.UI
 {
+    /// <summary>
+    /// Õï¶Ï¿ØÖÆÆ÷¡£
+    /// </summary>
     [SecurityHeaders]
     [Authorize]
     public class DiagnosticsController : Controller
     {
+        /// <summary>
+        /// GET: /Diagnostics
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             var localAddresses = new string[] { "127.0.0.1", "::1", HttpContext.Connection.LocalIpAddress.ToString() };
@@ -24,5 +31,6 @@ namespace Librame.AspNetCore.IdentityServer.UI
             var model = new DiagnosticsViewModel(await HttpContext.AuthenticateAsync());
             return View(model);
         }
+
     }
 }

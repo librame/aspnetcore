@@ -30,11 +30,11 @@ namespace Librame.AspNetCore.Identity.UI
         public string Login { get; set; }
 
         /// <summary>
-        /// 确认您的邮箱。
+        /// 确认您的电邮。
         /// </summary>
         public string ConfirmYourEmail { get; set; }
         /// <summary>
-        /// 确认您的邮箱格式。
+        /// 确认您的电邮格式。
         /// </summary>
         public string ConfirmYourEmailFormat { get; set; }
 

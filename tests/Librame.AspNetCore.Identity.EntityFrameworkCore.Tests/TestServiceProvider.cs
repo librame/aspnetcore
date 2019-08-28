@@ -28,8 +28,8 @@ namespace Librame.AspNetCore.Identity.Tests
                     .AddDataCore(options =>
                     {
                         options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-                        options.DefaultTenant.WriteConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";
-                        options.DefaultTenant.WriteConnectionSeparation = true;
+                        options.DefaultTenant.WritingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
+                        options.DefaultTenant.WritingSeparation = true;
                     })
                     .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                     {

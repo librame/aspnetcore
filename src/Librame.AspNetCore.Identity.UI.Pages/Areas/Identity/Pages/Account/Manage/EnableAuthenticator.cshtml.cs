@@ -23,14 +23,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
-    using Models;
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象启用验证器页面模型。
+    /// 启用验证器页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(EnableAuthenticatorPageModel<>))]
-    public abstract class AbstractEnableAuthenticatorPageModel : PageModel
+    [UiTemplateWithUser(typeof(EnableAuthenticatorPageModel<>))]
+    public class EnableAuthenticatorPageModel : PageModel
     {
         /// <summary>
         /// 共享密钥。
@@ -76,20 +75,23 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
     }
 
-    internal class EnableAuthenticatorPageModel<TUser> : AbstractEnableAuthenticatorPageModel where TUser : class
+
+    internal class EnableAuthenticatorPageModel<TUser> : EnableAuthenticatorPageModel
+        where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
         private readonly UrlEncoder _urlEncoder;
-        private readonly ILogger<AbstractEnableAuthenticatorPageModel> _logger;
+        private readonly ILogger<EnableAuthenticatorPageModel> _logger;
         private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
         private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
+
         public EnableAuthenticatorPageModel(
             UserManager<TUser> userManager,
             UrlEncoder urlEncoder,
-            ILogger<AbstractEnableAuthenticatorPageModel> logger,
+            ILogger<EnableAuthenticatorPageModel> logger,
             IExpressionStringLocalizer<StatusMessageResource> statusLocalizer,
             IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
@@ -99,6 +101,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             _statusLocalizer = statusLocalizer;
             _errorLocalizer = errorLocalizer;
         }
+
 
         public override async Task<IActionResult> OnGetAsync()
         {

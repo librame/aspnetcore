@@ -22,20 +22,19 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
     using Extensions.Network;
-    using Models;
 
     /// <summary>
-    /// 抽象忘记密码页面模型。
+    /// 忘记密码页面模型。
     /// </summary>
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(ForgotPasswordPageModel<>))]
-    public abstract class AbstractForgotPasswordPageModel : PageModel
+    [UiTemplateWithUser(typeof(ForgotPasswordPageModel<>))]
+    public class ForgotPasswordPageModel : PageModel
     {
         /// <summary>
-        /// 构造一个 <see cref="AbstractForgotPasswordPageModel"/> 实例。
+        /// 构造一个 <see cref="ForgotPasswordPageModel"/> 实例。
         /// </summary>
         /// <param name="localizer">给定的 <see cref="IExpressionHtmlLocalizer{ForgotPasswordViewResource}"/>。</param>
-        protected AbstractForgotPasswordPageModel(IExpressionHtmlLocalizer<ForgotPasswordViewResource> localizer)
+        protected ForgotPasswordPageModel(IExpressionHtmlLocalizer<ForgotPasswordViewResource> localizer)
         {
             Localizer = localizer;
         }
@@ -53,7 +52,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         public ForgotPasswordViewModel Input { get; set; }
 
         /// <summary>
-        /// 支持用户邮箱。
+        /// 支持用户电邮。
         /// </summary>
         public bool SupportsUserEmail { get; set; }
 
@@ -73,10 +72,11 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     }
 
 
-    internal class ForgotPasswordPageModel<TUser> : AbstractForgotPasswordPageModel where TUser : class
+    internal class ForgotPasswordPageModel<TUser> : ForgotPasswordPageModel where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
         private readonly IEmailService _emailService;
+
 
         public ForgotPasswordPageModel(
             UserManager<TUser> userManager,

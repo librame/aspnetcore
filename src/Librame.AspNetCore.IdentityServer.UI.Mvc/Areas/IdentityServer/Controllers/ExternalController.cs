@@ -23,28 +23,36 @@ namespace Librame.AspNetCore.IdentityServer.UI
     using Extensions;
     using Extensions.Core;
 
+    /// <summary>
+    /// 外部控制器。
+    /// </summary>
+    /// <typeparam name="TUser">指定的用户类型。</typeparam>
     [SecurityHeaders]
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(ExternalController<>))]
+    [UiTemplateWithUser(typeof(ExternalController<>))]
     public class ExternalController<TUser> : Controller
         where TUser : IdentityUser<string>, new()
     {
         [InjectionService]
-        private SignInManager<TUser> _signInManager;
+        private SignInManager<TUser> _signInManager = null;
 
         [InjectionService]
-        private IIdentityServerInteractionService _interaction;
+        private IIdentityServerInteractionService _interaction = null;
 
         //[InjectionService]
-        //private IClientStore _clientStore;
+        //private IClientStore _clientStore = null;
 
         [InjectionService]
-        private IEventService _events;
+        private IEventService _events = null;
 
         [InjectionService]
-        private IOptions<IdentityServerBuilderOptions> _builderOptions;
+        private IOptions<IdentityServerBuilderOptions> _builderOptions = null;
 
 
+        /// <summary>
+        /// 构造一个 <see cref="ExternalController{TUser}"/>。
+        /// </summary>
+        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
         public ExternalController(IInjectionService injectionService)
         {
             injectionService.NotNull(nameof(injectionService)).Inject(this);

@@ -1,8 +1,9 @@
 ﻿@page
-@model AbstractDeletePersonalDataPageModel
+@model DeletePersonalDataPageModel
 @inject IExpressionHtmlLocalizer<DeletePersonalDataViewResource> Localizer
 @{
     ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["ActivePage"] = ViewPageNames.PersonalData;
 }
 
 <!-- DeletePersonalData -->

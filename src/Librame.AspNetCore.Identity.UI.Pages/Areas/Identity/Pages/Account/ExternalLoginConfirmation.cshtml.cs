@@ -23,15 +23,14 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
-    using Models;
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象外部登入确认页面模型。
+    /// 外部登入确认页面模型。
     /// </summary>
     [AllowAnonymous]
-    [PageApplicationModelWithUser(typeof(ExternalLoginPageModel<>))]
-    public abstract class AbstractExternalLoginConfirmationPageModel : PageModel
+    [UiTemplateWithUser(typeof(ExternalLoginPageModel<>))]
+    public class ExternalLoginConfirmationPageModel : PageModel
     {
         /// <summary>
         /// 输入模型。
@@ -91,19 +90,21 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     }
 
 
-    internal class ExternalLoginPageModel<TUser> : AbstractExternalLoginConfirmationPageModel where TUser : class
+    internal class ExternalLoginConfirmationPageModel<TUser> : ExternalLoginConfirmationPageModel
+        where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
         private readonly IUserEmailStore<TUser> _emailStore;
-        private readonly ILogger<AbstractExternalLoginConfirmationPageModel> _logger;
+        private readonly ILogger<ExternalLoginConfirmationPageModel> _logger;
         private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
-        public ExternalLoginPageModel(
+
+        public ExternalLoginConfirmationPageModel(
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
-            ILogger<AbstractExternalLoginConfirmationPageModel> logger,
+            ILogger<ExternalLoginConfirmationPageModel> logger,
             IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
@@ -113,6 +114,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             _logger = logger;
             _errorLocalizer = errorLocalizer;
         }
+
 
         public override IActionResult OnGet()
         {

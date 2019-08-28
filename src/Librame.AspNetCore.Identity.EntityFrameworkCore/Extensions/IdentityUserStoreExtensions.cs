@@ -21,7 +21,7 @@ namespace Microsoft.AspNetCore.Identity
     public static class IdentityUserStoreExtensions
     {
         /// <summary>
-        /// 获取用户邮箱存储。
+        /// 获取用户电邮存储。
         /// </summary>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
         /// <param name="userStore">给定的 <see cref="IUserStore{TUser}"/>。</param>
@@ -33,7 +33,7 @@ namespace Microsoft.AspNetCore.Identity
             return userStore.GetUserEmailStore(signInManager.UserManager);
         }
         /// <summary>
-        /// 获取用户邮箱存储。
+        /// 获取用户电邮存储。
         /// </summary>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
         /// <param name="userStore">给定的 <see cref="IUserStore{TUser}"/>。</param>

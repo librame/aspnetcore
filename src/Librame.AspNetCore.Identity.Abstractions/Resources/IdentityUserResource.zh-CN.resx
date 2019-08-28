@@ -124,10 +124,10 @@
     <value>并发标志</value>
   </data>
   <data name="Email" xml:space="preserve">
-    <value>邮箱</value>
+    <value>电邮</value>
   </data>
   <data name="EmailConfirmed" xml:space="preserve">
-    <value>邮箱确认</value>
+    <value>电邮确认</value>
   </data>
   <data name="Id" xml:space="preserve">
     <value>标识</value>
@@ -139,7 +139,7 @@
     <value>锁定结束日期</value>
   </data>
   <data name="NormalizedEmail" xml:space="preserve">
-    <value>标准化邮箱</value>
+    <value>标准化电邮</value>
   </data>
   <data name="NormalizedUserName" xml:space="preserve">
     <value>标准化用户名</value>

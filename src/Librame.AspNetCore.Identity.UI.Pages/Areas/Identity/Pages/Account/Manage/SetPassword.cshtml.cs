@@ -19,14 +19,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
-    using Models;
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象设置密码页面模型。
+    /// 设置密码页面模型。
     /// </summary>
-    [PageApplicationModelWithUser(typeof(SetPasswordPageModel<>))]
-    public abstract class AbstractSetPasswordPageModel : PageModel
+    [UiTemplateWithUser(typeof(SetPasswordPageModel<>))]
+    public class SetPasswordPageModel : PageModel
     {
         /// <summary>
         /// 输入模型。
@@ -56,11 +55,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             => throw new NotImplementedException();
     }
 
-    internal class SetPasswordPageModel<TUser> : AbstractSetPasswordPageModel where TUser : class
+
+    internal class SetPasswordPageModel<TUser> : SetPasswordPageModel
+        where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+
 
         public SetPasswordPageModel(
             UserManager<TUser> userManager,
@@ -71,6 +73,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             _signInManager = signInManager;
             _statusLocalizer = statusLocalizer;
         }
+
 
         public override async Task<IActionResult> OnGetAsync()
         {

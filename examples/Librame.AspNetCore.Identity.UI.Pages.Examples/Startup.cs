@@ -11,7 +11,6 @@ using System.Globalization;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Examples
 {
-    using AspNetCore.UI;
     using Extensions.Data;
     using Extensions.Network;
 
@@ -63,14 +62,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                 .AddDataAnnotationsLocalization();
 
             //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-            var writeConnectionString = "Data Source=.;Initial Catalog=librame_identity_write;Integrated Security=True";
+            var writingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
 
             services.AddLibrameCore()
                 .AddDataCore(options =>
                 {
                     // 默认使用写入库做为主库
-                    options.DefaultTenant.DefaultConnectionString = writeConnectionString;
-                    options.DefaultTenant.WriteConnectionString = writeConnectionString;
+                    options.DefaultTenant.DefaultConnectionString = writingConnectionString;
+                    options.DefaultTenant.WritingConnectionString = writingConnectionString;
                 })
                 .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                 {
@@ -85,8 +84,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                         options.Stores.MaxLengthForKeys = 128;
                     };
                 })
-                .AddIdentityUserInterface(new SimpleThemepackInfo())
-                .AddPages(mvcBuilder)
+                .AddIdentityUI()
+                .AddIdentityPages(mvcBuilder)
                 .AddNetwork();
         }
 

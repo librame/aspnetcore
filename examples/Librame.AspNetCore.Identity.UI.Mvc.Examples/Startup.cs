@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 
 namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
 {
+    using Extensions.Data;
+    using Extensions.Network;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -31,8 +33,59 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var cultures = new[]
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("zh-CN"),
+                    new CultureInfo("zh-TW")
+                };
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                var defaultCulture = cultures[0];
+                options.DefaultRequestCulture = new RequestCulture(defaultCulture, defaultCulture);
+                options.SupportedCultures = cultures;
+                options.SupportedUICultures = cultures;
+            });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+                .AddIdentityCookies(cookies => { });
+
+            var mvcBuilder = services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization();
+
+            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
+            var writingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
+
+            services.AddLibrameCore()
+                .AddDataCore(options =>
+                {
+                    // 默认使用写入库做为主库
+                    options.DefaultTenant.DefaultConnectionString = writingConnectionString;
+                    options.DefaultTenant.WritingConnectionString = writingConnectionString;
+                })
+                .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
+                {
+                    var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
+                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
+                        sql => sql.MigrationsAssembly(migrationsAssembly));
+                })
+                .AddIdentity<IdentityDbContextAccessor>(dependency =>
+                {
+                    dependency.BaseSetupAction = options =>
+                    {
+                        options.Stores.MaxLengthForKeys = 128;
+                    };
+                })
+                .AddIdentityUI()
+                .AddIdentityControllers(mvcBuilder)
+                .AddNetwork();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,12 +105,10 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseLibrameCore()
+                .UseIdentity();
+
+            app.UseMvcWithDefaultRoute();
         }
     }
 }

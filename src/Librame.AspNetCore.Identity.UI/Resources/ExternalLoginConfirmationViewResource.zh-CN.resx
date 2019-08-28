@@ -124,7 +124,7 @@
     <value>使用本地帐户登入</value>
   </data>
   <data name="Email" xml:space="preserve">
-    <value>邮箱</value>
+    <value>电邮</value>
   </data>
   <data name="Info" xml:space="preserve">
     <value>您已经成功地使用{0}进行了身份验证。请输入以下网址的电邮地址，然后按{1}键登入。</value>

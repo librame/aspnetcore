@@ -53,7 +53,7 @@ namespace Librame.AspNetCore.Identity.Tests
 
         public ITestStoreHub UseWriteDbConnection()
         {
-            Accessor.TryChangeDbConnection(t => t.WriteConnectionString);
+            Accessor.TryChangeDbConnection(t => t.WritingConnectionString);
             return this;
         }
     }

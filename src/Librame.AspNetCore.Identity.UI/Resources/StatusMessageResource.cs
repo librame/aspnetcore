@@ -54,7 +54,7 @@ namespace Librame.AspNetCore.Identity.UI
         public string ProfileUpdated { get; set; }
 
         /// <summary>
-        /// 验证邮箱已发送。
+        /// 验证电邮已发送。
         /// </summary>
         public string VerificationEmailSent { get; set; }
 

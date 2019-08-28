@@ -26,7 +26,7 @@ namespace Librame.AspNetCore.Api
         /// <returns>返回 <see cref="IApplicationBuilderWrapper"/>。</returns>
         public static IApplicationBuilderWrapper UseApi(this IApplicationBuilderWrapper builderWrapper)
         {
-            builderWrapper.RawBuilder.UseMiddleware<InternalApiMiddleware>();
+            builderWrapper.RawBuilder.UseMiddleware<ApiApplicationMiddleware>();
 
             return builderWrapper;
         }

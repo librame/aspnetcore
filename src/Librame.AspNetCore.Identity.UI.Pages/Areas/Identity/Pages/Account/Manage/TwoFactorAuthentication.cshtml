@@ -1,8 +1,9 @@
 @page
-@model AbstractTwoFactorAuthenticationPageModel
+@model TwoFactorAuthenticationPageModel
 @inject IExpressionHtmlLocalizer<TwoFactorAuthenticationViewResource> Localizer
 @{
     ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["ActivePage"] = ViewPageNames.TwoFactorAuthentication;
 }
 
 <partial name="_StatusMessagePartial" model="Model.StatusMessage" />

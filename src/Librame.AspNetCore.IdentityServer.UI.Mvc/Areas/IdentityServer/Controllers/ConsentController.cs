@@ -26,24 +26,28 @@ namespace Librame.AspNetCore.IdentityServer.UI
     public class ConsentController : Controller
     {
         [InjectionService]
-        private IIdentityServerInteractionService _interaction;
+        private IIdentityServerInteractionService _interaction = null;
 
         [InjectionService]
-        private IClientStore _clientStore;
+        private IClientStore _clientStore = null;
 
         [InjectionService]
-        private IResourceStore _resourceStore;
+        private IResourceStore _resourceStore = null;
 
         [InjectionService]
-        private IEventService _events;
+        private IEventService _events = null;
 
         [InjectionService]
-        private ILogger<ConsentController> _logger;
+        private ILogger<ConsentController> _logger = null;
 
         [InjectionService]
-        private IOptions<IdentityServerBuilderOptions> _builderOptions;
+        private IOptions<IdentityServerBuilderOptions> _builderOptions = null;
 
 
+        /// <summary>
+        /// 构造一个 <see cref="ConsentController"/>。
+        /// </summary>
+        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
         public ConsentController(IInjectionService injectionService)
         {
             injectionService.NotNull(nameof(injectionService)).Inject(this);
@@ -249,7 +253,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             };
         }
 
-        public ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
+        private ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
         {
             return new ScopeViewModel
             {

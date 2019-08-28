@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Librame.AspNetCore.Identity.UI.Pages.Examples.Areas.Identity.Pages.Account.Manage
+namespace Librame.AspNetCore.Identity.UI.Pages.Examples
 {
     using Extensions.Core;
     using Extensions.Network;
@@ -15,35 +15,46 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples.Areas.Identity.Pages.Acc
     /// <summary>
     /// 首页模型。
     /// </summary>
-    public class IndexModel : PageModel
+    public class IndexPageModel : PageModel
     {
         [InjectionService]
         private UserManager<DefaultIdentityUser> _userManager = null;
+
         [InjectionService]
         private SignInManager<DefaultIdentityUser> _signInManager = null;
+
         [InjectionService]
         private IEmailService _emailService = null;
+
         //[InjectionService]
         //private ISmsService _smsService = null;
+
         [InjectionService]
         private IExpressionStringLocalizer<RegisterViewResource> _registerLocalizer = null;
+
         [InjectionService]
         private IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer = null;
 
-        public IndexModel(IInjectionService injectionService)
+
+        /// <summary>
+        /// 构造一个 <see cref="IndexPageModel"/>。
+        /// </summary>
+        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
+        public IndexPageModel(IInjectionService injectionService)
         {
             injectionService.Inject(this);
         }
-        
-        /// <summary>
-        /// 是否邮箱确认。
-        /// </summary>
-        public bool IsEmailConfirmed { get; set; }
+
 
         /// <summary>
-        /// 是否已确认电话。
+        /// 用户名。
         /// </summary>
-        public bool IsPhoneConfirmed { get; set; }
+        public string Username { get; set; }
+
+        /// <summary>
+        /// 是否电邮确认。
+        /// </summary>
+        public bool IsEmailConfirmed { get; set; }
 
         /// <summary>
         /// 状态消息。
@@ -61,7 +72,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples.Areas.Identity.Pages.Acc
         /// 输入模型。
         /// </summary>
         [ViewResourceMapping("Index")]
-        public class InputModel : Models.IndexViewModel
+        public class InputModel : Account.Manage.IndexPageModel.InputModel
         {
             [Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
             [Range(0, 199, ErrorMessageResourceName = nameof(RangeAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
@@ -82,19 +93,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples.Areas.Identity.Pages.Acc
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var userName = await _userManager.GetUserNameAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            Username = user.UserName;
 
             Input = new InputModel
             {
-                Name = userName,
-                Email = email,
-                Phone = phoneNumber
+                Email = user.Email,
+                Phone = user.PhoneNumber
             };
 
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
-            IsPhoneConfirmed = await _userManager.IsPhoneNumberConfirmedAsync(user);
 
             return Page();
         }
@@ -114,11 +121,6 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples.Areas.Identity.Pages.Acc
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            if (Input.Name != user.UserName)
-            {
-                user.UserName = Input.Name;
             }
 
             var updateProfileResult = await _userManager.UpdateAsync(user);
@@ -185,39 +187,5 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples.Areas.Identity.Pages.Acc
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostSendVerificationPhoneAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var userId = await _userManager.GetUserIdAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            //var callbackUrl = Url.Page(
-            //    "/Account/ConfirmPhone",
-            //    pageHandler: null,
-            //    values: new { userId, token },
-            //    protocol: Request.Scheme);
-
-            //await _smsSender.SendAsync(token);
-
-            //await _emailSender.SendAsync(
-            //    email,
-            //    _registerLocalizer[r => r.ConfirmYourEmail],
-            //    _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]);
-
-            StatusMessage = _statusLocalizer[r => r.VerificationSmsSent];
-
-            return RedirectToPage();
-        }
     }
 }

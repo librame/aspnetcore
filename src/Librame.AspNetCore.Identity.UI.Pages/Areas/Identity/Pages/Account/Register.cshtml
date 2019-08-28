@@ -1,5 +1,5 @@
 @page
-@model AbstractRegisterPageModel
+@model RegisterPageModel
 @{
     Layout = "_LayoutByLogin";
     ViewData["Title"] = Model.Localizer[r => r.Title];
@@ -25,11 +25,6 @@
                     <label asp-for="Input.Email" class="sr-only"></label>
                     <input asp-for="Input.Email" class="form-username form-control" placeholder="@Html.DisplayNameFor(m => m.Input.Email) ..." />
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Name" class="sr-only"></label>
-                    <input asp-for="Input.Name" class="form-username form-control" placeholder="@Html.DisplayNameFor(m => m.Input.Name) ..." />
-                    <span asp-validation-for="Input.Name" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Input.Password" class="sr-only"></label>
