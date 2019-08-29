@@ -12,8 +12,10 @@ namespace Librame.AspNetCore.Identity.Tests
     public class TestInitializerService<TAccessor> : InitializerServiceBase<TAccessor, IdentityIdentifierService>
         where TAccessor : IdentityDbContextAccessor
     {
-        private SignInManager<DefaultIdentityUser> _signInManager;
-        private RoleManager<DefaultIdentityRole> _roleMananger;
+        private readonly SignInManager<DefaultIdentityUser> _signInManager;
+        private readonly RoleManager<DefaultIdentityRole> _roleMananger;
+        private readonly IUserStore<DefaultIdentityUser> _userStore;
+        private readonly IUserEmailStore<DefaultIdentityUser> _emailStore;
 
         private IList<DefaultIdentityRole> _roles;
         private IList<DefaultIdentityUser> _users;
@@ -21,11 +23,14 @@ namespace Librame.AspNetCore.Identity.Tests
 
         public TestInitializerService(SignInManager<DefaultIdentityUser> signInManager,
             RoleManager<DefaultIdentityRole> roleMananger,
+            IUserStore<DefaultIdentityUser> userStore,
             IIdentityIdentifierService identifier, ILoggerFactory loggerFactory)
             : base(identifier, loggerFactory)
         {
             _signInManager = signInManager.NotNull(nameof(signInManager));
             _roleMananger = roleMananger.NotNull(nameof(roleMananger));
+            _userStore = userStore.NotNull(nameof(userStore));
+            _emailStore = userStore.GetUserEmailStore(signInManager);
         }
 
 
@@ -69,17 +74,16 @@ namespace Librame.AspNetCore.Identity.Tests
         {
             if (!stores.Accessor.Users.Any())
             {
+                // Identity 默认以邮箱为用户名
                 _users = new List<DefaultIdentityUser>
                 {
-                    new DefaultIdentityUser("Librame")
+                    new DefaultIdentityUser("librame@librame.net")
                     {
-                        Id = Identifier.GetUserIdAsync(default).Result,
-                        Email = "librame@librame.net"
+                        Id = Identifier.GetUserIdAsync(default).Result
                     },
-                    new DefaultIdentityUser("LibrameCore")
+                    new DefaultIdentityUser("libramecore@librame.net")
                     {
-                        Id = Identifier.GetUserIdAsync(default).Result,
-                        Email = "libramecore@librame.net"
+                        Id = Identifier.GetUserIdAsync(default).Result
                     }
                 };
 
@@ -88,13 +92,18 @@ namespace Librame.AspNetCore.Identity.Tests
                 var i = 0;
                 foreach (var user in _users)
                 {
-                    _signInManager.UserManager.CreateAsync(user, password).Wait();
+                    _emailStore.SetEmailAsync(user, user.UserName, default).Wait();
+                    _userStore.SetUserNameAsync(user, user.UserName, default).Wait();
 
-                    stores.Accessor.UserRoles.Add(new IdentityUserRole<string>
+                    var result = _signInManager.UserManager.CreateAsync(user, password).Result;
+                    if (result.Succeeded)
                     {
-                        RoleId = _roles[i].Id,
-                        UserId = user.Id
-                    });
+                        stores.Accessor.UserRoles.Add(new IdentityUserRole<string>
+                        {
+                            RoleId = _roles[i].Id,
+                            UserId = user.Id
+                        });
+                    }
 
                     i++;
                 }
