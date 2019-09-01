@@ -79,8 +79,7 @@ namespace Librame.AspNetCore.Identity
 
             var builderWrapper = createFactory.Invoke(builder, rawBuilder);
 
-            return builderWrapper
-                .AddServices();
+            return builderWrapper;
         }
 
     }

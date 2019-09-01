@@ -25,11 +25,6 @@ namespace Librame.AspNetCore.Identity.Api
         public string Email { get; set; }
 
         /// <summary>
-        /// 称呼。
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
         /// 密码。
         /// </summary>
         public string Password { get; set; }

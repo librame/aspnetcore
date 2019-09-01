@@ -27,16 +27,19 @@ namespace Librame.AspNetCore.Identity.Tests
                 services.AddLibrameCore()
                     .AddDataCore(options =>
                     {
-                        options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-                        options.DefaultTenant.WritingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
-                        options.DefaultTenant.WritingSeparation = true;
+                        options.Tenants.Default.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
+                        options.Tenants.Default.WritingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
+                        options.Tenants.Default.WritingSeparation = true;
                     })
                     .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                     {
                         var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
-                        optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
+                        optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                     })
+                    .AddStoreHub<TestStoreHub>() // IStoreHub<IdentityDbContextAccessor>
+                    .AddInitializer<TestIdentityStoreInitializer>() // IStoreInitializer<IdentityDbContextAccessor>
+                    .AddIdentifier<IdentityStoreIdentifier>() // IStoreIdentifier
                     .AddIdentity<IdentityDbContextAccessor>(dependency =>
                     {
                         dependency.BaseSetupAction = options =>
@@ -44,9 +47,6 @@ namespace Librame.AspNetCore.Identity.Tests
                             options.Stores.MaxLengthForKeys = 128;
                         };
                     });
-
-                services.TryReplace(typeof(IInitializerService<>), typeof(TestInitializerService<>));
-                services.AddScoped<ITestStoreHub, TestStoreHub>();
 
                 return services.BuildServiceProvider();
             });

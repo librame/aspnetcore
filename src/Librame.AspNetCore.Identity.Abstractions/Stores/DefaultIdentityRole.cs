@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Librame.AspNetCore.Identity
 {
-    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
@@ -37,8 +36,8 @@ namespace Librame.AspNetCore.Identity
         public DefaultIdentityRole(string roleName)
             : base(roleName)
         {
-            // 默认使用空标识符，新增推荐使用服务注入
-            Id = UniqueIdentifier.Empty;
+            // 默认使用空标识，新增推荐使用服务注入
+            Id = AbstractGenId.EmptyId;
             //NormalizedName = roleName;
         }
 

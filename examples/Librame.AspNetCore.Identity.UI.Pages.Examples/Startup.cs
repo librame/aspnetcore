@@ -61,20 +61,21 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
+            // 默认使用测试项目的写入库
             //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
             var writingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
 
             services.AddLibrameCore()
                 .AddDataCore(options =>
                 {
-                    // 默认使用写入库做为主库
-                    options.DefaultTenant.DefaultConnectionString = writingConnectionString;
-                    options.DefaultTenant.WritingConnectionString = writingConnectionString;
+                    options.Tenants.Default.DefaultConnectionString = writingConnectionString;
+                    options.Tenants.Default.WritingConnectionString = writingConnectionString;
+                    options.Tenants.Default.WritingSeparation = false;
                 })
                 .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                 {
                     var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
-                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
+                    optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>

@@ -14,8 +14,10 @@ using GraphQL.Types;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
+using System.Threading;
 
 namespace Librame.AspNetCore.Identity.Api
 {
@@ -30,7 +32,7 @@ namespace Librame.AspNetCore.Identity.Api
         private ILogger<IdentityGraphApiMutation> _logger = null;
 
         [InjectionService]
-        private IIdentityIdentifierService _identifierService = null;
+        private IdentityStoreIdentifier _identifier = null;
 
         [InjectionService]
         private IEmailService _emailService = null;
@@ -39,18 +41,29 @@ namespace Librame.AspNetCore.Identity.Api
         private IExpressionStringLocalizer<RegisterApiModelResource> _localizer = null;
 
         [InjectionService]
-        private SignInManager<DefaultIdentityUser> _signInManager = null;
+        private IIdentityBuilderWrapper _builderWrapper = null;
 
-        private UserManager<DefaultIdentityUser> _userManager = null;
+        [InjectionService]
+        private IServiceProvider _serviceProvider = null;
+
+        private readonly dynamic _signInManager = null;
+        private readonly dynamic _userManager = null;
+        private readonly dynamic _userStore = null;
+        private readonly dynamic _emailStore;
 
 
         public IdentityGraphApiMutation(IInjectionService injectionService)
         {
             injectionService.Inject(this);
 
+            _signInManager = _serviceProvider.GetService(typeof(SignInManager<>)
+                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
             _userManager = _signInManager.UserManager;
+            _userStore = _serviceProvider.GetService(typeof(IUserStore<>)
+                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
+            _emailStore = _userStore.GetUserEmailStore(_userManager);
 
-            Name = nameof(GraphQL.Types.ISchema.Mutation);
+            Name = nameof(ISchema.Mutation);
 
             AddLoginTypeField();
 
@@ -70,7 +83,7 @@ namespace Librame.AspNetCore.Identity.Api
                 {
                     var model = context.GetArgument<LoginApiModel>("user");
 
-                    var result = await _signInManager.PasswordSignInAsync(model.Name,
+                    var result = await _signInManager.PasswordSignInAsync(model.Email,
                         model.Password, model.RememberMe, lockoutOnFailure: true);
 
                     if (result.Succeeded)
@@ -109,11 +122,12 @@ namespace Librame.AspNetCore.Identity.Api
                 resolve: async context =>
                 {
                     var model = context.GetArgument<RegisterApiModel>("user");
-                    var user = new DefaultIdentityUser(model.Name)
-                    {
-                        Id = await _identifierService.GetUserIdAsync(),
-                        Email = model.Email
-                    };
+
+                    var user = new DefaultIdentityUser();
+                    user.Id = _identifier.GetUserIdAsync().Result;
+
+                    await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
+                    await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
 
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
@@ -122,7 +136,7 @@ namespace Librame.AspNetCore.Identity.Api
                         model.UserId = await _userManager.GetUserIdAsync(user);
 
                         // 确认邮件
-                        var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        string emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                         var confirmEmailLocator = model.ConfirmEmailUrl.AsUriLocator();
                         confirmEmailLocator.ChangeQueries(queries =>
@@ -141,9 +155,10 @@ namespace Librame.AspNetCore.Identity.Api
                     }
                     else
                     {
-                        if (result.Errors.IsNotNullOrEmpty())
+                        IEnumerable<IdentityError> errors = result.Errors;
+                        if (errors.IsNotNullOrEmpty())
                         {
-                            model.Errors.AddRange(result.Errors.Select(error =>
+                            model.Errors.AddRange(errors.Select(error =>
                             {
                                 return new Exception($"Code: {error.Code}, Description: {error.Description}");
                             }));

@@ -36,7 +36,7 @@
   </PropertyGroup>
     
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="6.0.864.201" />
+    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="6.1.869.201" />
   </ItemGroup>
 
   <ItemGroup>

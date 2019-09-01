@@ -45,26 +45,27 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
-            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-            var writingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
+            // 默认使用测试项目的写入库
+            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_default;Integrated Security=True";
+            var writingConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_writing;Integrated Security=True";
 
             services.AddLibrameCore()
                 .AddDataCore(options =>
                 {
-                    // 默认使用写入库做为主库
-                    options.DefaultTenant.DefaultConnectionString = writingConnectionString;
-                    options.DefaultTenant.WritingConnectionString = writingConnectionString;
+                    options.Tenants.Default.DefaultConnectionString = writingConnectionString;
+                    options.Tenants.Default.WritingConnectionString = writingConnectionString;
+                    options.Tenants.Default.WritingSeparation = false;
                 })
                 .AddAccessor<IdentityServerDbContextAccessor>((options, optionsBuilder) =>
                 {
                     var migrationsAssembly = typeof(IdentityServerDbContextAccessor).Assembly.GetName().Name;
-                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
+                    optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddAccessor<PersistedGrantDbContextAccessor>((options, optionsBuilder) =>
                 {
                     var migrationsAssembly = typeof(PersistedGrantDbContextAccessor).Assembly.GetName().Name;
-                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
+                    optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddIdentityServer<IdentityServerDbContextAccessor,

@@ -20,9 +20,9 @@ namespace Librame.AspNetCore.Identity.Api
     public class LoginApiModel : AbstractApiModel
     {
         /// <summary>
-        /// 称呼。
+        /// 电邮。
         /// </summary>
-        public string Name { get; set; }
+        public string Email { get; set; }
 
         /// <summary>
         /// 密码。

@@ -34,25 +34,27 @@ namespace Librame.Extensions.Data
         }
 
 
-        public Task<ITenant> GetTenantAsync<TTenant>(IQueryable<TTenant> queryable,
-            CancellationToken cancellationToken = default)
-            where TTenant : ITenant
+        public Task<ITenant> GetCurrentTenantAsync(IAccessor accessor, CancellationToken cancellationToken = default)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            ITenant tenant = null;
-
-            var host = _httpContext?.Request?.Host;
-            if (host.HasValue && !host.Value.IsIPAddress())
+            if (accessor is DbContextAccessor dbContextAccessor)
             {
-                var twoLevels = host.Value.Host.AsDomainNameLocator().GetOnlyTwoLevels();
-                var name = twoLevels.Child ?? "www";
+                var host = _httpContext?.Request?.Host;
+                if (host.HasValue && !host.Value.IsIPAddress())
+                {
+                    var twoLevels = host.Value.Host.AsDomainNameLocator().GetOnlyTwoLevels();
+                    var name = twoLevels.Child ?? "www";
 
-                tenant = queryable.FirstOrDefault(t => t.Name == name && t.Host == twoLevels.Parent);
-                Logger.LogInformation($"Queryable database Tenant: {tenant?.Name}.{tenant?.Host}");
+                    return cancellationToken.RunFactoryOrCancellationAsync(() =>
+                    {
+                        ITenant tenant = dbContextAccessor.Tenants.FirstOrDefault(t => t.Name == name && t.Host == twoLevels.Parent);
+                        Logger.LogInformation($"Get database tenant: Name={tenant?.Name}, Host={tenant?.Host}");
+
+                        return tenant;
+                    });
+                }
             }
-            
-            return Task.FromResult(tenant ?? Options.DefaultTenant);
+
+            return Task.FromResult(Options.Tenants.Default);
         }
 
     }

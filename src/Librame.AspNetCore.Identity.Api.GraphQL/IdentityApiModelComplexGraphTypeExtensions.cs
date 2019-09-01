@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.Identity.Api
         public static ComplexGraphType<TModel> AddLoginApiModelFields<TModel>(this ComplexGraphType<TModel> graphType)
             where TModel : LoginApiModel
         {
-            graphType.Field(f => f.Name);
+            graphType.Field(f => f.Email);
             graphType.Field(f => f.Password);
             graphType.Field(f => f.RememberMe, nullable: true);
             graphType.Field(f => f.UserId, nullable: true);
@@ -32,7 +32,6 @@ namespace Librame.AspNetCore.Identity.Api
             where TModel : RegisterApiModel
         {
             graphType.Field(f => f.Email);
-            graphType.Field(f => f.Name);
             graphType.Field(f => f.Password);
             graphType.Field(f => f.ConfirmEmailUrl);
             graphType.Field(f => f.UserId, nullable: true);

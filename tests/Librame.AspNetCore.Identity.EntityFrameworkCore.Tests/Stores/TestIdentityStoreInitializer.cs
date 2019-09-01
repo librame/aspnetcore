@@ -9,8 +9,7 @@ namespace Librame.AspNetCore.Identity.Tests
     using Extensions;
     using Extensions.Data;
 
-    public class TestInitializerService<TAccessor> : InitializerServiceBase<TAccessor, IdentityIdentifierService>
-        where TAccessor : IdentityDbContextAccessor
+    public class TestIdentityStoreInitializer : StoreInitializerBase<IdentityDbContextAccessor, IdentityStoreIdentifier>
     {
         private readonly SignInManager<DefaultIdentityUser> _signInManager;
         private readonly RoleManager<DefaultIdentityRole> _roleMananger;
@@ -21,10 +20,10 @@ namespace Librame.AspNetCore.Identity.Tests
         private IList<DefaultIdentityUser> _users;
 
 
-        public TestInitializerService(SignInManager<DefaultIdentityUser> signInManager,
+        public TestIdentityStoreInitializer(SignInManager<DefaultIdentityUser> signInManager,
             RoleManager<DefaultIdentityRole> roleMananger,
             IUserStore<DefaultIdentityUser> userStore,
-            IIdentityIdentifierService identifier, ILoggerFactory loggerFactory)
+            IStoreIdentifier identifier, ILoggerFactory loggerFactory)
             : base(identifier, loggerFactory)
         {
             _signInManager = signInManager.NotNull(nameof(signInManager));
@@ -34,9 +33,9 @@ namespace Librame.AspNetCore.Identity.Tests
         }
 
 
-        protected override void InitializeStores(IStoreHub<TAccessor> stores)
+        protected override void InitializeCore(IStoreHub<IdentityDbContextAccessor> stores)
         {
-            base.InitializeStores(stores);
+            base.InitializeCore(stores);
 
             InitializeRoles(stores);
 
@@ -45,7 +44,7 @@ namespace Librame.AspNetCore.Identity.Tests
             InitializeClaims(stores);
         }
 
-        private void InitializeRoles(IStoreHub<TAccessor> stores)
+        private void InitializeRoles(IStoreHub<IdentityDbContextAccessor> stores)
         {
             if (!stores.Accessor.Roles.Any())
             {
@@ -53,11 +52,11 @@ namespace Librame.AspNetCore.Identity.Tests
                 {
                     new DefaultIdentityRole("SuperAdministrator")
                     {
-                        Id = Identifier.GetRoleIdAsync(default).Result
+                        Id = Identifier.GetRoleIdAsync().Result
                     },
                     new DefaultIdentityRole("Administrator")
                     {
-                        Id = Identifier.GetRoleIdAsync(default).Result
+                        Id = Identifier.GetRoleIdAsync().Result
                     }
                 };
 
@@ -70,7 +69,7 @@ namespace Librame.AspNetCore.Identity.Tests
             }
         }
 
-        private void InitializeUsers(IStoreHub<TAccessor> stores)
+        private void InitializeUsers(IStoreHub<IdentityDbContextAccessor> stores)
         {
             if (!stores.Accessor.Users.Any())
             {
@@ -79,11 +78,11 @@ namespace Librame.AspNetCore.Identity.Tests
                 {
                     new DefaultIdentityUser("librame@librame.net")
                     {
-                        Id = Identifier.GetUserIdAsync(default).Result
+                        Id = Identifier.GetUserIdAsync().Result
                     },
                     new DefaultIdentityUser("libramecore@librame.net")
                     {
-                        Id = Identifier.GetUserIdAsync(default).Result
+                        Id = Identifier.GetUserIdAsync().Result
                     }
                 };
 
@@ -114,7 +113,7 @@ namespace Librame.AspNetCore.Identity.Tests
             }
         }
 
-        private void InitializeClaims(IStoreHub<TAccessor> stores)
+        private void InitializeClaims(IStoreHub<IdentityDbContextAccessor> stores)
         {
             if (!stores.Accessor.UserClaims.Any())
             {
