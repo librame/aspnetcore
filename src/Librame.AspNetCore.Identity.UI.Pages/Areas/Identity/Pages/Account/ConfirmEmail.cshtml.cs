@@ -51,9 +51,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         }
 
 
-        public override async Task<IActionResult> OnGetAsync(string userId, string token)
+        public override async Task<IActionResult> OnGetAsync(string userId, string code)
         {
-            if (userId == null || token == null)
+            if (userId == null || code == null)
             {
                 return RedirectToPage("/Index");
             }
@@ -64,7 +64,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var result = await _userManager.ConfirmEmailAsync(user, code);
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Error confirming email for user with ID '{userId}':");

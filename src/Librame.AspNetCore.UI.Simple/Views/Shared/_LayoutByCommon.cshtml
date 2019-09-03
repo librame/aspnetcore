@@ -1,6 +1,6 @@
 ﻿@inject IApplicationContext Application
 @{
-    var uiInfo = Application.GetUi(ViewContext.RouteData.AsRouteDescriptor());
+    var uiInfo = Application.Uis[ViewContext.RouteData.AsRouteDescriptor()?.Area];
 }
 <!DOCTYPE html>
 <html>

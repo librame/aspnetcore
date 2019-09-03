@@ -20,7 +20,6 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Controllers
 {
     using AspNetCore.UI;
-    using Extensions.Core;
     using Extensions.Network;
 
     /// <summary>
@@ -30,7 +29,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
     [Authorize]
     [UiTemplateWithUser(typeof(ManageController<>))]
     public class ManageController<TUser> : Controller
-        where TUser : DefaultIdentityUser, new()
+        where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly ISmsService _smsService;
@@ -41,12 +40,16 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         /// <summary>
         /// 构造一个 <see cref="ManageController{TUser}"/>。
         /// </summary>
-        /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
-        public ManageController(ServiceFactoryDelegate serviceFactory)
+        /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
+        /// <param name="smsService">给定的 <see cref="ISmsService"/>。</param>
+        /// <param name="logger">给定的 <see cref="ILogger{TCategoryName}"/>。</param>
+        public ManageController(SignInManager<TUser> signInManager,
+            ISmsService smsService,
+            ILogger<ManageController<TUser>> logger)
         {
-            _signInManager = serviceFactory.GetSignInMananger();
-            _smsService = serviceFactory.GetRequiredService<ISmsService>();
-            _logger = serviceFactory.GetRequiredService<ILogger<ManageController<TUser>>>();
+            _signInManager = signInManager;
+            _smsService = smsService;
+            _logger = logger;
             _userManager = _signInManager.UserManager;
         }
 
@@ -132,7 +135,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             var user = await GetCurrentUserAsync();
             var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.Phone);
             await _smsService.SendAsync(model.Phone, "Your security code is: " + code);
-            return RedirectToAction(nameof(VerifyPhoneNumber), new { PhoneNumber = model.Phone });
+            return RedirectToAction(nameof(VerifyPhoneNumber), new { phoneNumber = model.Phone });
         }
 
 
@@ -373,10 +376,12 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             {
                 return View("Error");
             }
+
             var userLogins = await _userManager.GetLoginsAsync(user);
             var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
             var otherLogins = schemes.Where(auth => userLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
-            ViewData["ShowRemoveButton"] = user.PasswordHash != null || userLogins.Count > 1;
+            ViewData["ShowRemoveButton"] = _userManager.HasPasswordAsync(user).Result || userLogins.Count > 1;
+
             return View(new ManageLoginsViewModel
             {
                 CurrentLogins = userLogins,

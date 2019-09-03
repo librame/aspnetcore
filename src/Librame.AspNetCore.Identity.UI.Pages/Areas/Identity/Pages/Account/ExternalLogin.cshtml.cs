@@ -18,12 +18,13 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
+    using Extensions;
+    using Extensions.Data;
 
     /// <summary>
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -101,25 +102,26 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
 
     internal class ExternalLoginPageModel<TUser> : ExternalLoginPageModel
-        where TUser : class
+        where TUser : class, IGenId
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
-        private readonly IUserEmailStore<TUser> _emailStore;
         private readonly ILogger<ExternalLoginPageModel> _logger;
+        private readonly IdentityStoreIdentifier _storeIdentifier;
 
 
         public ExternalLoginPageModel(
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
-            ILogger<ExternalLoginPageModel> logger)
+            ILogger<ExternalLoginPageModel> logger,
+            IdentityStoreIdentifier storeIdentifier)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
             _userStore = userStore;
-            _emailStore = userStore.GetUserEmailStore(_userManager);
             _logger = logger;
+            _storeIdentifier = storeIdentifier;
         }
 
 
@@ -192,11 +194,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                user.Id = await _storeIdentifier.GetUserIdAsync();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateUserByEmail(_userStore, Input.Email, password: null, user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
@@ -222,7 +222,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         {
             try
             {
-                return Activator.CreateInstance<TUser>();
+                return typeof(TUser).EnsureCreate<TUser>();
             }
             catch
             {
@@ -232,13 +232,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             }
         }
 
-        private IUserEmailStore<TUser> GetEmailStore()
-        {
-            if (!_userManager.SupportsUserEmail)
-            {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
-            }
-            return (IUserEmailStore<TUser>)_userStore;
-        }
+        //private IUserEmailStore<TUser> GetEmailStore()
+        //{
+        //    if (!_userManager.SupportsUserEmail)
+        //    {
+        //        throw new NotSupportedException("The default UI requires a user store with email support.");
+        //    }
+        //    return (IUserEmailStore<TUser>)_userStore;
+        //}
     }
 }

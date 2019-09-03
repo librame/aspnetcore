@@ -73,15 +73,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Identity
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityServer.EntityFrameworkCore.Tests", "tests\Librame.AspNetCore.IdentityServer.EntityFrameworkCore.Tests\Librame.AspNetCore.IdentityServer.EntityFrameworkCore.Tests.csproj", "{245C2EEF-DCA6-4771-A23B-372666662303}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.UI.Abstractions.Tests", "tests\Librame.AspNetCore.UI.Abstractions.Tests\Librame.AspNetCore.UI.Abstractions.Tests.csproj", "{69CE67BF-D3DA-4036-B1CB-49A311E0C497}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.UI.Abstractions.Tests", "tests\Librame.AspNetCore.UI.Abstractions.Tests\Librame.AspNetCore.UI.Abstractions.Tests.csproj", "{69CE67BF-D3DA-4036-B1CB-49A311E0C497}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.UI.Tests", "tests\Librame.AspNetCore.UI.Tests\Librame.AspNetCore.UI.Tests.csproj", "{E714BB97-C5B7-47A4-AF08-BE35A7765014}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.UI.Tests", "tests\Librame.AspNetCore.UI.Tests\Librame.AspNetCore.UI.Tests.csproj", "{E714BB97-C5B7-47A4-AF08-BE35A7765014}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.Api.Abstractions.Tests", "tests\Librame.AspNetCore.Api.Abstractions.Tests\Librame.AspNetCore.Api.Abstractions.Tests.csproj", "{B6B401BC-61F7-41C8-9CFD-1D42F2CD9C6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Api.Abstractions.Tests", "tests\Librame.AspNetCore.Api.Abstractions.Tests\Librame.AspNetCore.Api.Abstractions.Tests.csproj", "{B6B401BC-61F7-41C8-9CFD-1D42F2CD9C6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.Api.GraphQL.Tests", "tests\Librame.AspNetCore.Api.GraphQL.Tests\Librame.AspNetCore.Api.GraphQL.Tests.csproj", "{A1B6F234-C007-4190-B587-DAD9CC6B82F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Api.GraphQL.Tests", "tests\Librame.AspNetCore.Api.GraphQL.Tests\Librame.AspNetCore.Api.GraphQL.Tests.csproj", "{A1B6F234-C007-4190-B587-DAD9CC6B82F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.IdentityServer.UI.Tests", "tests\Librame.AspNetCore.IdentityServer.UI.Tests\Librame.AspNetCore.IdentityServer.UI.Tests.csproj", "{DE7EA136-6B48-46E8-AA8F-8A07D25F62EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityServer.UI.Tests", "tests\Librame.AspNetCore.IdentityServer.UI.Tests\Librame.AspNetCore.IdentityServer.UI.Tests.csproj", "{DE7EA136-6B48-46E8-AA8F-8A07D25F62EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

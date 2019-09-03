@@ -17,13 +17,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
+    using Extensions.Data;
 
     /// <summary>
     /// 外部登入确认页面模型。
@@ -91,28 +92,29 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
 
     internal class ExternalLoginConfirmationPageModel<TUser> : ExternalLoginConfirmationPageModel
-        where TUser : class
+        where TUser : class, IGenId
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
-        private readonly IUserEmailStore<TUser> _emailStore;
         private readonly ILogger<ExternalLoginConfirmationPageModel> _logger;
         private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IdentityStoreIdentifier _storeIdentifier;
 
 
         public ExternalLoginConfirmationPageModel(
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
             ILogger<ExternalLoginConfirmationPageModel> logger,
-            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
+            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer,
+            IdentityStoreIdentifier storeIdentifier)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
             _userStore = userStore;
-            _emailStore = userStore.GetUserEmailStore(_userManager);
             _logger = logger;
             _errorLocalizer = errorLocalizer;
+            _storeIdentifier = storeIdentifier;
         }
 
 
@@ -188,10 +190,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                user.Id = await _storeIdentifier.GetUserIdAsync();
 
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateUserByEmail(_userStore, Input.Email, password: null, user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
@@ -218,7 +219,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         {
             try
             {
-                return Activator.CreateInstance<TUser>();
+                return typeof(TUser).EnsureCreate<TUser>();
             }
             catch
             {

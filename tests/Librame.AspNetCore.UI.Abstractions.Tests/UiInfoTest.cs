@@ -22,12 +22,12 @@ namespace Librame.AspNetCore.UI.Tests
 
             public override string Copyright => "Test";
 
-            public override void AddLocalizers(ConcurrentDictionary<string, IStringLocalizer> localizers, ServiceFactoryDelegate serviceFactory)
+            public override void AddLocalizers(ref ConcurrentDictionary<string, IStringLocalizer> localizers, ServiceFactoryDelegate serviceFactory)
             {
                 throw new NotImplementedException();
             }
 
-            public override void AddNavigations(ConcurrentDictionary<string, List<NavigationDescriptor>> navigations, ServiceFactoryDelegate serviceFactory)
+            public override void AddNavigations(ref ConcurrentDictionary<string, List<NavigationDescriptor>> navigations, ServiceFactoryDelegate serviceFactory)
             {
                 throw new NotImplementedException();
             }
@@ -43,8 +43,11 @@ namespace Librame.AspNetCore.UI.Tests
             Assert.NotEmpty(info.Author);
             Assert.NotEmpty(info.Contact);
             Assert.NotEmpty(info.Copyright);
-            Assert.Throws<NotImplementedException>(() => info.AddLocalizers(null, null));
-            Assert.Throws<NotImplementedException>(() => info.AddNavigations(null, null));
+
+            var localizers = new ConcurrentDictionary<string, IStringLocalizer>();
+            var navigations = new ConcurrentDictionary<string, List<NavigationDescriptor>>();
+            Assert.Throws<NotImplementedException>(() => info.AddLocalizers(ref localizers, null));
+            Assert.Throws<NotImplementedException>(() => info.AddNavigations(ref navigations, null));
         }
     }
 }

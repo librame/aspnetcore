@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
-using System.Threading;
 
 namespace Librame.AspNetCore.Identity.Api
 {
@@ -124,25 +123,22 @@ namespace Librame.AspNetCore.Identity.Api
                     var model = context.GetArgument<RegisterApiModel>("user");
 
                     var user = new DefaultIdentityUser();
-                    user.Id = _identifier.GetUserIdAsync().Result;
+                    user.Id = await _identifier.GetUserIdAsync();
 
-                    await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
-                    await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
-
-                    var result = await _userManager.CreateAsync(user, model.Password);
+                    var result = await _userManager.CreateUserByEmail(_userStore, model.Email, model.Password, user);
                     if (result.Succeeded)
                     {
                         model.Message = "User created a new account with password.";
-                        model.UserId = await _userManager.GetUserIdAsync(user);
+                        model.UserId = user.Id;
 
                         // 确认邮件
-                        string emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                         var confirmEmailLocator = model.ConfirmEmailUrl.AsUriLocator();
                         confirmEmailLocator.ChangeQueries(queries =>
                         {
                             queries.AddOrUpdate("userId", model.UserId, (key, value) => model.UserId);
-                            queries.AddOrUpdate("token", emailToken, (key, value) => emailToken);
+                            queries.AddOrUpdate("code", code, (key, value) => code);
                         });
                         var confirmEmailExternalLink = HtmlEncoder.Default.Encode(confirmEmailLocator.ToString());
 
@@ -152,17 +148,16 @@ namespace Librame.AspNetCore.Identity.Api
                         //await userStore.GetUserEmailStore(signInManager).SetEmailAsync(user, model.Email, default);
 
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        _logger.LogInformation(3, "User created a new account with password.");
                     }
-                    else
+
+                    IEnumerable<IdentityError> errors = result.Errors;
+                    if (errors.IsNotNullOrEmpty())
                     {
-                        IEnumerable<IdentityError> errors = result.Errors;
-                        if (errors.IsNotNullOrEmpty())
+                        model.Errors.AddRange(errors.Select(error =>
                         {
-                            model.Errors.AddRange(errors.Select(error =>
-                            {
-                                return new Exception($"Code: {error.Code}, Description: {error.Description}");
-                            }));
-                        }
+                            return new Exception($"Code: {error.Code}, Description: {error.Description}");
+                        }));
                     }
 
                     return model.Log(_logger);

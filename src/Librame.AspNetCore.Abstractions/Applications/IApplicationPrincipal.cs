@@ -11,7 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Librame.AspNetCore
 {
@@ -26,14 +26,12 @@ namespace Librame.AspNetCore
         /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
         bool IsSignedIn(HttpContext context);
 
-
         /// <summary>
         /// 异步获取已登入用户。
         /// </summary>
         /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
         /// <returns>返回一个包含用户的异步操作。</returns>
-        Task<dynamic> GetSignedUserAsync(HttpContext context);
-
+        dynamic GetSignedUser(HttpContext context);
 
         /// <summary>
         /// 获取已登入用户标识。
@@ -43,33 +41,31 @@ namespace Librame.AspNetCore
         string GetSignedUserId(HttpContext context);
 
         /// <summary>
-        /// 异步获取已登入用户标识。
-        /// </summary>
-        /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
-        /// <returns>返回一个包含字符串的异步操作。</returns>
-        Task<string> GetSignedUserIdAsync(HttpContext context);
-
-
-        /// <summary>
-        /// 获取已登入用户名。
+        /// 获取已登入用户名称。
         /// </summary>
         /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
         /// <returns>返回字符串。</returns>
         string GetSignedUserName(HttpContext context);
 
         /// <summary>
-        /// 异步获取已登入用户名。
+        /// 获取已登入用户电邮。
         /// </summary>
         /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
-        /// <returns>返回一个包含字符串的异步操作。</returns>
-        Task<string> GetSignedUserNameAsync(HttpContext context);
-
+        /// <returns>返回字符串。</returns>
+        string GetSignedUserEmail(HttpContext context);
 
         /// <summary>
-        /// 异步获取已登入用户电邮。
+        /// 获取已登入用户电话号码。
         /// </summary>
         /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
-        /// <returns>返回一个包含字符串的异步操作。</returns>
-        Task<string> GetSignedUserEmailAsync(HttpContext context);
+        /// <returns>返回字符串。</returns>
+        string GetSignedUserPhoneNumber(HttpContext context);
+
+        /// <summary>
+        /// 获取已登入用户角色列表。
+        /// </summary>
+        /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
+        /// <returns>返回 <see cref="IList{String}"/>。</returns>
+        IList<string> GetSignedUserRoles(HttpContext context);
     }
 }

@@ -17,13 +17,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text.Encodings.Web;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
     using Extensions;
+    using Extensions.Data;
     using Extensions.Network;
 
     /// <summary>
@@ -77,14 +77,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     }
 
 
-    internal class RegisterPageModel<TUser> : RegisterPageModel where TUser : class
+    internal class RegisterPageModel<TUser> : RegisterPageModel
+        where TUser : class, IGenId
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
-        private readonly IUserEmailStore<TUser> _emailStore;
         private readonly ILogger<LoginPageModel> _logger;
         private readonly IEmailService _emailService;
+        private readonly IdentityStoreIdentifier _storeIdentifier;
 
 
         public RegisterPageModel(
@@ -92,15 +93,16 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             IUserStore<TUser> userStore,
             ILogger<LoginPageModel> logger,
             IEmailService emailService,
-            IExpressionHtmlLocalizer<RegisterViewResource> localizer)
+            IExpressionHtmlLocalizer<RegisterViewResource> localizer,
+            IdentityStoreIdentifier storeIdentifier)
             : base(localizer)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
             _userStore = userStore;
-            _emailStore = userStore.GetUserEmailStore(_userManager);
             _logger = logger;
             _emailService = emailService;
+            _storeIdentifier = storeIdentifier;
         }
 
 
@@ -115,21 +117,17 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-                
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                user.Id = await _storeIdentifier.GetUserIdAsync();
 
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                var result = await _userManager.CreateUserByEmail(_userStore, Input.Email, Input.Password, user);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { userId, token },
+                        values: new { userId = user.Id, code },
                         protocol: Request.Scheme);
 
                     await _emailService.SendAsync(Input.Email,
@@ -137,6 +135,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                         Localizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value);
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation(3, "User created a new account with password.");
+
                     return LocalRedirect(returnUrl);
                 }
 

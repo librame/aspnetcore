@@ -10,8 +10,8 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -61,7 +61,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// </summary>
         /// <param name="localizers">给定的 <see cref="ConcurrentDictionary{String, IStringLocalizer}"/>。</param>
         /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
-        public override void AddLocalizers(ConcurrentDictionary<string, IStringLocalizer> localizers, ServiceFactoryDelegate serviceFactory)
+        public override void AddLocalizers(ref ConcurrentDictionary<string, IStringLocalizer> localizers, ServiceFactoryDelegate serviceFactory)
         {
             var layoutLocalizer = serviceFactory.GetRequiredService<IExpressionStringLocalizer<LayoutViewResource>>();
 
@@ -73,18 +73,20 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// </summary>
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
-        public override void AddNavigations(ConcurrentDictionary<string, List<NavigationDescriptor>> navigations, ServiceFactoryDelegate serviceFactory)
+        public override void AddNavigations(ref ConcurrentDictionary<string, List<NavigationDescriptor>> navigations, ServiceFactoryDelegate serviceFactory)
         {
             var layoutLocalizer = serviceFactory.GetRequiredService<IExpressionStringLocalizer<LayoutViewResource>>();
+            var uiOptions = serviceFactory.GetRequiredService<IOptions<UiBuilderOptions>>().Value;
 
-            var manageSidebarNavigations = CreateManageSidebarNavigation(layoutLocalizer);
+            var manageSidebarNavigations = CreateManageSidebarNavigation(layoutLocalizer, uiOptions);
             navigations.AddOrUpdateManageSidebarNavigation(manageSidebarNavigations);
 
             var manageFootbarNavigations = CreateManageFootbarNavigation(layoutLocalizer);
             navigations.AddOrUpdateManageFooterNavigation(manageFootbarNavigations);
         }
 
-        private List<NavigationDescriptor> CreateManageSidebarNavigation(IExpressionStringLocalizer<LayoutViewResource> localizer)
+        private List<NavigationDescriptor> CreateManageSidebarNavigation(IExpressionStringLocalizer<LayoutViewResource> localizer,
+            UiBuilderOptions uiOptions)
         {
             return new List<NavigationDescriptor>
             {
@@ -92,32 +94,32 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 {
                     Id = "profile",
                     Icon = "la la-user",
-                    ActiveClassNameFactory = page => page.ViewContext.ActiveCssClassNameOrEmpty("Profile"),
+                    ActiveClassNameFactory = page => ViewContextUtility.GetActiveViewCssClassNameOrEmpty(page.ViewContext, "Profile"),
                 },
                 new NavigationDescriptor(localizer[p => p.ChangePassword], "./ChangePassword")
                 {
                     Id = "change-password",
                     Icon = "la la-unlock",
-                    ActiveClassNameFactory = page => page.ViewContext.ActiveCssClassNameOrEmpty("ChangePassword"),
+                    ActiveClassNameFactory = page => ViewContextUtility.GetActiveViewCssClassNameOrEmpty(page.ViewContext, "ChangePassword"),
                 },
                 new NavigationDescriptor(localizer[p => p.ExternalLogins], "./ExternalLogins")
                 {
                     Id = "external-login",
                     Icon = "la la-key",
-                    ActiveClassNameFactory = page => page.ViewContext.ActiveCssClassNameOrEmpty("ExternalLogins"),
-                    VisibilityFactory = page => (bool)(page as RazorPage<IApplicationContext>).ViewData["ManageNav.HasExternalLogins"]
+                    ActiveClassNameFactory = page => ViewContextUtility.GetActiveViewCssClassNameOrEmpty(page.ViewContext, "ExternalLogins"),
+                    VisibilityFactory = page => ViewDataDictionaryUtility.GetBool(page.ViewData, uiOptions.HasExternalAuthenticationSchemesKey)
                 },
                 new NavigationDescriptor(localizer[p => p.TwoFactorAuthentication], "./TwoFactorAuthentication")
                 {
                     Id = "two-factor",
                     Icon = "la la-superscript",
-                    ActiveClassNameFactory = page => page.ViewContext.ActiveCssClassNameOrEmpty("TwoFactorAuthentication"),
+                    ActiveClassNameFactory = page => ViewContextUtility.GetActiveViewCssClassNameOrEmpty(page.ViewContext, "TwoFactorAuthentication"),
                 },
                 new NavigationDescriptor(localizer[p => p.PersonalData], "./PersonalData")
                 {
                     Id = "personal-data",
                     Icon = "la la-user-times",
-                    ActiveClassNameFactory = page => page.ViewContext.ActiveCssClassNameOrEmpty("PersonalData"),
+                    ActiveClassNameFactory = page => ViewContextUtility.GetActiveViewCssClassNameOrEmpty(page.ViewContext, "PersonalData"),
                 }
             };
         }

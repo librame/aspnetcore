@@ -77,6 +77,7 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
                     optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
+                .AddIdentifier<IdentityStoreIdentifier>() // IStoreIdentifier
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
                     dependency.BaseSetupAction = options =>

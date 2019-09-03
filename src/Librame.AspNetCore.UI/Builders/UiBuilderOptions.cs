@@ -20,6 +20,12 @@ namespace Librame.AspNetCore.UI
     public class UiBuilderOptions : AbstractExtensionBuilderOptions
     {
         /// <summary>
+        /// 激活视图键名。
+        /// </summary>
+        public string ActiveViewKey { get; set; }
+            = "ActivePage";
+
+        /// <summary>
         /// 有外部认证方案的键名。
         /// </summary>
         public string HasExternalAuthenticationSchemesKey { get; set; }

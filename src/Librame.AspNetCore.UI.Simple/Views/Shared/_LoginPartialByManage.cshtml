@@ -4,7 +4,7 @@
 {
     var localizer = Model.Localizers.GetManageLayoutLocalizer();
     var userName = Model.Principal.GetSignedUserName(Context);
-    var email = await Model.Principal.GetSignedUserEmailAsync(Context);
+    var email = Model.Principal.GetSignedUserEmail(Context);
 
     <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
         <!-- Message:

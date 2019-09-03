@@ -20,9 +20,9 @@ namespace Librame.AspNetCore.UI
     using Extensions.Core;
 
     /// <summary>
-    /// 应用信息助手。
+    /// <see cref="IApplicationInfo"/> 实用工具。
     /// </summary>
-    public static class ApplicationInfoHelper
+    public static class ApplicationInfoUtility
     {
         private static readonly string _uiAssemblyNamePattern
             = $@"^{nameof(Librame)}.{nameof(AspNetCore)}.(\w+).{nameof(UI)}$";
@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.UI
             = $@"^{nameof(Librame)}.{nameof(AspNetCore)}.{nameof(UI)}.(Themepack).(\w+)$";
 
 
-        static ApplicationInfoHelper()
+        static ApplicationInfoUtility()
         {
             Uis = Uis.EnsureSingleton(() =>
             {

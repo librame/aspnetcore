@@ -28,13 +28,13 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         /// <param name="localizers">给定的 <see cref="ConcurrentDictionary{String, IStringLocalizer}"/>。</param>
         /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
-        void AddLocalizers(ConcurrentDictionary<string, IStringLocalizer> localizers, ServiceFactoryDelegate serviceFactory);
+        void AddLocalizers(ref ConcurrentDictionary<string, IStringLocalizer> localizers, ServiceFactoryDelegate serviceFactory);
 
         /// <summary>
         /// 添加导航信息集合。
         /// </summary>
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
-        void AddNavigations(ConcurrentDictionary<string, List<NavigationDescriptor>> navigations, ServiceFactoryDelegate serviceFactory);
+        void AddNavigations(ref ConcurrentDictionary<string, List<NavigationDescriptor>> navigations, ServiceFactoryDelegate serviceFactory);
     }
 }

@@ -22,6 +22,11 @@ namespace Librame.AspNetCore.Identity
     /// </summary>
     public class IdentityBuilderOptions : DataBuilderOptionsBase<IdentityTableSchemaOptions>
     {
+        /// <summary>
+        /// 默认密码。
+        /// </summary>
+        public string DefaultPassword { get; set; }
+            = "Password!123456";
     }
 
 

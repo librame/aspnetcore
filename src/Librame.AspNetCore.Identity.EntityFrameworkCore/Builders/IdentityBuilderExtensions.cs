@@ -74,6 +74,8 @@ namespace Librame.AspNetCore.Identity
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
+            rawBuilder.Services.TryReplace<IdentityErrorDescriber, LocalizationIdentityErrorDescriber>();
+
             // Add Builder
             builder.Services.OnlyConfigure(dependencySetupAction);
 

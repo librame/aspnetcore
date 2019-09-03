@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 
 namespace Librame.AspNetCore.Identity.Tests
 {
-    using Extensions;
     using Extensions.Data;
 
     public class TestIdentityStoreInitializer : StoreInitializerBase<IdentityDbContextAccessor, IdentityStoreIdentifier>
@@ -14,7 +15,7 @@ namespace Librame.AspNetCore.Identity.Tests
         private readonly SignInManager<DefaultIdentityUser> _signInManager;
         private readonly RoleManager<DefaultIdentityRole> _roleMananger;
         private readonly IUserStore<DefaultIdentityUser> _userStore;
-        private readonly IUserEmailStore<DefaultIdentityUser> _emailStore;
+        private readonly IdentityBuilderOptions _options;
 
         private IList<DefaultIdentityRole> _roles;
         private IList<DefaultIdentityUser> _users;
@@ -23,13 +24,14 @@ namespace Librame.AspNetCore.Identity.Tests
         public TestIdentityStoreInitializer(SignInManager<DefaultIdentityUser> signInManager,
             RoleManager<DefaultIdentityRole> roleMananger,
             IUserStore<DefaultIdentityUser> userStore,
+            IOptions<IdentityBuilderOptions> options,
             IStoreIdentifier identifier, ILoggerFactory loggerFactory)
             : base(identifier, loggerFactory)
         {
-            _signInManager = signInManager.NotNull(nameof(signInManager));
-            _roleMananger = roleMananger.NotNull(nameof(roleMananger));
-            _userStore = userStore.NotNull(nameof(userStore));
-            _emailStore = userStore.GetUserEmailStore(signInManager);
+            _signInManager = signInManager;
+            _roleMananger = roleMananger;
+            _userStore = userStore;
+            _options = options.Value;
         }
 
 
@@ -86,15 +88,19 @@ namespace Librame.AspNetCore.Identity.Tests
                     }
                 };
 
-                var password = "Password!123456";
-
                 var i = 0;
                 foreach (var user in _users)
                 {
-                    _emailStore.SetEmailAsync(user, user.UserName, default).Wait();
+                    if (!_signInManager.UserManager.SupportsUserEmail)
+                    {
+                        var emailStore = (IUserEmailStore<DefaultIdentityUser>)_userStore;
+                        emailStore.SetEmailAsync(user, user.UserName, CancellationToken.None).Wait();
+                    }
+
                     _userStore.SetUserNameAsync(user, user.UserName, default).Wait();
 
-                    var result = _signInManager.UserManager.CreateAsync(user, password).Result;
+                    user.EmailConfirmed = true;
+                    var result = _signInManager.UserManager.CreateAsync(user, _options.DefaultPassword).Result;
                     if (result.Succeeded)
                     {
                         stores.Accessor.UserRoles.Add(new IdentityUserRole<string>

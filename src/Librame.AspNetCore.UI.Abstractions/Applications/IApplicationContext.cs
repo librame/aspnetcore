@@ -50,9 +50,14 @@ namespace Librame.AspNetCore.UI
 
 
         /// <summary>
-        /// 主题包集合。
+        /// 主题包信息集合。
         /// </summary>
         ConcurrentDictionary<string, IThemepackInfo> Themepacks { get; }
+
+        /// <summary>
+        /// 用户界面信息集合。
+        /// </summary>
+        ConcurrentDictionary<string, IUiInfo> Uis { get; }
 
 
         /// <summary>
@@ -64,20 +69,5 @@ namespace Librame.AspNetCore.UI
         /// 导航集合。
         /// </summary>
         ConcurrentDictionary<string, List<NavigationDescriptor>> Navigations { get; }
-
-
-        /// <summary>
-        /// 获取指定路由的用户界面信息。
-        /// </summary>
-        /// <param name="route">给定的 <see cref="RouteDescriptor"/>。</param>
-        /// <returns>返回 <see cref="IUiInfo"/>。</returns>
-        IUiInfo GetUi(RouteDescriptor route);
-
-        /// <summary>
-        /// 获取指定名称的用户界面信息。
-        /// </summary>
-        /// <param name="name">给定的用户界面名称。</param>
-        /// <returns>返回 <see cref="IUiInfo"/>。</returns>
-        IUiInfo GetUi(string name);
     }
 }

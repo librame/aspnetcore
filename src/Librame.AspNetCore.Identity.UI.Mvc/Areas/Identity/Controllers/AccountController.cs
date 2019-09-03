@@ -17,12 +17,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Controllers
 {
     using AspNetCore.UI;
-    using Extensions.Core;
+    using Extensions;
+    using Extensions.Data;
     using Extensions.Network;
 
     /// <summary>
@@ -32,26 +34,38 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
     [Authorize]
     [UiTemplateWithUser(typeof(AccountController<>))]
     public class AccountController<TUser> : Controller
-        where TUser : DefaultIdentityUser, new()
+        where TUser : class, IGenId
     {
         private readonly SignInManager<TUser> _signInManager;
+        private readonly UserManager<TUser> _userManager;
+        private readonly IUserStore<TUser> _userStore;
+        private readonly ILogger _logger;
         private readonly IEmailService _emailService;
         private readonly ISmsService _smsService;
-        private readonly ILogger _logger;
-        private readonly UserManager<TUser> _userManager;
+        private readonly IExpressionHtmlLocalizer<RegisterViewResource> _localizer;
+        private readonly IdentityStoreIdentifier _storeIdentifier;
 
 
         /// <summary>
         /// 构造一个 <see cref="AccountController{TUser}"/>。
         /// </summary>
-        /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
-        public AccountController(ServiceFactoryDelegate serviceFactory)
+        public AccountController(
+            SignInManager<TUser> signInManager,
+            IUserStore<TUser> userStore,
+            ILogger<AccountController<TUser>> logger,
+            IEmailService emailService,
+            ISmsService smsService,
+            IExpressionHtmlLocalizer<RegisterViewResource> localizer,
+            IdentityStoreIdentifier storeIdentifier)
         {
-            _signInManager = serviceFactory.GetSignInMananger();
-            _emailService = serviceFactory.GetRequiredService<IEmailService>();
-            _smsService = serviceFactory.GetRequiredService<ISmsService>();
-            _logger = serviceFactory.GetRequiredService<ILogger<AccountController<TUser>>>();
-            _userManager = _signInManager.UserManager;
+            _signInManager = signInManager;
+            _userManager = signInManager.UserManager;
+            _userStore = userStore;
+            _logger = logger;
+            _emailService = emailService;
+            _smsService = smsService;
+            _localizer = localizer;
+            _storeIdentifier = storeIdentifier;
         }
 
 
@@ -140,22 +154,27 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new TUser
-                {
-                    UserName = model.Email,
-                    Email = model.Email
-                };
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var user = typeof(TUser).EnsureCreate<TUser>();
+                user.Id = await _storeIdentifier.GetUserIdAsync();
+
+                var result = await _userManager.CreateUserByEmail(_userStore, model.Email, model.Password, user);
                 if (result.Succeeded)
                 {
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                    //    "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                        new { userId = user.Id, code },
+                        protocol: HttpContext.Request.Scheme);
+
+                    await _emailService.SendAsync(model.Email,
+                        _localizer[r => r.ConfirmYourEmail]?.Value,
+                        _localizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value);
+
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
+
                     return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
@@ -266,12 +285,11 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new TUser
-                {
-                    UserName = model.Email,
-                    Email = model.Email
-                };
-                var result = await _userManager.CreateAsync(user);
+
+                var user = typeof(TUser).EnsureCreate<TUser>();
+                user.Id = await _storeIdentifier.GetUserIdAsync();
+
+                var result = await _userManager.CreateUserByEmail(_userStore, model.Email, password: null, user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);

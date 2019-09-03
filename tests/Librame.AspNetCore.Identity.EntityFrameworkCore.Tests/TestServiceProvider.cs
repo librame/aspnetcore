@@ -37,8 +37,8 @@ namespace Librame.AspNetCore.Identity.Tests
                         optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                     })
-                    .AddStoreHub<TestStoreHub>() // IStoreHub<IdentityDbContextAccessor>
-                    .AddInitializer<TestIdentityStoreInitializer>() // IStoreInitializer<IdentityDbContextAccessor>
+                    .AddStoreHubWithAccessor<TestStoreHub>() // IStoreHub<IdentityDbContextAccessor>
+                    .AddInitializerWithAccessor<TestIdentityStoreInitializer>() // IStoreInitializer<IdentityDbContextAccessor>
                     .AddIdentifier<IdentityStoreIdentifier>() // IStoreIdentifier
                     .AddIdentity<IdentityDbContextAccessor>(dependency =>
                     {

@@ -22,16 +22,28 @@ namespace Librame.AspNetCore.UI
 
     class ApplicationContext : IApplicationContext
     {
-        private readonly ConcurrentDictionary<string, IUiInfo> _uis = null;
-        private bool _uisInitialized = false;
+        private ConcurrentDictionary<string, IStringLocalizer> _localizers = null;
+        private ConcurrentDictionary<string, List<NavigationDescriptor>> _navigations = null;
 
 
         public ApplicationContext(ServiceFactoryDelegate serviceFactory)
         {
             ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
 
-            Themepacks = ApplicationInfoHelper.Themepacks;
-            _uis = ApplicationInfoHelper.Uis;
+            Themepacks = ApplicationInfoUtility.Themepacks;
+            Uis = ApplicationInfoUtility.Uis;
+
+            if (_localizers.IsNull() || _navigations.IsNull())
+            {
+                _localizers = new ConcurrentDictionary<string, IStringLocalizer>();
+                _navigations = new ConcurrentDictionary<string, List<NavigationDescriptor>>();
+
+                Uis.ForEach(pair =>
+                {
+                    pair.Value.AddLocalizers(ref _localizers, ServiceFactory);
+                    pair.Value.AddNavigations(ref _navigations, ServiceFactory);
+                });
+            }
         }
 
 
@@ -46,34 +58,13 @@ namespace Librame.AspNetCore.UI
 
         public ConcurrentDictionary<string, IThemepackInfo> Themepacks { get; }
 
+        public ConcurrentDictionary<string, IUiInfo> Uis { get; }
+
 
         public ConcurrentDictionary<string, IStringLocalizer> Localizers
-            => new ConcurrentDictionary<string, IStringLocalizer>();
+            => _localizers;
 
         public ConcurrentDictionary<string, List<NavigationDescriptor>> Navigations
-            => new ConcurrentDictionary<string, List<NavigationDescriptor>>();
-
-
-        public IUiInfo GetUi(RouteDescriptor route)
-        {
-            return GetUi(route?.Area);
-        }
-
-        public IUiInfo GetUi(string name)
-        {
-            if (!_uisInitialized)
-            {
-                _uis.ForEach(pair =>
-                {
-                    pair.Value.AddLocalizers(Localizers, ServiceFactory);
-                    pair.Value.AddNavigations(Navigations, ServiceFactory);
-                });
-
-                _uisInitialized = true;
-            }
-
-            return _uis[name];
-        }
-
+            => _navigations;
     }
 }

@@ -95,7 +95,7 @@ namespace Librame.AspNetCore.UI
             IMvcBuilder mvcBuilder, Assembly razorAssembly)
         {
             // Add Assemblies Pages（需引用 Microsoft.AspNetCore.Mvc 程序集才能正常被路由解析）
-            var assemblies = ApplicationInfoHelper.Themepacks.Values.Select(info => info.Assembly)
+            var assemblies = ApplicationInfoUtility.Themepacks.Values.Select(info => info.Assembly)
                 .Append(razorAssembly)
                 .ToArray();
 
@@ -115,7 +115,7 @@ namespace Librame.AspNetCore.UI
             IMvcBuilder mvcBuilder, Assembly razorAssembly)
         {
             // Add Assemblies Pages（需引用 Microsoft.AspNetCore.Mvc 程序集才能正常被路由解析）
-            var assemblies = ApplicationInfoHelper.Themepacks.Values.Select(info => info.Assembly)
+            var assemblies = ApplicationInfoUtility.Themepacks.Values.Select(info => info.Assembly)
                 .Append(razorAssembly)
                 .ToArray();
 
