@@ -68,23 +68,20 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
             services.AddLibrameCore()
                 .AddDataCore(options =>
                 {
-                    options.Tenants.Default.DefaultConnectionString = writingConnectionString;
-                    options.Tenants.Default.WritingConnectionString = writingConnectionString;
-                    options.Tenants.Default.WritingSeparation = false;
+                    options.DefaultTenant.DefaultConnectionString = writingConnectionString;
+                    options.DefaultTenant.WritingConnectionString = writingConnectionString;
+                    options.DefaultTenant.WritingSeparation = false;
                 })
                 .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                 {
                     var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
-                    optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
+                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
-                .AddIdentifier<IdentityStoreIdentifier>() // IStoreIdentifier
-                .AddIdentity<IdentityDbContextAccessor>(dependency =>
+                .AddIdentifier<IdentityStoreIdentifier>()
+                .AddIdentity<IdentityDbContextAccessor>(options =>
                 {
-                    dependency.BaseSetupAction = options =>
-                    {
-                        options.Stores.MaxLengthForKeys = 128;
-                    };
+                    options.Stores.MaxLengthForKeys = 128;
                 })
                 .AddIdentityUI()
                 .AddIdentityPages(mvcBuilder)

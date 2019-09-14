@@ -18,7 +18,7 @@
         </div>
 
         <div class="form-bottom">
-            <form role="form" action="" method="post" class="login-form">
+            <form id="account" method="post" class="login-form">
                 <div asp-validation-summary="All" class="text-danger"></div>
 
                 <div class="form-group">
@@ -70,7 +70,7 @@
         <h3>@Localizer[r => r.ExternalLoginDescr]</h3>
         <div class="social-login-buttons">
             @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                if (Model.ExternalLogins.IsNullOrEmpty())
                 {
                     <div>
                         <p>

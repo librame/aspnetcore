@@ -28,7 +28,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 下载个人数据页面模型。
     /// </summary>
-    [UiTemplateWithUser(typeof(DownloadPersonalDataModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(DownloadPersonalDataModel<>))]
     public class DownloadPersonalDataPageModel : PageModel
     {
         /// <summary>

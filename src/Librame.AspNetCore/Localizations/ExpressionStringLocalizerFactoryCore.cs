@@ -29,9 +29,10 @@ namespace Librame.AspNetCore
         /// </summary>
         /// <param name="localizationOptions">给定的 <see cref="IOptions{LocalizationOptions}"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
+        /// <param name="builderOptions">给定的 <see cref="IOptions{CoreBuilderOptions}"/>。</param>
         public ExpressionStringLocalizerFactoryCore(IOptions<LocalizationOptions> localizationOptions,
-            ILoggerFactory loggerFactory)
-            : base(localizationOptions, loggerFactory)
+            ILoggerFactory loggerFactory, IOptions<CoreBuilderOptions> builderOptions)
+            : base(localizationOptions, loggerFactory, builderOptions)
         {
         }
 
@@ -52,7 +53,6 @@ namespace Librame.AspNetCore
         protected override ResourceManagerStringLocalizer CreateResourceManagerStringLocalizer(Assembly assembly, string baseName)
         {
             var resourceManager = new ResourceManagerCore(baseName, assembly, LoggerFactory.CreateLogger<ResourceManagerCore>());
-            
             return new ResourceManagerStringLocalizer(resourceManager, assembly, baseName, ResourceNamesCache, Logger);
         }
 

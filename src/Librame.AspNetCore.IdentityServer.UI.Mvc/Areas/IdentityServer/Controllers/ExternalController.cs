@@ -29,7 +29,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     [SecurityHeaders]
     [AllowAnonymous]
-    [UiTemplateWithUser(typeof(ExternalController<>))]
+    [ApplicationSiteTemplateWithUser(typeof(ExternalController<>))]
     public class ExternalController<TUser> : Controller
         where TUser : IdentityUser<string>, new()
     {

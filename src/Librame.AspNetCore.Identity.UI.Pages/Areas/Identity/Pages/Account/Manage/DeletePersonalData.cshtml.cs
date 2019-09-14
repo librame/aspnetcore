@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 删除个人数据页面模型。
     /// </summary>
-    [UiTemplateWithUser(typeof(DeletePersonalDataPageModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(DeletePersonalDataPageModel<>))]
     public class DeletePersonalDataPageModel : PageModel
     {
         /// <summary>

@@ -17,7 +17,7 @@ using System.Collections.Generic;
 namespace Librame.AspNetCore.UI
 {
     /// <summary>
-    /// 用户界面同步字典静态扩展。
+    ///  UI 同步字典静态扩展。
     /// </summary>
     public static class UiConcurrentDictionaryExtensions
     {
@@ -38,9 +38,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="localizer">给定的 <see cref="IStringLocalizer"/>。</param>
         public static void AddOrUpdateCommonLayoutLocalizer(this ConcurrentDictionary<string, IStringLocalizer> localizers,
             IStringLocalizer localizer)
-        {
-            localizers.AddOrUpdate(CommonLayoutLocalizerKey, localizer, (key, value) => localizer);
-        }
+            => localizers.AddOrUpdate(CommonLayoutLocalizerKey, localizer, (key, value) => localizer);
 
         /// <summary>
         /// 增加或更新管理布局字符串定位器。
@@ -49,9 +47,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="localizer">给定的 <see cref="IStringLocalizer"/>。</param>
         public static void AddOrUpdateManageLayoutLocalizer(this ConcurrentDictionary<string, IStringLocalizer> localizers,
             IStringLocalizer localizer)
-        {
-            localizers.AddOrUpdate(ManageLayoutLocalizerKey, localizer, (key, value) => localizer);
-        }
+            => localizers.AddOrUpdate(ManageLayoutLocalizerKey, localizer, (key, value) => localizer);
 
         /// <summary>
         /// 增加或更新登入布局字符串定位器。
@@ -60,9 +56,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="localizer">给定的 <see cref="IStringLocalizer"/>。</param>
         public static void AddOrUpdateLoginLayoutLocalizer(this ConcurrentDictionary<string, IStringLocalizer> localizers,
             IStringLocalizer localizer)
-        {
-            localizers.AddOrUpdate(LoginLayoutLocalizerKey, localizer, (key, value) => localizer);
-        }
+            => localizers.AddOrUpdate(LoginLayoutLocalizerKey, localizer, (key, value) => localizer);
 
 
         /// <summary>
@@ -71,9 +65,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="localizers">给定的 <see cref="ConcurrentDictionary{String, IStringLocalizer}"/>。</param>
         /// <returns>返回 <see cref="IStringLocalizer"/> 或 NULL。</returns>
         public static IStringLocalizer GetCommonLayoutLocalizer(this ConcurrentDictionary<string, IStringLocalizer> localizers)
-        {
-            return localizers[CommonLayoutLocalizerKey];
-        }
+            => localizers[CommonLayoutLocalizerKey];
 
         /// <summary>
         /// 获取管理布局字符串定位器。
@@ -81,9 +73,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="localizers">给定的 <see cref="ConcurrentDictionary{String, IStringLocalizer}"/>。</param>
         /// <returns>返回 <see cref="IStringLocalizer"/> 或 NULL。</returns>
         public static IStringLocalizer GetManageLayoutLocalizer(this ConcurrentDictionary<string, IStringLocalizer> localizers)
-        {
-            return localizers[ManageLayoutLocalizerKey];
-        }
+            => localizers[ManageLayoutLocalizerKey];
 
         /// <summary>
         /// 获取登入布局字符串定位器。
@@ -91,9 +81,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="localizers">给定的 <see cref="ConcurrentDictionary{String, IStringLocalizer}"/>。</param>
         /// <returns>返回 <see cref="IStringLocalizer"/> 或 NULL。</returns>
         public static IStringLocalizer GetLoginLayoutLocalizer(this ConcurrentDictionary<string, IStringLocalizer> localizers)
-        {
-            return localizers[LoginLayoutLocalizerKey];
-        }
+            => localizers[LoginLayoutLocalizerKey];
 
         #endregion
 
@@ -118,9 +106,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="descriptors">给定的 <see cref="List{NavigationDescriptor}"/>。</param>
         public static void AddOrUpdateCommonHeaderNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations,
             List<NavigationDescriptor> descriptors)
-        {
-            navigations.AddOrUpdate(CommonHeaderNavigationKey, descriptors, (key, value) => descriptors);
-        }
+            => navigations.AddOrUpdate(CommonHeaderNavigationKey, descriptors, (key, value) => descriptors);
 
         /// <summary>
         /// 增加或更新公共底部导航。
@@ -129,9 +115,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="descriptors">给定的 <see cref="List{NavigationDescriptor}"/>。</param>
         public static void AddOrUpdateCommonFooterNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations,
             List<NavigationDescriptor> descriptors)
-        {
-            navigations.AddOrUpdate(CommonFooterNavigationKey, descriptors, (key, value) => descriptors);
-        }
+            => navigations.AddOrUpdate(CommonFooterNavigationKey, descriptors, (key, value) => descriptors);
 
         /// <summary>
         /// 增加或更新公共侧边栏导航。
@@ -140,9 +124,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="descriptors">给定的 <see cref="List{NavigationDescriptor}"/>。</param>
         public static void AddOrUpdateCommonSidebarNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations,
             List<NavigationDescriptor> descriptors)
-        {
-            navigations.AddOrUpdate(CommonSidebarNavigationKey, descriptors, (key, value) => descriptors);
-        }
+            => navigations.AddOrUpdate(CommonSidebarNavigationKey, descriptors, (key, value) => descriptors);
 
         /// <summary>
         /// 增加或更新管理头部导航。
@@ -151,9 +133,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="descriptors">给定的 <see cref="List{NavigationDescriptor}"/>。</param>
         public static void AddOrUpdateManageHeaderNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations,
             List<NavigationDescriptor> descriptors)
-        {
-            navigations.AddOrUpdate(ManageHeaderNavigationKey, descriptors, (key, value) => descriptors);
-        }
+            => navigations.AddOrUpdate(ManageHeaderNavigationKey, descriptors, (key, value) => descriptors);
 
         /// <summary>
         /// 增加或更新管理底部导航。
@@ -162,9 +142,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="descriptors">给定的 <see cref="List{NavigationDescriptor}"/>。</param>
         public static void AddOrUpdateManageFooterNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations,
             List<NavigationDescriptor> descriptors)
-        {
-            navigations.AddOrUpdate(ManageFooterNavigationKey, descriptors, (key, value) => descriptors);
-        }
+            => navigations.AddOrUpdate(ManageFooterNavigationKey, descriptors, (key, value) => descriptors);
 
         /// <summary>
         /// 增加或更新管理侧边栏导航。
@@ -173,9 +151,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="descriptors">给定的 <see cref="List{NavigationDescriptor}"/>。</param>
         public static void AddOrUpdateManageSidebarNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations,
             List<NavigationDescriptor> descriptors)
-        {
-            navigations.AddOrUpdate(ManageSidebarNavigationKey, descriptors, (key, value) => descriptors);
-        }
+            => navigations.AddOrUpdate(ManageSidebarNavigationKey, descriptors, (key, value) => descriptors);
 
         /// <summary>
         /// 增加或更新登入头部导航。
@@ -184,9 +160,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="descriptors">给定的 <see cref="List{NavigationDescriptor}"/>。</param>
         public static void AddOrUpdateLoginHeaderNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations,
             List<NavigationDescriptor> descriptors)
-        {
-            navigations.AddOrUpdate(LoginHeaderNavigationKey, descriptors, (key, value) => descriptors);
-        }
+            => navigations.AddOrUpdate(LoginHeaderNavigationKey, descriptors, (key, value) => descriptors);
 
         /// <summary>
         /// 增加或更新登入底部导航。
@@ -195,9 +169,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="descriptors">给定的 <see cref="List{NavigationDescriptor}"/>。</param>
         public static void AddOrUpdateLoginFooterNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations,
             List<NavigationDescriptor> descriptors)
-        {
-            navigations.AddOrUpdate(LoginFooterNavigationKey, descriptors, (key, value) => descriptors);
-        }
+            => navigations.AddOrUpdate(LoginFooterNavigationKey, descriptors, (key, value) => descriptors);
 
         /// <summary>
         /// 增加或更新登入侧边栏导航。
@@ -206,9 +178,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="descriptors">给定的 <see cref="List{NavigationDescriptor}"/>。</param>
         public static void AddOrUpdateLoginSidebarNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations,
             List<NavigationDescriptor> descriptors)
-        {
-            navigations.AddOrUpdate(LoginSidebarNavigationKey, descriptors, (key, value) => descriptors);
-        }
+            => navigations.AddOrUpdate(LoginSidebarNavigationKey, descriptors, (key, value) => descriptors);
 
 
         /// <summary>
@@ -217,9 +187,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <returns>返回 <see cref="IList{NavigationDescriptor}"/> 或 NULL。</returns>
         public static List<NavigationDescriptor> GetCommonHeaderNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations)
-        {
-            return navigations[CommonHeaderNavigationKey];
-        }
+            => navigations[CommonHeaderNavigationKey];
 
         /// <summary>
         /// 获取公共底部导航的描述符列表。
@@ -227,9 +195,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <returns>返回 <see cref="IList{NavigationDescriptor}"/> 或 NULL。</returns>
         public static List<NavigationDescriptor> GetCommonFooterNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations)
-        {
-            return navigations[CommonFooterNavigationKey];
-        }
+            => navigations[CommonFooterNavigationKey];
 
         /// <summary>
         /// 获取公共侧边栏导航。
@@ -237,9 +203,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <returns>返回 <see cref="IList{NavigationDescriptor}"/> 或 NULL。</returns>
         public static List<NavigationDescriptor> GetCommonSidebarNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations)
-        {
-            return navigations[CommonSidebarNavigationKey];
-        }
+            => navigations[CommonSidebarNavigationKey];
 
         /// <summary>
         /// 获取管理头部导航。
@@ -247,9 +211,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <returns>返回 <see cref="IList{NavigationDescriptor}"/> 或 NULL。</returns>
         public static List<NavigationDescriptor> GetManageHeaderNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations)
-        {
-            return navigations[ManageHeaderNavigationKey];
-        }
+            => navigations[ManageHeaderNavigationKey];
 
         /// <summary>
         /// 获取管理底部导航。
@@ -257,9 +219,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <returns>返回 <see cref="IList{NavigationDescriptor}"/> 或 NULL。</returns>
         public static List<NavigationDescriptor> GetManageFooterNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations)
-        {
-            return navigations[ManageFooterNavigationKey];
-        }
+            => navigations[ManageFooterNavigationKey];
 
         /// <summary>
         /// 获取管理侧边栏导航。
@@ -267,9 +227,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <returns>返回 <see cref="IList{NavigationDescriptor}"/> 或 NULL。</returns>
         public static List<NavigationDescriptor> GetManageSidebarNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations)
-        {
-            return navigations[ManageSidebarNavigationKey];
-        }
+            => navigations[ManageSidebarNavigationKey];
 
         /// <summary>
         /// 获取登入头部导航。
@@ -277,9 +235,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <returns>返回 <see cref="IList{NavigationDescriptor}"/> 或 NULL。</returns>
         public static List<NavigationDescriptor> GetLoginHeaderNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations)
-        {
-            return navigations[LoginHeaderNavigationKey];
-        }
+            => navigations[LoginHeaderNavigationKey];
 
         /// <summary>
         /// 获取登入底部导航。
@@ -287,9 +243,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <returns>返回 <see cref="IList{NavigationDescriptor}"/> 或 NULL。</returns>
         public static List<NavigationDescriptor> GetLoginFooterNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations)
-        {
-            return navigations[LoginFooterNavigationKey];
-        }
+            => navigations[LoginFooterNavigationKey];
 
         /// <summary>
         /// 获取登入侧边栏导航。
@@ -297,9 +251,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="navigations">给定的 <see cref="ConcurrentDictionary{String, List}"/>。</param>
         /// <returns>返回 <see cref="IList{NavigationDescriptor}"/> 或 NULL。</returns>
         public static List<NavigationDescriptor> GetLoginSidebarNavigation(this ConcurrentDictionary<string, List<NavigationDescriptor>> navigations)
-        {
-            return navigations[LoginSidebarNavigationKey];
-        }
+            => navigations[LoginSidebarNavigationKey];
 
         #endregion
 

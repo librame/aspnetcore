@@ -27,7 +27,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 抽象双因子登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [UiTemplateWithUser(typeof(LoginWith2faPageModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(LoginWith2faPageModel<>))]
     public class LoginWith2faPageModel : PageModel
     {
         /// <summary>

@@ -1,9 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@inject IApplicationContext Application
+@{
+    var uiInfo = Application.GetUiInfo(ViewContext.RouteData.AsRouteDescriptor());
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Librame.AspNetCore.Identity.Mvc</title>
+    <title>@ViewData["Title"] - @uiInfo?.Title</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -26,25 +30,26 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Librame.AspNetCore.Identity.Mvc</a>
+                <a href="/" class="navbar-brand">@uiInfo?.Title</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a href="@Application.Site.Navs.Index.Href">@Application.Site.Navs.Index.Text</a></li>
+                    <li><a href="@Application.Site.Navs.About.Href">@Application.Site.Navs.About.Text</a></li>
+                    <li><a href="@Application.Site.Navs.Contact.Href">@Application.Site.Navs.Contact.Text</a></li>
                 </ul>
+                @await Html.PartialAsync("Common/_LoginPartial", Application)
             </div>
         </div>
     </nav>
 
-    <partial name="_CookieConsentPartial" />
+    <partial name="Common/_CookieConsentPartial" model="Application" />
 
     <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - Librame.AspNetCore.Identity.Mvc</p>
+            <p>&copy; @DateTime.Now.ToString("yyyy") - @uiInfo?.Copyright [@uiInfo?.Version]</p>
         </footer>
     </div>
 
@@ -69,6 +74,6 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
-    @RenderSection("Scripts", required: false)
+    @RenderSection("scripts", required: false)
 </body>
 </html>

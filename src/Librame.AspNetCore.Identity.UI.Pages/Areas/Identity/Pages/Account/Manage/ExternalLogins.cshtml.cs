@@ -27,7 +27,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 外部登入页面模型。
     /// </summary>
-    [UiTemplateWithUser(typeof(ExternalLoginsPageModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(ExternalLoginsPageModel<>))]
     public class ExternalLoginsPageModel : PageModel
     {
         /// <summary>

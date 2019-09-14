@@ -3,10 +3,10 @@
 @inject IExpressionHtmlLocalizer<Disable2faViewResource> Localizer
 @{
     ViewData["Title"] = Localizer[r => r.Title];
-    ViewData["ActivePage"] = ViewPageNames.TwoFactorAuthentication;
+    ViewData["ActiveView"] = ViewPageNames.TwoFactorAuthentication;
 }
 
-<partial name="_StatusMessage" model="Model.StatusMessage" />
+<partial name="_StatusMessagePartial" model="Model.StatusMessage" />
 
 <!-- Disable2fa -->
 <h2>@ViewData["Title"]</h2>

@@ -17,28 +17,14 @@ namespace Librame.AspNetCore.UI
     using Extensions.Core;
 
     /// <summary>
-    /// 用户界面构建器接口。
+    ///  UI 构建器接口。
     /// </summary>
     public interface IUiBuilder : IExtensionBuilder
     {
         /// <summary>
-        /// 应用后置配置选项类型。
-        /// </summary>
-        Type ApplicationPostConfigureOptionsType { get; }
-
-        /// <summary>
         /// 用户类型。
         /// </summary>
         Type UserType { get; }
-
-
-        /// <summary>
-        /// 添加应用后置配置选项类型。
-        /// </summary>
-        /// <typeparam name="TAppPostConfigureOptions">指定的应用后置配置选项类型。</typeparam>
-        /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
-        IUiBuilder AddApplicationPostConfigureOptions<TAppPostConfigureOptions>()
-            where TAppPostConfigureOptions : class, IApplicationPostConfigureOptions;
 
 
         /// <summary>

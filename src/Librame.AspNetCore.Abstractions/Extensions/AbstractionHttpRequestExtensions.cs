@@ -35,9 +35,8 @@ namespace Librame.Extensions
         /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsAjaxRequest(this HttpRequest request)
-        {
-            return request.Headers.IsAjaxRequest();
-        }
+            => request.Headers.IsAjaxRequest();
+
         /// <summary>
         /// 是否为 AJAX 请求。
         /// </summary>
@@ -95,9 +94,7 @@ namespace Librame.Extensions
         /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
         /// <returns>返回 <see cref="Uri"/>。</returns>
         public static Uri AsUri(this HttpRequest request)
-        {
-            return new Uri(request.AsAbsoluteUrl());
-        }
+            => new Uri(request.AsAbsoluteUrl());
 
         /// <summary>
         /// 新建 URI。
@@ -106,9 +103,7 @@ namespace Librame.Extensions
         /// <param name="pathString">给定的 <see cref="PathString"/>。</param>
         /// <returns>返回 <see cref="Uri"/>。</returns>
         public static Uri NewUri(this HttpRequest request, PathString pathString)
-        {
-            return new Uri(request.AsUri(), pathString.ToString());
-        }
+            => new Uri(request.AsUri(), pathString.ToString());
 
 
         #region GetIpAddress
@@ -147,9 +142,7 @@ namespace Librame.Extensions
         /// <returns>返回一个包含 <see cref="Tuple{IPAddress, IPAddress}"/> 的元组。</returns>
         public static Task<(IPAddress IPv4, IPAddress IPv6)> GetIPAddressTupleAsync(this HttpRequest request,
             string addressKey = null)
-        {
-            return request.Headers.GetIPAddressTupleAsync(addressKey);
-        }
+            => request.Headers.GetIPAddressTupleAsync(addressKey);
 
 
         /// <summary>
@@ -214,7 +207,7 @@ namespace Librame.Extensions
 
             var host = new HostString(address);
             if (host.IsLocalIPAddress())
-                return await DnsHelper.GetLocalIPAddressTupleAsync();
+                return await DnsUtility.GetLocalIPAddressTupleAsync();
 
             if (IPAddress.TryParse(host.Host, out IPAddress current))
             {

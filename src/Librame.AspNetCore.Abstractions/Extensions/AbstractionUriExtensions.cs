@@ -28,9 +28,7 @@ namespace Librame.Extensions
         /// <param name="host">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool SameHost(this string uriString, HostString host)
-        {
-            return uriString.SameHost(host.ToString());
-        }
+            => uriString.SameHost(host.ToString());
 
 
         /// <summary>
@@ -39,9 +37,8 @@ namespace Librame.Extensions
         /// <param name="uriString">给定的 URI 字符串。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
         public static HostString GetHostString(this string uriString)
-        {
-            return uriString.GetHostString(out _);
-        }
+            => uriString.GetHostString(out _);
+
         /// <summary>
         /// 获取 URI 字符串中的主机。
         /// </summary>
@@ -49,10 +46,7 @@ namespace Librame.Extensions
         /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
         public static HostString GetHostString(this string uriString, out Uri result)
-        {
-            return uriString.IsAbsoluteUri(out result)
-                ? new HostString(result.Authority) : default;
-        }
+            => uriString.IsAbsoluteUri(out result) ? new HostString(result.Authority) : default;
 
 
         /// <summary>
@@ -61,9 +55,8 @@ namespace Librame.Extensions
         /// <param name="pathOrUri">给定的路径或 URI。</param>
         /// <returns>返回 <see cref="PathString"/>。</returns>
         public static PathString GetPathString(this string pathOrUri)
-        {
-            return pathOrUri.GetPathString(out _);
-        }
+            => pathOrUri.GetPathString(out _);
+
         /// <summary>
         /// 获取指定路径或 URI 中的路径。
         /// </summary>
@@ -96,9 +89,8 @@ namespace Librame.Extensions
         /// <param name="uriString">给定的 URI 字符串。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
         public static QueryString GetQueryString(this string uriString)
-        {
-            return uriString.GetQueryString(out _);
-        }
+            => uriString.GetQueryString(out _);
+
         /// <summary>
         /// 获取 URI 字符串中的查询。
         /// </summary>
@@ -106,10 +98,7 @@ namespace Librame.Extensions
         /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
         public static QueryString GetQueryString(this string uriString, out Uri result)
-        {
-            return uriString.IsAbsoluteUri(out result)
-                ? new QueryString(result.Query) : default;
-        }
+            => uriString.IsAbsoluteUri(out result) ? new QueryString(result.Query) : default;
 
 
         #region IPAddress
@@ -120,9 +109,7 @@ namespace Librame.Extensions
         /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsLocalIPv6(this HostString hostString)
-        {
-            return hostString.Host.IsLocalIPv6();
-        }
+            => hostString.Host.IsLocalIPv6();
 
         /// <summary>
         /// 是本机 IPv4 地址。
@@ -130,9 +117,7 @@ namespace Librame.Extensions
         /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsLocalIPv4(this HostString hostString)
-        {
-            return hostString.Host.IsLocalIPv4();
-        }
+            => hostString.Host.IsLocalIPv4();
 
         /// <summary>
         /// 是本机 IP 地址。
@@ -140,9 +125,7 @@ namespace Librame.Extensions
         /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsLocalIPAddress(this HostString hostString)
-        {
-            return hostString.Host.IsLocalIPAddress();
-        }
+            => hostString.Host.IsLocalIPAddress();
 
 
         /// <summary>
@@ -151,9 +134,7 @@ namespace Librame.Extensions
         /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsIPv6(this HostString hostString)
-        {
-            return hostString.Host.IsIPv6();
-        }
+            => hostString.Host.IsIPv6();
 
         /// <summary>
         /// 是 IPv6 地址。
@@ -162,9 +143,7 @@ namespace Librame.Extensions
         /// <param name="address">输出 <see cref="IPAddress"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsIPv6(this HostString hostString, out IPAddress address)
-        {
-            return hostString.Host.IsIPv6(out address);
-        }
+            => hostString.Host.IsIPv6(out address);
 
 
         /// <summary>
@@ -173,9 +152,7 @@ namespace Librame.Extensions
         /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsIPv4(this HostString hostString)
-        {
-            return hostString.Host.IsIPv4();
-        }
+            => hostString.Host.IsIPv4();
 
         /// <summary>
         /// 是 IPv4 地址。
@@ -184,9 +161,7 @@ namespace Librame.Extensions
         /// <param name="address">输出 <see cref="IPAddress"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsIPv4(this HostString hostString, out IPAddress address)
-        {
-            return hostString.Host.IsIPv4(out address);
-        }
+            => hostString.Host.IsIPv4(out address);
 
 
         /// <summary>
@@ -195,9 +170,7 @@ namespace Librame.Extensions
         /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsIPAddress(this HostString hostString)
-        {
-            return hostString.IsIPAddress(out _);
-        }
+            => hostString.IsIPAddress(out _);
 
         /// <summary>
         /// 是 IP 地址。
@@ -206,9 +179,7 @@ namespace Librame.Extensions
         /// <param name="address">输出 <see cref="IPAddress"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsIPAddress(this HostString hostString, out IPAddress address)
-        {
-            return hostString.Host.IsIPAddress(out address);
-        }
+            => hostString.Host.IsIPAddress(out address);
 
         #endregion
 

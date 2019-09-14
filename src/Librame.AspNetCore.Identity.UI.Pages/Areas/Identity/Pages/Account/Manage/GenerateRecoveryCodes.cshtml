@@ -3,7 +3,7 @@
 @inject IExpressionHtmlLocalizer<GenerateRecoveryCodesViewResource> Localizer
 @{
     ViewData["Title"] = Localizer[r => r.Title];
-    ViewData["ActivePage"] = ViewPageNames.TwoFactorAuthentication;
+    ViewData["ActiveView"] = ViewPageNames.TwoFactorAuthentication;
 }
 
 <partial name="_StatusMessagePartial" model="Model.StatusMessage" />

@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Identity.UI
     using AspNetCore.UI;
 
     /// <summary>
-    /// 身份页面集合用户界面构建器静态扩展。
+    /// 身份 Pages UI 构建器静态扩展。
     /// </summary>
     public static class IdentityPagesUiBuilderExtensions
     {
@@ -28,9 +28,6 @@ namespace Librame.AspNetCore.Identity.UI
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
         public static IUiBuilder AddIdentityPages(this IUiBuilder builder, IMvcBuilder mvcBuilder)
-        {
-            return builder.AddPages(mvcBuilder, typeof(IdentityPagesUiBuilderExtensions).Assembly);
-        }
-
+            => builder.AddSitePages<IdentityApplicationSitePages, IdentityApplicationSiteConfiguration>(mvcBuilder, typeof(IdentityPagesUiBuilderExtensions).Assembly);
     }
 }

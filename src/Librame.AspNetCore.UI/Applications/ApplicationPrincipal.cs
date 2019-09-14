@@ -33,40 +33,33 @@ namespace Librame.AspNetCore.UI
         private dynamic GetSignInManager(HttpContext context)
         {
             var managerType = typeof(SignInManager<>).MakeGenericType(_builder.UserType);
-
             return context?.RequestServices?.GetRequiredService(managerType);
         }
 
         private dynamic GetUserManager(HttpContext context)
-        {
-            return GetSignInManager(context).UserManager;
-        }
+            => GetSignInManager(context).UserManager;
 
 
         public bool IsSignedIn(HttpContext context)
-        {
-            return GetSignInManager(context).IsSignedIn(context.User);
-        }
+            => GetSignInManager(context).IsSignedIn(context.User);
+
 
         public dynamic GetSignedUser(HttpContext context)
-        {
-            return GetSignedUser(context, out _);
-        }
+            => GetSignedUser(context, out _);
+
         private dynamic GetSignedUser(HttpContext context, out dynamic userManager)
         {
             userManager = GetUserManager(context);
             return userManager.GetUserAsync(context.User).Result;
         }
 
+
         public string GetSignedUserId(HttpContext context)
-        {
-            return GetUserManager(context).GetUserId(context.User);
-        }
+            => GetUserManager(context).GetUserId(context.User);
 
         public string GetSignedUserName(HttpContext context)
-        {
-            return GetUserManager(context).GetUserName(context.User);
-        }
+            => GetUserManager(context).GetUserName(context.User);
+
 
         public string GetSignedUserEmail(HttpContext context)
         {
@@ -79,6 +72,9 @@ namespace Librame.AspNetCore.UI
             var user = GetSignedUser(context, out dynamic userManager);
             return userManager.GetPhoneNumberAsync(user).Result;
         }
+
+        public string GetSignedUserPortrait(HttpContext context)
+            => "/manage/img/profile.jpg";
 
         public IList<string> GetSignedUserRoles(HttpContext context)
         {

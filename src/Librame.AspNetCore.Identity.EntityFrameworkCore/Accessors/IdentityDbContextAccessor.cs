@@ -24,7 +24,7 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 身份数据库上下文访问器。
     /// </summary>
-    public class IdentityDbContextAccessor : IdentityDbContextAccessor<DefaultIdentityRole, DefaultIdentityUser, string>
+    public class IdentityDbContextAccessor : IdentityDbContextAccessor<DefaultIdentityRole<string>, DefaultIdentityUser<string>, string>
         , IIdentityDbContextAccessor
     {
         /// <summary>
@@ -45,11 +45,11 @@ namespace Librame.AspNetCore.Identity
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     public class IdentityDbContextAccessor<TRole, TUser, TGenId>
-        : IdentityDbContextAccessor<TRole, IdentityRoleClaim<TGenId>, IdentityUserRole<TGenId>,
-            TUser, IdentityUserClaim<TGenId>, IdentityUserLogin<TGenId>, IdentityUserToken<TGenId>, TGenId>
+        : IdentityDbContextAccessor<TRole, DefaultIdentityRoleClaim<TGenId>, DefaultIdentityUserRole<TGenId>,
+            TUser, DefaultIdentityUserClaim<TGenId>, DefaultIdentityUserLogin<TGenId>, DefaultIdentityUserToken<TGenId>, TGenId>
         , IIdentityDbContextAccessor<TRole, TUser, TGenId>
-        where TRole : IdentityRole<TGenId>
-        where TUser : IdentityUser<TGenId>
+        where TRole : DefaultIdentityRole<TGenId>
+        where TUser : DefaultIdentityUser<TGenId>
         where TGenId : IEquatable<TGenId>
     {
         /// <summary>
@@ -76,13 +76,13 @@ namespace Librame.AspNetCore.Identity
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     public class IdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TGenId>
         : DbContextAccessor, IIdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>
-        where TRole : IdentityRole<TGenId>
-        where TRoleClaim : IdentityRoleClaim<TGenId>
-        where TUserRole : IdentityUserRole<TGenId>
-        where TUser : IdentityUser<TGenId>
-        where TUserClaim : IdentityUserClaim<TGenId>
-        where TUserLogin : IdentityUserLogin<TGenId>
-        where TUserToken : IdentityUserToken<TGenId>
+        where TRole : DefaultIdentityRole<TGenId>
+        where TRoleClaim : DefaultIdentityRoleClaim<TGenId>
+        where TUserRole : DefaultIdentityUserRole<TGenId>
+        where TUser : DefaultIdentityUser<TGenId>
+        where TUserClaim : DefaultIdentityUserClaim<TGenId>
+        where TUserLogin : DefaultIdentityUserLogin<TGenId>
+        where TUserToken : DefaultIdentityUserToken<TGenId>
         where TGenId : IEquatable<TGenId>
     {
         /// <summary>
@@ -144,7 +144,7 @@ namespace Librame.AspNetCore.Identity
             var coreOptions = ServiceProvider.GetRequiredService<IOptions<IdentityOptions>>().Value;
             var dataProtector = ServiceProvider.GetService<IPersonalDataProtector>();
 
-            modelBuilder.ConfigureIdentityEntities<TRole, TRoleClaim, TUserRole,
+            modelBuilder.ConfigureIdentityStore<TRole, TRoleClaim, TUserRole,
                 TUser, TUserClaim, TUserLogin, TUserToken, TGenId>(options, coreOptions, dataProtector);
         }
 

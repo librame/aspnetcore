@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// <see cref="IdentityOptions"/> 配置动作。
         /// </summary>
-        public Action<IdentityOptions> BaseSetupAction { get; set; }
+        public Action<IdentityOptions> RawAction { get; set; }
             = _ => { };
     }
 }

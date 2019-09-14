@@ -3,7 +3,7 @@
 @inject IExpressionHtmlLocalizer<EnableAuthenticatorViewResource> Localizer
 @{
     ViewData["Title"] = Localizer[r => r.Title];
-    ViewData["ActivePage"] = ViewPageNames.TwoFactorAuthentication;
+    ViewData["ActiveView"] = ViewPageNames.TwoFactorAuthentication;
 }
 
 <partial name="_StatusMessagePartial" model="Model.StatusMessage" />
@@ -37,7 +37,9 @@
                             <input asp-for="Input.TwoFactorCode" class="form-control" autocomplete="off" />
                             <span asp-validation-for="Input.TwoFactorCode" class="text-danger"></span>
                         </div>
+
                         <button type="submit" class="btn btn-default">@Localizer[r => r.ButtonText]</button>
+                        
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     </form>
                 </div>
@@ -46,7 +48,7 @@
     </ol>
 </div>
 
-@section Scripts{
+@section scripts{
     <script src="~/manage/js/qrcode.min.js"></script>
     <script type="text/javascript">
         new QRCode(document.getElementById("qrCode"),

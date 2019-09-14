@@ -39,9 +39,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="propertyExpression">给定的属性表达式。</param>
         /// <returns>返回 <see cref="LocalizedHtmlString"/>。</returns>
         public virtual LocalizedHtmlString this[Expression<Func<TResource, string>> propertyExpression]
-        {
-            get { return this.GetString(propertyExpression); }
-        }
+            => this.GetString(propertyExpression);
 
         /// <summary>
         /// 获取字符串属性的本地化字符串。
@@ -50,9 +48,6 @@ namespace Librame.AspNetCore.UI
         /// <param name="arguments">给定的参数数组。</param>
         /// <returns>返回 <see cref="LocalizedHtmlString"/>。</returns>
         public virtual LocalizedHtmlString this[Expression<Func<TResource, string>> propertyExpression, params object[] arguments]
-        {
-            get { return this.GetString(propertyExpression, arguments); }
-        }
-
+            => this.GetString(propertyExpression, arguments);
     }
 }

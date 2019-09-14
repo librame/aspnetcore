@@ -1,0 +1,21 @@
+﻿@model IApplicationContext
+@{
+    var navs = Model.Navigations.GetManageSidebarNavigation();
+}
+<ul class="nav">
+    @if (navs.IsNotNullOrEmpty())
+    {
+        foreach (var nav in navs)
+        {
+            if ((nav.VisibilityFactory?.Invoke(this, nav)).Value)
+            {
+                <li class="nav-item @nav.ActiveClassNameFactory?.Invoke(this, nav)">
+                    <a id="@nav.Id" href="@nav.Href" title="@nav.Title">
+                        <i class="@nav.Icon"></i>
+                        <p>@nav.Text</p>
+                    </a>
+                </li>
+            }
+        }
+    }
+</ul>

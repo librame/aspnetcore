@@ -27,7 +27,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
     /// </summary>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     [Authorize]
-    [UiTemplateWithUser(typeof(ManageController<>))]
+    [ApplicationSiteTemplateWithUser(typeof(ManageController<>))]
     public class ManageController<TUser> : Controller
         where TUser : class
     {

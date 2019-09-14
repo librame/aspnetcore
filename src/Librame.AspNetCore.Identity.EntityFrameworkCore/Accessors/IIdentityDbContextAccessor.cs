@@ -10,7 +10,6 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -21,7 +20,7 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 身份数据库上下文访问器接口。
     /// </summary>
-    public interface IIdentityDbContextAccessor : IIdentityDbContextAccessor<DefaultIdentityRole, DefaultIdentityUser, string>
+    public interface IIdentityDbContextAccessor : IIdentityDbContextAccessor<DefaultIdentityRole<string>, DefaultIdentityUser<string>, string>
     {
     }
 
@@ -33,8 +32,8 @@ namespace Librame.AspNetCore.Identity
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     public interface IIdentityDbContextAccessor<TRole, TUser, TGenId>
-        : IIdentityDbContextAccessor<TRole, IdentityRoleClaim<TGenId>, IdentityUserRole<TGenId>,
-            TUser, IdentityUserClaim<TGenId>, IdentityUserLogin<TGenId>, IdentityUserToken<TGenId>>
+        : IIdentityDbContextAccessor<TRole, DefaultIdentityRoleClaim<TGenId>, DefaultIdentityUserRole<TGenId>,
+            TUser, DefaultIdentityUserClaim<TGenId>, DefaultIdentityUserLogin<TGenId>, DefaultIdentityUserToken<TGenId>>
         where TRole : class
         where TUser : class
         where TGenId : IEquatable<TGenId>
@@ -52,8 +51,7 @@ namespace Librame.AspNetCore.Identity
     /// <typeparam name="TUserClaim">指定的用户声明类型。</typeparam>
     /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
     /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
-    public interface IIdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>
-        : IAccessor
+    public interface IIdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken> : IAccessor
         where TRole : class
         where TRoleClaim : class
         where TUserRole : class

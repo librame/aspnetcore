@@ -39,9 +39,6 @@ namespace Librame.AspNetCore.Identity.UI.Tests
             var personalData = localizer[r => r.PersonalData];
             Assert.False(personalData.ResourceNotFound);
 
-            var searchBox = localizer[r => r.SearchBox];
-            Assert.False(searchBox.ResourceNotFound);
-
             var repository = localizer[r => r.Repository];
             Assert.False(repository.ResourceNotFound);
 
@@ -50,12 +47,6 @@ namespace Librame.AspNetCore.Identity.UI.Tests
 
             var licenses = localizer[r => r.Licenses];
             Assert.False(licenses.ResourceNotFound);
-
-            var manage = localizer[r => r.Manage];
-            Assert.False(manage.ResourceNotFound);
-
-            var logout = localizer[r => r.Logout];
-            Assert.False(logout.ResourceNotFound);
         }
 
     }

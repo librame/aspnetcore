@@ -23,15 +23,18 @@ namespace Librame.AspNetCore.Identity.Api
         /// 确认您的电邮。
         /// </summary>
         public string ConfirmYourEmail { get; set; }
+
         /// <summary>
         /// 确认您的电邮格式。
         /// </summary>
         public string ConfirmYourEmailFormat { get; set; }
 
+
         /// <summary>
         /// 确认您的手机。
         /// </summary>
         public string ConfirmYourPhone { get; set; }
+
         /// <summary>
         /// 确认您的手机格式。
         /// </summary>

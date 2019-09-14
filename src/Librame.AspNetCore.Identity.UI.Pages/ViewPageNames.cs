@@ -28,9 +28,9 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         public static readonly string ExternalLogins = nameof(ExternalLogins);
 
         /// <summary>
-        /// 首页。
+        /// 资料。
         /// </summary>
-        public static readonly string Index = nameof(Index);
+        public static readonly string Profile = nameof(Profile);
 
         /// <summary>
         /// 个人数据。

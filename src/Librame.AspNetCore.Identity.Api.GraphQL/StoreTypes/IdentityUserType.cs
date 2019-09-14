@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Identity.Api
     /// <summary>
     /// 身份用户类型。
     /// </summary>
-    public class IdentityUserType : ObjectGraphType<DefaultIdentityUser>
+    public class IdentityUserType : ObjectGraphType<DefaultIdentityUser<string>>
     {
         /// <summary>
         /// 构造一个 <see cref="IdentityUserType"/> 实例。

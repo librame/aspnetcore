@@ -21,7 +21,6 @@ namespace Librame.AspNetCore
             Action<RequestLocalizationOptions> optionsAction = null)
         {
             builderWrapper.RawBuilder.UseRequestLocalization(optionsAction ?? (_ => { }));
-
             return builderWrapper;
         }
 

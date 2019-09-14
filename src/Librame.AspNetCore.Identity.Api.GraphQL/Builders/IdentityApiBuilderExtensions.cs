@@ -27,12 +27,14 @@ namespace Librame.AspNetCore.Identity.Api
         /// 添加 Identity API 扩展。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
+        /// <param name="builderAction">给定的选项配置动作（可选）。</param>
+        /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
         public static IApiBuilder AddIdentityApi(this IExtensionBuilder builder,
-            Action<ApiBuilderOptions> setupAction = null)
+            Action<ApiBuilderOptions> builderAction = null,
+            Func<IExtensionBuilder, IApiBuilder> builderFactory = null)
         {
-            return builder.AddApi(setupAction)
+            return builder.AddApi(builderAction, builderFactory)
                 .AddIdentityApiCore();
         }
 
@@ -40,14 +42,14 @@ namespace Librame.AspNetCore.Identity.Api
         /// 添加 Identity API 扩展。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="createFactory">给定创建 API 构建器的工厂方法。</param>
-        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
+        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
         public static IApiBuilder AddIdentityApi(this IExtensionBuilder builder,
-            Func<IExtensionBuilder, IApiBuilder> createFactory,
-            Action<ApiBuilderOptions> setupAction = null)
+            Action<ApiBuilderDependencyOptions> dependencyAction = null,
+            Func<IExtensionBuilder, IApiBuilder> builderFactory = null)
         {
-            return builder.AddApi(createFactory, setupAction)
+            return builder.AddApi(dependencyAction, builderFactory)
                 .AddIdentityApiCore();
         }
 

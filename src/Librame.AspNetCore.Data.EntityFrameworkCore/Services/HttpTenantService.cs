@@ -54,7 +54,7 @@ namespace Librame.Extensions.Data
                 }
             }
 
-            return Task.FromResult(Options.Tenants.Default);
+            return Task.FromResult(Options.DefaultTenant);
         }
 
     }

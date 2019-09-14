@@ -30,7 +30,6 @@ namespace Librame.AspNetCore
             Action<RequestLocalizationOptions> optionsAction = null)
         {
             var builderWrapper = new ApplicationBuilderWrapper(rawBuilder);
-
             return builderWrapper.UseLocalization(optionsAction);
         }
 

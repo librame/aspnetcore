@@ -32,9 +32,9 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
     /// </summary>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     [Authorize]
-    [UiTemplateWithUser(typeof(AccountController<>))]
+    [ApplicationSiteTemplateWithUser(typeof(AccountController<>))]
     public class AccountController<TUser> : Controller
-        where TUser : class, IGenId
+        where TUser : class, IId<string>
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
@@ -195,7 +195,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction("Index");
         }
 
 
@@ -692,7 +692,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction("Index");
             }
         }
 

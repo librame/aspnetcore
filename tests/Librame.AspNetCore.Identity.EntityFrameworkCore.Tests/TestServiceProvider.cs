@@ -27,25 +27,22 @@ namespace Librame.AspNetCore.Identity.Tests
                 services.AddLibrameCore()
                     .AddDataCore(options =>
                     {
-                        options.Tenants.Default.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-                        options.Tenants.Default.WritingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
-                        options.Tenants.Default.WritingSeparation = true;
+                        options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
+                        options.DefaultTenant.WritingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
+                        options.DefaultTenant.WritingSeparation = true;
                     })
                     .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                     {
                         var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
-                        optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
+                        optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                     })
-                    .AddStoreHubWithAccessor<TestStoreHub>() // IStoreHub<IdentityDbContextAccessor>
-                    .AddInitializerWithAccessor<TestIdentityStoreInitializer>() // IStoreInitializer<IdentityDbContextAccessor>
-                    .AddIdentifier<IdentityStoreIdentifier>() // IStoreIdentifier
-                    .AddIdentity<IdentityDbContextAccessor>(dependency =>
+                    .AddStoreHubWithAccessor<TestStoreHub>()
+                    .AddInitializerWithAccessor<TestIdentityStoreInitializer>()
+                    .AddIdentifier<IdentityStoreIdentifier>()
+                    .AddIdentity<IdentityDbContextAccessor>(options =>
                     {
-                        dependency.BaseSetupAction = options =>
-                        {
-                            options.Stores.MaxLengthForKeys = 128;
-                        };
+                        options.Stores.MaxLengthForKeys = 128;
                     });
 
                 return services.BuildServiceProvider();

@@ -52,9 +52,7 @@ namespace Librame.AspNetCore.IdentityServer
         /// </summary>
         /// <returns>返回一个包含整数的异步操作。</returns>
         public virtual Task<int> SaveChangesAsync()
-        {
-            return base.SaveChangesAsync();
-        }
+            => base.SaveChangesAsync();
 
 
         /// <summary>

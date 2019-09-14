@@ -138,6 +138,27 @@
   <data name="Login" xml:space="preserve">
     <value>已有帐户？立即登入</value>
   </data>
+  <data name="PasswordRequireDigit" xml:space="preserve">
+    <value>密码有数字。</value>
+  </data>
+  <data name="PasswordRequiredLength" xml:space="preserve">
+    <value>密码的最小长度默认为 6。</value>
+  </data>
+  <data name="PasswordRequiredUniqueChars" xml:space="preserve">
+    <value>密码至少有 1 个不重复字符。</value>
+  </data>
+  <data name="PasswordRequireLowercase" xml:space="preserve">
+    <value>密码有小写字母。</value>
+  </data>
+  <data name="PasswordRequireNonAlphanumeric" xml:space="preserve">
+    <value>密码有特殊字符。</value>
+  </data>
+  <data name="PasswordRequireUppercase" xml:space="preserve">
+    <value>密码有大写字母。</value>
+  </data>
+  <data name="PasswordRulePrompts" xml:space="preserve">
+    <value>密码规则提示</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>注册</value>
   </data>

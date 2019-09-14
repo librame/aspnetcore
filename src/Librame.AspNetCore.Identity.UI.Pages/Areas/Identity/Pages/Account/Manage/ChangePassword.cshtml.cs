@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
@@ -25,9 +26,33 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 修改密码页面模型。
     /// </summary>
-    [UiTemplateWithUser(typeof(ChangePasswordPageModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(ChangePasswordPageModel<>))]
     public class ChangePasswordPageModel : PageModel
     {
+        /// <summary>
+        /// 构造一个 <see cref="ChangePasswordPageModel"/>。
+        /// </summary>
+        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
+        /// <param name="options">给定的 <see cref="IOptions{IdentityOptions}"/>。</param>
+        public ChangePasswordPageModel(IOptions<IdentityBuilderOptions> builderOptions,
+            IOptions<IdentityOptions> options)
+        {
+            BuilderOptions = builderOptions.Value;
+            Options = options.Value;
+        }
+
+
+        /// <summary>
+        /// 构建器选项。
+        /// </summary>
+        public IdentityBuilderOptions BuilderOptions { get; }
+
+        /// <summary>
+        /// 选项。
+        /// </summary>
+        public IdentityOptions Options { get; }
+
+
         /// <summary>
         /// 输入模型。
         /// </summary>
@@ -69,7 +94,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         public ChangePasswordPageModel(
             SignInManager<TUser> signInManager,
             ILogger<ChangePasswordPageModel> logger,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
+            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer,
+            IOptions<IdentityBuilderOptions> builderOptions,
+            IOptions<IdentityOptions> options)
+            : base(builderOptions, options)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;

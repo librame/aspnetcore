@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 双因子验证页面模型。
     /// </summary>
-    [UiTemplateWithUser(typeof(TwoFactorAuthenticationPageModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(TwoFactorAuthenticationPageModel<>))]
     public class TwoFactorAuthenticationPageModel : PageModel
     {
         /// <summary>

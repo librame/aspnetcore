@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -21,7 +20,7 @@ namespace Librame.AspNetCore.Identity.UI
     using Extensions.Core;
 
     /// <summary>
-    /// 身份用户界面信息。
+    /// 身份 UI 信息。
     /// </summary>
     public class IdentityUiInfo : AbstractUiInfo
     {
@@ -75,17 +74,15 @@ namespace Librame.AspNetCore.Identity.UI
         public override void AddNavigations(ref ConcurrentDictionary<string, List<NavigationDescriptor>> navigations, ServiceFactoryDelegate serviceFactory)
         {
             var layoutLocalizer = serviceFactory.GetRequiredService<IExpressionStringLocalizer<LayoutViewResource>>();
-            var uiOptions = serviceFactory.GetRequiredService<IOptions<UiBuilderOptions>>().Value;
 
-            var manageSidebarNavigations = CreateManageSidebarNavigation(layoutLocalizer, uiOptions);
+            var manageSidebarNavigations = CreateManageSidebarNavigation(layoutLocalizer);
             navigations.AddOrUpdateManageSidebarNavigation(manageSidebarNavigations);
 
             var manageFootbarNavigations = CreateManageFootbarNavigation(layoutLocalizer);
             navigations.AddOrUpdateManageFooterNavigation(manageFootbarNavigations);
         }
 
-        private List<NavigationDescriptor> CreateManageSidebarNavigation(IExpressionStringLocalizer<LayoutViewResource> localizer,
-            UiBuilderOptions uiOptions)
+        private List<NavigationDescriptor> CreateManageSidebarNavigation(IExpressionStringLocalizer<LayoutViewResource> localizer)
         {
             return new List<NavigationDescriptor>
             {
@@ -93,32 +90,32 @@ namespace Librame.AspNetCore.Identity.UI
                 {
                     Id = "profile",
                     Icon = "la la-user",
-                    ActiveClassNameFactory = page => ViewContextUtility.GetActiveViewCssClassNameOrEmpty(page.ViewContext, "Profile"),
+                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 },
                 new NavigationDescriptor(localizer[p => p.ChangePassword], "./ChangePassword")
                 {
                     Id = "change-password",
                     Icon = "la la-unlock",
-                    ActiveClassNameFactory = page => ViewContextUtility.GetActiveViewCssClassNameOrEmpty(page.ViewContext, "ChangePassword"),
+                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 },
                 new NavigationDescriptor(localizer[p => p.ExternalLogins], "./ExternalLogins")
                 {
                     Id = "external-login",
                     Icon = "la la-key",
-                    ActiveClassNameFactory = page => ViewContextUtility.GetActiveViewCssClassNameOrEmpty(page.ViewContext, "ExternalLogins"),
-                    VisibilityFactory = page => ViewDataDictionaryUtility.GetBool(page.ViewData, uiOptions.HasExternalAuthenticationSchemesKey)
+                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    VisibilityFactory = (page, nav) => ViewDataDictionaryUtility.GetHasExternalLogins(page.ViewContext)
                 },
                 new NavigationDescriptor(localizer[p => p.TwoFactorAuthentication], "./TwoFactorAuthentication")
                 {
                     Id = "two-factor",
                     Icon = "la la-superscript",
-                    ActiveClassNameFactory = page => ViewContextUtility.GetActiveViewCssClassNameOrEmpty(page.ViewContext, "TwoFactorAuthentication"),
+                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 },
                 new NavigationDescriptor(localizer[p => p.PersonalData], "./PersonalData")
                 {
                     Id = "personal-data",
                     Icon = "la la-user-times",
-                    ActiveClassNameFactory = page => ViewContextUtility.GetActiveViewCssClassNameOrEmpty(page.ViewContext, "PersonalData"),
+                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 }
             };
         }

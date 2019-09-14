@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.UI
     using Extensions;
 
     /// <summary>
-    /// 用户界面登入管理器静态扩展。
+    ///  UI 登入管理器静态扩展。
     /// </summary>
     public static class UiSignInManagerExtensions
     {

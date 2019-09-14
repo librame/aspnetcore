@@ -1,44 +1,53 @@
-﻿<!DOCTYPE html>
+﻿@inject IApplicationContext Application
+@{
+    var uiInfo = Application.GetUiInfo(ViewContext.RouteData.AsRouteDescriptor());
+}
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - Identity Pages</title>
-        <link rel="stylesheet" href="//ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </head>
-    <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a asp-controller="Home" asp-action="Index" class="navbar-brand">Identity Sample</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    </ul>
-                    @await Html.PartialAsync("_LoginPartial")
-                </div>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @uiInfo?.Title</title>
+    <link rel="stylesheet" href="//ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand">@uiInfo?.Title</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="@Application.Site.Navs.Index.Href">@Application.Site.Navs.Index.Text</a></li>
+                    <li><a href="@Application.Site.Navs.About.Href">@Application.Site.Navs.About.Text</a></li>
+                    <li><a href="@Application.Site.Navs.Contact.Href">@Application.Site.Navs.Contact.Text</a></li>
+                </ul>
+                @await Html.PartialAsync("Common/_LoginPartial", Application)
             </div>
         </div>
-        <div class="container body-content">
-            @RenderBody()
-            <hr />
-            <footer>
-                <p>&copy; 2018 - Librame.AspNetCore.Identity.Pages</p>
-            </footer>
-        </div>
+    </div>
 
-        <script src="//ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"></script>
-        <script src="//ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"></script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    <partial name="Common/_CookieConsentPartial" model="Application" />
 
-        @RenderSection("scripts", required: false)
-    </body>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.ToString("yyyy") - @uiInfo?.Copyright [@uiInfo?.Version]</p>
+        </footer>
+    </div>
+
+    <script src="//ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"></script>
+    <script src="//ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"></script>
+    <script src="~/js/site.min.js" asp-append-version="true"></script>
+
+    @RenderSection("scripts", required: false)
+</body>
 </html>

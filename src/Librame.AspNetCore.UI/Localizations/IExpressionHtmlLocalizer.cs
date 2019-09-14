@@ -28,6 +28,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="propertyExpression">给定的属性表达式。</param>
         /// <returns>返回 <see cref="LocalizedHtmlString"/>。</returns>
         LocalizedHtmlString this[Expression<Func<TResource, string>> propertyExpression] { get; }
+
         /// <summary>
         /// 获取字符串属性的本地化字符串。
         /// </summary>

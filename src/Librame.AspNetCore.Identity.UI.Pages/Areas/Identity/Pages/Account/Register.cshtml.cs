@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -30,23 +31,38 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 注册页面模型。
     /// </summary>
     [AllowAnonymous]
-    [UiTemplateWithUser(typeof(RegisterPageModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(RegisterPageModel<>))]
     public class RegisterPageModel : PageModel
     {
         /// <summary>
         /// 构造一个 <see cref="RegisterPageModel"/> 实例。
         /// </summary>
         /// <param name="localizer">给定的 <see cref="IExpressionHtmlLocalizer{RegisterViewResource}"/>。</param>
-        protected RegisterPageModel(IExpressionHtmlLocalizer<RegisterViewResource> localizer)
+        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
+        /// <param name="options">给定的 <see cref="IOptions{IdentityOptions}"/>。</param>
+        protected RegisterPageModel(IExpressionHtmlLocalizer<RegisterViewResource> localizer,
+            IOptions<IdentityBuilderOptions> builderOptions, IOptions<IdentityOptions> options)
         {
             Localizer = localizer;
+            BuilderOptions = builderOptions.Value;
+            Options = options.Value;
         }
 
 
         /// <summary>
         /// 本地化资源。
         /// </summary>
-        public IExpressionHtmlLocalizer<RegisterViewResource> Localizer { get; set; }
+        public IExpressionHtmlLocalizer<RegisterViewResource> Localizer { get; }
+
+        /// <summary>
+        /// 构建器选项。
+        /// </summary>
+        public IdentityBuilderOptions BuilderOptions { get; }
+
+        /// <summary>
+        /// 选项。
+        /// </summary>
+        public IdentityOptions Options { get; }
 
         /// <summary>
         /// 注册视图模型。
@@ -78,7 +94,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
 
     internal class RegisterPageModel<TUser> : RegisterPageModel
-        where TUser : class, IGenId
+        where TUser : class, IId<string>
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
@@ -94,8 +110,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             ILogger<LoginPageModel> logger,
             IEmailService emailService,
             IExpressionHtmlLocalizer<RegisterViewResource> localizer,
-            IdentityStoreIdentifier storeIdentifier)
-            : base(localizer)
+            IdentityStoreIdentifier storeIdentifier,
+            IOptions<IdentityBuilderOptions> builderOptions,
+            IOptions<IdentityOptions> options)
+            : base(localizer, builderOptions, options)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;

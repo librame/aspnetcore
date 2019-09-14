@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -8,25 +9,29 @@ using System.Threading;
 
 namespace Librame.AspNetCore.Identity.Tests
 {
+    using Extensions.Core;
     using Extensions.Data;
 
     public class TestIdentityStoreInitializer : StoreInitializerBase<IdentityDbContextAccessor, IdentityStoreIdentifier>
     {
-        private readonly SignInManager<DefaultIdentityUser> _signInManager;
-        private readonly RoleManager<DefaultIdentityRole> _roleMananger;
-        private readonly IUserStore<DefaultIdentityUser> _userStore;
+        private readonly string _defaultCreatedBy
+            = nameof(TestIdentityStoreInitializer);
+
+        private readonly SignInManager<DefaultIdentityUser<string>> _signInManager;
+        private readonly RoleManager<DefaultIdentityRole<string>> _roleMananger;
+        private readonly IUserStore<DefaultIdentityUser<string>> _userStore;
         private readonly IdentityBuilderOptions _options;
 
-        private IList<DefaultIdentityRole> _roles;
-        private IList<DefaultIdentityUser> _users;
+        private IList<DefaultIdentityRole<string>> _roles;
+        private IList<DefaultIdentityUser<string>> _users;
 
 
-        public TestIdentityStoreInitializer(SignInManager<DefaultIdentityUser> signInManager,
-            RoleManager<DefaultIdentityRole> roleMananger,
-            IUserStore<DefaultIdentityUser> userStore,
+        public TestIdentityStoreInitializer(SignInManager<DefaultIdentityUser<string>> signInManager,
+            RoleManager<DefaultIdentityRole<string>> roleMananger,
+            IUserStore<DefaultIdentityUser<string>> userStore,
             IOptions<IdentityBuilderOptions> options,
-            IStoreIdentifier identifier, ILoggerFactory loggerFactory)
-            : base(identifier, loggerFactory)
+            IClockService clock, IStoreIdentifier identifier, ILoggerFactory loggerFactory)
+            : base(clock, identifier, loggerFactory)
         {
             _signInManager = signInManager;
             _roleMananger = roleMananger;
@@ -39,99 +44,122 @@ namespace Librame.AspNetCore.Identity.Tests
         {
             base.InitializeCore(stores);
 
-            InitializeRoles(stores);
+            InitializeRoles(stores.Accessor);
 
-            InitializeUsers(stores);
+            InitializeUsers(stores.Accessor);
 
-            InitializeClaims(stores);
+            InitializeClaims(stores.Accessor);
         }
 
-        private void InitializeRoles(IStoreHub<IdentityDbContextAccessor> stores)
+        private void InitializeRoles(IdentityDbContextAccessor accessor)
         {
-            if (!stores.Accessor.Roles.Any())
+            if (!accessor.Roles.Any())
             {
-                _roles = new List<DefaultIdentityRole>
+                _roles = new List<DefaultIdentityRole<string>>
                 {
-                    new DefaultIdentityRole("SuperAdministrator")
-                    {
-                        Id = Identifier.GetRoleIdAsync().Result
-                    },
-                    new DefaultIdentityRole("Administrator")
-                    {
-                        Id = Identifier.GetRoleIdAsync().Result
-                    }
+                    new DefaultIdentityRole<string>("SuperAdministrator"),
+                    new DefaultIdentityRole<string>("Administrator")
                 };
 
                 foreach (var role in _roles)
-                    _roleMananger.CreateAsync(role).Wait();
+                {
+                    role.Id = Identifier.GetRoleIdAsync().Result;
+                    role.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
+                    role.CreatedBy = _defaultCreatedBy;
+                    role.NormalizedName = _roleMananger.NormalizeKey(role.Name);
+
+                    accessor.Roles.Add(role);
+                    //_roleMananger.CreateAsync(role).Wait();
+                }
             }
             else
             {
-                _roles = stores.Accessor.Roles.ToList();
+                _roles = accessor.Roles.ToList();
             }
         }
 
-        private void InitializeUsers(IStoreHub<IdentityDbContextAccessor> stores)
+        private void InitializeUsers(IdentityDbContextAccessor accessor)
         {
-            if (!stores.Accessor.Users.Any())
+            if (!accessor.Users.Any())
             {
                 // Identity 默认以邮箱为用户名
-                _users = new List<DefaultIdentityUser>
+                _users = new List<DefaultIdentityUser<string>>
                 {
-                    new DefaultIdentityUser("librame@librame.net")
-                    {
-                        Id = Identifier.GetUserIdAsync().Result
-                    },
-                    new DefaultIdentityUser("libramecore@librame.net")
-                    {
-                        Id = Identifier.GetUserIdAsync().Result
-                    }
+                    new DefaultIdentityUser<string>("librame@librame.net"),
+                    new DefaultIdentityUser<string>("libramecore@librame.net")
                 };
 
                 var i = 0;
                 foreach (var user in _users)
                 {
-                    if (!_signInManager.UserManager.SupportsUserEmail)
+                    if (_signInManager.UserManager.SupportsUserEmail)
                     {
-                        var emailStore = (IUserEmailStore<DefaultIdentityUser>)_userStore;
+                        var emailStore = (IUserEmailStore<DefaultIdentityUser<string>>)_userStore;
                         emailStore.SetEmailAsync(user, user.UserName, CancellationToken.None).Wait();
                     }
 
                     _userStore.SetUserNameAsync(user, user.UserName, default).Wait();
 
+                    user.Id = Identifier.GetUserIdAsync().Result;
+                    user.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
+                    user.CreatedBy = _defaultCreatedBy;
+
+                    user.PasswordHash = _signInManager.UserManager.PasswordHasher.HashPassword(user, _options.DefaultPassword);
+                    user.NormalizedUserName = _signInManager.UserManager.NormalizeKey(user.UserName);
+                    user.NormalizedEmail = _signInManager.UserManager.NormalizeKey(user.Email);
+
+                    var identifier = new RandomNumberAlgorithmIdentifier(20, Base32AlgorithmConverter.Default);
+                    user.SecurityStamp = identifier;
                     user.EmailConfirmed = true;
-                    var result = _signInManager.UserManager.CreateAsync(user, _options.DefaultPassword).Result;
-                    if (result.Succeeded)
+
+                    accessor.Users.Add(user);
+                    //result = _signInManager.UserManager.CreateAsync(user, _options.DefaultPassword).Result;
+
+                    var userRole = new DefaultIdentityUserRole<string>
                     {
-                        stores.Accessor.UserRoles.Add(new IdentityUserRole<string>
-                        {
-                            RoleId = _roles[i].Id,
-                            UserId = user.Id
-                        });
-                    }
+                        RoleId = _roles[i].Id,
+                        UserId = user.Id,
+                        CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result,
+                        CreatedBy = _defaultCreatedBy
+                    };
+
+                    accessor.UserRoles.Add(userRole);
 
                     i++;
                 }
             }
             else
             {
-                _users = stores.Accessor.Users.ToList();
+                _users = accessor.Users.ToList();
             }
         }
 
-        private void InitializeClaims(IStoreHub<IdentityDbContextAccessor> stores)
+        private void InitializeClaims(IdentityDbContextAccessor accessor)
         {
-            if (!stores.Accessor.UserClaims.Any())
+            if (!accessor.UserClaims.Any())
             {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Gender, "male"),
+                    new Claim(ClaimTypes.Country, "China")
+                };
+
                 foreach (var user in _users)
                 {
-                    var claims = new List<Claim>
+                    foreach (var claim in claims)
                     {
-                        new Claim(ClaimTypes.Gender, "male"),
-                        new Claim(ClaimTypes.Country, "China")
-                    };
+                        var userClaim = new DefaultIdentityUserClaim<string>()
+                        {
+                            UserId = user.Id
+                        };
+                        userClaim.InitializeFromClaim(claim);
 
-                    _signInManager.UserManager.AddClaimsAsync(user, claims).Wait();
+                        userClaim.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
+                        userClaim.CreatedBy = _defaultCreatedBy;
+
+                        accessor.UserClaims.Add(userClaim);
+                    }
+                    //_signInManager.UserManager.AddClaimsAsync(user, claims).Wait();
                 }
             }
         }

@@ -23,6 +23,7 @@ namespace Librame.AspNetCore.Identity.Api
     using AspNetCore.Api;
     using Extensions;
     using Extensions.Core;
+    using Extensions.Data;
     using Extensions.Network;
 
     class IdentityGraphApiMutation : ObjectGraphType, IGraphApiMutation
@@ -48,7 +49,7 @@ namespace Librame.AspNetCore.Identity.Api
         private readonly dynamic _signInManager = null;
         private readonly dynamic _userManager = null;
         private readonly dynamic _userStore = null;
-        private readonly dynamic _emailStore;
+        //private readonly dynamic _emailStore;
 
 
         public IdentityGraphApiMutation(IInjectionService injectionService)
@@ -60,7 +61,7 @@ namespace Librame.AspNetCore.Identity.Api
             _userManager = _signInManager.UserManager;
             _userStore = _serviceProvider.GetService(typeof(IUserStore<>)
                 .MakeGenericType(_builderWrapper.RawBuilder.UserType));
-            _emailStore = _userStore.GetUserEmailStore(_userManager);
+            //_emailStore = _userStore.GetUserEmailStore(_userManager);
 
             Name = nameof(ISchema.Mutation);
 
@@ -122,19 +123,21 @@ namespace Librame.AspNetCore.Identity.Api
                 {
                     var model = context.GetArgument<RegisterApiModel>("user");
 
-                    var user = new DefaultIdentityUser();
-                    user.Id = await _identifier.GetUserIdAsync();
+                    var userId = await _identifier.GetUserIdAsync();
+                    var user = _builderWrapper.RawBuilder.UserType.EnsureCreateObject();
+                    if (user is IId<string> _user)
+                        _user.Id = userId;
 
                     var result = await _userManager.CreateUserByEmail(_userStore, model.Email, model.Password, user);
                     if (result.Succeeded)
                     {
                         model.Message = "User created a new account with password.";
-                        model.UserId = user.Id;
+                        model.UserId = userId;
 
                         // 确认邮件
                         string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                        var confirmEmailLocator = model.ConfirmEmailUrl.AsUriLocator();
+                        var confirmEmailLocator = model.ConfirmEmailUrl.AsUrlLocator();
                         confirmEmailLocator.ChangeQueries(queries =>
                         {
                             queries.AddOrUpdate("userId", model.UserId, (key, value) => model.UserId);
@@ -142,7 +145,7 @@ namespace Librame.AspNetCore.Identity.Api
                         });
                         var confirmEmailExternalLink = HtmlEncoder.Default.Encode(confirmEmailLocator.ToString());
 
-                        await _emailService.SendAsync(user.Email,
+                        await _emailService.SendAsync(model.Email,
                             _localizer[r => r.ConfirmYourEmail]?.Value,
                             _localizer[r => r.ConfirmYourEmailFormat, confirmEmailExternalLink]?.Value);
                         //await userStore.GetUserEmailStore(signInManager).SetEmailAsync(user, model.Email, default);

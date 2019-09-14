@@ -7,8 +7,8 @@ namespace Librame.AspNetCore.UI.Tests
         [Fact]
         public void AllTest()
         {
-            Assert.NotEmpty(ApplicationInfoUtility.Uis);
-            Assert.NotEmpty(ApplicationInfoUtility.Themepacks);
+            Assert.NotEmpty(ApplicationInfoHelper.Uis);
+            Assert.NotEmpty(ApplicationInfoHelper.Themepacks);
         }
     }
 }

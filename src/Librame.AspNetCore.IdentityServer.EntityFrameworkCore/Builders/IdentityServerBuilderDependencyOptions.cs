@@ -18,60 +18,56 @@ using System;
 namespace Librame.AspNetCore.IdentityServer
 {
     using Extensions.Core;
-    using Extensions.Data;
 
     /// <summary>
     /// 身份服务器构建器依赖选项。
     /// </summary>
     public class IdentityServerBuilderDependencyOptions : ExtensionBuilderDependencyOptions<IdentityServerBuilderOptions>
     {
-        private static string _tablePrefix = nameof(IdentityServer);
-
-
         /// <summary>
         /// <see cref="IdentityServerOptions"/> 配置动作。
         /// </summary>
-        public Action<IdentityServerOptions> BaseSetupAction { get; set; }
+        public Action<IdentityServerOptions> RawAction { get; set; }
             = _ => { };
 
         /// <summary>
         /// <see cref="ConfigurationStoreOptions"/> 配置动作。
         /// </summary>
-        public Action<ConfigurationStoreOptions> ConfigurationSetupAction { get; set; }
+        public Action<ConfigurationStoreOptions> ConfigurationAction { get; set; }
             = options =>
             {
                 // Client
-                options.Client = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<Client>());
-                options.ClientClaim = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ClientClaim>());
-                options.ClientCorsOrigin = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ClientCorsOrigin>());
-                options.ClientGrantType = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ClientGrantType>());
-                options.ClientIdPRestriction = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ClientIdPRestriction>());
-                options.ClientPostLogoutRedirectUri = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ClientPostLogoutRedirectUri>());
-                options.ClientProperty = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ClientProperty>());
-                options.ClientRedirectUri = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ClientRedirectUri>());
-                options.ClientScopes = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ClientScope>());
-                options.ClientSecret = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ClientSecret>());
+                options.Client = TableConfigurationUtility.CreateTableConfiguration<Client>();
+                options.ClientClaim = TableConfigurationUtility.CreateTableConfiguration<ClientClaim>();
+                options.ClientCorsOrigin = TableConfigurationUtility.CreateTableConfiguration<ClientCorsOrigin>();
+                options.ClientGrantType = TableConfigurationUtility.CreateTableConfiguration<ClientGrantType>();
+                options.ClientIdPRestriction = TableConfigurationUtility.CreateTableConfiguration<ClientIdPRestriction>();
+                options.ClientPostLogoutRedirectUri = TableConfigurationUtility.CreateTableConfiguration<ClientPostLogoutRedirectUri>();
+                options.ClientProperty = TableConfigurationUtility.CreateTableConfiguration<ClientProperty>();
+                options.ClientRedirectUri = TableConfigurationUtility.CreateTableConfiguration<ClientRedirectUri>();
+                options.ClientScopes = TableConfigurationUtility.CreateTableConfiguration<ClientScope>();
+                options.ClientSecret = TableConfigurationUtility.CreateTableConfiguration<ClientSecret>();
 
                 // Resource
-                options.IdentityClaim = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<IdentityClaim>());
-                options.IdentityResource = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<IdentityResource>());
-                options.IdentityResourceProperty = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<IdentityResourceProperty>());
-                options.ApiClaim = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ApiResourceClaim>());
-                options.ApiResource = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ApiResource>());
-                options.ApiResourceProperty = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ApiResourceProperty>());
-                options.ApiScope = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ApiScope>());
-                options.ApiScopeClaim = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ApiScopeClaim>());
-                options.ApiSecret = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<ApiSecret>());
+                options.IdentityClaim = TableConfigurationUtility.CreateTableConfiguration<IdentityClaim>();
+                options.IdentityResource = TableConfigurationUtility.CreateTableConfiguration<IdentityResource>();
+                options.IdentityResourceProperty = TableConfigurationUtility.CreateTableConfiguration<IdentityResourceProperty>();
+                options.ApiClaim = TableConfigurationUtility.CreateTableConfiguration<ApiResourceClaim>();
+                options.ApiResource = TableConfigurationUtility.CreateTableConfiguration<ApiResource>();
+                options.ApiResourceProperty = TableConfigurationUtility.CreateTableConfiguration<ApiResourceProperty>();
+                options.ApiScope = TableConfigurationUtility.CreateTableConfiguration<ApiScope>();
+                options.ApiScopeClaim = TableConfigurationUtility.CreateTableConfiguration<ApiScopeClaim>();
+                options.ApiSecret = TableConfigurationUtility.CreateTableConfiguration<ApiSecret>();
             };
 
         /// <summary>
         /// <see cref="OperationalStoreOptions"/> 配置动作。
         /// </summary>
-        public Action<OperationalStoreOptions> OperationalSetupAction { get; set; }
+        public Action<OperationalStoreOptions> OperationalAction { get; set; }
             = options =>
             {
-                options.PersistedGrants = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<PersistedGrant>());
-                options.DeviceFlowCodes = new TableConfiguration(_tablePrefix + TableSchema.GetEntityPluralName<DeviceFlowCodes>());
+                options.PersistedGrants = TableConfigurationUtility.CreateTableConfiguration<PersistedGrant>();
+                options.DeviceFlowCodes = TableConfigurationUtility.CreateTableConfiguration<DeviceFlowCodes>();
             };
     }
 }

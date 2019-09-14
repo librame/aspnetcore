@@ -39,9 +39,6 @@ namespace Librame.AspNetCore.Api
         /// <returns>返回字符串。</returns>
         public static string GetInputTypeName<TInputType>()
             where TInputType : IInputObjectGraphType
-        {
-            return typeof(TInputType).Name.TrimEnd("Type");
-        }
-
+            => typeof(TInputType).Name.TrimEnd("Type");
     }
 }

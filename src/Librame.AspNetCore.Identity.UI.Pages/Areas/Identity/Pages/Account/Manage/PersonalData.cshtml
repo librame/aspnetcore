@@ -3,7 +3,6 @@
 @inject IExpressionHtmlLocalizer<PersonalDataViewResource> Localizer
 @{
     ViewData["Title"] = Localizer[r => r.Title];
-    ViewData["ActivePage"] = ViewPageNames.PersonalData;
 }
 
 <!-- PersonalData -->
@@ -15,9 +14,11 @@
         <p>
             <strong>@Localizer[r => r.Descr]</strong>
         </p>
+
         <form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group">
             <button class="btn btn-default" type="submit">@Localizer[r => r.DownloadButtonText]</button>
         </form>
+
         <p>
             <a id="delete" asp-page="DeletePersonalData" class="btn btn-default">@Localizer[r => r.ButtonText]</a>
         </p>

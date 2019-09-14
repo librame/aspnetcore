@@ -18,12 +18,6 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
     public class IndexPageModel : PageModel
     {
         [InjectionService]
-        private UserManager<DefaultIdentityUser> _userManager = null;
-
-        [InjectionService]
-        private SignInManager<DefaultIdentityUser> _signInManager = null;
-
-        [InjectionService]
         private IEmailService _emailService = null;
 
         //[InjectionService]
@@ -35,6 +29,16 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
         [InjectionService]
         private IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer = null;
 
+        [InjectionService]
+        private IIdentityBuilderWrapper _builderWrapper = null;
+
+        [InjectionService]
+        private IServiceProvider _serviceProvider = null;
+
+        private readonly dynamic _signInManager = null;
+        private readonly dynamic _userManager = null;
+        private readonly dynamic _userStore = null;
+
 
         /// <summary>
         /// 构造一个 <see cref="IndexPageModel"/>。
@@ -43,6 +47,12 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
         public IndexPageModel(IInjectionService injectionService)
         {
             injectionService.Inject(this);
+
+            _signInManager = _serviceProvider.GetService(typeof(SignInManager<>)
+                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
+            _userManager = _signInManager.UserManager;
+            _userStore = _serviceProvider.GetService(typeof(IUserStore<>)
+                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
         }
 
 

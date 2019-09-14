@@ -3,7 +3,6 @@
 @inject IExpressionHtmlLocalizer<TwoFactorAuthenticationViewResource> Localizer
 @{
     ViewData["Title"] = Localizer[r => r.Title];
-    ViewData["ActivePage"] = ViewPageNames.TwoFactorAuthentication;
 }
 
 <partial name="_StatusMessagePartial" model="Model.StatusMessage" />
@@ -45,7 +44,8 @@
     <a asp-page="./GenerateRecoveryCodes" class="btn btn-default">@Localizer[r => r.GenerateRecoveryCodes]</a>
 }
 
-<h5>@Localizer[r => r.AuthenticatorApp]</h5>
+<p/>
+<h4>@Localizer[r => r.AuthenticatorApp]</h4>
 
 @if (!Model.HasAuthenticator)
 {

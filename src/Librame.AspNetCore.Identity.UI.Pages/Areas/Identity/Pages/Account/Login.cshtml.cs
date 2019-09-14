@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [UiTemplateWithUser(typeof(LoginPageModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(LoginPageModel<>))]
     public class LoginPageModel : PageModel
     {
         /// <summary>

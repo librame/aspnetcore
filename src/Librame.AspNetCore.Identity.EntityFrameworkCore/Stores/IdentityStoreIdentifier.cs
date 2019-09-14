@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity
 {
+    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
@@ -26,9 +27,10 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 构造一个 <see cref="IdentityStoreIdentifier"/>。
         /// </summary>
+        /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        public IdentityStoreIdentifier(ILoggerFactory loggerFactory)
-            : base(loggerFactory)
+        public IdentityStoreIdentifier(IClockService clock, ILoggerFactory loggerFactory)
+            : base(clock, loggerFactory)
         {
         }
 
@@ -39,9 +41,7 @@ namespace Librame.AspNetCore.Identity
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回 <see cref="string"/>。</returns>
         public virtual Task<string> GetRoleIdAsync(CancellationToken cancellationToken = default)
-        {
-            return GenerateIdAsync(cancellationToken, "RoleId");
-        }
+            => GenerateCombGuidAsync(cancellationToken, "RoleId");
 
         /// <summary>
         /// 异步获取用户标识。
@@ -49,9 +49,7 @@ namespace Librame.AspNetCore.Identity
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回 <see cref="string"/>。</returns>
         public virtual Task<string> GetUserIdAsync(CancellationToken cancellationToken = default)
-        {
-            return GenerateIdAsync(cancellationToken, "UserId");
-        }
+            => GenerateCombGuidAsync(cancellationToken, "UserId");
 
     }
 }

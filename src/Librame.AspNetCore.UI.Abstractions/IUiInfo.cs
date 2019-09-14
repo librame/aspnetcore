@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.UI
     using Extensions.Core;
 
     /// <summary>
-    /// 用户界面信息接口。
+    ///  UI 信息接口。
     /// </summary>
     public interface IUiInfo : IApplicationInfo
     {

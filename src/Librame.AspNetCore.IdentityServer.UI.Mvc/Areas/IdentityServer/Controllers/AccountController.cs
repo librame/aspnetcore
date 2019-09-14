@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
     /// </summary>
     [SecurityHeaders]
     [AllowAnonymous]
-    [UiTemplateWithUser(typeof(ExternalController<>))]
+    [ApplicationSiteTemplateWithUser(typeof(ExternalController<>))]
     public class AccountController<TUser> : Controller
         where TUser : IdentityUser<string>, new()
     {

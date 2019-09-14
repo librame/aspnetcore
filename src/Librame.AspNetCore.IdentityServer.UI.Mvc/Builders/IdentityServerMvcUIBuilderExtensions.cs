@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
     using AspNetCore.UI;
 
     /// <summary>
-    /// 身份服务器 MVC 用户界面构建器静态扩展。
+    /// 身份服务器 MVC  UI 构建器静态扩展。
     /// </summary>
     public static class IdentityServerMvcUiBuilderExtensions
     {
@@ -28,9 +28,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
         public static IUiBuilder AddIdentityServerControllers(this IUiBuilder builder, IMvcBuilder mvcBuilder)
-        {
-            return builder.AddControllers(mvcBuilder, typeof(IdentityServerMvcUiBuilderExtensions).Assembly);
-        }
+            => builder.AddSiteControllers<IdentityServerApplicationSiteMvc, IdentityServerApplicationSiteConfiguration>(mvcBuilder, typeof(IdentityServerMvcUiBuilderExtensions).Assembly);
 
     }
 }

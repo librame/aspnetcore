@@ -15,7 +15,7 @@ namespace Librame.AspNetCore.UI
     using Extensions.Core;
 
     /// <summary>
-    /// 用户界面构建器选项。
+    ///  UI 构建器选项。
     /// </summary>
     public class UiBuilderOptions : AbstractExtensionBuilderOptions
     {
@@ -23,7 +23,7 @@ namespace Librame.AspNetCore.UI
         /// 激活视图键名。
         /// </summary>
         public string ActiveViewKey { get; set; }
-            = "ActivePage";
+            = "ActiveView";
 
         /// <summary>
         /// 有外部认证方案的键名。

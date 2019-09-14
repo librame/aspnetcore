@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 重置密码页面模型。
     /// </summary>
     [AllowAnonymous]
-    [UiTemplateWithUser(typeof(ResetPasswordPageModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(ResetPasswordPageModel<>))]
     public class ResetPasswordPageModel : PageModel
     {
         /// <summary>

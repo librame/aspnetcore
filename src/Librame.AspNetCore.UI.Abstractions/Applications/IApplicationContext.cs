@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.UI
         /// 返回 <see cref="ServiceFactoryDelegate"/>。
         /// </value>
         ServiceFactoryDelegate ServiceFactory { get; }
-
+        
         /// <summary>
         /// 应用当事人。
         /// </summary>
@@ -39,6 +39,14 @@ namespace Librame.AspNetCore.UI
         /// 返回 <see cref="IApplicationPrincipal"/>。
         /// </value>
         IApplicationPrincipal Principal { get; }
+
+        /// <summary>
+        /// 应用站点。
+        /// </summary>
+        /// <value>
+        /// 返回 <see cref="IApplicationSite"/>。
+        /// </value>
+        IApplicationSite Site { get; }
 
         /// <summary>
         /// 主机环境。
@@ -55,7 +63,7 @@ namespace Librame.AspNetCore.UI
         ConcurrentDictionary<string, IThemepackInfo> Themepacks { get; }
 
         /// <summary>
-        /// 用户界面信息集合。
+        ///  UI 信息集合。
         /// </summary>
         ConcurrentDictionary<string, IUiInfo> Uis { get; }
 

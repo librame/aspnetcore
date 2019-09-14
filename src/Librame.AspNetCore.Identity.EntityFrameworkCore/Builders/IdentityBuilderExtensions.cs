@@ -30,17 +30,18 @@ namespace Librame.AspNetCore.Identity
         /// </summary>
         /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="dependencySetupAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="rawAction">给定的原始选项配置动作。</param>
+        /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
         public static IIdentityBuilderWrapper AddIdentity<TAccessor>(this IExtensionBuilder builder,
-            Action<IdentityBuilderDependencyOptions> dependencySetupAction = null)
-            where TAccessor : IdentityDbContextAccessor
+            Action<IdentityOptions> rawAction,
+            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> builderFactory = null)
+            where TAccessor : DbContext, IIdentityDbContextAccessor
         {
-            return builder.AddIdentity<TAccessor, DefaultIdentityUser, DefaultIdentityRole, string>((b, r) =>
-            {
-                return new IdentityBuilderWrapper(b, r);
-            },
-            dependencySetupAction);
+            return builder.AddIdentity<TAccessor,
+                DefaultIdentityUser<string>,
+                DefaultIdentityRole<string>,
+                string>(rawAction, builderFactory);
         }
 
         /// <summary>
@@ -51,24 +52,112 @@ namespace Librame.AspNetCore.Identity
         /// <typeparam name="TRole">指定的角色类型。</typeparam>
         /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="createFactory">给定创建身份构建器的工厂方法。</param>
-        /// <param name="dependencySetupAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="rawAction">给定的原始选项配置动作。</param>
+        /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
         public static IIdentityBuilderWrapper AddIdentity<TAccessor, TUser, TRole, TGenId>(this IExtensionBuilder builder,
-            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> createFactory,
-            Action<IdentityBuilderDependencyOptions> dependencySetupAction = null)
+            Action<IdentityOptions> rawAction,
+            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> builderFactory = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TUser, TGenId>
             where TUser : class
             where TRole : class
             where TGenId : IEquatable<TGenId>
         {
-            createFactory.NotNull(nameof(createFactory));
+            return builder.AddIdentity<TAccessor,
+                TRole,
+                DefaultIdentityRoleClaim<TGenId>,
+                DefaultIdentityUserRole<TGenId>,
+                TUser,
+                DefaultIdentityUserClaim<TGenId>,
+                DefaultIdentityUserLogin<TGenId>,
+                DefaultIdentityUserToken<TGenId>>(dependency =>
+                {
+                    dependency.RawAction = rawAction;
+                },
+                builderFactory);
+        }
 
+
+        /// <summary>
+        /// 添加身份扩展。
+        /// </summary>
+        /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
+        /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
+        public static IIdentityBuilderWrapper AddIdentity<TAccessor>(this IExtensionBuilder builder,
+            Action<IdentityBuilderDependencyOptions> dependencyAction = null,
+            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> builderFactory = null)
+            where TAccessor : DbContext, IIdentityDbContextAccessor
+        {
+            return builder.AddIdentity<TAccessor,
+                DefaultIdentityUser<string>,
+                DefaultIdentityRole<string>,
+                string>(dependencyAction, builderFactory);
+        }
+
+        /// <summary>
+        /// 添加身份扩展。
+        /// </summary>
+        /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
+        /// <typeparam name="TUser">指定的用户类型。</typeparam>
+        /// <typeparam name="TRole">指定的角色类型。</typeparam>
+        /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
+        /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
+        public static IIdentityBuilderWrapper AddIdentity<TAccessor, TUser, TRole, TGenId>(this IExtensionBuilder builder,
+            Action<IdentityBuilderDependencyOptions> dependencyAction = null,
+            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> builderFactory = null)
+            where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TUser, TGenId>
+            where TUser : class
+            where TRole : class
+            where TGenId : IEquatable<TGenId>
+        {
+            return builder.AddIdentity<TAccessor,
+                TRole,
+                DefaultIdentityRoleClaim<TGenId>,
+                DefaultIdentityUserRole<TGenId>,
+                TUser,
+                DefaultIdentityUserClaim<TGenId>,
+                DefaultIdentityUserLogin<TGenId>,
+                DefaultIdentityUserToken<TGenId>>(dependencyAction, builderFactory);
+        }
+
+        /// <summary>
+        /// 添加身份扩展。
+        /// </summary>
+        /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
+        /// <typeparam name="TRole">指定的角色类型。</typeparam>
+        /// <typeparam name="TRoleClaim">指定的角色声明类型。</typeparam>
+        /// <typeparam name="TUserRole">指定的用户角色类型。</typeparam>
+        /// <typeparam name="TUser">指定的用户类型。</typeparam>
+        /// <typeparam name="TUserClaim">指定的用户声明类型。</typeparam>
+        /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
+        /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
+        /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
+        public static IIdentityBuilderWrapper AddIdentity<TAccessor, TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>(this IExtensionBuilder builder,
+            Action<IdentityBuilderDependencyOptions> dependencyAction = null,
+            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> builderFactory = null)
+            where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>
+            where TRole : class
+            where TRoleClaim : class
+            where TUserRole : class
+            where TUser : class
+            where TUserClaim : class
+            where TUserLogin : class
+            where TUserToken : class
+        {
             // Add Dependencies
-            var dependencyOptions = dependencySetupAction.ConfigureDependencyOptions();
+            var dependency = dependencyAction.ConfigureDependencyOptions();
 
             var rawBuilder = builder.Services
-                .AddIdentityCore<TUser>(dependencyOptions.BaseSetupAction)
+                .AddIdentityCore<TUser>(dependency.RawAction)
                 .AddRoles<TRole>()
                 .AddEntityFrameworkStores<TAccessor>()
                 .AddSignInManager()
@@ -77,11 +166,14 @@ namespace Librame.AspNetCore.Identity
             rawBuilder.Services.TryReplace<IdentityErrorDescriber, LocalizationIdentityErrorDescriber>();
 
             // Add Builder
-            builder.Services.OnlyConfigure(dependencySetupAction);
+            builder.Services.OnlyConfigure(dependency.BuilderOptionsAction,
+                dependency.BuilderOptionsName);
 
-            var builderWrapper = createFactory.Invoke(builder, rawBuilder);
+            var builderWrapper = builderFactory.NotNullOrDefault(()
+                => (b, r) => new IdentityBuilderWrapper(b, r)).Invoke(builder, rawBuilder);
 
-            return builderWrapper;
+            return builderWrapper
+                .AddStores();
         }
 
     }

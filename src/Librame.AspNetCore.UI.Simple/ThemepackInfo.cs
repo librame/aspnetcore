@@ -58,9 +58,6 @@ namespace Librame.AspNetCore.UI.Themepack.Simple
         /// </remarks>
         /// <returns>返回 <see cref="IFileProvider"/>。</returns>
         public override IFileProvider GetStaticFileProvider()
-        {
-            return new ManifestEmbeddedFileProvider(Assembly, "wwwroot");
-        }
-
+            => new ManifestEmbeddedFileProvider(Assembly, "wwwroot");
     }
 }

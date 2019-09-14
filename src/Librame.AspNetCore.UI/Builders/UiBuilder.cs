@@ -20,29 +20,14 @@ namespace Librame.AspNetCore.UI
 
     class UiBuilder : AbstractExtensionBuilder, IUiBuilder
     {
-        public UiBuilder(Type applicationPostConfigureOptionsType,
-            IExtensionBuilder builder)
+        public UiBuilder(IExtensionBuilder builder)
             : base(builder)
         {
-            ApplicationPostConfigureOptionsType = applicationPostConfigureOptionsType
-                .NotNull(nameof(applicationPostConfigureOptionsType));
-
             Services.AddSingleton<IUiBuilder>(this);
         }
 
 
-        public Type ApplicationPostConfigureOptionsType { get; private set; }
-
         public Type UserType { get; private set; }
-
-
-        public IUiBuilder AddApplicationPostConfigureOptions<TAppPostConfigureOptions>()
-            where TAppPostConfigureOptions : class, IApplicationPostConfigureOptions
-        {
-            ApplicationPostConfigureOptionsType = typeof(TAppPostConfigureOptions);
-            Services.TryReplaceConfigureOptions<TAppPostConfigureOptions>();
-            return this;
-        }
 
 
         public IUiBuilder AddUser<TUser>()

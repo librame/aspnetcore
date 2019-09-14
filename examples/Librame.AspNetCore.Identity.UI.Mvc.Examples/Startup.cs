@@ -21,9 +21,10 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
             Configuration = configuration;
         }
 
+
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
@@ -53,7 +54,7 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             })
-                .AddIdentityCookies(cookies => { });
+            .AddIdentityCookies(cookies => { });
 
             var mvcBuilder = services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
@@ -67,30 +68,27 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
             services.AddLibrameCore()
                 .AddDataCore(options =>
                 {
-                    options.Tenants.Default.DefaultConnectionString = writingConnectionString;
-                    options.Tenants.Default.WritingConnectionString = writingConnectionString;
-                    options.Tenants.Default.WritingSeparation = false;
+                    options.DefaultTenant.DefaultConnectionString = writingConnectionString;
+                    options.DefaultTenant.WritingConnectionString = writingConnectionString;
+                    options.DefaultTenant.WritingSeparation = false;
                 })
                 .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                 {
                     var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
-                    optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
+                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
-                .AddIdentifier<IdentityStoreIdentifier>() // IStoreIdentifier
-                .AddIdentity<IdentityDbContextAccessor>(dependency =>
+                .AddIdentifier<IdentityStoreIdentifier>()
+                .AddIdentity<IdentityDbContextAccessor>(options =>
                 {
-                    dependency.BaseSetupAction = options =>
-                    {
-                        options.Stores.MaxLengthForKeys = 128;
-                    };
+                    options.Stores.MaxLengthForKeys = 128;
                 })
                 .AddIdentityUI()
                 .AddIdentityControllers(mvcBuilder)
                 .AddNetwork();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

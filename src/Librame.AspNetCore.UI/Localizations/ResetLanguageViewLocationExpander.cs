@@ -10,6 +10,7 @@
 
 #endregion
 
+using Librame.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -57,10 +58,7 @@ namespace Microsoft.AspNetCore.Mvc.Razor
         /// <inheritdoc />
         public void PopulateValues(ViewLocationExpanderContext context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            context.NotNull(nameof(context));
 
             // Using CurrentUICulture so it loads the locale specific resources for the views.
             context.Values[ValueKey] = CultureInfo.CurrentUICulture.Name;
@@ -72,15 +70,8 @@ namespace Microsoft.AspNetCore.Mvc.Razor
             ViewLocationExpanderContext context,
             IEnumerable<string> viewLocations)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            if (viewLocations == null)
-            {
-                throw new ArgumentNullException(nameof(viewLocations));
-            }
+            context.NotNull(nameof(context));
+            viewLocations.NotNull(nameof(viewLocations));
 
             context.Values.TryGetValue(ValueKey, out var value);
 

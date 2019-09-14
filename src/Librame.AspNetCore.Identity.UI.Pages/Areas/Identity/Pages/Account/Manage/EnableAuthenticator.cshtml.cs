@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Text;
@@ -23,12 +24,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 启用验证器页面模型。
     /// </summary>
-    [UiTemplateWithUser(typeof(EnableAuthenticatorPageModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(EnableAuthenticatorPageModel<>))]
     public class EnableAuthenticatorPageModel : PageModel
     {
         /// <summary>
@@ -84,8 +86,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly ILogger<EnableAuthenticatorPageModel> _logger;
         private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
         private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
-
-        private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
+        private readonly IdentityBuilderOptions _options;
 
 
         public EnableAuthenticatorPageModel(
@@ -93,13 +94,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             UrlEncoder urlEncoder,
             ILogger<EnableAuthenticatorPageModel> logger,
             IExpressionStringLocalizer<StatusMessageResource> statusLocalizer,
-            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
+            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer,
+            IOptions<IdentityBuilderOptions> options)
         {
             _userManager = userManager;
             _urlEncoder = urlEncoder;
             _logger = logger;
             _statusLocalizer = statusLocalizer;
             _errorLocalizer = errorLocalizer;
+            _options = options.Value;
         }
 
 
@@ -196,11 +199,16 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         private string GenerateQrCodeUri(string email, string unformattedKey)
         {
-            return string.Format(
-                AuthenticatorUriFormat,
-                _urlEncoder.Encode("Librame.AspNetCore.Identity.UI"), // "Microsoft.AspNetCore.Identity.UI"
-                _urlEncoder.Encode(email),
-                unformattedKey);
+            // "Microsoft.AspNetCore.Identity.UI"
+            var schemeName = _urlEncoder.Encode("Librame.AspNetCore.Identity.UI");
+            email = _urlEncoder.Encode(email);
+
+            var descriptor = new IdentityAuthenticatorDescriptor(schemeName, email, unformattedKey);
+            var qrCodeUri = _options.AuthenticatorUriFactory?.Invoke(descriptor);
+            if (qrCodeUri.IsNullOrEmpty())
+                qrCodeUri = descriptor.BuildOtpAuthUriString();
+
+            return qrCodeUri;
         }
     }
 }

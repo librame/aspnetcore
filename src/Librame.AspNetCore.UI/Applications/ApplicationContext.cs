@@ -10,8 +10,10 @@
 
 #endregion
 
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -30,8 +32,8 @@ namespace Librame.AspNetCore.UI
         {
             ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
 
-            Themepacks = ApplicationInfoUtility.Themepacks;
-            Uis = ApplicationInfoUtility.Uis;
+            Themepacks = ApplicationInfoHelper.Themepacks;
+            Uis = ApplicationInfoHelper.Uis;
 
             if (_localizers.IsNull() || _navigations.IsNull())
             {
@@ -52,8 +54,14 @@ namespace Librame.AspNetCore.UI
         public IApplicationPrincipal Principal
             => ServiceFactory.GetService<IApplicationPrincipal>();
 
+        public IApplicationSite Site
+            => ServiceFactory.GetService<IApplicationSite>();
+
         public IHostingEnvironment Environment
             => ServiceFactory.GetService<IHostingEnvironment>();
+
+        public CookieAuthenticationOptions CookieAuthentication
+            => ServiceFactory.GetService<IOptions<CookieAuthenticationOptions>>().Value;
 
 
         public ConcurrentDictionary<string, IThemepackInfo> Themepacks { get; }

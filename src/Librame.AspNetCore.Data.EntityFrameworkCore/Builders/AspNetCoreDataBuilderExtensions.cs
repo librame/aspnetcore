@@ -25,27 +25,34 @@ namespace Librame.Extensions.Data
         /// 添加 ASP.NET Core 数据扩展。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
+        /// <param name="builderAction">给定的选项配置动作。</param>
+        /// <param name="builderFactory">给定创建数据构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
         public static IDataBuilder AddDataCore(this IExtensionBuilder builder,
-            Action<DataBuilderOptions> setupAction = null)
+            Action<DataBuilderOptions> builderAction,
+            Func<IExtensionBuilder, IDataBuilder> builderFactory = null)
         {
-            return builder.AddData(setupAction)
-                .AddServices();
+            builderAction.NotNull(nameof(builderAction));
+
+            return builder.AddDataCore(dependency =>
+            {
+                dependency.BuilderOptionsAction = builderAction;
+            },
+            builderFactory);
         }
 
         /// <summary>
         /// 添加 ASP.NET Core 数据扩展。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="createFactory">给定创建数据构建器的工厂方法。</param>
-        /// <param name="setupAction">给定的选项配置动作（可选）。</param>
+        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="builderFactory">给定创建数据构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
         public static IDataBuilder AddDataCore(this IExtensionBuilder builder,
-            Func<IExtensionBuilder, IDataBuilder> createFactory,
-            Action<DataBuilderOptions> setupAction = null)
+            Action<DataBuilderDependencyOptions> dependencyAction = null,
+            Func<IExtensionBuilder, IDataBuilder> builderFactory = null)
         {
-            return builder.AddData(createFactory, setupAction)
+            return builder.AddData(dependencyAction, builderFactory)
                 .AddServices();
         }
 

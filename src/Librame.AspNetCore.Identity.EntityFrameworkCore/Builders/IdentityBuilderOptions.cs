@@ -14,67 +14,78 @@ using System;
 
 namespace Librame.AspNetCore.Identity
 {
-    using Extensions;
     using Extensions.Data;
 
     /// <summary>
     /// 身份构建器选项。
     /// </summary>
-    public class IdentityBuilderOptions : DataBuilderOptionsBase<IdentityTableSchemaOptions>
+    public class IdentityBuilderOptions : DataBuilderOptionsBase<IdentityTableNameSchemaOptions>
     {
         /// <summary>
         /// 默认密码。
         /// </summary>
         public string DefaultPassword { get; set; }
             = "Password!123456";
+
+        /// <summary>
+        /// 启用密码规则提示（默认启用）。
+        /// </summary>
+        public bool PasswordRulePromptEnabled { get; set; }
+            = true;
+
+        /// <summary>
+        /// 认证器 URI 工厂方法。
+        /// </summary>
+        public Func<IdentityAuthenticatorDescriptor, string> AuthenticatorUriFactory { get; set; }
+            = descr => descr.BuildOtpAuthUriString();
     }
 
 
     /// <summary>
     /// 身份表架构选项。
     /// </summary>
-    public class IdentityTableSchemaOptions : TableSchemaOptions
+    public class IdentityTableNameSchemaOptions : TableNameSchemaOptions
     {
         /// <summary>
         /// 角色工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> RoleFactory { get; set; }
-            = type => type.AsTableSchema(names => names.TrimStart("Default"));
+        public Func<TableNameDescriptor, TableNameSchema> RoleFactory { get; set; }
+            = type => type.AsSchema();
 
         /// <summary>
         /// 角色声明工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> RoleClaimFactory { get; set; }
-            = type => type.AsTableSchema();
+        public Func<TableNameDescriptor, TableNameSchema> RoleClaimFactory { get; set; }
+            = type => type.AsSchema();
 
         /// <summary>
         /// 用户角色工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> UserRoleFactory { get; set; }
-            = type => type.AsTableSchema();
+        public Func<TableNameDescriptor, TableNameSchema> UserRoleFactory { get; set; }
+            = type => type.AsSchema();
 
         /// <summary>
         /// 用户工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> UserFactory { get; set; }
-            = type => type.AsTableSchema(names => names.TrimStart("Default"));
+        public Func<TableNameDescriptor, TableNameSchema> UserFactory { get; set; }
+            = type => type.AsSchema();
 
         /// <summary>
         /// 用户声明工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> UserClaimFactory { get; set; }
-            = type => type.AsTableSchema();
+        public Func<TableNameDescriptor, TableNameSchema> UserClaimFactory { get; set; }
+            = type => type.AsSchema();
 
         /// <summary>
         /// 用户登入工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> UserLoginFactory { get; set; }
-            = type => type.AsTableSchema();
+        public Func<TableNameDescriptor, TableNameSchema> UserLoginFactory { get; set; }
+            = type => type.AsSchema();
 
         /// <summary>
         /// 用户令牌工厂方法。
         /// </summary>
-        public Func<Type, ITableSchema> UserTokenFactory { get; set; }
-            = type => type.AsTableSchema();
+        public Func<TableNameDescriptor, TableNameSchema> UserTokenFactory { get; set; }
+            = type => type.AsSchema();
     }
 }

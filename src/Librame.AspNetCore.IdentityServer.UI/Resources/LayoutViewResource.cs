@@ -45,11 +45,6 @@ namespace Librame.AspNetCore.IdentityServer.UI
         public string PersonalData { get; set; }
 
         /// <summary>
-        /// 搜索框。
-        /// </summary>
-        public string SearchBox { get; set; }
-
-        /// <summary>
         /// 项目库。
         /// </summary>
         public string Repository { get; set; }
@@ -63,15 +58,5 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// 授权。
         /// </summary>
         public string Licenses { get; set; }
-
-        /// <summary>
-        /// 管理。
-        /// </summary>
-        public string Manage { get; set; }
-
-        /// <summary>
-        /// 登出。
-        /// </summary>
-        public string Logout { get; set; }
     }
 }

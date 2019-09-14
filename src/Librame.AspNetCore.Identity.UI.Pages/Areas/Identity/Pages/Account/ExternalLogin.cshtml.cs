@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -24,90 +23,82 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
     using Extensions;
+    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
+    /// 外部登入确认页面模型。
     /// </summary>
     [AllowAnonymous]
-    [UiTemplateWithUser(typeof(ExternalLoginPageModel<>))]
+    [ApplicationSiteTemplateWithUser(typeof(ExternalLoginPageModel<>))]
     public class ExternalLoginPageModel : PageModel
     {
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// 输入模型。
         /// </summary>
         [BindProperty]
-        public InputModel Input { get; set; }
+        public ExternalLoginConfirmationViewModel Input { get; set; }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// 登入提供程序名称。
         /// </summary>
         public string ProviderDisplayName { get; set; }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// 返回链接。
         /// </summary>
         public string ReturnUrl { get; set; }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// 错误消息。
         /// </summary>
         [TempData]
         public string ErrorMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public class InputModel
-        {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
-        }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// 获取方法。
         /// </summary>
-        public virtual IActionResult OnGet() => throw new NotImplementedException();
+        /// <returns>返回 <see cref="IActionResult"/>。</returns>
+        public virtual IActionResult OnGet()
+            => throw new NotImplementedException();
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// 提交方法。
         /// </summary>
-        public virtual IActionResult OnPost(string provider, string returnUrl = null) => throw new NotImplementedException();
+        /// <param name="provider">给定的提供程序。</param>
+        /// <param name="returnUrl">给定的返回链接。</param>
+        /// <returns>返回 <see cref="IActionResult"/>。</returns>
+        public virtual IActionResult OnPost(string provider, string returnUrl = null)
+            => throw new NotImplementedException();
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// 异步获取回调方法。
         /// </summary>
-        public virtual Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null) => throw new NotImplementedException();
+        /// <param name="returnUrl">给定的返回链接。</param>
+        /// <param name="remoteError">给定的远程错误。</param>
+        /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
+        public virtual Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
+            => throw new NotImplementedException();
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// 异步提交确认方法。
         /// </summary>
-        public virtual Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null) => throw new NotImplementedException();
+        /// <param name="returnUrl">给定的返回链接。</param>
+        /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
+        public virtual Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
+            => throw new NotImplementedException();
     }
 
 
     internal class ExternalLoginPageModel<TUser> : ExternalLoginPageModel
-        where TUser : class, IGenId
+        where TUser : class, IId<string>
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
         private readonly ILogger<ExternalLoginPageModel> _logger;
+        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
         private readonly IdentityStoreIdentifier _storeIdentifier;
 
 
@@ -115,12 +106,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
             ILogger<ExternalLoginPageModel> logger,
+            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer,
             IdentityStoreIdentifier storeIdentifier)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
             _userStore = userStore;
             _logger = logger;
+            _errorLocalizer = errorLocalizer;
             _storeIdentifier = storeIdentifier;
         }
 
@@ -143,13 +136,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
-                ErrorMessage = $"Error from external provider: {remoteError}";
+                ErrorMessage = _errorLocalizer[r => r.FromExternalProvider, remoteError]?.ToString();
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                ErrorMessage = "Error loading external login information.";
+                ErrorMessage = _errorLocalizer[r => r.LoadingExternalLogin]?.ToString();
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
@@ -160,6 +154,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
+
             if (result.IsLockedOut)
             {
                 return RedirectToPage("./Lockout");
@@ -169,13 +164,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
+
+                Input = new ExternalLoginConfirmationViewModel();
+
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
+                    Input.Email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 }
+
                 return Page();
             }
         }
@@ -187,7 +183,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                ErrorMessage = "Error loading external login information during confirmation.";
+                ErrorMessage = _errorLocalizer[r => r.LoadingExternalLoginWhenConfirmation]?.ToString();
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
@@ -207,6 +203,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -228,17 +225,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             {
                 throw new InvalidOperationException($"Can't create an instance of '{nameof(TUser)}'. " +
                     $"Ensure that '{nameof(TUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the external login page in /Areas/Identity/Pages/Account/ExternalLogin.cshtml");
+                    $"override the external login page in ~/Areas/Identity/Pages/Account/ExternalLogin.cshtml");
             }
         }
 
-        //private IUserEmailStore<TUser> GetEmailStore()
-        //{
-        //    if (!_userManager.SupportsUserEmail)
-        //    {
-        //        throw new NotSupportedException("The default UI requires a user store with email support.");
-        //    }
-        //    return (IUserEmailStore<TUser>)_userStore;
-        //}
     }
+
 }

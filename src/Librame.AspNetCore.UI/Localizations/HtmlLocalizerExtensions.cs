@@ -38,11 +38,8 @@ namespace Librame.AspNetCore.UI
         public static LocalizedHtmlString GetString<TResource, TProperty>(this IHtmlLocalizer<TResource> localizer,
             Expression<Func<TResource, TProperty>> propertyExpression)
             where TResource : class
-        {
-            string name = propertyExpression.AsPropertyName();
-            
-            return localizer[name];
-        }
+            => localizer[propertyExpression.AsPropertyName()];
+
         /// <summary>
         /// 获取字符串。
         /// </summary>
@@ -55,11 +52,7 @@ namespace Librame.AspNetCore.UI
         public static LocalizedHtmlString GetString<TResource, TProperty>(this IHtmlLocalizer<TResource> localizer,
             Expression<Func<TResource, TProperty>> propertyExpression, params object[] arguments)
             where TResource : class
-        {
-            string name = propertyExpression.AsPropertyName();
-
-            return localizer[name, arguments];
-        }
+            => localizer[propertyExpression.AsPropertyName(), arguments];
 
         #endregion
 
@@ -73,9 +66,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="cultureName">给定的文化名称。</param>
         /// <returns>返回 <see cref="IHtmlLocalizer"/>。</returns>
         public static IHtmlLocalizer WithCulture(this IHtmlLocalizer localizer, string cultureName)
-        {
-            return localizer.WithCulture(CultureInfo.CreateSpecificCulture(cultureName));
-        }
+            => localizer.WithCulture(CultureInfo.CreateSpecificCulture(cultureName));
 
         /// <summary>
         /// 创建一个指定文化名称的 HTML 定位器副本。
@@ -85,9 +76,8 @@ namespace Librame.AspNetCore.UI
         /// <param name="cultureName">给定的文化名称。</param>
         /// <returns>返回 <see cref="IHtmlLocalizer{TResource}"/>。</returns>
         public static IHtmlLocalizer<TResource> WithCulture<TResource>(this IHtmlLocalizer<TResource> localizer, string cultureName)
-        {
-            return localizer.WithCulture<TResource>(CultureInfo.CreateSpecificCulture(cultureName));
-        }
+            => localizer.WithCulture<TResource>(CultureInfo.CreateSpecificCulture(cultureName));
+
         /// <summary>
         /// 创建一个指定文化名称的 HTML 定位器副本。
         /// </summary>
@@ -98,7 +88,6 @@ namespace Librame.AspNetCore.UI
         public static IHtmlLocalizer<TResource> WithCulture<TResource>(this IHtmlLocalizer<TResource> localizer, CultureInfo culture)
         {
             localizer.WithCulture(culture);
-
             return localizer;
         }
 
@@ -110,9 +99,8 @@ namespace Librame.AspNetCore.UI
         /// <param name="cultureName">给定的文化名称。</param>
         /// <returns>返回 <see cref="IExpressionHtmlLocalizer{TResource}"/>。</returns>
         public static IExpressionHtmlLocalizer<TResource> WithCulture<TResource>(this IExpressionHtmlLocalizer<TResource> localizer, string cultureName)
-        {
-            return localizer.WithCulture<TResource>(CultureInfo.CreateSpecificCulture(cultureName));
-        }
+            => localizer.WithCulture<TResource>(CultureInfo.CreateSpecificCulture(cultureName));
+
         /// <summary>
         /// 创建一个指定文化名称的 HTML 定位器副本。
         /// </summary>
@@ -123,7 +111,6 @@ namespace Librame.AspNetCore.UI
         public static IExpressionHtmlLocalizer<TResource> WithCulture<TResource>(this IExpressionHtmlLocalizer<TResource> localizer, CultureInfo culture)
         {
             localizer.WithCulture(culture);
-
             return localizer;
         }
 

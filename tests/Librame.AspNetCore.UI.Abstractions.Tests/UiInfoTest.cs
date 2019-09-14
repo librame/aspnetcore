@@ -14,7 +14,7 @@ namespace Librame.AspNetCore.UI.Tests
         {
             public override string Name => "TestUi";
 
-            public override string Title => "测试用户界面";
+            public override string Title => "测试 UI ";
 
             public override string Author => "Test";
 

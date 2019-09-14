@@ -19,7 +19,7 @@ namespace Librame.AspNetCore.UI
     using Extensions.Core;
 
     /// <summary>
-    /// 抽象用户界面信息。
+    /// 抽象 UI 信息。
     /// </summary>
     public abstract class AbstractUiInfo : AbstractApplicationInfo, IUiInfo
     {

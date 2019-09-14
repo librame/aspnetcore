@@ -11,8 +11,10 @@
 #endregion
 
 using Librame.AspNetCore;
+using Librame.Extensions;
 using Librame.Extensions.Core;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -23,31 +25,57 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class AspNetCoreBuilderServiceCollectionExtensions
     {
         /// <summary>
-        /// 注册 Librame for ASP.NET Core 服务集合。
+        /// 添加 Librame for ASP.NET Core。
         /// </summary>
         /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
-        /// <param name="dependencySetupAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="loggingAction">给定的日志构建器配置动作。</param>
+        /// <param name="builderFactory">给定创建核心构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
         public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
-            Action<CoreBuilderDependencyOptions> dependencySetupAction = null)
+            Action<ILoggingBuilder> loggingAction,
+            Func<IServiceCollection, ICoreBuilder> builderFactory = null)
         {
-            var builder = services.AddLibrame(dependencySetupAction);
+            loggingAction.NotNull(nameof(loggingAction));
 
-            return builder.AddAspNetCore();
+            return services.AddLibrameCore(dependency =>
+            {
+                dependency.LoggingBuilderAction = loggingAction;
+            },
+            builderFactory);
         }
 
         /// <summary>
-        /// 注册 Librame for ASP.NET Core 服务集合。
+        /// 添加 Librame for ASP.NET Core。
         /// </summary>
         /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
-        /// <param name="createFactory">给定创建核心构建器的工厂方法。</param>
-        /// <param name="dependencySetupAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="builderAction">给定的选项配置动作。</param>
+        /// <param name="builderFactory">给定创建核心构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
         public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
-            Func<IServiceCollection, ICoreBuilder> createFactory,
-            Action<CoreBuilderDependencyOptions> dependencySetupAction = null)
+            Action<CoreBuilderOptions> builderAction,
+            Func<IServiceCollection, ICoreBuilder> builderFactory = null)
         {
-            var builder = services.AddLibrame(createFactory, dependencySetupAction);
+            builderAction.NotNull(nameof(builderAction));
+
+            return services.AddLibrameCore(dependency =>
+            {
+                dependency.BuilderOptionsAction = builderAction;
+            },
+            builderFactory);
+        }
+
+        /// <summary>
+        /// 添加 Librame for ASP.NET Core。
+        /// </summary>
+        /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
+        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="builderFactory">给定创建核心构建器的工厂方法（可选）。</param>
+        /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
+        public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
+            Action<CoreBuilderDependencyOptions> dependencyAction = null,
+            Func<IServiceCollection, ICoreBuilder> builderFactory = null)
+        {
+            var builder = services.AddLibrame(dependencyAction, builderFactory);
 
             return builder.AddAspNetCore();
         }

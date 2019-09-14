@@ -2,6 +2,38 @@
 @model RegisterPageModel
 @{
     ViewData["Title"] = Model.Localizer[r => r.Title];
+
+    var prompts = new System.Text.StringBuilder();
+    if (Model.BuilderOptions.PasswordRulePromptEnabled)
+    {
+        prompts.Append(Model.Localizer[r => r.PasswordRequiredLength].Value);
+        prompts.Append("<hr/>");
+        prompts.Append(Model.Localizer[r => r.PasswordRequiredUniqueChars].Value);
+
+        if (Model.Options.Password.RequireNonAlphanumeric)
+        {
+            prompts.Append("<hr/>");
+            prompts.Append(Model.Localizer[r => r.PasswordRequireNonAlphanumeric].Value);
+        }
+
+        if (Model.Options.Password.RequireLowercase)
+        {
+            prompts.Append("<hr/>");
+            prompts.Append(Model.Localizer[r => r.PasswordRequireLowercase].Value);
+        }
+
+        if (Model.Options.Password.RequireLowercase)
+        {
+            prompts.Append("<hr/>");
+            prompts.Append(Model.Localizer[r => r.PasswordRequireUppercase].Value);
+        }
+
+        if (Model.Options.Password.RequireLowercase)
+        {
+            prompts.Append("<hr/>");
+            prompts.Append(Model.Localizer[r => r.PasswordRequireDigit].Value);
+        }
+    }
 }
 <!-- Register -->
 <div class="row">
@@ -17,7 +49,7 @@
         </div>
 
         <div class="form-bottom">
-            <form role="form" action="" method="post" class="login-form">
+            <form method="post" class="login-form" asp-route-returnUrl="@Model.ReturnUrl">
                 <div asp-validation-summary="All" class="text-danger"></div>
 
                 <div class="form-group">
@@ -27,7 +59,10 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Input.Password" class="sr-only"></label>
-                    <input asp-for="Input.Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Input.Password) ..." />
+                    <input asp-for="Input.Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Input.Password) ..."
+                           title="@Model.Localizer[r => r.PasswordRulePrompts]"
+                           data-content="@Html.Raw(prompts.ToString())" data-html="true"
+                           data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -51,3 +86,11 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("[data-toggle='popover']").popover();
+        });
+    </script>
+}

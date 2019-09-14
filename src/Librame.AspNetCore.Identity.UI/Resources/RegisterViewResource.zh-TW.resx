@@ -138,6 +138,27 @@
   <data name="Login" xml:space="preserve">
     <value>已有賬號？立即登入</value>
   </data>
+  <data name="PasswordRequireDigit" xml:space="preserve">
+    <value>密碼有數字。</value>
+  </data>
+  <data name="PasswordRequiredLength" xml:space="preserve">
+    <value>密碼的最小長度默認為 6。</value>
+  </data>
+  <data name="PasswordRequiredUniqueChars" xml:space="preserve">
+    <value>密碼至少有 1 個不重複字符。</value>
+  </data>
+  <data name="PasswordRequireLowercase" xml:space="preserve">
+    <value>密碼有小寫字母。</value>
+  </data>
+  <data name="PasswordRequireNonAlphanumeric" xml:space="preserve">
+    <value>密碼有特殊字符。</value>
+  </data>
+  <data name="PasswordRequireUppercase" xml:space="preserve">
+    <value>密碼有大寫字母。</value>
+  </data>
+  <data name="PasswordRulePrompts" xml:space="preserve">
+    <value>密碼規則提醒</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>注冊</value>
   </data>

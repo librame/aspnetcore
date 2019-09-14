@@ -46,5 +46,41 @@ namespace Librame.AspNetCore.Identity.UI
         /// 确认您的手机格式。
         /// </summary>
         public string ConfirmYourPhoneFormat { get; set; }
+
+
+        /// <summary>
+        /// 密码规则提示。
+        /// </summary>
+        public string PasswordRulePrompts { get; set; }
+
+        /// <summary>
+        /// 密码的最小长度。
+        /// </summary>
+        public string PasswordRequiredLength { get; set; }
+
+        /// <summary>
+        /// 密码的最小唯一字符数默认为 1。
+        /// </summary>
+        public string PasswordRequiredUniqueChars { get; set; }
+
+        /// <summary>
+        /// 密码包含特殊字符。
+        /// </summary>
+        public string PasswordRequireNonAlphanumeric { get; set; }
+
+        /// <summary>
+        /// 密码包含小写英文字母。
+        /// </summary>
+        public string PasswordRequireLowercase { get; set; }
+
+        /// <summary>
+        /// 密码包含大写英文字母。
+        /// </summary>
+        public string PasswordRequireUppercase { get; set; }
+
+        /// <summary>
+        /// 密码包含数字。
+        /// </summary>
+        public string PasswordRequireDigit { get; set; }
     }
 }

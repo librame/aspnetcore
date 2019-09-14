@@ -138,6 +138,27 @@
   <data name="Login" xml:space="preserve">
     <value>Register as a new user</value>
   </data>
+  <data name="PasswordRequireDigit" xml:space="preserve">
+    <value>Passwords must contain a digit.</value>
+  </data>
+  <data name="PasswordRequiredLength" xml:space="preserve">
+    <value>The minimum length a password defaults to 6.</value>
+  </data>
+  <data name="PasswordRequiredUniqueChars" xml:space="preserve">
+    <value>The minimum number of unique chars a password defaults to 1.</value>
+  </data>
+  <data name="PasswordRequireLowercase" xml:space="preserve">
+    <value>Passwords must contain a lower case ASCII character.</value>
+  </data>
+  <data name="PasswordRequireNonAlphanumeric" xml:space="preserve">
+    <value>Passwords must contain a non-alphanumeric character.</value>
+  </data>
+  <data name="PasswordRequireUppercase" xml:space="preserve">
+    <value>Passwords must contain a upper case ASCII character.</value>
+  </data>
+  <data name="PasswordRulePrompts" xml:space="preserve">
+    <value>Password rule prompts</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>Register</value>
   </data>

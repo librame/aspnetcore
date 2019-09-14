@@ -38,7 +38,7 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             })
-                .AddIdentityCookies(cookies => { });
+            .AddIdentityCookies(cookies => { });
 
             var mvcBuilder = services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
@@ -52,34 +52,31 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
             services.AddLibrameCore()
                 .AddDataCore(options =>
                 {
-                    options.Tenants.Default.DefaultConnectionString = writingConnectionString;
-                    options.Tenants.Default.WritingConnectionString = writingConnectionString;
-                    options.Tenants.Default.WritingSeparation = false;
+                    options.DefaultTenant.DefaultConnectionString = writingConnectionString;
+                    options.DefaultTenant.WritingConnectionString = writingConnectionString;
+                    options.DefaultTenant.WritingSeparation = false;
                 })
                 .AddAccessor<IdentityServerDbContextAccessor>((options, optionsBuilder) =>
                 {
                     var migrationsAssembly = typeof(IdentityServerDbContextAccessor).Assembly.GetName().Name;
-                    optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
+                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddAccessor<PersistedGrantDbContextAccessor>((options, optionsBuilder) =>
                 {
                     var migrationsAssembly = typeof(PersistedGrantDbContextAccessor).Assembly.GetName().Name;
-                    optionsBuilder.UseSqlServer(options.Tenants.Default.DefaultConnectionString,
+                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddIdentityServer<IdentityServerDbContextAccessor,
                     PersistedGrantDbContextAccessor,
-                    DefaultIdentityUser>(dependency =>
-                {
-                    dependency.BaseSetupAction = options =>
+                    DefaultIdentityUser<string>>(options =>
                     {
                         options.Events.RaiseErrorEvents = true;
                         options.Events.RaiseInformationEvents = true;
                         options.Events.RaiseFailureEvents = true;
                         options.Events.RaiseSuccessEvents = true;
-                    };
-                })
+                    })
                 .AddIdentityServerUI()
                 .AddIdentityServerControllers(mvcBuilder)
                 .AddNetwork();
