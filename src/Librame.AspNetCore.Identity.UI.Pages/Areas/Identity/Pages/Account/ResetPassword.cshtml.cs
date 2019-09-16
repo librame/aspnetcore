@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
@@ -25,9 +26,39 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 重置密码页面模型。
     /// </summary>
     [AllowAnonymous]
-    [ApplicationSiteTemplateWithUser(typeof(ResetPasswordPageModel<>))]
+    [InterfaceTemplateWithUser(typeof(ResetPasswordPageModel<>))]
     public class ResetPasswordPageModel : PageModel
     {
+        /// <summary>
+        /// 构造一个 <see cref="RegisterPageModel"/> 实例。
+        /// </summary>
+        /// <param name="registerLocalizer">给定的 <see cref="IExpressionHtmlLocalizer{RegisterViewResource}"/>。</param>
+        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
+        /// <param name="options">给定的 <see cref="IOptions{IdentityOptions}"/>。</param>
+        protected ResetPasswordPageModel(IExpressionHtmlLocalizer<RegisterViewResource> registerLocalizer,
+            IOptions<IdentityBuilderOptions> builderOptions, IOptions<IdentityOptions> options)
+        {
+            RegisterLocalizer = registerLocalizer;
+            BuilderOptions = builderOptions.Value;
+            Options = options.Value;
+        }
+
+
+        /// <summary>
+        /// 本地化资源。
+        /// </summary>
+        public IExpressionHtmlLocalizer<RegisterViewResource> RegisterLocalizer { get; }
+
+        /// <summary>
+        /// 构建器选项。
+        /// </summary>
+        public IdentityBuilderOptions BuilderOptions { get; }
+
+        /// <summary>
+        /// 选项。
+        /// </summary>
+        public IdentityOptions Options { get; }
+
         /// <summary>
         /// 输入模型。
         /// </summary>
@@ -57,7 +88,12 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         private readonly UserManager<TUser> _userManager;
 
 
-        public ResetPasswordPageModel(UserManager<TUser> userManager)
+        public ResetPasswordPageModel(
+            UserManager<TUser> userManager,
+            IExpressionHtmlLocalizer<RegisterViewResource> registerLocalizer,
+            IOptions<IdentityBuilderOptions> builderOptions,
+            IOptions<IdentityOptions> options)
+            : base(registerLocalizer, builderOptions, options)
         {
             _userManager = userManager;
         }

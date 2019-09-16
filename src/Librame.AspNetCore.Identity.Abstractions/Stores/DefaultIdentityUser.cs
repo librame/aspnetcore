@@ -46,11 +46,19 @@ namespace Librame.AspNetCore.Identity
 
 
     /// <summary>
+    /// 默认身份用户接口。
+    /// </summary>
+    public interface IDefaultIdentityUser
+    {
+    }
+
+
+    /// <summary>
     /// 默认身份用户。
     /// </summary>
     /// <typeparam name="TId">指定的标识类型。</typeparam>
     [Description("默认身份用户")]
-    public class DefaultIdentityUser<TId> : IdentityUser<TId>, IId<TId>, ICreation<TId, DateTimeOffset>
+    public class DefaultIdentityUser<TId> : IdentityUser<TId>, IId<TId>, ICreation<TId, DateTimeOffset>, IDefaultIdentityUser
         where TId : IEquatable<TId>
     {
         /// <summary>

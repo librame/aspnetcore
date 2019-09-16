@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
@@ -24,9 +25,39 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 设置密码页面模型。
     /// </summary>
-    [ApplicationSiteTemplateWithUser(typeof(SetPasswordPageModel<>))]
+    [InterfaceTemplateWithUser(typeof(SetPasswordPageModel<>))]
     public class SetPasswordPageModel : PageModel
     {
+        /// <summary>
+        /// 构造一个 <see cref="SetPasswordPageModel"/>。
+        /// </summary>
+        /// <param name="registerLocalizer">给定的 <see cref="IExpressionHtmlLocalizer{RegisterViewResource}"/>。</param>
+        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
+        /// <param name="options">给定的 <see cref="IOptions{IdentityOptions}"/>。</param>
+        public SetPasswordPageModel(IExpressionHtmlLocalizer<RegisterViewResource> registerLocalizer,
+            IOptions<IdentityBuilderOptions> builderOptions, IOptions<IdentityOptions> options)
+        {
+            RegisterLocalizer = registerLocalizer;
+            BuilderOptions = builderOptions.Value;
+            Options = options.Value;
+        }
+
+
+        /// <summary>
+        /// 本地化资源。
+        /// </summary>
+        public IExpressionHtmlLocalizer<RegisterViewResource> RegisterLocalizer { get; }
+
+        /// <summary>
+        /// 构建器选项。
+        /// </summary>
+        public IdentityBuilderOptions BuilderOptions { get; }
+
+        /// <summary>
+        /// 选项。
+        /// </summary>
+        public IdentityOptions Options { get; }
+
         /// <summary>
         /// 输入模型。
         /// </summary>
@@ -67,7 +98,11 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         public SetPasswordPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
+            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer,
+            IExpressionHtmlLocalizer<RegisterViewResource> registerLocalizer,
+            IOptions<IdentityBuilderOptions> builderOptions,
+            IOptions<IdentityOptions> options)
+            : base(registerLocalizer, builderOptions, options)
         {
             _userManager = userManager;
             _signInManager = signInManager;

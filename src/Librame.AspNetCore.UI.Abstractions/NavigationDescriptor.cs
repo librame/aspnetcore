@@ -16,6 +16,7 @@ using System.Collections.Generic;
 namespace Librame.AspNetCore.UI
 {
     using Extensions;
+    using Extensions.Core;
 
     /// <summary>
     /// 导航描述符。
@@ -29,14 +30,16 @@ namespace Librame.AspNetCore.UI
         /// text is null or empty.
         /// </exception>
         /// <param name="text">给定的文本。</param>
-        /// <param name="href">给定的超链接（可选；默认为“#”）。</param>
+        /// <param name="relativePath">给定的根相对路径（可选）。</param>
+        /// <param name="area">给定的区域（可选）。</param>
         /// <param name="icon">给定的图标样式（可选）。</param>
         /// <param name="children">给定的子级导航（可选；默认列表不为空，长度为“0”）。</param>
-        public NavigationDescriptor(string text, string href = null, string icon = null,
+        public NavigationDescriptor(string text, string relativePath = null, string area = null, string icon = null,
             IList<NavigationDescriptor> children = null)
         {
             Text = text.NotNullOrEmpty(nameof(text));
-            Href = href ?? "#";
+            RelativePath = relativePath;
+            Area = area;
             Icon = icon ?? "glyphicon glyphicon-link";
             Children = children ?? new List<NavigationDescriptor>();
         }
@@ -46,26 +49,39 @@ namespace Librame.AspNetCore.UI
         /// 文本。
         /// </summary>
         public string Text { get; set; }
-        
+
         /// <summary>
-        /// 超链接。
+        /// 根相对路径。
         /// </summary>
-        public string Href { get; set; }
+        public string RelativePath { get; set; }
+
+        /// <summary>
+        /// 区域。
+        /// </summary>
+        public string Area { get; set; }
+
+        /// <summary>
+        /// 图标。
+        /// </summary>
+        public string Icon { get; set; }
 
         /// <summary>
         /// 子级导航。
         /// </summary>
         public IList<NavigationDescriptor> Children { get; set; }
 
+
+        /// <summary>
+        /// 超链接。
+        /// </summary>
+        public string Href
+            => Area.IsNotNullOrEmpty() ? $"/{Area}{RelativePath}" : RelativePath;
+
+
         /// <summary>
         /// 名称。
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// 图标。
-        /// </summary>
-        public string Icon { get; set; }
 
         /// <summary>
         /// 可见性工厂方法。
@@ -91,7 +107,7 @@ namespace Librame.AspNetCore.UI
         /// <value>返回标识或名称。</value>
         public string Id
         {
-            get => _id.NotEmptyOrDefault(Name);
+            get => _id.NotEmptyOrDefault(Name, throwIfDefaultInvalid: false);
             set => _id = value;
         }
 
@@ -102,8 +118,8 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         public string Target
         {
-            get { return _target.IsNullOrEmpty() ? string.Empty : $"target='{_target}'"; }
-            set { _target = value; }
+            get => _target.IsNotNullOrEmpty() ? $"target='{_target}'" : string.Empty;
+            set => _target = value;
         }
 
 
@@ -117,6 +133,36 @@ namespace Librame.AspNetCore.UI
             get => _title.NotEmptyOrDefault(Text);
             set => _title = value;
         }
+
+
+        /// <summary>
+        /// 改变当前区域。
+        /// </summary>
+        /// <param name="newArea">给定的新区域。</param>
+        /// <returns>返回 <see cref="NavigationDescriptor"/>。</returns>
+        public NavigationDescriptor ChangeArea(string newArea)
+        {
+            Area = newArea;
+            return this;
+        }
+
+
+        /// <summary>
+        /// 以新区域创建一个导航副本。
+        /// </summary>
+        /// <param name="newArea">给定的新区域。</param>
+        /// <returns>返回 <see cref="NavigationDescriptor"/>。</returns>
+        public NavigationDescriptor NewArea(string newArea)
+            => new NavigationDescriptor(Text, RelativePath, newArea, Icon, Children)
+            {
+                Name = Name,
+                VisibilityFactory = VisibilityFactory,
+                ActiveClassNameFactory = ActiveClassNameFactory,
+                ActiveStyleFactory = ActiveStyleFactory,
+                Id = Id,
+                Target = Target,
+                Title = Title
+            };
 
 
         /// <summary>
@@ -150,5 +196,32 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回字符串。</returns>
         public override string ToString()
             => $"{Text},{Href}";
+
+
+        /// <summary>
+        /// 是否相等。
+        /// </summary>
+        /// <param name="a">给定的 <see cref="NavigationDescriptor"/>。</param>
+        /// <param name="b">给定的 <see cref="NavigationDescriptor"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool operator ==(NavigationDescriptor a, NavigationDescriptor b)
+            => a.Equals(b);
+
+        /// <summary>
+        /// 是否不等。
+        /// </summary>
+        /// <param name="a">给定的 <see cref="FileLocator"/>。</param>
+        /// <param name="b">给定的 <see cref="FileLocator"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool operator !=(NavigationDescriptor a, NavigationDescriptor b)
+            => !a.Equals(b);
+
+
+        /// <summary>
+        /// 隐式转换为字符串。
+        /// </summary>
+        /// <param name="descriptor">给定的 <see cref="NavigationDescriptor"/>。</param>
+        public static implicit operator string(NavigationDescriptor descriptor)
+            => descriptor.ToString();
     }
 }

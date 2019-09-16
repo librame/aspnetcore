@@ -1,13 +1,12 @@
 ﻿@model IApplicationContext
 @{
-    var navs = Model.Navigations.GetManageFooterNavigation();
-    var uiInfo = Model.GetUiInfo(ViewContext.RouteData.AsRouteDescriptor());
+    var sitemap = Model.CurrentInterfaceInfo.Sitemap;
 }
 <nav class="pull-left">
     <ul class="nav">
-        @if (navs.IsNotNullOrEmpty())
+        @if (sitemap.ManageFootbar.IsNotNullOrEmpty())
         {
-            foreach (var nav in navs)
+            foreach (var nav in sitemap.ManageFootbar)
             {
                 <li class="nav-item">
                     <a class="nav-link" href="@nav.Href" title="@nav.Title" @nav.Target>
@@ -16,8 +15,16 @@
                 </li>
             }
         }
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link" href="#" title="暂无菜单">
+                    暂无菜单
+                </a>
+            </li>
+        }
     </ul>
 </nav>
 <div class="copyright ml-auto">
-    &copy; @DateTime.Now.ToString("yyyy") - @uiInfo?.Copyright [@uiInfo?.Version]
+    &copy; @DateTime.Now.ToString("yyyy") - @Model.CurrentInterfaceInfo.Copyright [@Model.CurrentInterfaceInfo.Version]
 </div>

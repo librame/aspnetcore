@@ -20,6 +20,16 @@ namespace Librame.AspNetCore.Identity.UI
     public class LayoutViewResource : AbstractViewResource
     {
         /// <summary>
+        /// 关于。
+        /// </summary>
+        public string About { get; }
+
+        /// <summary>
+        /// 联系。
+        /// </summary>
+        public string Contact { get; }
+
+        /// <summary>
         /// 资料。
         /// </summary>
         public string Profile { get; set; }
@@ -58,5 +68,10 @@ namespace Librame.AspNetCore.Identity.UI
         /// 授权。
         /// </summary>
         public string Licenses { get; set; }
+
+        /// <summary>
+        /// 添加手机号码。
+        /// </summary>
+        public string AddPhoneNumber { get; set; }
     }
 }

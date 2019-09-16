@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 禁用双因子验证页面模型。
     /// </summary>
-    [ApplicationSiteTemplateWithUser(typeof(Disable2faPageModel<>))]
+    [InterfaceTemplateWithUser(typeof(Disable2faPageModel<>))]
     public class Disable2faPageModel : PageModel
     {
         /// <summary>

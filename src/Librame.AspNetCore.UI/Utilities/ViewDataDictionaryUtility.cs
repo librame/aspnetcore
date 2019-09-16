@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// <see cref="ViewDataDictionary"/> 实用工具。
     /// </summary>
-    public static class ViewDataDictionaryUtility
+    public class ViewDataDictionaryUtility
     {
         /// <summary>
         /// 获取是否存在外部登入方案。

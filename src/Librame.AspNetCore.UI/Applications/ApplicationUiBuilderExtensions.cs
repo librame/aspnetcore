@@ -38,39 +38,39 @@ namespace Librame.AspNetCore.UI
         }
 
 
-        #region AddSite
+        #region AddInterface
 
         /// <summary>
-        /// 添加站点。
+        /// 添加界面。
         /// </summary>
-        /// <typeparam name="TSite">指定的站点类型。</typeparam>
-        /// <typeparam name="TConfiguration">指定的站点配置类型。</typeparam>
+        /// <typeparam name="TConfiguration">指定的配置类型。</typeparam>
+        /// <typeparam name="TSitemap">指定的站点地图类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IUiBuilder"/>。</param>
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
-        public static IUiBuilder AddSite<TSite, TConfiguration>(this IUiBuilder builder)
-            where TSite : class, IApplicationSite
-            where TConfiguration : ApplicationSiteConfiguration
+        public static IUiBuilder AddInterface<TConfiguration, TSitemap>(this IUiBuilder builder)
+            where TConfiguration : InterfaceConfiguration
+            where TSitemap : class, IInterfaceSitemap
         {
-            builder.Services.AddSingleton<IApplicationSite, TSite>();
+            builder.Services.AddSingleton<IInterfaceSitemap, TSitemap>();
             builder.Services.ConfigureOptions(typeof(TConfiguration));
 
             return builder;
         }
 
         /// <summary>
-        /// 添加站点控制器集合。
+        /// 添加带视图集合的界面。
         /// </summary>
-        /// <typeparam name="TSite">指定的站点类型。</typeparam>
-        /// <typeparam name="TConfiguration">指定的站点配置类型。</typeparam>
+        /// <typeparam name="TConfiguration">指定的配置类型。</typeparam>
+        /// <typeparam name="TSitemap">指定的站点地图类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IUiBuilder"/>。</param>
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
         /// <param name="razorAssembly">给定包含页面集合的 <see cref="Assembly"/>。</param>
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
-        public static IUiBuilder AddSiteControllers<TSite, TConfiguration>(this IUiBuilder builder, IMvcBuilder mvcBuilder, Assembly razorAssembly)
-            where TSite : class, IApplicationSite
-            where TConfiguration : ApplicationSiteConfiguration
+        public static IUiBuilder AddInterfaceWithViews<TConfiguration, TSitemap>(this IUiBuilder builder, IMvcBuilder mvcBuilder, Assembly razorAssembly)
+            where TConfiguration : InterfaceConfiguration
+            where TSitemap : InterfaceSitemapWithViews
         {
-            builder.AddSite<TSite, TConfiguration>();
+            builder.AddInterface<TConfiguration, TSitemap>();
 
             // Add Assemblies Views（需引用 Microsoft.AspNetCore.Mvc 程序集才能正常被路由解析）
             var assemblies = ApplicationInfoHelper.Themepacks.Values.Select(info => info.Assembly)
@@ -79,23 +79,23 @@ namespace Librame.AspNetCore.UI
 
             AddRazorRelatedParts(mvcBuilder, assemblies);
 
-            return builder.AddWithUserControllers();
+            return builder;
         }
 
         /// <summary>
-        /// 添加站点页面集合。
+        /// 添加带页面集合的界面。
         /// </summary>
-        /// <typeparam name="TSite">指定的站点类型。</typeparam>
-        /// <typeparam name="TConfiguration">指定的站点配置类型。</typeparam>
+        /// <typeparam name="TConfiguration">指定的配置类型。</typeparam>
+        /// <typeparam name="TSitemap">指定的站点地图类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IUiBuilder"/>。</param>
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
         /// <param name="razorAssembly">给定包含页面集合的 <see cref="Assembly"/>。</param>
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
-        public static IUiBuilder AddSitePages<TSite, TConfiguration>(this IUiBuilder builder, IMvcBuilder mvcBuilder, Assembly razorAssembly)
-            where TSite : class, IApplicationSite
-            where TConfiguration : ApplicationSiteConfiguration
+        public static IUiBuilder AddInterfaceWithPages<TConfiguration, TSitemap>(this IUiBuilder builder, IMvcBuilder mvcBuilder, Assembly razorAssembly)
+            where TConfiguration : InterfaceConfigurationWithPages
+            where TSitemap : class, IInterfaceSitemap
         {
-            builder.AddSite<TSite, TConfiguration>();
+            builder.AddInterface<TConfiguration, TSitemap>();
 
             // Add Assemblies Pages（需引用 Microsoft.AspNetCore.Mvc 程序集才能正常被路由解析）
             var assemblies = ApplicationInfoHelper.Themepacks.Values.Select(info => info.Assembly)
@@ -103,23 +103,6 @@ namespace Librame.AspNetCore.UI
                 .ToArray();
 
             AddRazorRelatedParts(mvcBuilder, assemblies);
-
-            return builder;
-        }
-
-
-        private static IUiBuilder AddWithUserControllers(this IUiBuilder builder)
-        {
-            if (builder.UserType.IsNotNull()
-                && builder.Services.TryGet<ApplicationPartManager>(out ServiceDescriptor serviceDescriptor)
-                && serviceDescriptor.ImplementationInstance.IsNotNull())
-            {
-                var manager = serviceDescriptor.ImplementationInstance as ApplicationPartManager;
-                if (!manager.FeatureProviders.OfType<ApplicationSiteTemplateWithUserControllerProvider>().Any())
-                {
-                    manager.FeatureProviders.Add(new ApplicationSiteTemplateWithUserControllerProvider(builder.UserType));
-                }
-            }
 
             return builder;
         }
@@ -153,6 +136,22 @@ namespace Librame.AspNetCore.UI
 
             return builder;
         }
+
+        //private static IUiBuilder AddWithUserControllers(this IUiBuilder builder)
+        //{
+        //    if (builder.UserType.IsNotNull()
+        //        && builder.Services.TryGet<ApplicationPartManager>(out ServiceDescriptor serviceDescriptor)
+        //        && serviceDescriptor.ImplementationInstance.IsNotNull())
+        //    {
+        //        var manager = serviceDescriptor.ImplementationInstance as ApplicationPartManager;
+        //        if (!manager.FeatureProviders.OfType<ApplicationSiteTemplateWithUserControllerProvider>().Any())
+        //        {
+        //            manager.FeatureProviders.Add(new ApplicationSiteTemplateWithUserControllerProvider(builder.UserType));
+        //        }
+        //    }
+
+        //    return builder;
+        //}
 
         #endregion
 

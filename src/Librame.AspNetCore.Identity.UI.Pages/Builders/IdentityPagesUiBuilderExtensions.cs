@@ -22,12 +22,12 @@ namespace Librame.AspNetCore.Identity.UI
     public static class IdentityPagesUiBuilderExtensions
     {
         /// <summary>
-        /// 添加身份页面集合。
+        /// 添加页面集合的身份界面。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IUiBuilder"/>。</param>
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
-        public static IUiBuilder AddIdentityPages(this IUiBuilder builder, IMvcBuilder mvcBuilder)
-            => builder.AddSitePages<IdentityApplicationSitePages, IdentityApplicationSiteConfiguration>(mvcBuilder, typeof(IdentityPagesUiBuilderExtensions).Assembly);
+        public static IUiBuilder AddIdentityInterfaceWithPages(this IUiBuilder builder, IMvcBuilder mvcBuilder)
+            => builder.AddInterfaceWithPages<IdentityInterfaceConfigurationWithPages, IdentityInterfaceSitemapWithPages>(mvcBuilder, typeof(IdentityPagesUiBuilderExtensions).Assembly);
     }
 }

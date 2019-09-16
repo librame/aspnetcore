@@ -24,7 +24,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 个人数据页面模型。
     /// </summary>
-    [ApplicationSiteTemplateWithUser(typeof(PersonalDataPageModel<>))]
+    [InterfaceTemplateWithUser(typeof(PersonalDataPageModel<>))]
     public class PersonalDataPageModel : PageModel
     {
         /// <summary>

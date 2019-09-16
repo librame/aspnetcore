@@ -27,7 +27,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 首页页面模型。
     /// </summary>
-    [ApplicationSiteTemplateWithUser(typeof(IndexPageModel<>))]
+    [InterfaceTemplateWithUser(typeof(IndexPageModel<>))]
     public class IndexPageModel : PageModel
     {
         /// <summary>

@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// ×¢²áÒ³ÃæÄ£ÐÍ¡£
     /// </summary>
     [AllowAnonymous]
-    [ApplicationSiteTemplateWithUser(typeof(RegisterPageModel<>))]
+    [InterfaceTemplateWithUser(typeof(RegisterPageModel<>))]
     public class RegisterPageModel : PageModel
     {
         /// <summary>
@@ -109,8 +109,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             IUserStore<TUser> userStore,
             ILogger<LoginPageModel> logger,
             IEmailService emailService,
-            IExpressionHtmlLocalizer<RegisterViewResource> localizer,
             IdentityStoreIdentifier storeIdentifier,
+            IExpressionHtmlLocalizer<RegisterViewResource> localizer,
             IOptions<IdentityBuilderOptions> builderOptions,
             IOptions<IdentityOptions> options)
             : base(localizer, builderOptions, options)
@@ -137,7 +137,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 var user = CreateUser();
                 user.Id = await _storeIdentifier.GetUserIdAsync();
 
-                var result = await _userManager.CreateUserByEmail(_userStore, Input.Email, Input.Password, user);
+                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore, Input.Email, Input.Password, user);
                 if (result.Succeeded)
                 {
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

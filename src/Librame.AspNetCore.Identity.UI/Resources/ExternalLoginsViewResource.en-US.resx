@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddLoginSuccess" xml:space="preserve">
+    <value>The external login was added.</value>
+  </data>
   <data name="AnotherDescr" xml:space="preserve">
     <value>Add another service to log in.</value>
   </data>
@@ -131,6 +134,15 @@
   </data>
   <data name="Descr" xml:space="preserve">
     <value>Registered Logins</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>An error has occurred.</value>
+  </data>
+  <data name="NoneLogins" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="RemoveLoginSuccess" xml:space="preserve">
+    <value>The external login was removed.</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Manage your external logins</value>

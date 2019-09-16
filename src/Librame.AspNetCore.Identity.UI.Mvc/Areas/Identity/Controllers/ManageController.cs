@@ -10,46 +10,76 @@
 
 #endregion
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.UI.Controllers
 {
     using AspNetCore.UI;
+    using Extensions.Core;
     using Extensions.Network;
 
     /// <summary>
     /// 管理控制器。
     /// </summary>
-    /// <typeparam name="TUser">指定的用户类型。</typeparam>
     [Authorize]
-    [ApplicationSiteTemplateWithUser(typeof(ManageController<>))]
-    public class ManageController<TUser> : Controller
-        where TUser : class
+    public class ManageController : Controller
     {
-        private readonly SignInManager<TUser> _signInManager;
-        private readonly ISmsService _smsService;
-        private readonly ILogger _logger;
-        private readonly UserManager<TUser> _userManager;
+        [InjectionService]
+        private ILogger<AccountController> _logger = null;
+
+        [InjectionService]
+        private ISmsService _smsService = null;
+
+        [InjectionService]
+        private IOptions<IdentityBuilderOptions> _builderOptions = null;
+
+        [InjectionService]
+        private IOptions<IdentityOptions> _options = null;
+
+        [InjectionService]
+        private IExpressionHtmlLocalizer<RegisterViewResource> _registerLocalizer = null;
+
+        [InjectionService]
+        private IExpressionHtmlLocalizer<IndexViewResource> _indexLocalizer = null;
+
+        [InjectionService]
+        private IExpressionHtmlLocalizer<AddPhoneNumberViewResource> _addPhoneNumberLocalizer = null;
+
+        [InjectionService]
+        private IExpressionHtmlLocalizer<VerifyPhoneNumberViewResource> _verifyPhoneNumberLocalizer = null;
+
+        [InjectionService]
+        private IExpressionHtmlLocalizer<ExternalLoginsViewResource> _manageLoginsLocalizer = null;
+
+        [InjectionService]
+        private IIdentityBuilderWrapper _builderWrapper = null;
+
+        [InjectionService]
+        private IServiceProvider _serviceProvider = null;
+
+        private readonly dynamic _signInManager = null;
+        private readonly dynamic _userManager = null;
 
 
         /// <summary>
-        /// 构造一个 <see cref="ManageController{TUser}"/>。
+        /// 构造一个 <see cref="ManageController"/>。
         /// </summary>
-        /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
-        /// <param name="smsService">给定的 <see cref="ISmsService"/>。</param>
-        /// <param name="logger">给定的 <see cref="ILogger{TCategoryName}"/>。</param>
-        public ManageController(SignInManager<TUser> signInManager,
-            ISmsService smsService,
-            ILogger<ManageController<TUser>> logger)
+        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
+        public ManageController(IInjectionService injectionService)
         {
-            _signInManager = signInManager;
-            _smsService = smsService;
-            _logger = logger;
+            injectionService.Inject(this);
+
+            _signInManager = _serviceProvider.GetService(typeof(SignInManager<>)
+                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
             _userManager = _signInManager.UserManager;
         }
 
@@ -63,13 +93,15 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
-                : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
+                message == ManageMessageId.ChangePasswordSuccess ? _indexLocalizer[r => r.ChangePasswordSuccess].Value
+                : message == ManageMessageId.SetPasswordSuccess ? _indexLocalizer[r => r.SetPasswordSuccess].Value
+                : message == ManageMessageId.SetTwoFactorSuccess ? _indexLocalizer[r => r.SetTwoFactorSuccess].Value
+                : message == ManageMessageId.Error ? _indexLocalizer[r => r.Error].Value
+                : message == ManageMessageId.AddPhoneSuccess ? _indexLocalizer[r => r.AddPhoneSuccess].Value
+                : message == ManageMessageId.RemovePhoneSuccess ? _indexLocalizer[r => r.RemovePhoneSuccess].Value
                 : "";
+
+            ViewBag.Localizer = _indexLocalizer;
 
             var user = await GetCurrentUserAsync();
             var model = new IndexViewModel
@@ -115,6 +147,8 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         /// <returns></returns>
         public IActionResult AddPhoneNumber()
         {
+            ViewBag.Localizer = _addPhoneNumberLocalizer;
+
             return View();
         }
 
@@ -134,7 +168,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             // Generate the token and send it
             var user = await GetCurrentUserAsync();
             var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.Phone);
-            await _smsService.SendAsync(model.Phone, "Your security code is: " + code);
+            await _smsService.SendAsync(model.Phone, _addPhoneNumberLocalizer[r => r.YourSecurityCodeIs].Value + code);
             return RedirectToAction(nameof(VerifyPhoneNumber), new { phoneNumber = model.Phone });
         }
 
@@ -222,7 +256,10 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber)
         {
-            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(await GetCurrentUserAsync(), phoneNumber);
+            ViewBag.Localizer = _verifyPhoneNumberLocalizer;
+
+            await _userManager.GenerateChangePhoneNumberTokenAsync(await GetCurrentUserAsync(), phoneNumber);
+
             // Send an SMS to verify the phone number
             return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { Phone = phoneNumber });
         }
@@ -251,7 +288,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 }
             }
             // If we got this far, something failed, redisplay the form
-            ModelState.AddModelError(string.Empty, "Failed to verify phone number");
+            ModelState.AddModelError(string.Empty, _verifyPhoneNumberLocalizer[r => r.Failed].Value);
             return View(model);
         }
 
@@ -285,6 +322,10 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         [HttpGet]
         public IActionResult ChangePassword()
         {
+            ViewBag.BuilderOptions = _builderOptions.Value;
+            ViewBag.Options = _options.Value;
+            ViewBag.RegisterLocalizer = _registerLocalizer;
+
             return View();
         }
 
@@ -325,6 +366,10 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         [HttpGet]
         public IActionResult SetPassword()
         {
+            ViewBag.BuilderOptions = _builderOptions.Value;
+            ViewBag.Options = _options.Value;
+            ViewBag.RegisterLocalizer = _registerLocalizer;
+
             return View();
         }
 
@@ -366,10 +411,12 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> ManageLogins(ManageMessageId? message = null)
         {
+            ViewBag.Localizer = _manageLoginsLocalizer;
+
             ViewData["StatusMessage"] =
-                message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
-                : message == ManageMessageId.AddLoginSuccess ? "The external login was added."
-                : message == ManageMessageId.Error ? "An error has occurred."
+                message == ManageMessageId.RemoveLoginSuccess ? _manageLoginsLocalizer[r => r.RemoveLoginSuccess].Value
+                : message == ManageMessageId.AddLoginSuccess ? _manageLoginsLocalizer[r => r.AddLoginSuccess].Value
+                : message == ManageMessageId.Error ? _manageLoginsLocalizer[r => r.Error].Value
                 : "";
             var user = await GetCurrentUserAsync();
             if (user == null)
@@ -377,9 +424,9 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 return View("Error");
             }
 
-            var userLogins = await _userManager.GetLoginsAsync(user);
-            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
-            var otherLogins = schemes.Where(auth => userLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
+            IList<UserLoginInfo> userLogins = await _userManager.GetLoginsAsync(user);
+            IEnumerable<AuthenticationScheme> schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
+            List<AuthenticationScheme> otherLogins = schemes.Where(auth => userLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
             ViewData["ShowRemoveButton"] = _userManager.HasPasswordAsync(user).Result || userLogins.Count > 1;
 
             return View(new ManageLoginsViewModel
@@ -484,9 +531,9 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             }
         }
 
-        private Task<TUser> GetCurrentUserAsync()
+        private async Task<dynamic> GetCurrentUserAsync()
         {
-            return _userManager.GetUserAsync(HttpContext.User);
+            return await _userManager.GetUserAsync(HttpContext.User);
         }
 
         #endregion

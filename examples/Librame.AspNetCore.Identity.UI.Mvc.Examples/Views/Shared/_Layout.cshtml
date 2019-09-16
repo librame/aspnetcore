@@ -1,13 +1,14 @@
 ﻿@inject IApplicationContext Application
 @{
-    var uiInfo = Application.GetUiInfo(ViewContext.RouteData.AsRouteDescriptor());
+    Application.SetCurrentInterfaceInfo(ViewContext.RouteData.AsRouteDescriptor()?.Area);
+    var sitemap = Application.CurrentInterfaceInfo.Sitemap;
 }
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @uiInfo?.Title</title>
+    <title>@ViewData["Title"] - @Application.CurrentInterfaceInfo.Title</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -30,13 +31,18 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="/" class="navbar-brand">@uiInfo?.Title</a>
+                <a href="/" class="navbar-brand">@Application.CurrentInterfaceInfo.Title</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="@Application.Site.Navs.Index.Href">@Application.Site.Navs.Index.Text</a></li>
-                    <li><a href="@Application.Site.Navs.About.Href">@Application.Site.Navs.About.Text</a></li>
-                    <li><a href="@Application.Site.Navs.Contact.Href">@Application.Site.Navs.Contact.Text</a></li>
+                    <li><a href="@sitemap.Index.Href">@sitemap.Index.Text</a></li>
+                    @if (sitemap.CommonHeader.IsNotNullOrEmpty())
+                    {
+                        foreach (var nav in sitemap.CommonHeader)
+                        {
+                            <li><a href="@nav.Href">@nav.Text</a></li>
+                        }
+                    }
                 </ul>
                 @await Html.PartialAsync("Common/_LoginPartial", Application)
             </div>
@@ -49,7 +55,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.ToString("yyyy") - @uiInfo?.Copyright [@uiInfo?.Version]</p>
+            <p>&copy; @DateTime.Now.ToString("yyyy") - @Application.CurrentInterfaceInfo.Copyright [@Application.CurrentInterfaceInfo.Version]</p>
         </footer>
     </div>
 

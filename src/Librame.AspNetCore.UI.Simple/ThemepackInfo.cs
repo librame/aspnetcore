@@ -31,24 +31,6 @@ namespace Librame.AspNetCore.UI.Themepack.Simple
         public override string Title
             => "简约";
 
-        /// <summary>
-        /// 作者。
-        /// </summary>
-        public override string Author
-            => nameof(Librame);
-
-        /// <summary>
-        /// 联系。
-        /// </summary>
-        public override string Contact
-            => "https://github.com/librame";
-
-        /// <summary>
-        /// 版权。
-        /// </summary>
-        public override string Copyright
-            => "Librame Pang";
-
 
         /// <summary>
         /// 获取静态文件提供程序。

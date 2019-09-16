@@ -1,11 +1,11 @@
 ﻿@model IApplicationContext
 @{
-    var navs = Model.Navigations.GetManageSidebarNavigation();
+    var sitemap = Model.CurrentInterfaceInfo.Sitemap;
 }
 <ul class="nav">
-    @if (navs.IsNotNullOrEmpty())
+    @if (sitemap.ManageSidebar.IsNotNullOrEmpty())
     {
-        foreach (var nav in navs)
+        foreach (var nav in sitemap.ManageSidebar)
         {
             if ((nav.VisibilityFactory?.Invoke(this, nav)).Value)
             {
@@ -17,5 +17,13 @@
                 </li>
             }
         }
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" href="#" title="暂无菜单">
+                暂无菜单
+            </a>
+        </li>
     }
 </ul>

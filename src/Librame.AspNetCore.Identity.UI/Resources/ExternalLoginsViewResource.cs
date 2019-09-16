@@ -38,5 +38,26 @@ namespace Librame.AspNetCore.Identity.UI
         /// 另一个登入标题。
         /// </summary>
         public string AnotherLoginTitle { get; set; }
+
+        /// <summary>
+        /// 暂无外部登入。
+        /// </summary>
+        public string NoneLogins { get; set; }
+
+
+        /// <summary>
+        /// 移除登入成功。
+        /// </summary>
+        public string RemoveLoginSuccess { get; set; }
+
+        /// <summary>
+        /// 添加登入成功。
+        /// </summary>
+        public string AddLoginSuccess { get; set; }
+
+        /// <summary>
+        /// 错误。
+        /// </summary>
+        public string Error { get; set; }
     }
 }

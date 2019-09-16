@@ -1,14 +1,16 @@
 @model IApplicationContext
-
+@{
+    var sitemap = Model.CurrentInterfaceInfo.Sitemap;
+}
 @if (Model.Principal.IsSignedIn(Context))
 {
-    <form asp-page="@Model.Site.Navs.Logout.Href" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post" id="logoutForm" class="navbar-right">
+    <form asp-page="@sitemap.Logout.Href" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a href="@Model.Site.Navs.Manage.Href" title="@Model.Site.Navs.Manage.Text">Hello @Model.Principal.GetSignedUserName(Context)!</a>
+                <a href="@sitemap.Manage.Href" title="@sitemap.Manage.Text">Hello @Model.Principal.GetSignedUserName(Context)!</a>
             </li>
             <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">@Model.Site.Navs.Logout.Text</button>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link">@sitemap.Logout.Text</button>
             </li>
         </ul>
     </form>
@@ -16,7 +18,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a href="@Model.Site.Navs.Register.Href">@Model.Site.Navs.Register.Text</a></li>
-        <li><a href="@Model.Site.Navs.Login.Href">@Model.Site.Navs.Login.Text</a></li>
+        <li><a href="@sitemap.Register.Href">@sitemap.Register.Text</a></li>
+        <li><a href="@sitemap.Login.Href">@sitemap.Login.Text</a></li>
     </ul>
 }

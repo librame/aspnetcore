@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="AddPhoneNumber" xml:space="preserve">
+    <value>添加手机号码</value>
+  </data>
   <data name="ChangePassword" xml:space="preserve">
     <value>修改密码</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>联系</value>
   </data>
   <data name="Descr" xml:space="preserve">
     <value>改变您的帐户设定</value>

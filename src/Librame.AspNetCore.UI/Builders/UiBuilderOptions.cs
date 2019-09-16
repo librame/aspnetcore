@@ -30,43 +30,5 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         public string HasExternalAuthenticationSchemesKey { get; set; }
             = $"{typeof(UiBuilderOptions).Namespace}.HasExternalLogins";
-
-
-        /// <summary>
-        /// 安全。
-        /// </summary>
-        public SafetyOptions Safety { get; set; }
-            = new SafetyOptions();
-    }
-
-
-    /// <summary>
-    /// 安全选项。
-    /// </summary>
-    public class SafetyOptions
-    {
-        /// <summary>
-        /// 登入区域相对路径。
-        /// </summary>
-        public string LoginAreaRelativePath { get; set; }
-            = "/Account/Login";
-
-        /// <summary>
-        /// 登出区域相对路径。
-        /// </summary>
-        public string LogoutAreaRelativePath { get; set; }
-            = "/Account/Logout";
-
-        /// <summary>
-        /// 禁止访问区域相对路径。
-        /// </summary>
-        public string AccessAreaDeniedRelativePath { get; set; }
-            = "/Account/AccessDenied";
-
-        /// <summary>
-        /// 管理区域相对路径。
-        /// </summary>
-        public string ManageAreaRelativePath { get; set; }
-            = "/Account/Logout";
     }
 }

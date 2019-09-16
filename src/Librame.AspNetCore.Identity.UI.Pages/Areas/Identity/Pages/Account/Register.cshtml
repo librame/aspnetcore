@@ -2,38 +2,6 @@
 @model RegisterPageModel
 @{
     ViewData["Title"] = Model.Localizer[r => r.Title];
-
-    var prompts = new System.Text.StringBuilder();
-    if (Model.BuilderOptions.PasswordRulePromptEnabled)
-    {
-        prompts.Append(Model.Localizer[r => r.PasswordRequiredLength].Value);
-        prompts.Append("<hr/>");
-        prompts.Append(Model.Localizer[r => r.PasswordRequiredUniqueChars].Value);
-
-        if (Model.Options.Password.RequireNonAlphanumeric)
-        {
-            prompts.Append("<hr/>");
-            prompts.Append(Model.Localizer[r => r.PasswordRequireNonAlphanumeric].Value);
-        }
-
-        if (Model.Options.Password.RequireLowercase)
-        {
-            prompts.Append("<hr/>");
-            prompts.Append(Model.Localizer[r => r.PasswordRequireLowercase].Value);
-        }
-
-        if (Model.Options.Password.RequireLowercase)
-        {
-            prompts.Append("<hr/>");
-            prompts.Append(Model.Localizer[r => r.PasswordRequireUppercase].Value);
-        }
-
-        if (Model.Options.Password.RequireLowercase)
-        {
-            prompts.Append("<hr/>");
-            prompts.Append(Model.Localizer[r => r.PasswordRequireDigit].Value);
-        }
-    }
 }
 <!-- Register -->
 <div class="row">
@@ -61,7 +29,8 @@
                     <label asp-for="Input.Password" class="sr-only"></label>
                     <input asp-for="Input.Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Input.Password) ..."
                            title="@Model.Localizer[r => r.PasswordRulePrompts]"
-                           data-content="@Html.Raw(prompts.ToString())" data-html="true"
+                           data-content="@Html.Raw(Model.BuilderOptions.PasswordRulePromptEnabled ? PasswordRulePromptHelper.GetHtmlContent(Model.Options, Model.Localizer) : string.Empty)"
+                           data-html="true"
                            data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>

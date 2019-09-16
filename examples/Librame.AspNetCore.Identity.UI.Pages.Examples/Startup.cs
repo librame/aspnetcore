@@ -58,6 +58,11 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
 
             var mvcBuilder = services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddRazorPagesOptions(options =>
+                {
+                    options.RootDirectory = "/Pages";
+                    options.Conventions.AddPageRoute("/Home/Index", "");
+                })
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
@@ -84,7 +89,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                     options.Stores.MaxLengthForKeys = 128;
                 })
                 .AddIdentityUI()
-                .AddIdentityPages(mvcBuilder)
+                .AddIdentityInterfaceWithPages(mvcBuilder)
                 .AddNetwork();
         }
 

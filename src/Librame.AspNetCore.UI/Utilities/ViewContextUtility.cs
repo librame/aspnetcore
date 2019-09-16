@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// <see cref="ViewContext"/> 实用工具。
     /// </summary>
-    public static class ViewContextUtility
+    public class ViewContextUtility
     {
         /// <summary>
         /// 是否激活视图。

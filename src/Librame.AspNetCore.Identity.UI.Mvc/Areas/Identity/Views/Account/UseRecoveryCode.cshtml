@@ -1,6 +1,7 @@
 ﻿@model UseRecoveryCodeViewModel
+@inject IExpressionHtmlLocalizer<UseRecoveryCodeViewResource> Localizer
 @{
-    ViewData["Title"] = "Use recovery code";
+    ViewData["Title"] = Localizer[r => r.Title];
 }
 <!-- UseRecoveryCode -->
 <div class="row">
@@ -26,7 +27,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">Submit</button>
+                    <button type="submit" class="btn">@Localizer[r => r.ButtonText]</button>
                 </div>
             </form>
         </div>

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddLoginSuccess" xml:space="preserve">
+    <value>外部登入添加成功。</value>
+  </data>
   <data name="AnotherDescr" xml:space="preserve">
     <value>添加另一個登入服務</value>
   </data>
@@ -131,6 +134,15 @@
   </data>
   <data name="Descr" xml:space="preserve">
     <value>已注冊的登入</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>發生了一個錯誤。</value>
+  </data>
+  <data name="NoneLogins" xml:space="preserve">
+    <value>暫無</value>
+  </data>
+  <data name="RemoveLoginSuccess" xml:space="preserve">
+    <value>外部登入刪除成功。</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>管理您的外部登入</value>

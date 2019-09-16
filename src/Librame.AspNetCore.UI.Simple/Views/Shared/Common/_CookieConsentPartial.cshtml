@@ -4,6 +4,7 @@
     var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
     var showBanner = !consentFeature?.CanTrack ?? false;
     var cookieString = consentFeature?.CreateConsentCookie();
+    var sitemap = Model.CurrentInterfaceInfo.Sitemap;
 }
 @if (showBanner)
 {
@@ -23,7 +24,7 @@
                     Use this space to summarize your privacy and cookie use policy.
                 </p>
                 <div class="navbar-right">
-                    <a href="@Model.Site.Navs.Privacy.Href" class="btn btn-info navbar-btn">@Model.Site.Navs.Privacy.Text</a>
+                    <a href="@sitemap.Privacy.Href" class="btn btn-info navbar-btn">@sitemap.Privacy.Text</a>
                     <button type="button" class="btn btn-default navbar-btn" data-cookie-string="@cookieString">Accept</button>
                 </div>
             </div>

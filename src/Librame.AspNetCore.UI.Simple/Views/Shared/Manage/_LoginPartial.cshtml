@@ -2,7 +2,7 @@
 
 @if (Model.Principal.IsSignedIn(Context))
 {
-    var localizer = Model.Localizers.GetManageLayoutLocalizer();
+    var sitemap = Model.CurrentInterfaceInfo.Sitemap;
     var userName = Model.Principal.GetSignedUserName(Context);
     var email = Model.Principal.GetSignedUserEmail(Context);
     var portrait = Model.Principal.GetSignedUserPortrait(Context);
@@ -25,13 +25,13 @@
                 </li>
 
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="@Model.Site.Navs.Manage.Href">
-                    <i class="ti-user"></i> @Model.Site.Navs.Manage.Text
+                <a class="dropdown-item" href="@sitemap.Manage.Href">
+                    <i class="ti-user"></i> @sitemap.Manage.Text
                 </a>
 
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" asp-page="@Model.Site.Navs.Logout.Href" asp-route-returnUrl="@Context.Request.Path">
-                    <i class="fa fa-power-off"></i> @Model.Site.Navs.Logout.Text
+                <a class="dropdown-item" asp-page="@sitemap.Logout.Href" asp-route-returnUrl="@Context.Request.Path">
+                    <i class="fa fa-power-off"></i> @sitemap.Logout.Text
                 </a>
             </ul>
         </li>

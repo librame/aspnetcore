@@ -1,6 +1,7 @@
 ﻿@model VerifyAuthenticatorCodeViewModel
+@inject IExpressionHtmlLocalizer<VerifyAuthenticatorCodeViewResource> Localizer
 @{
-    ViewData["Title"] = "Verify Authenticator Code";
+    ViewData["Title"] = Localizer[r => r.Title];
 }
 <!-- VerifyAuthenticatorCode -->
 <div class="row">
@@ -32,11 +33,11 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">Submit</button>
+                    <button type="submit" class="btn">@Localizer[r => r.ButtonText]</button>
                 </div>
 
                 <p>
-                    <a asp-action="UseRecoveryCode">Lost your authenticator?</a>
+                    <a asp-action="UseRecoveryCode">@Localizer[r => r.LostAuthenticator]</a>
                 </p>
             </form>
         </div>

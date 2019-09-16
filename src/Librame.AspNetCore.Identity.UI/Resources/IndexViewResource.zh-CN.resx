@@ -117,16 +117,88 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddPhoneNumber" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="AddPhoneSuccess" xml:space="preserve">
+    <value>您的手机号码已添加。</value>
+  </data>
+  <data name="AuthenticationApp" xml:space="preserve">
+    <value>认证应用：</value>
+  </data>
   <data name="ButtonText" xml:space="preserve">
     <value>保存</value>
+  </data>
+  <data name="ChangeAccountSettings" xml:space="preserve">
+    <value>修改您的帐户设定</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>修改</value>
+  </data>
+  <data name="ChangePasswordSuccess" xml:space="preserve">
+    <value>您的密码已更改。</value>
+  </data>
+  <data name="ChangePhoneNumber" xml:space="preserve">
+    <value>修改</value>
   </data>
   <data name="Descr" xml:space="preserve">
     <value>资料</value>
   </data>
+  <data name="DisableTwoFactor" xml:space="preserve">
+    <value>禁用</value>
+  </data>
+  <data name="EnableTwoFactor" xml:space="preserve">
+    <value>启用</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>发生了一个错误。</value>
+  </data>
+  <data name="ExternalLogins" xml:space="preserve">
+    <value>外部登入集合：</value>
+  </data>
+  <data name="GenerateRecoveryCode" xml:space="preserve">
+    <value>生成</value>
+  </data>
+  <data name="ManageLogins" xml:space="preserve">
+    <value>管理</value>
+  </data>
+  <data name="NonePhoneNumber" xml:space="preserve">
+    <value>暂无</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>密码：</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>手机号码：</value>
+  </data>
+  <data name="RemovePhoneNumber" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="RemovePhoneSuccess" xml:space="preserve">
+    <value>您的电话号码已删除。</value>
+  </data>
+  <data name="ResetAuthenticatorKey" xml:space="preserve">
+    <value>重置</value>
+  </data>
   <data name="SendButtonText" xml:space="preserve">
     <value>发送验证电邮</value>
   </data>
+  <data name="SetPassword" xml:space="preserve">
+    <value>创建</value>
+  </data>
+  <data name="SetPasswordSuccess" xml:space="preserve">
+    <value>您的密码已设置。</value>
+  </data>
+  <data name="SetTwoFactorSuccess" xml:space="preserve">
+    <value>您的双因子认证提供程序已设置。</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>资料</value>
+  </data>
+  <data name="TwoFactorAuthentication" xml:space="preserve">
+    <value>双因子认证：</value>
+  </data>
+  <data name="YourKeyIs" xml:space="preserve">
+    <value>您的密钥是：</value>
   </data>
 </root>

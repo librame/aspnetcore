@@ -22,7 +22,8 @@ namespace Librame.AspNetCore.Identity.UI
         /// <summary>
         /// 恢复码。
         /// </summary>
-        [Required]
+        [Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
+        [Display(Name = nameof(Code), ResourceType = typeof(UseRecoveryCodeViewResource))]
         public string Code { get; set; }
 
         /// <summary>

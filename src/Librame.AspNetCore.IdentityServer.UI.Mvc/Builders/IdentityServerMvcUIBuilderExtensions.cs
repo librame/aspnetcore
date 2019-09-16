@@ -28,7 +28,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
         public static IUiBuilder AddIdentityServerControllers(this IUiBuilder builder, IMvcBuilder mvcBuilder)
-            => builder.AddSiteControllers<IdentityServerApplicationSiteMvc, IdentityServerApplicationSiteConfiguration>(mvcBuilder, typeof(IdentityServerMvcUiBuilderExtensions).Assembly);
+            => builder.AddInterfaceWithViews<IdentityServerInterfaceConfigurationWithViews, IdentityServerInterfaceSitemapWithViews>(mvcBuilder, typeof(IdentityServerMvcUiBuilderExtensions).Assembly);
 
     }
 }

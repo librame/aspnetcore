@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 外部登入确认页面模型。
     /// </summary>
     [AllowAnonymous]
-    [ApplicationSiteTemplateWithUser(typeof(ExternalLoginPageModel<>))]
+    [InterfaceTemplateWithUser(typeof(ExternalLoginPageModel<>))]
     public class ExternalLoginPageModel : PageModel
     {
         /// <summary>
@@ -192,7 +192,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 var user = CreateUser();
                 user.Id = await _storeIdentifier.GetUserIdAsync();
 
-                var result = await _userManager.CreateUserByEmail(_userStore, Input.Email, password: null, user);
+                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore, Input.Email, password: null, user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);

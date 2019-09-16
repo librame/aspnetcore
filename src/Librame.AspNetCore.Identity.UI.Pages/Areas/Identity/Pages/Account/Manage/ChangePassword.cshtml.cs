@@ -26,21 +26,28 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 修改密码页面模型。
     /// </summary>
-    [ApplicationSiteTemplateWithUser(typeof(ChangePasswordPageModel<>))]
+    [InterfaceTemplateWithUser(typeof(ChangePasswordPageModel<>))]
     public class ChangePasswordPageModel : PageModel
     {
         /// <summary>
         /// 构造一个 <see cref="ChangePasswordPageModel"/>。
         /// </summary>
+        /// <param name="registerLocalizer">给定的 <see cref="IExpressionHtmlLocalizer{RegisterViewResource}"/>。</param>
         /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="options">给定的 <see cref="IOptions{IdentityOptions}"/>。</param>
-        public ChangePasswordPageModel(IOptions<IdentityBuilderOptions> builderOptions,
-            IOptions<IdentityOptions> options)
+        public ChangePasswordPageModel(IExpressionHtmlLocalizer<RegisterViewResource> registerLocalizer,
+            IOptions<IdentityBuilderOptions> builderOptions, IOptions<IdentityOptions> options)
         {
+            RegisterLocalizer = registerLocalizer;
             BuilderOptions = builderOptions.Value;
             Options = options.Value;
         }
 
+
+        /// <summary>
+        /// 本地化资源。
+        /// </summary>
+        public IExpressionHtmlLocalizer<RegisterViewResource> RegisterLocalizer { get; }
 
         /// <summary>
         /// 构建器选项。
@@ -51,7 +58,6 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         /// 选项。
         /// </summary>
         public IdentityOptions Options { get; }
-
 
         /// <summary>
         /// 输入模型。
@@ -95,9 +101,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             SignInManager<TUser> signInManager,
             ILogger<ChangePasswordPageModel> logger,
             IExpressionStringLocalizer<StatusMessageResource> statusLocalizer,
+            IExpressionHtmlLocalizer<RegisterViewResource> registerLocalizer,
             IOptions<IdentityBuilderOptions> builderOptions,
             IOptions<IdentityOptions> options)
-            : base(builderOptions, options)
+            : base(registerLocalizer, builderOptions, options)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;

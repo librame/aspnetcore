@@ -84,7 +84,7 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
                     options.Stores.MaxLengthForKeys = 128;
                 })
                 .AddIdentityUI()
-                .AddIdentityControllers(mvcBuilder)
+                .AddIdentityInterfaceWithViews(mvcBuilder)
                 .AddNetwork();
         }
 
@@ -108,7 +108,18 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
             app.UseLibrameCore()
                 .UseIdentity();
 
-            app.UseMvcWithDefaultRoute();
+            app.UseMvc(routes =>
+            {
+                routes.MapAreaRoute(
+                    name: "Identity",
+                    areaName: "Identity",
+                    template: "Identity/{controller}/{action}/{id?}"
+                );
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}"
+                );
+            });
         }
     }
 }

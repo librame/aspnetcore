@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 确认电邮页面模型。
     /// </summary>
     [AllowAnonymous]
-    [ApplicationSiteTemplateWithUser(typeof(ConfirmEmailPageModel<>))]
+    [InterfaceTemplateWithUser(typeof(ConfirmEmailPageModel<>))]
     public class ConfirmEmailPageModel : PageModel
     {
         /// <summary>

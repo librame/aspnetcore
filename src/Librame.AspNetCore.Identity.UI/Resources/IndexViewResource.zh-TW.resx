@@ -117,16 +117,88 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddPhoneNumber" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="AddPhoneSuccess" xml:space="preserve">
+    <value>您的移動話機號碼已添加。</value>
+  </data>
+  <data name="AuthenticationApp" xml:space="preserve">
+    <value>認證應用：</value>
+  </data>
   <data name="ButtonText" xml:space="preserve">
     <value>存儲</value>
+  </data>
+  <data name="ChangeAccountSettings" xml:space="preserve">
+    <value>改變您的賬戶設置</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>改變口令</value>
+  </data>
+  <data name="ChangePasswordSuccess" xml:space="preserve">
+    <value>您的口令已修改。</value>
+  </data>
+  <data name="ChangePhoneNumber" xml:space="preserve">
+    <value>改變</value>
   </data>
   <data name="Descr" xml:space="preserve">
     <value>資料</value>
   </data>
+  <data name="DisableTwoFactor" xml:space="preserve">
+    <value>禁用</value>
+  </data>
+  <data name="EnableTwoFactor" xml:space="preserve">
+    <value>啓用</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>發生了一個錯誤。</value>
+  </data>
+  <data name="ExternalLogins" xml:space="preserve">
+    <value>外部登入集合</value>
+  </data>
+  <data name="GenerateRecoveryCode" xml:space="preserve">
+    <value>生成</value>
+  </data>
+  <data name="ManageLogins" xml:space="preserve">
+    <value>維護</value>
+  </data>
+  <data name="NonePhoneNumber" xml:space="preserve">
+    <value>沒有</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>口令：</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>移動話機號碼</value>
+  </data>
+  <data name="RemovePhoneNumber" xml:space="preserve">
+    <value>刪除</value>
+  </data>
+  <data name="RemovePhoneSuccess" xml:space="preserve">
+    <value>您的移動話機號碼已刪除。</value>
+  </data>
+  <data name="ResetAuthenticatorKey" xml:space="preserve">
+    <value>重置</value>
+  </data>
   <data name="SendButtonText" xml:space="preserve">
     <value>發送驗證郵箱</value>
   </data>
+  <data name="SetPassword" xml:space="preserve">
+    <value>創建口令</value>
+  </data>
+  <data name="SetPasswordSuccess" xml:space="preserve">
+    <value>您的口令已設置。</value>
+  </data>
+  <data name="SetTwoFactorSuccess" xml:space="preserve">
+    <value>您的雙因子認證提供程式已設置。</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>資料</value>
+  </data>
+  <data name="TwoFactorAuthentication" xml:space="preserve">
+    <value>雙因子認證</value>
+  </data>
+  <data name="YourKeyIs" xml:space="preserve">
+    <value>您的密鑰是：</value>
   </data>
 </root>

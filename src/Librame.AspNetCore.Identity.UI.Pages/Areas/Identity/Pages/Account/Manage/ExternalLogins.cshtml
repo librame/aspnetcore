@@ -8,9 +8,10 @@
 <partial name="_StatusMessagePartial" model="Model.StatusMessage" />
 
 <!-- ExternalLogins -->
+<h4>@Localizer[r => r.Descr]</h4>
+
 @if (Model.CurrentLogins?.Count > 0)
 {
-    <h4>@Localizer[r => r.Descr]</h4>
     <table class="table">
         <tbody>
             @foreach (var login in Model.CurrentLogins)
@@ -37,6 +38,10 @@
             }
         </tbody>
     </table>
+}
+else
+{
+    <p>@Localizer[r => r.NoneLogins]</p>
 }
 
 @if (Model.OtherLogins?.Count > 0)

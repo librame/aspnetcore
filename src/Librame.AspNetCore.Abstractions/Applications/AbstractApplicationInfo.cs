@@ -33,17 +33,20 @@ namespace Librame.AspNetCore
         /// <summary>
         /// 作者。
         /// </summary>
-        public abstract string Author { get; }
+        public virtual string Author
+            => nameof(Librame);
 
         /// <summary>
         /// 联系。
         /// </summary>
-        public abstract string Contact { get; }
+        public virtual string Contact
+            => "https://github.com/librame/LibrameCore";
 
         /// <summary>
         /// 版权。
         /// </summary>
-        public abstract string Copyright { get; }
+        public virtual string Copyright
+            => "Librame Pang";
 
         /// <summary>
         /// 版本。
@@ -68,5 +71,57 @@ namespace Librame.AspNetCore
         /// </summary>
         public virtual Version AssemblyVersion
             => AssemblyName.Version;
+
+
+        /// <summary>
+        /// 是否相等。
+        /// </summary>
+        /// <param name="other">给定的 <see cref="IApplicationInfo"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public bool Equals(IApplicationInfo other)
+            => Name == other?.Name;
+
+        /// <summary>
+        /// 重写是否相等。
+        /// </summary>
+        /// <param name="obj">给定要比较的对象。</param>
+        /// <returns>返回布尔值。</returns>
+        public override bool Equals(object obj)
+            => (obj is IApplicationInfo other) ? Equals(other) : false;
+
+
+        /// <summary>
+        /// 获取哈希码。
+        /// </summary>
+        /// <returns>返回 32 位整数。</returns>
+        public override int GetHashCode()
+            => ToString().GetHashCode();
+
+
+        /// <summary>
+        /// 转换为字符串。
+        /// </summary>
+        /// <returns>返回字符串。</returns>
+        public override string ToString()
+            => $"{Name} - {Title}";
+
+
+        /// <summary>
+        /// 是否相等。
+        /// </summary>
+        /// <param name="a">给定的 <see cref="AbstractApplicationInfo"/>。</param>
+        /// <param name="b">给定的 <see cref="AbstractApplicationInfo"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool operator ==(AbstractApplicationInfo a, AbstractApplicationInfo b)
+            => a.Equals(b);
+
+        /// <summary>
+        /// 是否不等。
+        /// </summary>
+        /// <param name="a">给定的 <see cref="AbstractApplicationInfo"/>。</param>
+        /// <param name="b">给定的 <see cref="AbstractApplicationInfo"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public static bool operator !=(AbstractApplicationInfo a, AbstractApplicationInfo b)
+            => !a.Equals(b);
     }
 }

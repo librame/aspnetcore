@@ -1,27 +1,28 @@
 ﻿@model AddPhoneNumberViewModel
 @{
-    ViewData["Title"] = "Add Phone Number";
+    var localizer = ViewBag.Localizer as IExpressionHtmlLocalizer<AddPhoneNumberViewResource>;
+    ViewData["Title"] = localizer[r => r.Title];
 }
 
-<h1>@ViewData["Title"].</h1>
-<form asp-controller="Manage" asp-action="AddPhoneNumber" method="post" class="form-horizontal" role="form">
-    <h4>Add a phone number.</h4>
-    <hr />
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Phone" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Phone" class="form-control" />
-            <span asp-validation-for="Phone" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-default">Send verification code</button>
-        </div>
-    </div>
-</form>
+<!-- AddPhoneNumber -->
+<h4>@ViewData["Title"]</h4>
 
-@section scripts {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-}
+<div class="row">
+    <div class="col-md-6">
+        <form asp-controller="Manage" asp-action="AddPhoneNumber" method="post" class="form-horizontal" role="form">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Phone" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Phone" class="form-control" placeholder="@Html.DisplayNameFor(m => m.Phone) ..." />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">@localizer[r => r.ButtonText]</button>
+            </div>
+        </form>
+    </div>
+</div>

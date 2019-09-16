@@ -18,7 +18,7 @@ namespace Librame.AspNetCore
     /// <summary>
     /// 应用信息接口。
     /// </summary>
-    public interface IApplicationInfo
+    public interface IApplicationInfo : IEquatable<IApplicationInfo>
     {
         /// <summary>
         /// 名称。

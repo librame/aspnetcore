@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -24,48 +27,62 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
 {
     using AspNetCore.UI;
     using Extensions;
-    using Extensions.Data;
+    using Extensions.Core;
     using Extensions.Network;
 
     /// <summary>
     /// 用户控制器。
     /// </summary>
-    /// <typeparam name="TUser">指定的用户类型。</typeparam>
     [Authorize]
-    [ApplicationSiteTemplateWithUser(typeof(AccountController<>))]
-    public class AccountController<TUser> : Controller
-        where TUser : class, IId<string>
+    public class AccountController : Controller
     {
-        private readonly SignInManager<TUser> _signInManager;
-        private readonly UserManager<TUser> _userManager;
-        private readonly IUserStore<TUser> _userStore;
-        private readonly ILogger _logger;
-        private readonly IEmailService _emailService;
-        private readonly ISmsService _smsService;
-        private readonly IExpressionHtmlLocalizer<RegisterViewResource> _localizer;
-        private readonly IdentityStoreIdentifier _storeIdentifier;
+        [InjectionService]
+        private ILogger<AccountController> _logger = null;
+
+        [InjectionService]
+        private IEmailService _emailService = null;
+
+        [InjectionService]
+        private ISmsService _smsService = null;
+
+        [InjectionService]
+        private IOptions<IdentityBuilderOptions> _builderOptions = null;
+
+        [InjectionService]
+        private IOptions<IdentityOptions> _options = null;
+
+        [InjectionService]
+        private IExpressionHtmlLocalizer<RegisterViewResource> _registerLocalizer = null;
+
+        [InjectionService]
+        private IIdentityBuilderWrapper _builderWrapper = null;
+
+        [InjectionService]
+        private IdentityStoreIdentifier _storeIdentifier = null;
+
+        [InjectionService]
+        private IServiceProvider _serviceProvider = null;
+
+        private readonly dynamic _signInManager = null;
+        private readonly dynamic _userManager = null;
+        private readonly dynamic _userStore = null;
+        //private readonly dynamic _emailStore;
 
 
         /// <summary>
-        /// 构造一个 <see cref="AccountController{TUser}"/>。
+        /// 构造一个 <see cref="AccountController"/>。
         /// </summary>
-        public AccountController(
-            SignInManager<TUser> signInManager,
-            IUserStore<TUser> userStore,
-            ILogger<AccountController<TUser>> logger,
-            IEmailService emailService,
-            ISmsService smsService,
-            IExpressionHtmlLocalizer<RegisterViewResource> localizer,
-            IdentityStoreIdentifier storeIdentifier)
+        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
+        public AccountController(IInjectionService injectionService)
         {
-            _signInManager = signInManager;
-            _userManager = signInManager.UserManager;
-            _userStore = userStore;
-            _logger = logger;
-            _emailService = emailService;
-            _smsService = smsService;
-            _localizer = localizer;
-            _storeIdentifier = storeIdentifier;
+            injectionService.Inject(this);
+
+            _signInManager = _serviceProvider.GetService(typeof(SignInManager<>)
+                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
+            _userManager = _signInManager.UserManager;
+            _userStore = _serviceProvider.GetService(typeof(IUserStore<>)
+                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
+            //_emailStore = _userStore.GetUserEmailStore(_userManager);
         }
 
 
@@ -104,7 +121,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Index", "Manage");
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -137,6 +154,11 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         public IActionResult Register(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
+
+            ViewBag.BuilderOptions = _builderOptions.Value;
+            ViewBag.Options = _options.Value;
+            ViewBag.Localizer = _registerLocalizer;
+
             return View();
         }
 
@@ -154,7 +176,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = typeof(TUser).EnsureCreate<TUser>();
+                dynamic user = _builderWrapper.RawBuilder.UserType.EnsureCreateObject();
                 user.Id = await _storeIdentifier.GetUserIdAsync();
 
                 var result = await _userManager.CreateUserByEmail(_userStore, model.Email, model.Password, user);
@@ -169,8 +191,8 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                         protocol: HttpContext.Request.Scheme);
 
                     await _emailService.SendAsync(model.Email,
-                        _localizer[r => r.ConfirmYourEmail]?.Value,
-                        _localizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value);
+                        _registerLocalizer[r => r.ConfirmYourEmail]?.Value,
+                        _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value);
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
@@ -195,7 +217,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -244,7 +266,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 // Update any authentication tokens if login succeeded
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
 
-                _logger.LogInformation(5, "User logged in with {Name} provider.", info.LoginProvider);
+                _logger.LogInformation(5, "User logged in with {Name} provider.", (string)info.LoginProvider);
                 return RedirectToLocal(returnUrl);
             }
             if (result.RequiresTwoFactor)
@@ -286,17 +308,17 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                     return View("ExternalLoginFailure");
                 }
 
-                var user = typeof(TUser).EnsureCreate<TUser>();
+                dynamic user = _builderWrapper.RawBuilder.UserType.EnsureCreateObject();
                 user.Id = await _storeIdentifier.GetUserIdAsync();
 
-                var result = await _userManager.CreateUserByEmail(_userStore, model.Email, password: null, user);
+                var result = await _userManager.CreateUserByEmail(_userStore, model.Email, password: null, user: (IDefaultIdentityUser)user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        _logger.LogInformation(6, "User created an account using {Name} provider.", info.LoginProvider);
+                        _logger.LogInformation(6, "User created an account using {Name} provider.", (string)info.LoginProvider);
 
                         // Update any authentication tokens as well
                         await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
@@ -400,7 +422,14 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         [AllowAnonymous]
         public IActionResult ResetPassword(string code = null)
         {
-            return code == null ? View("Error") : View();
+            if (code.IsNotNullOrEmpty())
+                return View("Error");
+
+            ViewBag.BuilderOptions = _builderOptions.Value;
+            ViewBag.Options = _options.Value;
+            ViewBag.RegisterLocalizer = _registerLocalizer;
+
+            return View();
         }
 
         /// <summary>
@@ -460,7 +489,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             {
                 return View("Error");
             }
-            var userFactors = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            IList<string> userFactors = await _userManager.GetValidTwoFactorProvidersAsync(user);
             var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
@@ -488,7 +517,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
 
             if (model.SelectedProvider == "Authenticator")
             {
-                return RedirectToAction(nameof(VerifyAuthenticatorCode), new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+                return RedirectToAction(nameof(VerifyAuthenticatorCode), new { model.ReturnUrl, model.RememberMe });
             }
 
             // Generate the token and send it
@@ -679,7 +708,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             }
         }
 
-        private Task<TUser> GetCurrentUserAsync()
+        private Task<dynamic> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);
         }
@@ -692,7 +721,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             }
             else
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
         }
 

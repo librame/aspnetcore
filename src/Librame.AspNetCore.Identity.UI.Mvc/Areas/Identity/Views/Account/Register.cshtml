@@ -1,7 +1,7 @@
 ﻿@model RegisterViewModel
-@inject IExpressionHtmlLocalizer<RegisterViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    var localizer = ViewBag.Localizer as IExpressionHtmlLocalizer<RegisterViewResource>;
+    ViewData["Title"] = localizer[r => r.Title];
 }
 <!-- Register -->
 <div class="row">
@@ -9,7 +9,7 @@
         <div class="form-top">
             <div class="form-top-left">
                 <h3>@ViewData["Title"]</h3>
-                <p>@Localizer[r => r.Descr]</p>
+                <p>@localizer[r => r.Descr]</p>
             </div>
             <div class="form-top-right">
                 <!-- <i class="fa fa-key"></i> -->
@@ -27,7 +27,11 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Password" class="sr-only"></label>
-                    <input asp-for="Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Password) ..." />
+                    <input asp-for="Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Password) ..."
+                           title="@localizer[r => r.PasswordRulePrompts]"
+                           data-content="@Html.Raw(ViewBag.BuilderOptions.PasswordRulePromptEnabled ? PasswordRulePromptHelper.GetHtmlContent(ViewBag.Options, localizer) : string.Empty)"
+                           data-html="true"
+                           data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -37,13 +41,13 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">@Localizer[r => r.ButtonText]</button>
+                    <button type="submit" class="btn">@localizer[r => r.ButtonText]</button>
                 </div>
 
                 <div class="form-group">
                     <p>
-                        <a id="login" asp-page="./Login">
-                            @Localizer[r => r.Login]
+                        <a id="login" asp-action="Login">
+                            @localizer[r => r.Login]
                         </a>
                     </p>
                 </div>
@@ -51,3 +55,11 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("[data-toggle='popover']").popover();
+        });
+    </script>
+}

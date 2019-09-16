@@ -22,7 +22,8 @@ namespace Librame.AspNetCore.Identity.UI
         /// <summary>
         /// 认证码。
         /// </summary>
-        [Required]
+        [Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
+        [Display(Name = nameof(Code), ResourceType = typeof(VerifyAuthenticatorCodeViewResource))]
         public string Code { get; set; }
 
         /// <summary>
@@ -33,13 +34,13 @@ namespace Librame.AspNetCore.Identity.UI
         /// <summary>
         /// 记住浏览器。
         /// </summary>
-        [Display(Name = "Remember this browser?")]
+        [Display(Name = nameof(RememberBrowser), ResourceType = typeof(VerifyAuthenticatorCodeViewResource))]
         public bool RememberBrowser { get; set; }
 
         /// <summary>
         /// 记住我。
         /// </summary>
-        [Display(Name = "Remember me?")]
+        [Display(Name = nameof(RememberMe), ResourceType = typeof(UserViewModelResource))]
         public bool RememberMe { get; set; }
     }
 }

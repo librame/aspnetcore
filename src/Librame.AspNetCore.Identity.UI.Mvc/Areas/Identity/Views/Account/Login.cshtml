@@ -49,14 +49,14 @@
                 <div class="form-group overflow-hidden">
                     <div class="col-sm-6">
                         <p>
-                            <a asp-page="./ForgotPassword">
+                            <a asp-action="ForgotPassword">
                                 @Localizer[r => r.ForgotPassword]
                             </a>
                         </p>
                     </div>
                     <div class="col-sm-6 text-right">
                         <p>
-                            <a asp-page="./Register" asp-route-returnUrl="@ViewData["ReturnUrl"]">
+                            <a asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]">
                                 @Localizer[r => r.RegisterUser]
                             </a>
                         </p>
@@ -69,20 +69,20 @@
 
 <div class="row">
     <div class="col-sm-6 col-sm-offset-3 social-login">
-        <h3>@Localizer[r => r.ExternalLoginDescr]</h3>
+        <!-- <h3>Localizer[r => r.ExternalLoginDescr]</h3> -->
         <div class="social-login-buttons">
             @{
                 if (loginProviders.IsNullOrEmpty())
                 {
                     <div>
                         <p>
-                            @Localizer[r => r.ExternalLoginInfo]
+                            <!--Localizer[r => r.ExternalLoginInfo]-->
                         </p>
                     </div>
                 }
                 else
                 {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    <form id="external-account" asp-controller="Account" asp-action="ExternalLogin" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
                         <div>
                             <p>
                                 @foreach (var provider in loginProviders)

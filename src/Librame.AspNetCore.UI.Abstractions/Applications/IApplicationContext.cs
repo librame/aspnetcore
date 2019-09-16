@@ -11,9 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Localization;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace Librame.AspNetCore.UI
 {
@@ -32,6 +30,7 @@ namespace Librame.AspNetCore.UI
         /// </value>
         ServiceFactoryDelegate ServiceFactory { get; }
         
+
         /// <summary>
         /// 应用当事人。
         /// </summary>
@@ -39,14 +38,6 @@ namespace Librame.AspNetCore.UI
         /// 返回 <see cref="IApplicationPrincipal"/>。
         /// </value>
         IApplicationPrincipal Principal { get; }
-
-        /// <summary>
-        /// 应用站点。
-        /// </summary>
-        /// <value>
-        /// 返回 <see cref="IApplicationSite"/>。
-        /// </value>
-        IApplicationSite Site { get; }
 
         /// <summary>
         /// 主机环境。
@@ -58,24 +49,58 @@ namespace Librame.AspNetCore.UI
 
 
         /// <summary>
+        /// 界面信息集合。
+        /// </summary>
+        ConcurrentDictionary<string, IInterfaceInfo> InterfaceInfos { get; }
+
+        /// <summary>
         /// 主题包信息集合。
         /// </summary>
-        ConcurrentDictionary<string, IThemepackInfo> Themepacks { get; }
-
-        /// <summary>
-        ///  UI 信息集合。
-        /// </summary>
-        ConcurrentDictionary<string, IUiInfo> Uis { get; }
+        ConcurrentDictionary<string, IThemepackInfo> ThemepackInfos { get; }
 
 
         /// <summary>
-        /// 本地化定位器集合。
+        /// 当前界面信息。
         /// </summary>
-        ConcurrentDictionary<string, IStringLocalizer> Localizers { get; }
+        IInterfaceInfo CurrentInterfaceInfo { get; }
 
         /// <summary>
-        /// 导航集合。
+        /// 当前主题包信息。
         /// </summary>
-        ConcurrentDictionary<string, List<NavigationDescriptor>> Navigations { get; }
+        IThemepackInfo CurrentThemepackInfo { get; }
+
+
+        /// <summary>
+        /// 获取界面信息。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="orDefault">如果不存在指定名称的界面信息，则返回已加载集合的默认界面信息。</param>
+        /// <returns>返回 <see cref="IInterfaceInfo"/>。</returns>
+        IInterfaceInfo GetInterfaceInfo(string name, bool orDefault = true);
+
+        /// <summary>
+        /// 设置当前界面信息。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="orDefault">如果不存在指定名称的界面信息，则采用已加载集合的默认界面信息。</param>
+        /// <returns>返回 <see cref="IInterfaceInfo"/>。</returns>
+        IInterfaceInfo SetCurrentInterfaceInfo(string name, bool orDefault = true);
+
+
+        /// <summary>
+        /// 获取主题包信息。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="orDefault">如果不存在指定名称的界面信息，则返回已加载集合的默认界面信息。</param>
+        /// <returns>返回 <see cref="IThemepackInfo"/>。</returns>
+        IThemepackInfo GetThemepackInfo(string name, bool orDefault = true);
+
+        /// <summary>
+        /// 设置当前主题包信息。
+        /// </summary>
+        /// <param name="name">给定的名称。</param>
+        /// <param name="orDefault">如果不存在指定名称的主题包信息，则采用已加载集合的默认主题包信息。</param>
+        /// <returns>返回 <see cref="IThemepackInfo"/>。</returns>
+        IThemepackInfo SetCurrentThemepackInfo(string name, bool orDefault = true);
     }
 }

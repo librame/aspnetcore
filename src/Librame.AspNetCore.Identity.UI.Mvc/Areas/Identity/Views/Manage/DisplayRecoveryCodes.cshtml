@@ -1,21 +1,24 @@
 ﻿@model DisplayRecoveryCodesViewModel
+@inject IExpressionHtmlLocalizer<DisplayRecoveryCodesViewResource> Localizer
 @{
-    ViewData["Title"] = "Your recovery codes:";
+    ViewData["Title"] = Localizer[r => r.Title];
 }
 
-<h1>@ViewData["Title"].</h1>
+<!-- DisplayRecoveryCodes -->
+<h4>@ViewData["Title"]</h4>
+
 <p class="text-success">@ViewData["StatusMessage"]</p>
 
-<div>
-    <h4>Here are your new recovery codes</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>Codes:</dt>
-        @foreach (var code in Model.Codes)
-        {
-        <dd>
-            <text>@code</text>
-        </dd>
-        }
-    </dl>
+<div class="row">
+    <div class="col-md-6">
+        <dl class="dl-horizontal">
+            <dt>@Localizer[r => r.Descr]</dt>
+            @foreach (var code in Model.Codes)
+            {
+                <dd>
+                    <text>@code</text>
+                </dd>
+            }
+        </dl>
+    </div>
 </div>

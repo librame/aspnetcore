@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 启用验证器页面模型。
     /// </summary>
-    [ApplicationSiteTemplateWithUser(typeof(EnableAuthenticatorPageModel<>))]
+    [InterfaceTemplateWithUser(typeof(EnableAuthenticatorPageModel<>))]
     public class EnableAuthenticatorPageModel : PageModel
     {
         /// <summary>
