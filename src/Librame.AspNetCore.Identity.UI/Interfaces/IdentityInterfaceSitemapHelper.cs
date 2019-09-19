@@ -34,18 +34,12 @@ namespace Librame.AspNetCore.Identity.UI
 
             return new List<NavigationDescriptor>
             {
-                new NavigationDescriptor(localizer[p => p.Repository], "https://github.com/librame/LibrameCore")
-                {
-                    Target = "_blank"
-                },
-                new NavigationDescriptor(localizer[p => p.Issues], "https://github.com/librame/LibrameCore/issues")
-                {
-                    Target = "_blank"
-                },
-                new NavigationDescriptor(localizer[p => p.Licenses], "https://github.com/librame/LibrameCore/blob/master/LICENSE.txt")
-                {
-                    Target = "_blank"
-                }
+                new NavigationDescriptor(new RouteDescriptor("https://github.com/librame/LibrameCore"),
+                    localizer[p => p.Repository]).ChangeTarget("_blank"),
+                new NavigationDescriptor(new RouteDescriptor("https://github.com/librame/LibrameCore/issues"),
+                    localizer[p => p.Issues]).ChangeTarget("_blank"),
+                new NavigationDescriptor(new RouteDescriptor("https://github.com/librame/LibrameCore/blob/master/LICENSE.txt"),
+                    localizer[p => p.Licenses]).ChangeTarget("_blank")
             };
         }
 

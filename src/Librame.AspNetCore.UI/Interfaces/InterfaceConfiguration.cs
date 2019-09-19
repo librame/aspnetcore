@@ -83,9 +83,9 @@ namespace Librame.AspNetCore.UI
 
             if (IdentityConstants.ApplicationScheme.Equals(name, StringComparison.Ordinal))
             {
-                options.LoginPath = Info.Sitemap.Login.NewArea(Area).Href;
-                options.LogoutPath = Info.Sitemap.Logout.NewArea(Area).Href;
-                options.AccessDeniedPath = Info.Sitemap.AccessDenied.NewArea(Area).Href;
+                options.LoginPath = Info.Sitemap.Login.Route.NewArea(Area).ToString();
+                options.LogoutPath = Info.Sitemap.Logout.Route.NewArea(Area).ToString();
+                options.AccessDeniedPath = Info.Sitemap.AccessDenied.Route.NewArea(Area).ToString();
             }
         }
 

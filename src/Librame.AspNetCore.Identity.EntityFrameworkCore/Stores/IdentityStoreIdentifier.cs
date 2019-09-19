@@ -50,6 +50,5 @@ namespace Librame.AspNetCore.Identity
         /// <returns>返回 <see cref="string"/>。</returns>
         public virtual Task<string> GetUserIdAsync(CancellationToken cancellationToken = default)
             => GenerateCombGuidAsync(cancellationToken, "UserId");
-
     }
 }

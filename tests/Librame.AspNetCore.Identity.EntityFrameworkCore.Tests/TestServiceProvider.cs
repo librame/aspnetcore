@@ -38,7 +38,7 @@ namespace Librame.AspNetCore.Identity.Tests
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                     })
                     .AddStoreHubWithAccessor<TestStoreHub>()
-                    .AddInitializerWithAccessor<TestIdentityStoreInitializer>()
+                    .AddInitializerWithAccessor<IdentityStoreInitializer>()
                     .AddIdentifier<IdentityStoreIdentifier>()
                     .AddIdentity<IdentityDbContextAccessor>(options =>
                     {

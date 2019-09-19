@@ -46,8 +46,8 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
                 .AddDataAnnotationsLocalization();
 
             // 默认使用测试项目的写入库
-            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_default;Integrated Security=True";
-            var writingConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_writing;Integrated Security=True";
+            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
+            var writingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
 
             services.AddLibrameCore()
                 .AddDataCore(options =>
@@ -62,14 +62,8 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
                     optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
-                .AddAccessor<PersistedGrantDbContextAccessor>((options, optionsBuilder) =>
-                {
-                    var migrationsAssembly = typeof(PersistedGrantDbContextAccessor).Assembly.GetName().Name;
-                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
-                })
+                .AddIdentifier<IdentityStoreIdentifier>()
                 .AddIdentityServer<IdentityServerDbContextAccessor,
-                    PersistedGrantDbContextAccessor,
                     DefaultIdentityUser<string>>(options =>
                     {
                         options.Events.RaiseErrorEvents = true;
@@ -78,7 +72,7 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
                         options.Events.RaiseSuccessEvents = true;
                     })
                 .AddIdentityServerUI()
-                .AddIdentityServerControllers(mvcBuilder)
+                .AddIdentityServerInterfaceWithViews(mvcBuilder)
                 .AddNetwork();
         }
 
@@ -93,9 +87,18 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
             app.UseStaticFiles();
 
             app.UseLibrameCore()
-                .UseIdentityServer(); //app.UseIdentityServer();
+                .UseIdentityServer();
 
-            app.UseMvcWithDefaultRoute();
+            app.UseMvc(routes =>
+            {
+                routes.MapIdentityServerAreaRoute();
+
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" }
+                );
+            });
         }
 
     }

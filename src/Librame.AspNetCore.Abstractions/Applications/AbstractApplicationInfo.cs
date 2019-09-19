@@ -12,6 +12,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.Versioning;
 
 namespace Librame.AspNetCore
 {
@@ -31,10 +32,10 @@ namespace Librame.AspNetCore
         public abstract string Title { get; }
 
         /// <summary>
-        /// 作者。
+        /// 作者集合。
         /// </summary>
-        public virtual string Author
-            => nameof(Librame);
+        public virtual string Authors
+            => "Librame Pang";
 
         /// <summary>
         /// 联系。
@@ -43,10 +44,22 @@ namespace Librame.AspNetCore
             => "https://github.com/librame/LibrameCore";
 
         /// <summary>
+        /// 公司。
+        /// </summary>
+        public virtual string Company
+            => Assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company;
+
+        /// <summary>
         /// 版权。
         /// </summary>
         public virtual string Copyright
-            => "Librame Pang";
+            => Assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
+
+        /// <summary>
+        /// 框架。
+        /// </summary>
+        public virtual string Framework
+            => Assembly.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
 
         /// <summary>
         /// 版本。

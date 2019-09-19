@@ -10,12 +10,13 @@
 
 #endregion
 
-using Librame.AspNetCore;
 using Microsoft.AspNetCore.Routing;
 using System.Collections.Generic;
 
-namespace Librame.Extensions
+namespace Librame.AspNetCore.UI
 {
+    using Extensions;
+
     /// <summary>
     /// 路由描述符静态扩展。
     /// </summary>

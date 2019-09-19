@@ -30,20 +30,7 @@ namespace Librame.AspNetCore.UI
         protected AbstractInterfaceSitemap(IExpressionStringLocalizer<InterfaceSitemapResource> localizer, string area = null)
         {
             Localizer = localizer.NotNull(nameof(localizer));
-
             Area = area;
-
-            Index = new NavigationDescriptor(Localizer[nameof(Index)], "/");
-
-            AccessDenied = new NavigationDescriptor(Localizer[nameof(AccessDenied)], area: area);
-            Privacy = new NavigationDescriptor(Localizer[nameof(Privacy)], area: area);
-            Sitemap = new NavigationDescriptor(Localizer[nameof(Sitemap)], area: area);
-
-            Login = new NavigationDescriptor(Localizer[nameof(Login)], area: area);
-            Logout = new NavigationDescriptor(Localizer[nameof(Logout)], area: area);
-            Register = new NavigationDescriptor(Localizer[nameof(Register)], area: area);
-
-            Manage = new NavigationDescriptor(Localizer[nameof(Manage)], area: area);
         }
 
 
@@ -62,44 +49,44 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 首页。
         /// </summary>
-        public NavigationDescriptor Index { get; }
+        public NavigationDescriptor Index { get; protected set; }
 
         /// <summary>
         /// 隐私。
         /// </summary>
-        public NavigationDescriptor Privacy { get; }
+        public NavigationDescriptor Privacy { get; protected set; }
 
         /// <summary>
         /// 站点地图。
         /// </summary>
-        public NavigationDescriptor Sitemap { get; }
+        public NavigationDescriptor Sitemap { get; protected set; }
 
 
         /// <summary>
         /// 登入。
         /// </summary>
-        public NavigationDescriptor Login { get; }
+        public NavigationDescriptor Login { get; protected set; }
 
         /// <summary>
         /// 登出。
         /// </summary>
-        public NavigationDescriptor Logout { get; }
+        public NavigationDescriptor Logout { get; protected set; }
 
         /// <summary>
         /// 注册。
         /// </summary>
-        public NavigationDescriptor Register { get; }
+        public NavigationDescriptor Register { get; protected set; }
 
 
         /// <summary>
         /// 拒绝访问。
         /// </summary>
-        public NavigationDescriptor AccessDenied { get; }
+        public NavigationDescriptor AccessDenied { get; protected set; }
 
         /// <summary>
         /// 管理。
         /// </summary>
-        public NavigationDescriptor Manage { get; }
+        public NavigationDescriptor Manage { get; protected set; }
 
 
         /// <summary>

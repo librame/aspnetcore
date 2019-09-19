@@ -12,7 +12,7 @@ namespace Librame.AspNetCore.UI.Tests
 
             public override string Title => "测试主题包";
 
-            public override string Author => "Test";
+            public override string Authors => "Test";
 
             public override string Contact => "Test";
 
@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.UI.Tests
             var info = new TestThemepackInfo();
             Assert.NotEmpty(info.Name);
             Assert.NotEmpty(info.Title);
-            Assert.NotEmpty(info.Author);
+            Assert.NotEmpty(info.Authors);
             Assert.NotEmpty(info.Contact);
             Assert.NotEmpty(info.Copyright);
             Assert.Throws<NotImplementedException>(() => info.GetStaticFileProvider());

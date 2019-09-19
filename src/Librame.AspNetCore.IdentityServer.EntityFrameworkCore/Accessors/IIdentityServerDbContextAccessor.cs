@@ -10,16 +10,14 @@
 
 #endregion
 
-using IdentityServer4.EntityFramework.Interfaces;
-
 namespace Librame.AspNetCore.IdentityServer
 {
-    using Extensions.Data;
+    using Identity;
 
     /// <summary>
     /// 身份服务器数据库上下文访问器接口。
     /// </summary>
-    public interface IIdentityServerDbContextAccessor : IAccessor, IConfigurationDbContext
+    public interface IIdentityServerDbContextAccessor : IIdentityDbContextAccessor, IConfigurationDbContextAccessor, IPersistedGrantDbContextAccessor
     {
     }
 }

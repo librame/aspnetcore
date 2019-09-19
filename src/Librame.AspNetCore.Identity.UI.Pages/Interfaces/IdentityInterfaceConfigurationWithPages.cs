@@ -29,12 +29,12 @@ namespace Librame.AspNetCore.Identity.UI
         {
             base.ConfigurePageConventions(conventions);
 
-            conventions.AuthorizeAreaFolder(Area, Info.Sitemap.Manage.RelativePath);
-            conventions.AuthorizeAreaPage(Area, Info.Sitemap.Logout.RelativePath);
+            conventions.AuthorizeAreaFolder(Area, Info.Sitemap.Manage.Route);
+            conventions.AuthorizeAreaPage(Area, Info.Sitemap.Logout.Route);
 
             var filter = new ExternalAuthenticationSchemesPageFilter(Builder, BuilderOptions);
             conventions.AddAreaFolderApplicationModelConvention(Area,
-                Info.Sitemap.Manage.RelativePath,
+                Info.Sitemap.Manage.Route,
                 model => model.Filters.Add(filter));
         }
     }

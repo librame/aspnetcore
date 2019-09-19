@@ -65,9 +65,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Identity
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityServer.UI.Mvc.Examples", "examples\Librame.AspNetCore.IdentityServer.UI.Mvc.Examples\Librame.AspNetCore.IdentityServer.UI.Mvc.Examples.csproj", "{C060E8BD-DAC8-4C2D-83E9-9360C98C541F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityApi", "examples\Librame.AspNetCore.IdentityApi\Librame.AspNetCore.IdentityApi.csproj", "{8770B033-B2F3-4D2D-9A15-FB7F46590C4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityServer.Api", "examples\Librame.AspNetCore.IdentityServer.Api\Librame.AspNetCore.IdentityServer.Api.csproj", "{8770B033-B2F3-4D2D-9A15-FB7F46590C4E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityClient", "examples\Librame.AspNetCore.IdentityClient\Librame.AspNetCore.IdentityClient.csproj", "{662B4963-BFEC-4DDF-8D6D-FF8662B8CFFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityServer.Client", "examples\Librame.AspNetCore.IdentityServer.Client\Librame.AspNetCore.IdentityServer.Client.csproj", "{662B4963-BFEC-4DDF-8D6D-FF8662B8CFFA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityServer.Abstractions.Tests", "tests\Librame.AspNetCore.IdentityServer.Abstractions.Tests\Librame.AspNetCore.IdentityServer.Abstractions.Tests.csproj", "{224A4B9E-354C-4576-8326-586D89E19586}"
 EndProject

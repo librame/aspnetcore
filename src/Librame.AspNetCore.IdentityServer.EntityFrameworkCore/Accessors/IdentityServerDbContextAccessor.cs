@@ -19,12 +19,12 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer
 {
-    using Extensions.Data;
+    using Identity;
 
     /// <summary>
     /// 身份服务器数据库上下文访问器。
     /// </summary>
-    public class IdentityServerDbContextAccessor : DbContextAccessor, IIdentityServerDbContextAccessor
+    public class IdentityServerDbContextAccessor : IdentityDbContextAccessor, IIdentityServerDbContextAccessor
     {
         /// <summary>
         /// 构造一个身份服务器数据库上下文访问器实例。
@@ -51,6 +51,16 @@ namespace Librame.AspNetCore.IdentityServer
         /// </summary>
         public DbSet<ApiResource> ApiResources { get; set; }
 
+        /// <summary>
+        /// 持久化授予数据集。
+        /// </summary>
+        public DbSet<PersistedGrant> PersistedGrants { get; set; }
+
+        /// <summary>
+        /// 设备流编码数据集。
+        /// </summary>
+        public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; }
+
 
         /// <summary>
         /// 异步保存更改。
@@ -68,10 +78,12 @@ namespace Librame.AspNetCore.IdentityServer
         {
             base.OnModelCreating(modelBuilder);
 
-            var storeOptions = ServiceProvider.GetRequiredService<ConfigurationStoreOptions>();
-            modelBuilder.ConfigureClientContext(storeOptions);
-            modelBuilder.ConfigureResourcesContext(storeOptions);
-        }
+            var configOptions = ServiceProvider.GetRequiredService<ConfigurationStoreOptions>();
+            modelBuilder.ConfigureClientContext(configOptions);
+            modelBuilder.ConfigureResourcesContext(configOptions);
 
+            var operatOptions = ServiceProvider.GetRequiredService<OperationalStoreOptions>();
+            modelBuilder.ConfigurePersistedGrantContext(operatOptions);
+        }
     }
 }

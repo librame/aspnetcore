@@ -1,8 +1,7 @@
-﻿using Librame.Extensions;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Routing;
 using Xunit;
 
-namespace Librame.AspNetCore.Core.Tests.Extensions
+namespace Librame.AspNetCore.UI.Tests
 {
     public class AbstractionRouteDataExtensionsTests
     {

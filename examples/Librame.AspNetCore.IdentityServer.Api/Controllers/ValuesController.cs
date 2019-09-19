@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LibrameCore.IdentityApi.Controllers
+namespace Librame.AspNetCore.IdentityServer.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

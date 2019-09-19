@@ -25,25 +25,20 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 <a href="/" class="navbar-brand">@Application.CurrentInterfaceInfo.Title</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="@sitemap.Index.Href">@sitemap.Index.Text</a></li>
+                    <li><a href="@sitemap.Index.ToRouteString(Url)">@sitemap.Index.Text</a></li>
                     @if (sitemap.CommonHeader.IsNotNullOrEmpty())
                     {
                         foreach (var nav in sitemap.CommonHeader)
                         {
-                            <li><a href="@nav.Href">@nav.Text</a></li>
+                            <li><a href="@nav.ToRouteString(Url)">@nav.Text</a></li>
                         }
                     }
                 </ul>
+                @await Html.PartialAsync("Common/_LoginPartial", Application)
             </div>
         </div>
     </nav>
@@ -52,9 +47,10 @@
 
     <div class="container body-content">
         @RenderBody()
+        
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.ToString("yyyy") - @Application.CurrentInterfaceInfo.Copyright [@Application.CurrentInterfaceInfo.Version]</p>
+            @Html.Raw(Application.GetFooterCopyrightInfo())
         </footer>
     </div>
 

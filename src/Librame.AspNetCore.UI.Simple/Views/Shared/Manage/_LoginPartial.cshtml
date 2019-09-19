@@ -25,14 +25,27 @@
                 </li>
 
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="@sitemap.Manage.Href">
+                <a class="dropdown-item" href="@sitemap.Manage.ToRouteString(Url)">
                     <i class="ti-user"></i> @sitemap.Manage.Text
                 </a>
 
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" asp-page="@sitemap.Logout.Href" asp-route-returnUrl="@Context.Request.Path">
-                    <i class="fa fa-power-off"></i> @sitemap.Logout.Text
-                </a>
+                @if (sitemap.Logout.Route.IsMvc)
+                {
+                    <form asp-controller="@sitemap.Logout.Route.Controller" asp-action="@sitemap.Logout.Route.Action" asp-area="@sitemap.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-power-off"></i> <button type="submit" class="btn btn-link navbar-btn navbar-link" style="padding:0;">@sitemap.Logout.Text</button>
+                        </a>
+                    </form>
+                }
+                else
+                {
+                    <form asp-page="@sitemap.Logout.Route.Page" asp-area="@sitemap.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-power-off"></i> <button type="submit" class="btn btn-link navbar-btn navbar-link" style="padding:0;">@sitemap.Logout.Text</button>
+                        </a>
+                    </form>
+                }
             </ul>
         </li>
     </ul>

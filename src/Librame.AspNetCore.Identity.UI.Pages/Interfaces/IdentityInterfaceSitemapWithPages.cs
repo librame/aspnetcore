@@ -33,15 +33,15 @@ namespace Librame.AspNetCore.Identity.UI
         {
             return new List<NavigationDescriptor>
             {
-                new NavigationDescriptor(layoutLocalizer[p => p.About], "/Home/About")
+                new NavigationDescriptor(new RouteDescriptor("/Home/About", area: null), layoutLocalizer[p => p.About])
                 {
                     Id = "about",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 },
-                new NavigationDescriptor(layoutLocalizer[p => p.Contact], "/Home/Contact")
+                new NavigationDescriptor(new RouteDescriptor("/Home/Contact", area: null), layoutLocalizer[p => p.Contact])
                 {
                     Id = "contact",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 }
             };
         }
@@ -51,36 +51,36 @@ namespace Librame.AspNetCore.Identity.UI
         {
             return new List<NavigationDescriptor>
             {
-                new NavigationDescriptor(layoutLocalizer[p => p.Profile], "./Index")
+                new NavigationDescriptor(new RouteDescriptor("/Account/Manage/Index", Area), layoutLocalizer[p => p.Profile])
                 {
                     Id = "profile",
                     Icon = "la la-user",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 },
-                new NavigationDescriptor(layoutLocalizer[p => p.ChangePassword], "./ChangePassword")
+                new NavigationDescriptor(new RouteDescriptor("/Account/Manage/ChangePassword", Area), layoutLocalizer[p => p.ChangePassword])
                 {
                     Id = "change-password",
                     Icon = "la la-unlock",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 },
-                new NavigationDescriptor(layoutLocalizer[p => p.ExternalLogins], "./ExternalLogins")
+                new NavigationDescriptor(new RouteDescriptor("/Account/Manage/ExternalLogins", Area), layoutLocalizer[p => p.ExternalLogins])
                 {
                     Id = "external-login",
                     Icon = "la la-key",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                     VisibilityFactory = (page, nav) => ViewDataDictionaryUtility.GetHasExternalLogins(page.ViewContext)
                 },
-                new NavigationDescriptor(layoutLocalizer[p => p.TwoFactorAuthentication], "./TwoFactorAuthentication")
+                new NavigationDescriptor(new RouteDescriptor("/Account/Manage/TwoFactorAuthentication", Area), layoutLocalizer[p => p.TwoFactorAuthentication])
                 {
                     Id = "two-factor",
                     Icon = "la la-superscript",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 },
-                new NavigationDescriptor(layoutLocalizer[p => p.PersonalData], "./PersonalData")
+                new NavigationDescriptor(new RouteDescriptor("/Account/Manage/PersonalData", Area), layoutLocalizer[p => p.PersonalData])
                 {
                     Id = "personal-data",
                     Icon = "la la-user-times",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 }
             };
         }

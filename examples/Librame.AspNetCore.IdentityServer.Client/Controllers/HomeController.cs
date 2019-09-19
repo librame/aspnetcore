@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 
-namespace LibrameCore.IdentityClient.Controllers
+namespace Librame.AspNetCore.IdentityServer.Client.Controllers
 {
     using Models;
 

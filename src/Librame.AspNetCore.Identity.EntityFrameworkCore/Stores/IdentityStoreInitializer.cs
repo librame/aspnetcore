@@ -1,4 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿#region License
+
+/* **************************************************************************************
+ * Copyright (c) Librame Pang All rights reserved.
+ * 
+ * http://librame.net
+ * 
+ * You must not remove this notice, or any other, from this software.
+ * **************************************************************************************/
+
+#endregion
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -7,15 +19,48 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 
-namespace Librame.AspNetCore.Identity.Tests
+namespace Librame.AspNetCore.Identity
 {
     using Extensions.Core;
     using Extensions.Data;
 
-    public class TestIdentityStoreInitializer : StoreInitializerBase<IdentityDbContextAccessor, IdentityStoreIdentifier>
+    /// <summary>
+    /// 身份存储初始化器。
+    /// </summary>
+    public class IdentityStoreInitializer : IdentityStoreInitializer<IdentityDbContextAccessor, IdentityStoreIdentifier>
+    {
+        /// <summary>
+        /// 构造一个 <see cref="IdentityStoreInitializer"/>。
+        /// </summary>
+        /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
+        /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
+        /// <param name="userStore">给定的 <see cref="IUserStore{TUser}"/>。</param>
+        /// <param name="options">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
+        /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
+        /// <param name="identifier">给定的 <see cref="IStoreIdentifier"/>。</param>
+        /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
+        public IdentityStoreInitializer(SignInManager<DefaultIdentityUser<string>> signInManager,
+            RoleManager<DefaultIdentityRole<string>> roleMananger,
+            IUserStore<DefaultIdentityUser<string>> userStore,
+            IOptions<IdentityBuilderOptions> options,
+            IClockService clock, IStoreIdentifier identifier, ILoggerFactory loggerFactory)
+            : base(signInManager, roleMananger, userStore, options, clock, identifier, loggerFactory)
+        {
+        }
+    }
+
+
+    /// <summary>
+    /// 身份存储初始化器。
+    /// </summary>
+    /// <typeparam name="TAccessor">指定的身份数据库上下文访问器类型。</typeparam>
+    /// <typeparam name="TIdentifier">指定的身份存储标识符类型。</typeparam>
+    public class IdentityStoreInitializer<TAccessor, TIdentifier> : StoreInitializerBase<TAccessor, TIdentifier>
+        where TAccessor : IdentityDbContextAccessor
+        where TIdentifier : IdentityStoreIdentifier
     {
         private readonly string _defaultCreatedBy
-            = nameof(TestIdentityStoreInitializer);
+            = nameof(IdentityStoreInitializer);
 
         private readonly SignInManager<DefaultIdentityUser<string>> _signInManager;
         private readonly RoleManager<DefaultIdentityRole<string>> _roleMananger;
@@ -26,7 +71,17 @@ namespace Librame.AspNetCore.Identity.Tests
         private IList<DefaultIdentityUser<string>> _users;
 
 
-        public TestIdentityStoreInitializer(SignInManager<DefaultIdentityUser<string>> signInManager,
+        /// <summary>
+        /// 构造一个 <see cref="IdentityStoreInitializer"/>。
+        /// </summary>
+        /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
+        /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
+        /// <param name="userStore">给定的 <see cref="IUserStore{TUser}"/>。</param>
+        /// <param name="options">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
+        /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
+        /// <param name="identifier">给定的 <see cref="IStoreIdentifier"/>。</param>
+        /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
+        public IdentityStoreInitializer(SignInManager<DefaultIdentityUser<string>> signInManager,
             RoleManager<DefaultIdentityRole<string>> roleMananger,
             IUserStore<DefaultIdentityUser<string>> userStore,
             IOptions<IdentityBuilderOptions> options,
@@ -40,7 +95,11 @@ namespace Librame.AspNetCore.Identity.Tests
         }
 
 
-        protected override void InitializeCore(IStoreHub<IdentityDbContextAccessor> stores)
+        /// <summary>
+        /// 初始化核心。
+        /// </summary>
+        /// <param name="stores">给定的 <see cref="IStoreHub{TAccessor}"/>。</param>
+        protected override void InitializeCore(IStoreHub<TAccessor> stores)
         {
             base.InitializeCore(stores);
 

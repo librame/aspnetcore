@@ -36,7 +36,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Core" Version="6.1.883.201" />
     <PackageReference Include="Librame.Extensions.Core.Abstractions" Version="6.1.883.201" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />

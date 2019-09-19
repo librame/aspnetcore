@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LibrameCore.IdentityClient
+namespace Librame.AspNetCore.IdentityServer.Client
 {
     public class Startup
     {

@@ -13,7 +13,6 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.IO;
 
 namespace Librame.AspNetCore.UI
 {
@@ -32,16 +31,20 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回布尔值。</returns>
         public static bool IsActiveView(ViewContext viewContext, NavigationDescriptor navigation)
         {
-            var activeViewName = Path.GetFileNameWithoutExtension(navigation.Href);
+            viewContext.NotNull(nameof(viewContext));
+            navigation.NotNull(nameof(navigation));
 
-            var descriptor = viewContext.ActionDescriptor.RouteValues.AsRouteDescriptor();
-            if (!descriptor.IsCurrentView(activeViewName))
+            //var factory = viewContext?.HttpContext?.RequestServices?.GetRequiredService<IUrlHelperFactory>();
+            //var urlHelper = factory?.GetUrlHelper(viewContext);
+
+            var currentView = viewContext.ActionDescriptor.RouteValues.AsRouteDescriptor();
+            if (!currentView.IsView(navigation.Route))
             {
                 var options = viewContext.HttpContext?.RequestServices?
                     .GetRequiredService<IOptions<UiBuilderOptions>>().Value;
 
                 return viewContext.ViewData.TryGetValue(options.ActiveViewKey, out object value)
-                    ? descriptor.IsCurrentView(value?.ToString()) : false;
+                    ? currentView.IsView(value?.ToString()) : false;
             }
 
             return true;

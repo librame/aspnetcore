@@ -42,6 +42,7 @@
     
   <ItemGroup>
     <ProjectReference Include="..\Librame.AspNetCore.Data.EntityFrameworkCore\Librame.AspNetCore.Data.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore.Identity.EntityFrameworkCore\Librame.AspNetCore.Identity.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\Librame.AspNetCore.IdentityServer.Abstractions\Librame.AspNetCore.IdentityServer.Abstractions.csproj" />
   </ItemGroup>
 

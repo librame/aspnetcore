@@ -28,5 +28,15 @@ namespace Librame.AspNetCore.Identity.UI
         /// 选择双因子验证提供程序。
         /// </summary>
         public string SelectedProvider { get; set; }
+
+        /// <summary>
+        /// 您的安全码是。
+        /// </summary>
+        public string YourSecurityCodeIs { get; set; }
+
+        /// <summary>
+        /// 安全码。
+        /// </summary>
+        public string SecurityCode { get; set; }
     }
 }

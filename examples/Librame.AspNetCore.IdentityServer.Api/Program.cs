@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace LibrameCore.IdentityClient
+namespace Librame.AspNetCore.IdentityServer.Api
 {
     public class Program
     {

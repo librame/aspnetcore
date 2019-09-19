@@ -1,6 +1,6 @@
 using System;
 
-namespace LibrameCore.IdentityClient.Models
+namespace Librame.AspNetCore.IdentityServer.Client.Models
 {
     public class ErrorViewModel
     {

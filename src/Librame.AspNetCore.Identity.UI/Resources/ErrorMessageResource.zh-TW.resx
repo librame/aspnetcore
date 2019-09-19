@@ -132,6 +132,9 @@
   <data name="InvalidLoginAttempt" xml:space="preserve">
     <value>無效的登入嘗試。</value>
   </data>
+  <data name="InvalidRecoveryCode" xml:space="preserve">
+    <value>無效的恢復碼。</value>
+  </data>
   <data name="InvalidRecoveryCodeEntered" xml:space="preserve">
     <value>輸入的恢復碼無效。</value>
   </data>

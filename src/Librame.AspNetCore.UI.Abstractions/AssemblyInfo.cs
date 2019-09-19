@@ -13,6 +13,6 @@
 using Microsoft.Extensions.Localization;
 using System.Reflection;
 
-[assembly: RootNamespace("Librame.AspNetCore.UI")]
+[assembly: AbstractionRootNamespace("Librame.AspNetCore.UI")]
 //[assembly: ResourceLocation("Resources")]
 [assembly: ResourceMapping]

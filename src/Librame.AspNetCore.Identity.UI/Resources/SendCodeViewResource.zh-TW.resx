@@ -123,10 +123,16 @@
   <data name="Descr" xml:space="preserve">
     <value>傳送驗證碼</value>
   </data>
+  <data name="SecurityCode" xml:space="preserve">
+    <value>安全碼</value>
+  </data>
   <data name="SelectedProvider" xml:space="preserve">
     <value>請選擇雙因子驗證提供程式：</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>傳送驗證碼</value>
+  </data>
+  <data name="YourSecurityCodeIs" xml:space="preserve">
+    <value>您的安全碼是：</value>
   </data>
 </root>

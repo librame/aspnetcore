@@ -31,9 +31,9 @@ namespace Librame.AspNetCore
         string Title { get; }
 
         /// <summary>
-        /// 作者。
+        /// 作者集合。
         /// </summary>
-        string Author { get; }
+        string Authors { get; }
 
         /// <summary>
         /// 联系。
@@ -41,9 +41,19 @@ namespace Librame.AspNetCore
         string Contact { get; }
 
         /// <summary>
+        /// 公司。
+        /// </summary>
+        string Company { get; }
+
+        /// <summary>
         /// 版权。
         /// </summary>
         string Copyright { get; }
+
+        /// <summary>
+        /// 框架。
+        /// </summary>
+        string Framework { get; }
 
         /// <summary>
         /// 版本。
@@ -54,6 +64,11 @@ namespace Librame.AspNetCore
         /// 程序集。
         /// </summary>
         Assembly Assembly { get; }
+
+        /// <summary>
+        /// 程序集名称。
+        /// </summary>
+        AssemblyName AssemblyName { get; }
 
         /// <summary>
         /// 程序集版本。

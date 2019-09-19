@@ -51,8 +51,10 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
 
             services.AddAuthentication(options =>
             {
+                // SignInManager.SignOutAsync
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                //IdentityConstants.ExternalScheme;
+                //IdentityConstants.TwoFactorUserIdScheme
             })
             .AddIdentityCookies(cookies => { });
 
@@ -110,14 +112,12 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
 
             app.UseMvc(routes =>
             {
-                routes.MapAreaRoute(
-                    name: "Identity",
-                    areaName: "Identity",
-                    template: "Identity/{controller}/{action}/{id?}"
-                );
+                routes.MapIdentityAreaRoute();
+
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}"
+                    template: "{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" }
                 );
             });
         }

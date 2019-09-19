@@ -27,15 +27,29 @@ namespace Librame.AspNetCore.UI
         public InterfaceSitemapWithPages(IExpressionStringLocalizer<InterfaceSitemapResource> localizer, string area = null)
             : base(localizer, area)
         {
-            AccessDenied.RelativePath = "/Home/AccessDenied";
-            Privacy.RelativePath = "/Home/Privacy";
-            Sitemap.RelativePath = "/Home/Sitemap";
+            var index = new RouteDescriptor("/", area: null);
+            Index = new NavigationDescriptor(index, Localizer[nameof(Index)]);
 
-            Login.RelativePath = "/Account/Login";
-            Logout.RelativePath = "/Account/Logout";
-            Register.RelativePath = "/Account/Register";
+            var accessDenied = new RouteDescriptor("/Home/AccessDenied", area: null);
+            AccessDenied = new NavigationDescriptor(accessDenied, Localizer[nameof(AccessDenied)]);
 
-            Manage.RelativePath = "/Account/Manage/Index";
+            var privacy = new RouteDescriptor("/Home/Privacy", area: null);
+            Privacy = new NavigationDescriptor(privacy, Localizer[nameof(Privacy)]);
+
+            var sitemap = new RouteDescriptor("/Home/Sitemap", area: null);
+            Sitemap = new NavigationDescriptor(sitemap, Localizer[nameof(Sitemap)]);
+
+            var login = new RouteDescriptor("/Account/Login", Area);
+            Login = new NavigationDescriptor(login, Localizer[nameof(Login)]);
+
+            var logout = new RouteDescriptor("/Account/Logout", Area);
+            Logout = new NavigationDescriptor(logout, Localizer[nameof(Logout)]);
+
+            var register = new RouteDescriptor("/Account/Register", Area);
+            Register = new NavigationDescriptor(register, Localizer[nameof(Register)]);
+
+            var manage = new RouteDescriptor("/Account/Manage/Index", Area);
+            Manage = new NavigationDescriptor(manage, Localizer[nameof(Manage)]);
         }
     }
 }

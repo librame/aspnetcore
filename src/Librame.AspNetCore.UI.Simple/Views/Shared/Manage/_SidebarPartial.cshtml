@@ -9,8 +9,8 @@
         {
             if ((nav.VisibilityFactory?.Invoke(this, nav)).Value)
             {
-                <li class="nav-item @nav.ActiveClassNameFactory?.Invoke(this, nav)">
-                    <a id="@nav.Id" href="@nav.Href" title="@nav.Title">
+                <li class="nav-item @nav.ActiveCssClassNameFactory?.Invoke(this, nav)">
+                    <a id="@nav.Id" href="@nav.ToRouteString(Url)" title="@nav.Title">
                         <i class="@nav.Icon"></i>
                         <p>@nav.Text</p>
                     </a>

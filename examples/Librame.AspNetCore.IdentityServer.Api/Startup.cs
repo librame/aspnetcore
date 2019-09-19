@@ -1,11 +1,11 @@
-﻿using LibrameStandard.Abstractions;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 
-namespace LibrameCore.IdentityApi
+namespace Librame.AspNetCore.IdentityServer.Api
 {
     public class Startup
     {
@@ -18,21 +18,29 @@ namespace LibrameCore.IdentityApi
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
-            //services.AddMvcCore()
-            //    .AddAuthorization()
-            //    .AddJsonFormatters();
+            //services.AddMvc()
+            //    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvcCore()
+                .AddAuthorization()
+                .AddJsonFormatters();
 
-            services.AddLibrameCore(options => { }, (extensions, options) =>
-            {
-                extensions.AddCoreExtensionsWithServerAuthentication(options, opts =>
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
                 {
-                    opts.Authority = "https://localhost:44303";
-                    opts.RequireHttpsMetadata = true;
-                    opts.ApiName = "IdentityApi";
+                    options.Authority = "https://localhost:44303";
+                    options.RequireHttpsMetadata = true;
+                    options.ApiName = "IdentityServer.Api";
                 });
-            });
+
+            //services.AddLibrameCore(options => { }, (extensions, options) =>
+            //{
+            //    extensions.AddCoreExtensionsWithServerAuthentication(options, opts =>
+            //    {
+            //        opts.Authority = "https://localhost:44303";
+            //        opts.RequireHttpsMetadata = true;
+            //        opts.ApiName = "IdentityApi";
+            //    });
+            //});
 
             // Swagger
             services.AddSwaggerGen(c =>

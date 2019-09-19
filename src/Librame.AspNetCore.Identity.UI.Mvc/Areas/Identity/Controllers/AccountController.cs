@@ -34,7 +34,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
     /// 用户控制器。
     /// </summary>
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : ApplicationController
     {
         [InjectionService]
         private ILogger<AccountController> _logger = null;
@@ -55,13 +55,19 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         private IExpressionHtmlLocalizer<RegisterViewResource> _registerLocalizer = null;
 
         [InjectionService]
+        private IExpressionHtmlLocalizer<ErrorMessageResource> _errorMessageLocalizer = null;
+
+        [InjectionService]
+        private IExpressionHtmlLocalizer<SendCodeViewResource> _sendCodeLocalizer = null;
+
+        [InjectionService]
         private IIdentityBuilderWrapper _builderWrapper = null;
 
         [InjectionService]
-        private IdentityStoreIdentifier _storeIdentifier = null;
+        private IServiceProvider _scopeServiceProvider = null;
 
         [InjectionService]
-        private IServiceProvider _serviceProvider = null;
+        private IdentityStoreIdentifier _storeIdentifier = null;
 
         private readonly dynamic _signInManager = null;
         private readonly dynamic _userManager = null;
@@ -73,14 +79,16 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         /// 构造一个 <see cref="AccountController"/>。
         /// </summary>
         /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
-        public AccountController(IInjectionService injectionService)
+        /// <param name="application">给定的 <see cref="IApplicationContext"/>。</param>
+        public AccountController(IInjectionService injectionService, IApplicationContext application)
+            : base(application)
         {
             injectionService.Inject(this);
 
-            _signInManager = _serviceProvider.GetService(typeof(SignInManager<>)
+            _signInManager = _scopeServiceProvider.GetService(typeof(SignInManager<>)
                 .MakeGenericType(_builderWrapper.RawBuilder.UserType));
             _userManager = _signInManager.UserManager;
-            _userStore = _serviceProvider.GetService(typeof(IUserStore<>)
+            _userStore = _scopeServiceProvider.GetService(typeof(IUserStore<>)
                 .MakeGenericType(_builderWrapper.RawBuilder.UserType));
             //_emailStore = _userStore.GetUserEmailStore(_userManager);
         }
@@ -121,7 +129,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return RedirectToAction("Index", "Manage");
+                    return this.RedirectToLocalUrlOrIdentityIndex(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -134,7 +142,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.InvalidLoginAttempt].Value);
                     return View(model);
                 }
             }
@@ -197,7 +205,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
 
-                    return RedirectToLocal(returnUrl);
+                    return this.RedirectToLocalUrlOrIdentityIndex(returnUrl);
                 }
                 AddErrors(result);
             }
@@ -217,7 +225,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction("Index", "Home");
+            return RedirectToSitemapIndex();
         }
 
 
@@ -250,7 +258,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         {
             if (remoteError != null)
             {
-                ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
+                ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.FromExternalProvider, remoteError].Value);
                 return View(nameof(Login));
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -267,7 +275,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
 
                 _logger.LogInformation(5, "User logged in with {Name} provider.", (string)info.LoginProvider);
-                return RedirectToLocal(returnUrl);
+                return this.RedirectToLocalUrlOrIdentityIndex(returnUrl);
             }
             if (result.RequiresTwoFactor)
             {
@@ -323,7 +331,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                         // Update any authentication tokens as well
                         await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
 
-                        return RedirectToLocal(returnUrl);
+                        return this.RedirectToLocalUrlOrIdentityIndex(returnUrl);
                     }
                 }
                 AddErrors(result);
@@ -484,6 +492,8 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl = null, bool rememberMe = false)
         {
+            ViewBag.Localizer = _sendCodeLocalizer;
+
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
@@ -527,10 +537,10 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 return View("Error");
             }
 
-            var message = "Your security code is: " + code;
+            var message = _sendCodeLocalizer[r => r.YourSecurityCodeIs].Value + code;
             if (model.SelectedProvider == "Email")
             {
-                await _emailService.SendAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
+                await _emailService.SendAsync(await _userManager.GetEmailAsync(user), _sendCodeLocalizer[r => r.SecurityCode].Value, message);
             }
             else if (model.SelectedProvider == "Phone")
             {
@@ -582,7 +592,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             var result = await _signInManager.TwoFactorSignInAsync(model.Provider, model.Code, model.RememberMe, model.RememberBrowser);
             if (result.Succeeded)
             {
-                return RedirectToLocal(model.ReturnUrl);
+                return this.RedirectToLocalUrlOrIdentityIndex(model.ReturnUrl);
             }
             if (result.IsLockedOut)
             {
@@ -591,7 +601,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid code.");
+                ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.InvalidAuthenticatorCode].Value);
                 return View(model);
             }
         }
@@ -637,7 +647,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(model.Code, model.RememberMe, model.RememberBrowser);
             if (result.Succeeded)
             {
-                return RedirectToLocal(model.ReturnUrl);
+                return this.RedirectToLocalUrlOrIdentityIndex(model.ReturnUrl);
             }
             if (result.IsLockedOut)
             {
@@ -646,7 +656,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid code.");
+                ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.InvalidAuthenticatorCode].Value);
                 return View(model);
             }
         }
@@ -688,11 +698,11 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(model.Code);
             if (result.Succeeded)
             {
-                return RedirectToLocal(model.ReturnUrl);
+                return this.RedirectToLocalUrlOrIdentityIndex(model.ReturnUrl);
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid code.");
+                ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.InvalidRecoveryCode].Value);
                 return View(model);
             }
         }
@@ -711,18 +721,6 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         private Task<dynamic> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);
-        }
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
         }
 
         #endregion

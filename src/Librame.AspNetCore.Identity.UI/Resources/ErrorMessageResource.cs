@@ -83,6 +83,11 @@ namespace Librame.AspNetCore.Identity.UI
         public string InvalidAuthenticatorCode { get; set; }
 
         /// <summary>
+        /// 无效的恢复码。
+        /// </summary>
+        public string InvalidRecoveryCode { get; set; }
+
+        /// <summary>
         /// 输入的恢复码无效。
         /// </summary>
         public string InvalidRecoveryCodeEntered { get; set; }

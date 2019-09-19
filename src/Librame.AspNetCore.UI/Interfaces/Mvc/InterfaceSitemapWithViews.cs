@@ -27,15 +27,34 @@ namespace Librame.AspNetCore.UI
         public InterfaceSitemapWithViews(IExpressionStringLocalizer<InterfaceSitemapResource> localizer, string area = null)
             : base(localizer, area)
         {
-            AccessDenied.RelativePath = "/Home/AccessDenied";
-            Privacy.RelativePath = "/Home/Privacy";
-            Sitemap.RelativePath = "/Home/Sitemap";
+            var homeController = "Home";
+            var accountController = "Account";
+            var manageController = "Manage";
 
-            Login.RelativePath = "/Account/Login";
-            Logout.RelativePath = "/Account/LogOff";
-            Register.RelativePath = "/Account/Register";
+            var index = new RouteDescriptor(nameof(Index), homeController, area: null);
+            Index = new NavigationDescriptor(index, Localizer[nameof(Index)]);
 
-            Manage.RelativePath = "/Manage/Index";
+            var accessDenied = new RouteDescriptor(nameof(AccessDenied), homeController, area: null);
+            AccessDenied = new NavigationDescriptor(accessDenied, Localizer[nameof(AccessDenied)]);
+
+            var privacy = new RouteDescriptor(nameof(Privacy), homeController, area: null);
+            Privacy = new NavigationDescriptor(privacy, Localizer[nameof(Privacy)]);
+
+            var sitemap = new RouteDescriptor(nameof(Sitemap), homeController, area: null);
+            Sitemap = new NavigationDescriptor(sitemap, Localizer[nameof(Sitemap)]);
+
+
+            var login = new RouteDescriptor(nameof(Login), accountController, Area);
+            Login = new NavigationDescriptor(login, Localizer[nameof(Login)]);
+
+            var logout = new RouteDescriptor("LogOff", accountController, Area);
+            Logout = new NavigationDescriptor(logout, Localizer[nameof(Logout)]);
+
+            var register = new RouteDescriptor(nameof(Register), accountController, Area);
+            Register = new NavigationDescriptor(register, Localizer[nameof(Register)]);
+
+            var manage = new RouteDescriptor(nameof(Index), manageController, Area);
+            Manage = new NavigationDescriptor(manage, Localizer[nameof(Manage)]);
         }
     }
 }

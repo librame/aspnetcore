@@ -33,15 +33,15 @@ namespace Librame.AspNetCore.Identity.UI
         {
             return new List<NavigationDescriptor>
             {
-                new NavigationDescriptor(layoutLocalizer[p => p.About], "/Home/About")
+                new NavigationDescriptor(new RouteDescriptor("About", "Home", area: null), layoutLocalizer[p => p.About])
                 {
                     Id = "about",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 },
-                new NavigationDescriptor(layoutLocalizer[p => p.Contact], "/Home/Contact")
+                new NavigationDescriptor(new RouteDescriptor("Contact", "Home", area: null), layoutLocalizer[p => p.Contact])
                 {
                     Id = "contact",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 }
             };
         }
@@ -49,32 +49,34 @@ namespace Librame.AspNetCore.Identity.UI
 
         private List<NavigationDescriptor> GetManageSidebar(IExpressionStringLocalizer<LayoutViewResource> layoutLocalizer)
         {
+            var manageController = "Manage";
+
             return new List<NavigationDescriptor>
             {
-                new NavigationDescriptor(layoutLocalizer[p => p.Profile], "/Manage/Index", Area)
+                new NavigationDescriptor(new RouteDescriptor("Index", manageController, Area), layoutLocalizer[p => p.Profile])
                 {
                     Id = "profile",
                     Icon = "la la-user",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 },
-                new NavigationDescriptor(layoutLocalizer[p => p.ChangePassword], "/Manage/ChangePassword", Area)
+                new NavigationDescriptor(new RouteDescriptor("ChangePassword", manageController, Area), layoutLocalizer[p => p.ChangePassword])
                 {
                     Id = "change-password",
                     Icon = "la la-unlock",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 },
-                new NavigationDescriptor(layoutLocalizer[p => p.ExternalLogins], "/Manage/ManageLogins", Area)
+                new NavigationDescriptor(new RouteDescriptor("ManageLogins", manageController, Area), layoutLocalizer[p => p.ExternalLogins])
                 {
                     Id = "external-login",
                     Icon = "la la-key",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                     VisibilityFactory = (page, nav) => ViewDataDictionaryUtility.GetHasExternalLogins(page.ViewContext)
                 },
-                new NavigationDescriptor(layoutLocalizer[p => p.AddPhoneNumber], "/Manage/AddPhoneNumber", Area)
+                new NavigationDescriptor(new RouteDescriptor("AddPhoneNumber", manageController, Area), layoutLocalizer[p => p.AddPhoneNumber])
                 {
                     Id = "add-phone-number",
                     Icon = "la la-superscript",
-                    ActiveClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
+                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
                 }
             };
         }

@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
     /// 管理控制器。
     /// </summary>
     [Authorize]
-    public class ManageController : Controller
+    public class ManageController : ApplicationController
     {
         [InjectionService]
         private ILogger<AccountController> _logger = null;
@@ -64,7 +64,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         private IIdentityBuilderWrapper _builderWrapper = null;
 
         [InjectionService]
-        private IServiceProvider _serviceProvider = null;
+        private IServiceProvider _scopeServiceProvider = null;
 
         private readonly dynamic _signInManager = null;
         private readonly dynamic _userManager = null;
@@ -74,11 +74,13 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         /// 构造一个 <see cref="ManageController"/>。
         /// </summary>
         /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
-        public ManageController(IInjectionService injectionService)
+        /// <param name="application">给定的 <see cref="IApplicationContext"/>。</param>
+        public ManageController(IInjectionService injectionService, IApplicationContext application)
+            : base(application)
         {
             injectionService.Inject(this);
 
-            _signInManager = _serviceProvider.GetService(typeof(SignInManager<>)
+            _signInManager = _scopeServiceProvider.GetService(typeof(SignInManager<>)
                 .MakeGenericType(_builderWrapper.RawBuilder.UserType));
             _userManager = _signInManager.UserManager;
         }
