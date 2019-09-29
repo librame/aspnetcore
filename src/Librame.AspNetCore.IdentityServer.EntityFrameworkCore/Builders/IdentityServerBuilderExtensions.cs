@@ -11,14 +11,23 @@
 #endregion
 
 using IdentityServer4.Configuration;
+using IdentityServer4.Hosting;
+using IdentityServer4.Models;
+using IdentityServer4.Stores;
+using IdentityServer4.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Librame.AspNetCore.IdentityServer
 {
     using Extensions;
     using Extensions.Core;
+    using Extensions.Encryption;
 
     /// <summary>
     /// 身份服务器构建器静态扩展。
@@ -36,7 +45,7 @@ namespace Librame.AspNetCore.IdentityServer
         /// <returns>返回 <see cref="IIdentityServerBuilderWrapper"/>。</returns>
         public static IIdentityServerBuilderWrapper AddIdentityServer<TIdentityServerAccessor, TUser>(this IExtensionBuilder builder,
             Action<IdentityServerOptions> rawAction,
-            Func<IExtensionBuilder, IIdentityServerBuilder, IIdentityServerBuilderWrapper> builderFactory = null)
+            Func<IIdentityServerBuilder, IExtensionBuilder, IdentityServerBuilderDependencyOptions, IIdentityServerBuilderWrapper> builderFactory = null)
             where TIdentityServerAccessor : DbContext, IIdentityServerDbContextAccessor
             where TUser : class
             => builder.AddIdentityServer<TIdentityServerAccessor, TIdentityServerAccessor, TUser>(rawAction, builderFactory);
@@ -52,7 +61,7 @@ namespace Librame.AspNetCore.IdentityServer
         /// <returns>返回 <see cref="IIdentityServerBuilderWrapper"/>。</returns>
         public static IIdentityServerBuilderWrapper AddIdentityServer<TIdentityServerAccessor, TUser>(this IExtensionBuilder builder,
             Action<IdentityServerBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, IIdentityServerBuilder, IIdentityServerBuilderWrapper> builderFactory = null)
+            Func<IIdentityServerBuilder, IExtensionBuilder, IdentityServerBuilderDependencyOptions, IIdentityServerBuilderWrapper> builderFactory = null)
             where TIdentityServerAccessor : DbContext, IIdentityServerDbContextAccessor
             where TUser : class
             => builder.AddIdentityServer<TIdentityServerAccessor, TIdentityServerAccessor, TUser>(dependencyAction, builderFactory);
@@ -70,7 +79,7 @@ namespace Librame.AspNetCore.IdentityServer
         /// <returns>返回 <see cref="IIdentityServerBuilderWrapper"/>。</returns>
         public static IIdentityServerBuilderWrapper AddIdentityServer<TConfigurationAccessor, TPersistedGrantAccessor, TUser>(this IExtensionBuilder builder,
             Action<IdentityServerOptions> rawAction,
-            Func<IExtensionBuilder, IIdentityServerBuilder, IIdentityServerBuilderWrapper> builderFactory = null)
+            Func<IIdentityServerBuilder, IExtensionBuilder, IdentityServerBuilderDependencyOptions, IIdentityServerBuilderWrapper> builderFactory = null)
             where TConfigurationAccessor : DbContext, IConfigurationDbContextAccessor
             where TPersistedGrantAccessor : DbContext, IPersistedGrantDbContextAccessor
             where TUser : class
@@ -94,7 +103,7 @@ namespace Librame.AspNetCore.IdentityServer
         /// <returns>返回 <see cref="IIdentityServerBuilderWrapper"/>。</returns>
         public static IIdentityServerBuilderWrapper AddIdentityServer<TConfigurationAccessor, TPersistedGrantAccessor, TUser>(this IExtensionBuilder builder,
             Action<IdentityServerBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, IIdentityServerBuilder, IIdentityServerBuilderWrapper> builderFactory = null)
+            Func<IIdentityServerBuilder, IExtensionBuilder, IdentityServerBuilderDependencyOptions, IIdentityServerBuilderWrapper> builderFactory = null)
             where TConfigurationAccessor : DbContext, IConfigurationDbContextAccessor
             where TPersistedGrantAccessor : DbContext, IPersistedGrantDbContextAccessor
             where TUser : class
@@ -106,16 +115,86 @@ namespace Librame.AspNetCore.IdentityServer
                 .AddIdentityServer(dependency.RawAction)
                 .AddConfigurationStore<TConfigurationAccessor>(dependency.ConfigurationAction)
                 .AddOperationalStore<TPersistedGrantAccessor>(dependency.OperationalAction)
-                .AddAspNetIdentity<TUser>();
+                .AddAspNetIdentity<TUser>()
+                .ConfigureReplacedServices()
+                .AddAuthorization();
 
             // Add Builder
-            builder.Services.OnlyConfigure(dependency.BuilderOptionsAction,
-                dependency.BuilderOptionsName);
+            builder.Services.OnlyConfigure(dependency.OptionsAction, dependency.OptionsName);
 
             var builderWrapper = builderFactory.NotNullOrDefault(()
-                => (b, r) => new IdentityServerBuilderWrapper(typeof(TUser), b, r)).Invoke(builder, rawBuilder);
+                => (r, b, d) => new IdentityServerBuilderWrapper(typeof(TUser), r, b, d)).Invoke(rawBuilder, builder, dependency);
 
             return builderWrapper;
+        }
+
+        private static IIdentityServerBuilder AddAuthorization(this IIdentityServerBuilder builder)
+        {
+            builder.Services.AddSingleton<IEnumerable<IdentityResource>>(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>();
+                return options.Value.Authorizations.IdentityResources;
+            });
+
+            builder.Services.AddSingleton<IEnumerable<ApiResource>>(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>();
+                return options.Value.Authorizations.ApiResources;
+            });
+
+            builder.Services.AddSingleton<IEnumerable<Client>>(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>();
+                return options.Value.Authorizations.Clients;
+            });
+
+            builder.Services.AddSingleton<ISigningCredentialStore>(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>();
+                if (options.Value.Authorizations.SigningCredentials.IsNull())
+                {
+                    var service = sp.GetRequiredService<ISigningCredentialsService>();
+                    options.Value.Authorizations.SigningCredentials = service.GetGlobalSigningCredentials();
+                }
+                return new DefaultSigningCredentialsStore(options.Value.Authorizations.SigningCredentials);
+            });
+
+            builder.Services.AddSingleton<IValidationKeysStore>(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>();
+                if (options.Value.Authorizations.SigningCredentials.IsNull())
+                {
+                    var service = sp.GetRequiredService<ISigningCredentialsService>();
+                    options.Value.Authorizations.SigningCredentials = service.GetGlobalSigningCredentials();
+                }
+                return new DefaultValidationKeysStore(options.Value.Authorizations.SigningCredentials.Key.YieldEnumerable());
+            });
+
+            return builder;
+        }
+
+        private static IIdentityServerBuilder ConfigureReplacedServices(this IIdentityServerBuilder builder)
+        {
+            builder.Services.TryAddSingleton<IAbsoluteUrlFactory, AbsoluteUrlFactory>();
+            builder.Services.AddSingleton<IRedirectUriValidator, RelativeRedirectUriValidator>();
+            builder.Services.AddSingleton<IClientRequestParametersProvider, DefaultClientRequestParametersProvider>();
+            ReplaceEndSessionEndpoint(builder);
+
+            return builder;
+        }
+
+        private static void ReplaceEndSessionEndpoint(IIdentityServerBuilder builder)
+        {
+            // We don't have a better way to replace the end session endpoint as far as we know other than looking the descriptor up
+            // on the container and replacing the instance. This is due to the fact that we chain on AddIdentityServer which configures the
+            // list of endpoints by default.
+            var endSessionEndpointDescriptor = builder.Services
+                            .Single(s => s.ImplementationInstance is Endpoint e &&
+                                    string.Equals(e.Name, "Endsession", StringComparison.OrdinalIgnoreCase) &&
+                                    string.Equals("/connect/endsession", e.Path, StringComparison.OrdinalIgnoreCase));
+
+            builder.Services.Remove(endSessionEndpointDescriptor);
+            builder.AddEndpoint<AutoRedirectEndSessionEndpoint>("EndSession", "/connect/endsession");
         }
 
     }

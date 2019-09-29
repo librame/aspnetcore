@@ -137,7 +137,7 @@ namespace Librame.AspNetCore.Identity.Api
                         // 确认邮件
                         string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                        var confirmEmailLocator = model.ConfirmEmailUrl.AsUrlLocator();
+                        var confirmEmailLocator = model.ConfirmEmailUrl.AsUriCombinerCore();
                         confirmEmailLocator.ChangeQueries(queries =>
                         {
                             queries.AddOrUpdate("userId", model.UserId, (key, value) => model.UserId);

@@ -10,9 +10,12 @@
 
 #endregion
 
+using Microsoft.Extensions.Localization;
+
 namespace Librame.AspNetCore.Identity.UI
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
@@ -36,10 +39,11 @@ namespace Librame.AspNetCore.Identity.UI
         public override string Name
             => nameof(Identity);
 
+
         /// <summary>
-        /// 标题。
+        /// 本地化定位器。
         /// </summary>
-        public override string Title
-            => "身份";
+        public override IStringLocalizer Localizer
+            => ServiceFactory.NotNull(nameof(ServiceFactory)).GetRequiredService<IStringLocalizer<IdentityInterfaceInfoResource>>();
     }
 }

@@ -12,7 +12,6 @@
 
 namespace Librame.AspNetCore.UI
 {
-    using Extensions;
     using Extensions.Core;
 
     /// <summary>
@@ -26,14 +25,8 @@ namespace Librame.AspNetCore.UI
         /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
         public AbstractInterfaceInfo(ServiceFactoryDelegate serviceFactory)
         {
-            ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
+            ApplyServiceFactory(serviceFactory);
         }
-
-
-        /// <summary>
-        /// 服务工厂。
-        /// </summary>
-        protected ServiceFactoryDelegate ServiceFactory { get; }
 
 
         /// <summary>

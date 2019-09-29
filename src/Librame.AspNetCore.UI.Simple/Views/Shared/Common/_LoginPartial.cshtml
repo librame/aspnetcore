@@ -19,7 +19,7 @@
     }
     else
     {
-        <form asp-page="@sitemap.Logout.Route" asp-area="@sitemap.Logout.Route.Area" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+        <form asp-page="@sitemap.Logout.Route.Page" asp-area="@sitemap.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <a href="@sitemap.Manage.Route" title="@sitemap.Manage.Text">Hello @Model.Principal.GetSignedUserName(Context)!</a>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Localization;
 using System;
 using Xunit;
 
@@ -10,13 +11,13 @@ namespace Librame.AspNetCore.UI.Tests
         {
             public override string Name => "TestThemepack";
 
-            public override string Title => "测试主题包";
-
             public override string Authors => "Test";
 
             public override string Contact => "Test";
 
             public override string Copyright => "Test";
+
+            public override IStringLocalizer Localizer => throw new NotImplementedException();
 
             public override IFileProvider GetStaticFileProvider()
             {
@@ -30,7 +31,6 @@ namespace Librame.AspNetCore.UI.Tests
         {
             var info = new TestThemepackInfo();
             Assert.NotEmpty(info.Name);
-            Assert.NotEmpty(info.Title);
             Assert.NotEmpty(info.Authors);
             Assert.NotEmpty(info.Contact);
             Assert.NotEmpty(info.Copyright);

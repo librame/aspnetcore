@@ -32,7 +32,7 @@ namespace Librame.AspNetCore.Identity.Api
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
         public static IApiBuilder AddIdentityApi(this IExtensionBuilder builder,
             Action<ApiBuilderOptions> builderAction = null,
-            Func<IExtensionBuilder, IApiBuilder> builderFactory = null)
+            Func<IExtensionBuilder, ApiBuilderDependencyOptions, IApiBuilder> builderFactory = null)
         {
             return builder.AddApi(builderAction, builderFactory)
                 .AddIdentityApiCore();
@@ -47,7 +47,7 @@ namespace Librame.AspNetCore.Identity.Api
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
         public static IApiBuilder AddIdentityApi(this IExtensionBuilder builder,
             Action<ApiBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, IApiBuilder> builderFactory = null)
+            Func<IExtensionBuilder, ApiBuilderDependencyOptions, IApiBuilder> builderFactory = null)
         {
             return builder.AddApi(dependencyAction, builderFactory)
                 .AddIdentityApiCore();

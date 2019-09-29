@@ -33,19 +33,32 @@ namespace Librame.AspNetCore.Identity.UI
             var prompts = new StringBuilder();
 
             prompts.Append(localizer[r => r.PasswordRequiredLength].Value);
+            prompts.Append("<br />");
             prompts.Append(localizer[r => r.PasswordRequiredUniqueChars].Value);
 
             if (options.Password.RequireNonAlphanumeric)
+            {
+                prompts.Append("<br />");
                 prompts.Append(localizer[r => r.PasswordRequireNonAlphanumeric].Value);
+            }
 
             if (options.Password.RequireLowercase)
+            {
+                prompts.Append("<br />");
                 prompts.Append(localizer[r => r.PasswordRequireLowercase].Value);
+            }
 
             if (options.Password.RequireLowercase)
+            {
+                prompts.Append("<br />");
                 prompts.Append(localizer[r => r.PasswordRequireUppercase].Value);
+            }
 
             if (options.Password.RequireLowercase)
+            {
+                prompts.Append("<br />");
                 prompts.Append(localizer[r => r.PasswordRequireDigit].Value);
+            }
 
             return prompts.ToString();
         }

@@ -10,12 +10,16 @@
 
 #endregion
 
+using Microsoft.Extensions.Localization;
 using System;
 using System.Reflection;
 using System.Runtime.Versioning;
 
 namespace Librame.AspNetCore
 {
+    using Extensions;
+    using Extensions.Core;
+
     /// <summary>
     /// 抽象应用信息。
     /// </summary>
@@ -25,11 +29,6 @@ namespace Librame.AspNetCore
         /// 名称。
         /// </summary>
         public abstract string Name { get; }
-
-        /// <summary>
-        /// 标题。
-        /// </summary>
-        public abstract string Title { get; }
 
         /// <summary>
         /// 作者集合。
@@ -87,6 +86,29 @@ namespace Librame.AspNetCore
 
 
         /// <summary>
+        /// 本地化定位器。
+        /// </summary>
+        public abstract IStringLocalizer Localizer { get; }
+
+        /// <summary>
+        /// 服务工厂。
+        /// </summary>
+        public ServiceFactoryDelegate ServiceFactory { get; private set; }
+
+
+        /// <summary>
+        /// 应用服务工厂。
+        /// </summary>
+        /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
+        /// <returns>返回 <see cref="IApplicationInfo"/>。</returns>
+        public virtual IApplicationInfo ApplyServiceFactory(ServiceFactoryDelegate serviceFactory)
+        {
+            ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
+            return this;
+        }
+
+
+        /// <summary>
         /// 是否相等。
         /// </summary>
         /// <param name="other">给定的 <see cref="IApplicationInfo"/>。</param>
@@ -116,7 +138,7 @@ namespace Librame.AspNetCore
         /// </summary>
         /// <returns>返回字符串。</returns>
         public override string ToString()
-            => $"{Name} - {Title}";
+            => Localizer[nameof(Name)];
 
 
         /// <summary>
@@ -126,7 +148,7 @@ namespace Librame.AspNetCore
         /// <param name="b">给定的 <see cref="AbstractApplicationInfo"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool operator ==(AbstractApplicationInfo a, AbstractApplicationInfo b)
-            => a.Equals(b);
+            => (a?.Equals(b)).Value;
 
         /// <summary>
         /// 是否不等。
@@ -135,6 +157,14 @@ namespace Librame.AspNetCore
         /// <param name="b">给定的 <see cref="AbstractApplicationInfo"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool operator !=(AbstractApplicationInfo a, AbstractApplicationInfo b)
-            => !a.Equals(b);
+            => !(a?.Equals(b)).Value;
+
+
+        /// <summary>
+        /// 隐式转换为字符串形式。
+        /// </summary>
+        /// <param name="identifier">给定的 <see cref="AbstractApplicationInfo"/>。</param>
+        public static implicit operator string(AbstractApplicationInfo identifier)
+            => identifier?.ToString();
     }
 }

@@ -34,13 +34,13 @@ namespace Librame.AspNetCore.Api
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
         public static IApiBuilder AddApi(this IExtensionBuilder builder,
             Action<ApiBuilderOptions> builderAction,
-            Func<IExtensionBuilder, IApiBuilder> builderFactory = null)
+            Func<IExtensionBuilder, ApiBuilderDependencyOptions, IApiBuilder> builderFactory = null)
         {
             builderAction.NotNull(nameof(builderAction));
 
             return builder.AddApi(dependency =>
             {
-                dependency.BuilderOptionsAction = builderAction;
+                dependency.OptionsAction = builderAction;
             },
             builderFactory);
         }
@@ -54,17 +54,30 @@ namespace Librame.AspNetCore.Api
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
         public static IApiBuilder AddApi(this IExtensionBuilder builder,
             Action<ApiBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, IApiBuilder> builderFactory = null)
+            Func<IExtensionBuilder, ApiBuilderDependencyOptions, IApiBuilder> builderFactory = null)
+            => builder.AddApi<ApiBuilderDependencyOptions>(dependencyAction, builderFactory);
+
+        /// <summary>
+        /// 添加 API 扩展。
+        /// </summary>
+        /// <typeparam name="TDependencyOptions">指定的依赖类型。</typeparam>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
+        /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
+        public static IApiBuilder AddApi<TDependencyOptions>(this IExtensionBuilder builder,
+            Action<TDependencyOptions> dependencyAction = null,
+            Func<IExtensionBuilder, TDependencyOptions, IApiBuilder> builderFactory = null)
+            where TDependencyOptions : ApiBuilderDependencyOptions, new()
         {
             // Add Dependencies
             var dependency = dependencyAction.ConfigureDependencyOptions();
 
             // Add Builder
-            builder.Services.OnlyConfigure(dependency.BuilderOptionsAction,
-                dependency.BuilderOptionsName);
+            builder.Services.OnlyConfigure(dependency.OptionsAction, dependency.OptionsName);
 
             var apiBuilder = builderFactory.NotNullOrDefault(()
-                => b => new ApiBuilder(b)).Invoke(builder);
+                => (b, d) => new ApiBuilder(b, d)).Invoke(builder, dependency);
 
             return apiBuilder
                 .AddGraphQL();

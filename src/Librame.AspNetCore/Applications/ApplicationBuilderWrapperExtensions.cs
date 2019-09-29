@@ -24,13 +24,14 @@ namespace Librame.AspNetCore
         /// 使用 Librame for ASP.NET Core。
         /// </summary>
         /// <param name="rawBuilder">给定的 <see cref="IApplicationBuilder"/>。</param>
-        /// <param name="optionsAction">给定的请求本地化选项配置动作（可选）。</param>
+        /// <param name="requestLocalizationAction">给定的请求本地化选项动作（可选）。</param>
         /// <returns>返回 <see cref="IApplicationBuilderWrapper"/>。</returns>
         public static IApplicationBuilderWrapper UseLibrameCore(this IApplicationBuilder rawBuilder,
-            Action<RequestLocalizationOptions> optionsAction = null)
+            Action<RequestLocalizationOptions> requestLocalizationAction = null)
         {
             var builderWrapper = new ApplicationBuilderWrapper(rawBuilder);
-            return builderWrapper.UseLocalization(optionsAction);
+
+            return builderWrapper.UseLocalization(requestLocalizationAction);
         }
 
     }

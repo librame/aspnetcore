@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Localization;
 
 namespace Librame.AspNetCore.UI.Themepack.Simple
 {
@@ -23,13 +24,14 @@ namespace Librame.AspNetCore.UI.Themepack.Simple
         /// 名称。
         /// </summary>
         public override string Name
-            => "Simple";
+            => nameof(Simple);
+
 
         /// <summary>
-        /// 标题。
+        /// 本地化定位器。
         /// </summary>
-        public override string Title
-            => "简约";
+        public override IStringLocalizer Localizer
+            => new ThemepackStringLocalizer<ThemepackInfoResource>();
 
 
         /// <summary>

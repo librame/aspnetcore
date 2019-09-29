@@ -19,15 +19,15 @@ namespace Librame.AspNetCore
     using Extensions.Core;
 
     /// <summary>
-    /// URL 定位符核心。
+    /// URI 组合器核心。
     /// </summary>
-    public class UrlLocatorCore : UrlLocator
+    public class UriCombinerCore : UriCombiner
     {
         /// <summary>
-        /// 构造一个 <see cref="UrlLocatorCore"/>。
+        /// 构造一个 <see cref="UriCombinerCore"/>。
         /// </summary>
         /// <param name="uri">给定的 <see cref="Uri"/>。</param>
-        public UrlLocatorCore(Uri uri)
+        public UriCombinerCore(Uri uri)
             : base(uri)
         {
             HostString = new HostString(Host);
@@ -36,14 +36,14 @@ namespace Librame.AspNetCore
         }
 
         /// <summary>
-        /// 构造一个 <see cref="UrlLocatorCore"/>。
+        /// 构造一个 <see cref="UriCombinerCore"/>。
         /// </summary>
         /// <param name="scheme">给定的协议。</param>
         /// <param name="host">给定可能包含端口号的主机。</param>
         /// <param name="path">给定以 / 开始的路径（可选）。</param>
         /// <param name="query">给定以 ? 开始的查询（可选）。</param>
         /// <param name="anchor">给定以 # 开始的锚点（可选）。</param>
-        protected UrlLocatorCore(string scheme, HostString host,
+        protected UriCombinerCore(string scheme, HostString host,
             PathString path = default, QueryString query = default, string anchor = null)
             : base(scheme, host.ToString(), path.ToString(), query.ToString(), anchor)
         {
@@ -73,8 +73,8 @@ namespace Librame.AspNetCore
         /// 改变主机。
         /// </summary>
         /// <param name="newHost">给定可能包含端口号的新主机。</param>
-        /// <returns>返回 <see cref="UrlLocatorCore"/>。</returns>
-        public UrlLocatorCore ChangeHost(HostString newHost)
+        /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        public UriCombinerCore ChangeHost(HostString newHost)
         {
             ChangeHost(newHost.ToString());
             HostString = newHost;
@@ -85,8 +85,8 @@ namespace Librame.AspNetCore
         /// 改变路径。
         /// </summary>
         /// <param name="newPath">给定以 / 开始的新路径。</param>
-        /// <returns>返回 <see cref="UrlLocatorCore"/>。</returns>
-        public UrlLocatorCore ChangePath(PathString newPath)
+        /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        public UriCombinerCore ChangePath(PathString newPath)
         {
             base.ChangePath(newPath);
             PathString = newPath;
@@ -97,8 +97,8 @@ namespace Librame.AspNetCore
         /// 改变查询。
         /// </summary>
         /// <param name="newQuery">给定以 ? 开始的新查询。</param>
-        /// <returns>返回 <see cref="UrlLocatorCore"/>。</returns>
-        public UrlLocatorCore ChangeQuery(QueryString newQuery)
+        /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        public UriCombinerCore ChangeQuery(QueryString newQuery)
         {
             ChangeQuery(newQuery.ToString());
             QueryString = newQuery;
@@ -107,63 +107,63 @@ namespace Librame.AspNetCore
 
 
         /// <summary>
-        /// 使用指定的新主机新建一个 <see cref="UrlLocatorCore"/> 实例。
+        /// 使用指定的新主机新建一个 <see cref="UriCombinerCore"/> 实例。
         /// </summary>
         /// <param name="newHost">给定可能包含端口号的新主机。</param>
-        /// <returns>返回 <see cref="UrlLocatorCore"/>。</returns>
-        public virtual UrlLocatorCore NewHost(HostString newHost)
-            => new UrlLocatorCore(Scheme, newHost, PathString, QueryString, Anchor);
+        /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        public virtual UriCombinerCore NewHost(HostString newHost)
+            => new UriCombinerCore(Scheme, newHost, PathString, QueryString, Anchor);
 
         /// <summary>
-        /// 使用指定的新路径新建一个 <see cref="UrlLocatorCore"/> 实例。
+        /// 使用指定的新路径新建一个 <see cref="UriCombinerCore"/> 实例。
         /// </summary>
         /// <param name="newPath">给定以 / 开始的新路径。</param>
-        /// <returns>返回 <see cref="UrlLocatorCore"/>。</returns>
-        public virtual UrlLocatorCore NewPath(PathString newPath)
-            => new UrlLocatorCore(Scheme, HostString, newPath, QueryString, Anchor);
+        /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        public virtual UriCombinerCore NewPath(PathString newPath)
+            => new UriCombinerCore(Scheme, HostString, newPath, QueryString, Anchor);
 
         /// <summary>
-        /// 使用指定的新查询新建一个 <see cref="UrlLocatorCore"/> 实例。
+        /// 使用指定的新查询新建一个 <see cref="UriCombinerCore"/> 实例。
         /// </summary>
         /// <param name="newQuery">给定以 ? 开始的新查询。</param>
-        /// <returns>返回 <see cref="UrlLocatorCore"/>。</returns>
-        public virtual UrlLocatorCore NewQuery(QueryString newQuery)
-            => new UrlLocatorCore(Scheme, HostString, PathString, newQuery, Anchor);
+        /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        public virtual UriCombinerCore NewQuery(QueryString newQuery)
+            => new UriCombinerCore(Scheme, HostString, PathString, newQuery, Anchor);
 
 
         /// <summary>
         /// 比较是否相等。
         /// </summary>
-        /// <param name="other">给定的 <see cref="UrlLocatorCore"/>。</param>
+        /// <param name="other">给定的 <see cref="UriCombinerCore"/>。</param>
         /// <returns>返回布尔值。</returns>
-        public virtual bool Equals(UrlLocatorCore other)
+        public virtual bool Equals(UriCombinerCore other)
             => base.Equals(other);
 
 
         /// <summary>
         /// 隐式转换为字符串。
         /// </summary>
-        /// <param name="locator">给定的 <see cref="UrlLocatorCore"/>。</param>
-        public static implicit operator string(UrlLocatorCore locator)
+        /// <param name="locator">给定的 <see cref="UriCombinerCore"/>。</param>
+        public static implicit operator string(UriCombinerCore locator)
             => locator.ToString();
 
         /// <summary>
-        /// 显式转换为 URI 定位器核心。
+        /// 显式转换为 URI 组合器核心。
         /// </summary>
         /// <param name="uriString">给定的绝对 URI 字符串。</param>
-        public static explicit operator UrlLocatorCore(string uriString)
+        public static explicit operator UriCombinerCore(string uriString)
         {
             if (uriString.IsAbsoluteUri(out Uri result))
-                return new UrlLocatorCore(result);
+                return new UriCombinerCore(result);
 
             throw new ArgumentException($"Invalid absolute uri string: {uriString}.");
         }
         /// <summary>
-        /// 显式转换为 URI 定位器核心。
+        /// 显式转换为 URI 组合器核心。
         /// </summary>
         /// <param name="uri">给定的 <see cref="Uri"/>。</param>
-        public static explicit operator UrlLocatorCore(Uri uri)
-            => new UrlLocatorCore(uri);
+        public static explicit operator UriCombinerCore(Uri uri)
+            => new UriCombinerCore(uri);
 
 
         /// <summary>

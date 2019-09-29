@@ -41,7 +41,7 @@ namespace Librame.AspNetCore.Identity
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回 <see cref="string"/>。</returns>
         public virtual Task<string> GetRoleIdAsync(CancellationToken cancellationToken = default)
-            => GenerateCombGuidAsync(cancellationToken, "RoleId");
+            => GenerateCombGuidAsync("RoleId", cancellationToken);
 
         /// <summary>
         /// 异步获取用户标识。
@@ -49,6 +49,6 @@ namespace Librame.AspNetCore.Identity
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回 <see cref="string"/>。</returns>
         public virtual Task<string> GetUserIdAsync(CancellationToken cancellationToken = default)
-            => GenerateCombGuidAsync(cancellationToken, "UserId");
+            => GenerateCombGuidAsync("UserId", cancellationToken);
     }
 }

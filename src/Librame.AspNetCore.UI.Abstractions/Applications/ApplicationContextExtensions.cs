@@ -22,7 +22,11 @@ namespace Librame.AspNetCore.UI
     /// </summary>
     public static class ApplicationContextExtensions
     {
-        private static readonly string LibrameArchitecture = $"{nameof(Librame)}.{nameof(AspNetCore)}";
+        private static readonly string LibrameCore
+            = nameof(LibrameCore);
+
+        private static readonly string LibrameCoreArchitecture
+            = $"{nameof(Librame)}.{nameof(AspNetCore)}";
 
 
         /// <summary>
@@ -43,7 +47,7 @@ namespace Librame.AspNetCore.UI
                 framework = $"{interInfo.Framework.Replace(",Version=v", " ")} / {themeInfo.Framework.Replace(",Version=v", " ")}";
 
             var sb = new StringBuilder();
-            sb.Append($"Copyright © {DateTime.Now.ToString("yyyy")} {GetNuGetLink(LibrameArchitecture)} Powered by {GetFrameworkLink(framework)} on {RuntimeInformation.OSDescription}; {nameof(CultureInfo.CurrentUICulture)}: {CultureInfo.CurrentUICulture.Name}");
+            sb.Append($"Copyright © {DateTime.Now.ToString("yyyy")} {GetNuGetLink(LibrameCoreArchitecture, LibrameCore)} Powered by {GetFrameworkLink(framework)} on {RuntimeInformation.OSDescription}; Culture: {CultureInfo.CurrentUICulture.Name}");
             
             if (!displayMiniInfo)
                 sb.AppendLine($"<br />Application: {GetNuGetLink(interInfo.AssemblyName.Name, interInfo.Name)} {interInfo.Version} [{interInfo.Authors}] / Themepack: {GetNuGetLink(themeInfo.AssemblyName.Name, themeInfo.Name)} {themeInfo.Version} [{themeInfo.Authors}]");

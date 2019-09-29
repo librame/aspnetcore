@@ -21,11 +21,11 @@
             </div>
             <div class="collapse navbar-collapse">
                 <p class="navbar-text">
-                    Use this space to summarize your privacy and cookie use policy.
+                    @Html.Raw(Model.CurrentThemepackInfo.Localizer["PrivacyAndCookiePolicy"].Value)
                 </p>
                 <div class="navbar-right">
                     <a href="@sitemap.Privacy.ToRouteString(Url)" class="btn btn-info navbar-btn">@sitemap.Privacy.Text</a>
-                    <button type="button" class="btn btn-default navbar-btn" data-cookie-string="@cookieString">Accept</button>
+                    <button type="button" class="btn btn-default navbar-btn" data-cookie-string="@cookieString">@Model.CurrentThemepackInfo.Localizer["PrivacyAndCookiePolicyButton"].Value</button>
                 </div>
             </div>
         </div>

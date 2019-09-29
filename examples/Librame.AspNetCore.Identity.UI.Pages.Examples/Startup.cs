@@ -2,12 +2,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Globalization;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Examples
 {
@@ -33,26 +31,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                var cultures = new[]
-                {
-                    new CultureInfo("en-US"),
-                    new CultureInfo("zh-CN"),
-                    new CultureInfo("zh-TW")
-                };
-
-                var defaultCulture = cultures[0];
-                options.DefaultRequestCulture = new RequestCulture(defaultCulture, defaultCulture);
-                options.SupportedCultures = cultures;
-                options.SupportedUICultures = cultures;
-            });
 
             services.AddAuthentication(options =>
             {
+                // SignInManager.SignOutAsync
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                //IdentityConstants.TwoFactorUserIdScheme
             })
             .AddIdentityCookies(cookies => { });
 
@@ -60,6 +45,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddRazorPagesOptions(options =>
                 {
+                    // Examples
                     options.RootDirectory = "/Pages";
                     options.Conventions.AddPageRoute("/Home/Index", "");
                 })

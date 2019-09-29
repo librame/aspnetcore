@@ -268,7 +268,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="b">给定的 <see cref="NavigationDescriptor"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool operator ==(NavigationDescriptor a, NavigationDescriptor b)
-            => a.Equals(b);
+            => (a?.Equals(b)).Value;
 
         /// <summary>
         /// 是否不等。
@@ -277,7 +277,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="b">给定的 <see cref="NavigationDescriptor"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool operator !=(NavigationDescriptor a, NavigationDescriptor b)
-            => !a.Equals(b);
+            => !(a?.Equals(b)).Value;
 
 
         /// <summary>
@@ -285,6 +285,6 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         /// <param name="descriptor">给定的 <see cref="NavigationDescriptor"/>。</param>
         public static implicit operator string(NavigationDescriptor descriptor)
-            => descriptor.ToString();
+            => descriptor?.ToString();
     }
 }

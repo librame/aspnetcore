@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
         public static IUiBuilder AddIdentityServerUI(this IIdentityServerBuilderWrapper builder,
             Action<UiBuilderOptions> builderAction,
-            Func<IExtensionBuilder, IUiBuilder> builderFactory = null)
+            Func<IExtensionBuilder, UiBuilderDependencyOptions, IUiBuilder> builderFactory = null)
         {
             return builder.AddUI(builderAction, builderFactory)
                 .AddUser(builder.UserType);
@@ -46,7 +46,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
         public static IUiBuilder AddIdentityServerUI(this IIdentityServerBuilderWrapper builder,
             Action<UiBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, IUiBuilder> builderFactory = null)
+            Func<IExtensionBuilder, UiBuilderDependencyOptions, IUiBuilder> builderFactory = null)
         {
             return builder.AddUI(dependencyAction, builderFactory)
                 .AddUser(builder.UserType);

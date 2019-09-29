@@ -10,9 +10,14 @@
 
 #endregion
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,23 +43,36 @@ namespace Librame.Extensions.Data
         {
             if (accessor is DbContextAccessor dbContextAccessor)
             {
-                var host = _httpContext?.Request?.Host;
-                if (host.HasValue && !host.Value.IsIPAddress())
+                var options = _httpContext?.RequestServices?.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
+                if (options.IsNotNull() && !RequestCultureEquals(options.DefaultRequestCulture) && dbContextAccessor.Tenants.Count() > 1)
                 {
-                    var twoLevels = host.Value.Host.AsDomainNameLocator().GetOnlyTwoLevels();
-                    var name = twoLevels.Child ?? "www";
+                    var name = options.DefaultRequestCulture.Culture.Name;
+                    var host = options.DefaultRequestCulture.Culture.DisplayName;
 
                     return cancellationToken.RunFactoryOrCancellationAsync(() =>
                     {
-                        ITenant tenant = dbContextAccessor.Tenants.FirstOrDefault(t => t.Name == name && t.Host == twoLevels.Parent);
+                        ITenant tenant = dbContextAccessor.Tenants.FirstOrDefault(t => t.Name == name && t.Host == host);
                         Logger.LogInformation($"Get database tenant: Name={tenant?.Name}, Host={tenant?.Host}");
 
-                        return tenant;
+                        return tenant ?? Options.DefaultTenant;
                     });
                 }
             }
 
             return Task.FromResult(Options.DefaultTenant);
+        }
+
+
+        private static bool RequestCultureEquals(RequestCulture requestCulture)
+        {
+            if (requestCulture.IsNull() || requestCulture.Culture.IsNull() || requestCulture.UICulture.IsNull())
+                return false;
+
+            if (CultureInfo.CurrentCulture.IsNull() || CultureInfo.CurrentUICulture.IsNull())
+                return false;
+
+            return CultureInfo.CurrentCulture.Name.Equals(requestCulture.Culture.Name, StringComparison.OrdinalIgnoreCase)
+                && CultureInfo.CurrentUICulture.Name.Equals(requestCulture.UICulture.Name, StringComparison.OrdinalIgnoreCase);
         }
 
     }

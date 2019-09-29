@@ -309,7 +309,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="b">给定的 <see cref="RouteDescriptor"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool operator ==(RouteDescriptor a, RouteDescriptor b)
-            => a.Equals(b);
+            => (a?.Equals(b)).Value;
 
         /// <summary>
         /// 是否不等。
@@ -318,7 +318,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="b">给定的 <see cref="RouteDescriptor"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool operator !=(RouteDescriptor a, RouteDescriptor b)
-            => !a.Equals(b);
+            => !(a?.Equals(b)).Value;
 
 
         /// <summary>
@@ -326,6 +326,6 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         /// <param name="descriptor">给定的 <see cref="RouteDescriptor"/>。</param>
         public static implicit operator string(RouteDescriptor descriptor)
-            => descriptor.ToString();
+            => descriptor?.ToString();
     }
 }

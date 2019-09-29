@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LibrameStandard.Abstractions;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Client
 {
@@ -35,31 +34,39 @@ namespace Librame.AspNetCore.IdentityServer.Client
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            //services.AddAuthentication("Bearer")
+            //    .AddIdentityServerAuthentication(options =>
+            //    {
+            //        options.Authority = "https://localhost:44303";
+            //        options.RequireHttpsMetadata = true;
+            //        options.ApiName = "IdentityServer.Api";
+            //    });
+
             // Add LibrameCore
-            services.AddLibrameCore(options =>
-            {
-                options.BuildPathConfiguration = () => new CorePathConfiguration();
-            },
-            (extensions, options) =>
-            {
-                extensions.AddCoreExtensionsWithOidcAuthentication(options, opts =>
-                {
-                    opts.SignInScheme = IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME;
+            //services.AddLibrameCore(options =>
+            //{
+            //    options.BuildPathConfiguration = () => new CorePathConfiguration();
+            //},
+            //(extensions, options) =>
+            //{
+            //    extensions.AddCoreExtensionsWithOidcAuthentication(options, opts =>
+            //    {
+            //        opts.SignInScheme = IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME;
 
-                    opts.Authority = "https://localhost:44303";
-                    opts.RequireHttpsMetadata = true;
+            //        opts.Authority = "https://localhost:44303";
+            //        opts.RequireHttpsMetadata = true;
 
-                    opts.ClientId = "IdentityClient";
-                    opts.ClientSecret = "secret";
-                    opts.ResponseType = "id_token code";
-                    opts.SaveTokens = true;
-                    opts.GetClaimsFromUserInfoEndpoint = true;
+            //        opts.ClientId = "IdentityClient";
+            //        opts.ClientSecret = "secret";
+            //        opts.ResponseType = "id_token code";
+            //        opts.SaveTokens = true;
+            //        opts.GetClaimsFromUserInfoEndpoint = true;
 
-                    //opts.Scope.Clear();
-                    opts.Scope.Add("IdentityApi");
-                    opts.Scope.Add("offline_access");
-                });
-            });
+            //        //opts.Scope.Clear();
+            //        opts.Scope.Add("IdentityApi");
+            //        opts.Scope.Add("offline_access");
+            //    });
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,7 +82,7 @@ namespace Librame.AspNetCore.IdentityServer.Client
                 app.UseHsts();
             }
 
-            app.UseLibrame().ApplyAuthentication();
+            //app.UseLibrame().ApplyAuthentication();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

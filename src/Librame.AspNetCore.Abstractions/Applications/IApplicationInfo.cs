@@ -10,11 +10,14 @@
 
 #endregion
 
+using Microsoft.Extensions.Localization;
 using System;
 using System.Reflection;
 
 namespace Librame.AspNetCore
 {
+    using Extensions.Core;
+
     /// <summary>
     /// 应用信息接口。
     /// </summary>
@@ -24,11 +27,6 @@ namespace Librame.AspNetCore
         /// 名称。
         /// </summary>
         string Name { get; }
-
-        /// <summary>
-        /// 标题。
-        /// </summary>
-        string Title { get; }
 
         /// <summary>
         /// 作者集合。
@@ -74,5 +72,24 @@ namespace Librame.AspNetCore
         /// 程序集版本。
         /// </summary>
         Version AssemblyVersion { get; }
+
+
+        /// <summary>
+        /// 本地化定位器。
+        /// </summary>
+        IStringLocalizer Localizer { get; }
+
+        /// <summary>
+        /// 服务工厂。
+        /// </summary>
+        ServiceFactoryDelegate ServiceFactory { get; }
+
+
+        /// <summary>
+        /// 应用服务工厂。
+        /// </summary>
+        /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
+        /// <returns>返回 <see cref="IApplicationInfo"/>。</returns>
+        IApplicationInfo ApplyServiceFactory(ServiceFactoryDelegate serviceFactory);
     }
 }

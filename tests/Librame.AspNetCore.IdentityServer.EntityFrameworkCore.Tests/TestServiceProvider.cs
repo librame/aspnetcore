@@ -8,6 +8,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
     using AspNetCore.Identity;
     using Extensions;
     using Extensions.Data;
+    using Extensions.Encryption;
 
     internal static class TestServiceProvider
     {
@@ -46,7 +47,22 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                     {
                         options.Stores.MaxLengthForKeys = 128;
                     })
-                    .AddIdentityServer<IdentityServerDbContextAccessor, DefaultIdentityUser<string>>();
+                    .AddEncryption().AddDeveloperGlobalSigningCredentials()
+                    .AddIdentityServer<IdentityServerDbContextAccessor, DefaultIdentityUser<string>>(dependency =>
+                    {
+                        dependency.RawAction = options =>
+                        {
+                            options.Events.RaiseErrorEvents = true;
+                            options.Events.RaiseInformationEvents = true;
+                            options.Events.RaiseFailureEvents = true;
+                            options.Events.RaiseSuccessEvents = true;
+                            options.Authentication.CookieAuthenticationScheme = IdentityConstants.ApplicationScheme;
+                        };
+                        dependency.OptionsAction = builder =>
+                        {
+                            builder.Authorizations.Clients.AddIdentityServerSPA("Librame.AspNetCore.IdentityServer.Api", _ => { });
+                        };
+                    });
 
                 return services.BuildServiceProvider();
             });

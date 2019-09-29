@@ -15,12 +15,14 @@ using System;
 
 namespace Librame.AspNetCore
 {
-    static class LocalizationApplicationBuilderWrapperExtensions
+    static class LocalizerApplicationBuilderWrapperExtensions
     {
         public static IApplicationBuilderWrapper UseLocalization(this IApplicationBuilderWrapper builderWrapper,
             Action<RequestLocalizationOptions> optionsAction = null)
         {
-            builderWrapper.RawBuilder.UseRequestLocalization(optionsAction ?? (_ => { }));
+            //builderWrapper.RawBuilder.UseRequestLocalization(optionsAction ?? (_ => { }));
+            builderWrapper.RawBuilder.UseMiddleware<RequestLocalizationMiddleware>();
+
             return builderWrapper;
         }
 

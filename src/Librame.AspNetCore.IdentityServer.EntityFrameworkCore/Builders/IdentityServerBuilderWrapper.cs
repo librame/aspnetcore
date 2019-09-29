@@ -20,8 +20,9 @@ namespace Librame.AspNetCore.IdentityServer
 
     class IdentityServerBuilderWrapper : AbstractExtensionBuilderWrapper<IIdentityServerBuilder>, IIdentityServerBuilderWrapper
     {
-        public IdentityServerBuilderWrapper(Type userType, IExtensionBuilder builder, IIdentityServerBuilder rawBuilder)
-            : base(builder, rawBuilder)
+        public IdentityServerBuilderWrapper(Type userType, IIdentityServerBuilder rawBuilder, IExtensionBuilder builder,
+            IExtensionBuilderDependencyOptions dependencyOptions)
+            : base(rawBuilder, builder, dependencyOptions)
         {
             UserType = userType.NotNull(nameof(userType));
 

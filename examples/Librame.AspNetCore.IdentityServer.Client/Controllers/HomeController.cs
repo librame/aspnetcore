@@ -1,9 +1,8 @@
-﻿using LibrameStandard.Abstractions;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Librame.AspNetCore.IdentityServer.Client.Controllers
 {
@@ -45,8 +44,8 @@ namespace Librame.AspNetCore.IdentityServer.Client.Controllers
         [Authorize]
         public async Task Logout()
         {
-            await HttpContext.SignOutAsync(IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME);
-            await HttpContext.SignOutAsync(IdentityExtensionConfigurator.Defaults.OIDC_AUTH_SCHEME);
+            await HttpContext.SignOutAsync(); //IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME
+            //await HttpContext.SignOutAsync(IdentityExtensionConfigurator.Defaults.OIDC_AUTH_SCHEME);
         }
 
     }

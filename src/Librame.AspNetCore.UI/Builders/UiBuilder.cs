@@ -20,8 +20,8 @@ namespace Librame.AspNetCore.UI
 
     class UiBuilder : AbstractExtensionBuilder, IUiBuilder
     {
-        public UiBuilder(IExtensionBuilder builder)
-            : base(builder)
+        public UiBuilder(IExtensionBuilder builder, IExtensionBuilderDependencyOptions dependencyOptions)
+            : base(builder, dependencyOptions)
         {
             Services.AddSingleton<IUiBuilder>(this);
         }

@@ -32,13 +32,13 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
         public static IUiBuilder AddUI(this IExtensionBuilder builder,
             Action<UiBuilderOptions> builderAction,
-            Func<IExtensionBuilder, IUiBuilder> builderFactory = null)
+            Func<IExtensionBuilder, UiBuilderDependencyOptions, IUiBuilder> builderFactory = null)
         {
             builderAction.NotNull(nameof(builderAction));
 
             return builder.AddUI(dependency =>
             {
-                dependency.BuilderOptionsAction = builderAction;
+                dependency.OptionsAction = builderAction;
             },
             builderFactory);
         }
@@ -52,22 +52,21 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
         public static IUiBuilder AddUI(this IExtensionBuilder builder,
             Action<UiBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, IUiBuilder> builderFactory = null)
+            Func<IExtensionBuilder, UiBuilderDependencyOptions, IUiBuilder> builderFactory = null)
         {
             // Add Dependencies
             var dependency = dependencyAction.ConfigureDependencyOptions();
 
             // Add Builder
-            builder.Services.OnlyConfigure(dependency.BuilderOptionsAction,
-                dependency.BuilderOptionsName);
+            builder.Services.OnlyConfigure(dependency.OptionsAction, dependency.OptionsName);
 
             var uiBuilder = builderFactory.NotNullOrDefault(()
-                => b => new UiBuilder(b)).Invoke(builder);
+                => (b, d) => new UiBuilder(b, d)).Invoke(builder, dependency);
 
             return uiBuilder
                 .AddApplications()
                 .AddDataAnnotations()
-                .AddLocalizations();
+                .AddLocalizers();
         }
 
     }

@@ -10,6 +10,7 @@
 
 #endregion
 
+using Microsoft.IdentityModel.Tokens;
 using System;
 
 namespace Librame.AspNetCore.IdentityServer
@@ -32,6 +33,12 @@ namespace Librame.AspNetCore.IdentityServer
         /// </summary>
         public ConsentOptions Consents { get; set; }
             = new ConsentOptions();
+
+        /// <summary>
+        /// 授权。
+        /// </summary>
+        public AuthorizationOptions Authorizations { get; set; }
+            = new AuthorizationOptions();
     }
 
 
@@ -126,5 +133,45 @@ namespace Librame.AspNetCore.IdentityServer
         /// </summary>
         public string InvalidSelectionErrorMessage { get; set; }
             = "Invalid selection";
+    }
+
+
+    /// <summary>
+    /// 授权选项。
+    /// </summary>
+    public class AuthorizationOptions
+    {
+        /// <summary>
+        /// 身份资源集合。
+        /// </summary>
+        public IdentityResourceCollection IdentityResources { get; set; }
+            = new IdentityResourceCollection
+            {
+                IdentityResourceBuilder.OpenId()
+                    .AllowAllClients()
+                    .FromDefault()
+                    .Build(),
+                IdentityResourceBuilder.Profile()
+                    .AllowAllClients()
+                    .FromDefault()
+                    .Build()
+            };
+
+        /// <summary>
+        /// API 资源集合。
+        /// </summary>
+        public ApiResourceCollection ApiResources { get; set; }
+            = new ApiResourceCollection();
+
+        /// <summary>
+        /// 客户端集合。
+        /// </summary>
+        public ClientCollection Clients { get; set; }
+            = new ClientCollection();
+
+        /// <summary>
+        /// 用于签名令牌的签名证书。
+        /// </summary>
+        public SigningCredentials SigningCredentials { get; set; }
     }
 }

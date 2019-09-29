@@ -30,13 +30,13 @@ namespace Librame.Extensions.Data
         /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
         public static IDataBuilder AddDataCore(this IExtensionBuilder builder,
             Action<DataBuilderOptions> builderAction,
-            Func<IExtensionBuilder, IDataBuilder> builderFactory = null)
+            Func<IExtensionBuilder, DataBuilderDependencyOptions, IDataBuilder> builderFactory = null)
         {
             builderAction.NotNull(nameof(builderAction));
 
             return builder.AddDataCore(dependency =>
             {
-                dependency.BuilderOptionsAction = builderAction;
+                dependency.OptionsAction = builderAction;
             },
             builderFactory);
         }
@@ -50,7 +50,7 @@ namespace Librame.Extensions.Data
         /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
         public static IDataBuilder AddDataCore(this IExtensionBuilder builder,
             Action<DataBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, IDataBuilder> builderFactory = null)
+            Func<IExtensionBuilder, DataBuilderDependencyOptions, IDataBuilder> builderFactory = null)
         {
             return builder.AddData(dependencyAction, builderFactory)
                 .AddServices();

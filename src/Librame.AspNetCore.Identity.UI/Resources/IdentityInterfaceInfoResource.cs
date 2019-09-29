@@ -10,18 +10,18 @@
 
 #endregion
 
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Librame.AspNetCore.UI
+namespace Librame.AspNetCore.Identity.UI
 {
-    static class LocalizationUiBuilderExtensions
+    using Extensions.Core;
+
+    /// <summary>
+    /// 身份界面信息资源。
+    /// </summary>
+    public class IdentityInterfaceInfoResource : IResource
     {
-        public static IUiBuilder AddLocalizations(this IUiBuilder builder)
-        {
-            builder.Services.AddTransient(typeof(IExpressionHtmlLocalizer<>), typeof(ExpressionHtmlLocalizer<>));
-
-            return builder;
-        }
-
+        /// <summary>
+        /// 名称。
+        /// </summary>
+        public string Name { get; set; }
     }
 }

@@ -35,7 +35,7 @@ namespace Librame.AspNetCore.Identity
         /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
         public static IIdentityBuilderWrapper AddIdentity<TAccessor>(this IExtensionBuilder builder,
             Action<IdentityOptions> rawAction,
-            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> builderFactory = null)
+            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependencyOptions, IIdentityBuilderWrapper> builderFactory = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor
         {
             return builder.AddIdentity<TAccessor,
@@ -57,7 +57,7 @@ namespace Librame.AspNetCore.Identity
         /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
         public static IIdentityBuilderWrapper AddIdentity<TAccessor, TUser, TRole, TGenId>(this IExtensionBuilder builder,
             Action<IdentityOptions> rawAction,
-            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> builderFactory = null)
+            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependencyOptions, IIdentityBuilderWrapper> builderFactory = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TUser, TGenId>
             where TUser : class
             where TRole : class
@@ -88,7 +88,7 @@ namespace Librame.AspNetCore.Identity
         /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
         public static IIdentityBuilderWrapper AddIdentity<TAccessor>(this IExtensionBuilder builder,
             Action<IdentityBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> builderFactory = null)
+            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependencyOptions, IIdentityBuilderWrapper> builderFactory = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor
         {
             return builder.AddIdentity<TAccessor,
@@ -110,7 +110,7 @@ namespace Librame.AspNetCore.Identity
         /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
         public static IIdentityBuilderWrapper AddIdentity<TAccessor, TUser, TRole, TGenId>(this IExtensionBuilder builder,
             Action<IdentityBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> builderFactory = null)
+            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependencyOptions, IIdentityBuilderWrapper> builderFactory = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TUser, TGenId>
             where TUser : class
             where TRole : class
@@ -143,7 +143,7 @@ namespace Librame.AspNetCore.Identity
         /// <returns>返回 <see cref="IIdentityBuilderWrapper"/>。</returns>
         public static IIdentityBuilderWrapper AddIdentity<TAccessor, TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>(this IExtensionBuilder builder,
             Action<IdentityBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, IdentityBuilder, IIdentityBuilderWrapper> builderFactory = null)
+            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependencyOptions, IIdentityBuilderWrapper> builderFactory = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>
             where TRole : class
             where TRoleClaim : class
@@ -166,11 +166,10 @@ namespace Librame.AspNetCore.Identity
             rawBuilder.Services.TryReplace<IdentityErrorDescriber, LocalizationIdentityErrorDescriber>();
 
             // Add Builder
-            builder.Services.OnlyConfigure(dependency.BuilderOptionsAction,
-                dependency.BuilderOptionsName);
+            builder.Services.OnlyConfigure(dependency.OptionsAction, dependency.OptionsName);
 
             var builderWrapper = builderFactory.NotNullOrDefault(()
-                => (b, r) => new IdentityBuilderWrapper(b, r)).Invoke(builder, rawBuilder);
+                => (r, b, d) => new IdentityBuilderWrapper(r, b, d)).Invoke(rawBuilder, builder, dependency);
 
             return builderWrapper
                 .AddStores();

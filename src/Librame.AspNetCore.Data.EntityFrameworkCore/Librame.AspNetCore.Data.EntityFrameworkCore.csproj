@@ -36,7 +36,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Data.EntityFrameworkCore" Version="6.1.883.201" />
+    <PackageReference Include="Librame.Extensions.Data.EntityFrameworkCore" Version="6.1.889.202" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
   </ItemGroup>

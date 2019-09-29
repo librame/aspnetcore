@@ -28,6 +28,8 @@ namespace Librame.AspNetCore.UI
 
             InterfaceInfos = ApplicationInfoHelper.GetInterfaces(serviceFactory);
             ThemepackInfos = ApplicationInfoHelper.Themepacks;
+            ThemepackInfos.Values.ForEach(info => info.ApplyServiceFactory(serviceFactory));
+
             CurrentThemepackInfo = GetThemepackInfo(name: null);
         }
 

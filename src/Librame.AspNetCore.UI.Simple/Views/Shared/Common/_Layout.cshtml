@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @Application.CurrentInterfaceInfo.Title</title>
+    <title>@ViewData["Title"] - @Application.CurrentInterfaceInfo (@Application.CurrentThemepackInfo)</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/common/lib/bootstrap/dist/css/bootstrap.css" />
@@ -25,7 +25,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <a href="/" class="navbar-brand">@Application.CurrentInterfaceInfo.Title</a>
+                <a href="/" class="navbar-brand">@Application.CurrentInterfaceInfo (@Application.CurrentThemepackInfo)</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">

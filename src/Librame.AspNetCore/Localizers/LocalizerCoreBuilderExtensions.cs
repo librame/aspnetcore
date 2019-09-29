@@ -15,13 +15,18 @@ using Microsoft.Extensions.Localization;
 
 namespace Librame.AspNetCore
 {
+    using Extensions;
     using Extensions.Core;
 
-    static class LocalizationCoreBuilderExtensions
+    static class LocalizerCoreBuilderExtensions
     {
-        public static ICoreBuilder AddLocalizations(this ICoreBuilder builder)
+        public static ICoreBuilder AddLocalizers(this ICoreBuilder builder)
         {
-            builder.Services.TryReplace<IStringLocalizerFactory, ExpressionStringLocalizerFactoryCore>();
+            //builder.Services.TryReplace<IStringLocalizerFactory, ExpressionStringLocalizerFactoryCore>();
+
+            var optionsAction = (builder.DependencyOptions as AspNetCoreBuilderDependencyOptions).RequestLocalizationAction;
+            if (optionsAction.IsNotNull())
+                builder.Services.Configure(optionsAction);
 
             return builder;
         }

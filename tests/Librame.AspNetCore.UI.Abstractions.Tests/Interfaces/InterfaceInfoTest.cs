@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Extensions.Localization;
 using Xunit;
 
 namespace Librame.AspNetCore.UI.Tests
@@ -15,13 +16,13 @@ namespace Librame.AspNetCore.UI.Tests
 
             public override string Name => "TestUi";
 
-            public override string Title => "²âÊÔ UI ";
-
             public override string Authors => "Test";
 
             public override string Contact => "Test";
 
             public override string Copyright => "Test";
+
+            public override IStringLocalizer Localizer => throw new NotImplementedException();
 
             public static object GetService(Type serviceType)
             {
@@ -35,7 +36,6 @@ namespace Librame.AspNetCore.UI.Tests
         {
             var info = new TestInterfaceInfo();
             Assert.NotEmpty(info.Name);
-            Assert.NotEmpty(info.Title);
             Assert.NotEmpty(info.Authors);
             Assert.NotEmpty(info.Contact);
             Assert.NotEmpty(info.Copyright);

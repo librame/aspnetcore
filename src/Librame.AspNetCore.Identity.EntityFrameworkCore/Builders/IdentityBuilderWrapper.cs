@@ -19,8 +19,9 @@ namespace Librame.AspNetCore.Identity
 
     class IdentityBuilderWrapper : AbstractExtensionBuilderWrapper<IdentityBuilder>, IIdentityBuilderWrapper
     {
-        public IdentityBuilderWrapper(IExtensionBuilder builder, IdentityBuilder rawBuilder)
-            : base(builder, rawBuilder)
+        public IdentityBuilderWrapper(IdentityBuilder rawBuilder, IExtensionBuilder builder,
+            IExtensionBuilderDependencyOptions dependencyOptions)
+            : base(rawBuilder, builder, dependencyOptions)
         {
             Services.AddSingleton<IIdentityBuilderWrapper>(this);
         }
