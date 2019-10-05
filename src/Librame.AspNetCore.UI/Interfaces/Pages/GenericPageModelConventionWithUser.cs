@@ -18,18 +18,18 @@ namespace Librame.AspNetCore.UI
     using Extensions;
 
     /// <summary>
-    /// 带用户泛型参数的界面模板页面模型约定。
+    /// 带用户的泛型页面模型约定。
     /// </summary>
-    public class InterfaceTemplateWithUserPageConvention : IPageApplicationModelConvention
+    public class GenericPageModelConventionWithUser : IPageApplicationModelConvention
     {
         private readonly IUiBuilder _builder;
 
 
         /// <summary>
-        /// 构造一个 <see cref="InterfaceTemplateWithUserPageConvention"/>。
+        /// 构造一个 <see cref="GenericPageModelConventionWithUser"/>。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IUiBuilder"/>。</param>
-        public InterfaceTemplateWithUserPageConvention(IUiBuilder builder)
+        public GenericPageModelConventionWithUser(IUiBuilder builder)
         {
             _builder = builder.NotNull(nameof(builder));
         }
@@ -41,9 +41,9 @@ namespace Librame.AspNetCore.UI
         /// <param name="model">给定的 <see cref="PageApplicationModel"/>。</param>
         public void Apply(PageApplicationModel model)
         {
-            if (model.ModelType.TryGetCustomAttribute(out InterfaceTemplateWithUserAttribute attribute))
+            if (model.ModelType.TryGetCustomAttribute(out GenericApplicationModelAttribute attribute))
             {
-                var implementationModelType = attribute.MakeGenericTypeInfo(_builder.UserType);
+                var implementationModelType = attribute.BuildImplementationType(_builder.UserType);
                 model.ModelType = implementationModelType.GetTypeInfo();
             }
         }

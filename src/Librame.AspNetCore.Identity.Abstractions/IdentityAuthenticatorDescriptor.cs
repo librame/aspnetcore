@@ -32,9 +32,9 @@ namespace Librame.AspNetCore.Identity
         public IdentityAuthenticatorDescriptor(string schemeName, string accountName,
             string secretKey, string issuer = null, int passwordDigits = 6)
         {
-            SchemeName = schemeName.NotNullOrEmpty(nameof(schemeName));
-            AccountName = accountName.NotNullOrEmpty(nameof(accountName));
-            SecretKey = secretKey.NotNullOrEmpty(nameof(accountName));
+            SchemeName = schemeName.NotEmpty(nameof(schemeName));
+            AccountName = accountName.NotEmpty(nameof(accountName));
+            SecretKey = secretKey.NotEmpty(nameof(accountName));
 
             Issuer = issuer.NotEmptyOrDefault(SchemeName);
             PasswordDigits = passwordDigits;

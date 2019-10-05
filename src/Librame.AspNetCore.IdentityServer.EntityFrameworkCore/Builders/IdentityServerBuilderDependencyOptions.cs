@@ -22,12 +22,12 @@ namespace Librame.AspNetCore.IdentityServer
     /// <summary>
     /// 身份服务器构建器依赖选项。
     /// </summary>
-    public class IdentityServerBuilderDependencyOptions : ExtensionBuilderDependencyOptions<IdentityServerBuilderOptions>
+    public class IdentityServerBuilderDependencyOptions : ExtensionBuilderDependencyOptions<IdentityServerBuilderDependencyOptions, IdentityServerBuilderOptions>
     {
         /// <summary>
         /// <see cref="IdentityServerOptions"/> 配置动作。
         /// </summary>
-        public Action<IdentityServerOptions> RawAction { get; set; }
+        public Action<IdentityServerOptions> IdentityServer { get; set; }
             = _ => { };
 
         /// <summary>

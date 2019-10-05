@@ -21,25 +21,27 @@ namespace Librame.AspNetCore.Identity.UI
     /// <summary>
     /// 身份界面站点地图助手。
     /// </summary>
-    public class IdentityInterfaceSitemapHelper
+    public static class IdentityInterfaceSitemapHelper
     {
         /// <summary>
         /// 获取管理底栏站点地图。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IExpressionStringLocalizer{LayoutViewResource}"/>。</param>
+        /// <param name="localizer">给定的 <see cref="IExpressionLocalizer{LayoutViewResource}"/>。</param>
         /// <returns>返回 <see cref="List{NavigationDescriptor}"/>。</returns>
-        public static List<NavigationDescriptor> GetManageFootbar(IExpressionStringLocalizer<LayoutViewResource> localizer)
+        public static List<NavigationDescriptor> GetManageFootbar(IExpressionLocalizer<LayoutViewResource> localizer)
         {
             localizer.NotNull(nameof(localizer));
 
             return new List<NavigationDescriptor>
             {
-                new NavigationDescriptor(new RouteDescriptor("https://github.com/librame/LibrameCore"),
-                    localizer[p => p.Repository]).ChangeTarget("_blank"),
-                new NavigationDescriptor(new RouteDescriptor("https://github.com/librame/LibrameCore/issues"),
-                    localizer[p => p.Issues]).ChangeTarget("_blank"),
-                new NavigationDescriptor(new RouteDescriptor("https://github.com/librame/LibrameCore/blob/master/LICENSE.txt"),
-                    localizer[p => p.Licenses]).ChangeTarget("_blank")
+                new NavigationDescriptor<LayoutViewResource>(new RouteDescriptor("https://github.com/librame/LibrameCore"),
+                    localizer, p => p.Repository).ChangeTagTarget("_blank"),
+
+                new NavigationDescriptor<LayoutViewResource>(new RouteDescriptor("https://github.com/librame/LibrameCore/issues"),
+                    localizer, p => p.Issues).ChangeTagTarget("_blank"),
+
+                new NavigationDescriptor<LayoutViewResource>(new RouteDescriptor("https://github.com/librame/LibrameCore/blob/master/LICENSE.txt"),
+                    localizer, p => p.Licenses).ChangeTagTarget("_blank")
             };
         }
 

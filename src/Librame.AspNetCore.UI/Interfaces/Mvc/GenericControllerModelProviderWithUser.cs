@@ -23,22 +23,22 @@ namespace Librame.AspNetCore.UI
     using Extensions;
 
     /// <summary>
-    /// 带用户泛型参数的界面模板控制器特征提供程序。
+    /// 带用户的泛型控制器模型提供程序。
     /// </summary>
     /// <remarks>
     /// 参考 <see cref="ControllerFeatureProvider"/>。
     /// </remarks>
-    public class InterfaceTemplateWithUserControllerProvider : IApplicationFeatureProvider<ControllerFeature>
+    public class GenericControllerModelProviderWithUser : IApplicationFeatureProvider<ControllerFeature>
     {
         private const string ControllerTypeNameSuffix = "Controller";
         private readonly Type _userType;
 
 
         /// <summary>
-        /// 构造一个 <see cref="InterfaceTemplateWithUserControllerProvider"/>。
+        /// 构造一个 <see cref="GenericControllerModelProviderWithUser"/>。
         /// </summary>
         /// <param name="userType">给定的用户类型。</param>
-        public InterfaceTemplateWithUserControllerProvider(Type userType)
+        public GenericControllerModelProviderWithUser(Type userType)
         {
             _userType = userType.NotNull(nameof(userType));
         }
@@ -55,12 +55,14 @@ namespace Librame.AspNetCore.UI
             {
                 foreach (var type in part.Types.Where(IsController))
                 {
-                    if (type.TryGetCustomAttribute(out InterfaceTemplateWithUserAttribute attribute))
+                    // 限定为泛型应用模型特性的应用模型集合
+                    if (type.TryGetCustomAttribute(out GenericApplicationModelAttribute attribute))
                     {
-                        var implementationType = attribute.MakeGenericTypeInfo(_userType);
+                        var implementationType = attribute.ApplyGenericTypeIfNull(type)
+                            .BuildImplementationType(_userType);
 
                         if (!feature.Controllers.Contains(implementationType))
-                            feature.Controllers.Add(implementationType);
+                            feature.Controllers.Add(implementationType.GetTypeInfo());
                     }
                 }
             }

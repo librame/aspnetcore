@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.UI
     using Extensions.Core;
 
     /// <summary>
-    ///  UI 构建器接口。
+    /// UI 构建器接口。
     /// </summary>
     public interface IUiBuilder : IExtensionBuilder
     {

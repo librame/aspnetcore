@@ -3,6 +3,8 @@ using Xunit;
 
 namespace Librame.AspNetCore.Tests
 {
+    using Extensions.Core;
+
     public class UriCombinerCoreTests
     {
         [Fact]

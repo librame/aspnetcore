@@ -32,7 +32,7 @@ namespace Librame.AspNetCore.IdentityServer.Client
             });
             
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             //services.AddAuthentication("Bearer")
             //    .AddIdentityServerAuthentication(options =>

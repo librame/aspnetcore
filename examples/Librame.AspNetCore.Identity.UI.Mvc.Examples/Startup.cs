@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
 {
+    using Extensions;
     using Extensions.Data;
     using Extensions.Network;
 
@@ -42,7 +44,7 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
             .AddIdentityCookies(cookies => { });
 
             var mvcBuilder = services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
@@ -59,11 +61,11 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
                 })
                 .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                 {
-                    var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
                     optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
+                        sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetSimpleAssemblyName()));
                 })
                 .AddIdentifier<IdentityStoreIdentifier>()
+                .AddDbDesignTime<SqlServerDesignTimeServices>()
                 .AddIdentity<IdentityDbContextAccessor>(options =>
                 {
                     options.Stores.MaxLengthForKeys = 128;
@@ -90,18 +92,16 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            app.UseAuthorization();
             app.UseLibrameCore()
                 .UseIdentity();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(routes =>
             {
-                routes.MapIdentityAreaRoute();
+                routes.MapIdentityAreaControllerRoute();
 
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "Home", action = "Index" }
-                );
+                routes.MapDefaultControllerRoute();
             });
         }
     }

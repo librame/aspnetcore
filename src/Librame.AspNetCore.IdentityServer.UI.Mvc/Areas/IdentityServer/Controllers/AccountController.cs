@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
     /// </summary>
     [SecurityHeaders]
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(ExternalController<>))]
+    [GenericApplicationModel(typeof(ExternalController<>))]
     public class AccountController<TUser> : Controller
         where TUser : IdentityUser<string>, new()
     {
@@ -77,7 +77,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         public async Task<IActionResult> Login(string returnUrl)
         {
             // build a model so we know what to show on the login page
-            var vm = await BuildLoginViewModelAsync(returnUrl);
+            var vm = await BuildLoginViewModelAsync(returnUrl).ConfigureAndResultAsync();
 
             if (vm.IsExternalLoginOnly)
             {
@@ -99,7 +99,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         public async Task<IActionResult> Login(LoginInputModel model, string button)
         {
             // check if we are in the context of an authorization request
-            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl).ConfigureAndResultAsync();
 
             // the user clicked the "cancel" button
             if (button != "login")
@@ -109,10 +109,10 @@ namespace Librame.AspNetCore.IdentityServer.UI
                     // if the user cancels, send a result back into IdentityServer as if they 
                     // denied the consent (even if this client does not require consent).
                     // this will send back an access denied OIDC error response to the client.
-                    await _interaction.GrantConsentAsync(context, ConsentResponse.Denied);
+                    await _interaction.GrantConsentAsync(context, ConsentResponse.Denied).ConfigureAndWaitAsync();
 
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                    if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                    if (await _clientStore.IsPkceClientAsync(context.ClientId).ConfigureAndResultAsync())
                     {
                         // if the client is PKCE then we assume it's native, so this change in how to
                         // return the response is for better UX for the end user.
@@ -130,15 +130,15 @@ namespace Librame.AspNetCore.IdentityServer.UI
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByNameAsync(model.Username);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
+                    var user = await _userManager.FindByNameAsync(model.Username).ConfigureAndResultAsync();
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName)).ConfigureAndWaitAsync();
 
                     if (context != null)
                     {
-                        if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                        if (await _clientStore.IsPkceClientAsync(context.ClientId).ConfigureAndResultAsync())
                         {
                             // if the client is PKCE then we assume it's native, so this change in how to
                             // return the response is for better UX for the end user.
@@ -165,12 +165,12 @@ namespace Librame.AspNetCore.IdentityServer.UI
                     }
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
+                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials")).ConfigureAndWaitAsync();
                 ModelState.AddModelError(string.Empty, _options.InvalidCredentialsErrorMessage);
             }
 
             // something went wrong, show form with error
-            var vm = await BuildLoginViewModelAsync(model);
+            var vm = await BuildLoginViewModelAsync(model).ConfigureAndResultAsync();
             return View(vm);
         }
 
@@ -182,13 +182,13 @@ namespace Librame.AspNetCore.IdentityServer.UI
         public async Task<IActionResult> Logout(string logoutId)
         {
             // build a model so the logout page knows what to display
-            var vm = await BuildLogoutViewModelAsync(logoutId);
+            var vm = await BuildLogoutViewModelAsync(logoutId).ConfigureAndResultAsync();
 
             if (vm.ShowLogoutPrompt == false)
             {
                 // if the request for logout was properly authenticated from IdentityServer, then
                 // we don't need to show the prompt and can just log the user out directly.
-                return await Logout(vm);
+                return await Logout(vm).ConfigureAndResultAsync();
             }
 
             return View(vm);
@@ -202,15 +202,15 @@ namespace Librame.AspNetCore.IdentityServer.UI
         public async Task<IActionResult> Logout(LogoutInputModel model)
         {
             // build a model so the logged out page knows what to display
-            var vm = await BuildLoggedOutViewModelAsync(model.LogoutId);
+            var vm = await BuildLoggedOutViewModelAsync(model.LogoutId).ConfigureAndResultAsync();
 
             if (User?.Identity.IsAuthenticated == true)
             {
                 // delete local authentication cookie
-                await _signInManager.SignOutAsync();
+                await _signInManager.SignOutAsync().ConfigureAndWaitAsync();
 
                 // raise the logout event
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
+                await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName())).ConfigureAndWaitAsync();
             }
 
             // check if we need to trigger sign-out at an upstream identity provider
@@ -235,7 +235,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /*****************************************/
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl).ConfigureAndResultAsync();
             if (context?.IdP != null)
             {
                 // this is meant to short circuit the UI and only trigger the one external IdP
@@ -251,7 +251,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 }; 
             }
 
-            var schemes = await _schemeProvider.GetAllSchemesAsync();
+            var schemes = await _schemeProvider.GetAllSchemesAsync().ConfigureAndResultAsync();
 
             var providers = schemes
                 .Where(x => x.DisplayName != null ||
@@ -266,7 +266,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             var allowLocal = true;
             if (context?.ClientId != null)
             {
-                var client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId);
+                var client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId).ConfigureAndResultAsync();
                 if (client != null)
                 {
                     allowLocal = client.EnableLocalLogin;
@@ -290,7 +290,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
 
         private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
         {
-            var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
+            var vm = await BuildLoginViewModelAsync(model.ReturnUrl).ConfigureAndResultAsync();
             vm.Username = model.Username;
             vm.RememberLogin = model.RememberLogin;
             return vm;
@@ -307,7 +307,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 return vm;
             }
 
-            var context = await _interaction.GetLogoutContextAsync(logoutId);
+            var context = await _interaction.GetLogoutContextAsync(logoutId).ConfigureAndResultAsync();
             if (context?.ShowSignoutPrompt == false)
             {
                 // it's safe to automatically sign-out
@@ -323,7 +323,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         private async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(string logoutId)
         {
             // get context information (client name, post logout redirect URI and iframe for federated signout)
-            var logout = await _interaction.GetLogoutContextAsync(logoutId);
+            var logout = await _interaction.GetLogoutContextAsync(logoutId).ConfigureAndResultAsync();
 
             var vm = new LoggedOutViewModel
             {
@@ -339,7 +339,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 var idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
                 if (idp != null && idp != IdentityServer4.IdentityServerConstants.LocalIdentityProvider)
                 {
-                    var providerSupportsSignout = await HttpContext.GetSchemeSupportsSignOutAsync(idp);
+                    var providerSupportsSignout = await HttpContext.GetSchemeSupportsSignOutAsync(idp).ConfigureAndResultAsync();
                     if (providerSupportsSignout)
                     {
                         if (vm.LogoutId == null)
@@ -347,7 +347,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                             // if there's no current logout context, we need to create one
                             // this captures necessary info from the current logged in user
                             // before we signout and redirect away to the external IdP for signout
-                            vm.LogoutId = await _interaction.CreateLogoutContextAsync();
+                            vm.LogoutId = await _interaction.CreateLogoutContextAsync().ConfigureAndResultAsync();
                         }
 
                         vm.ExternalAuthenticationScheme = idp;

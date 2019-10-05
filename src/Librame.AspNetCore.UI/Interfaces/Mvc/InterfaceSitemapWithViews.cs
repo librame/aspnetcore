@@ -22,39 +22,34 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 构造一个 <see cref="InterfaceSitemapWithViews"/>。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IExpressionStringLocalizer{ApplicationSiteMapResource}"/>。</param>
+        /// <param name="localizer">给定的 <see cref="IExpressionLocalizer{InterfaceSitemapResource}"/>。</param>
         /// <param name="area">给定的区域（可选）。</param>
-        public InterfaceSitemapWithViews(IExpressionStringLocalizer<InterfaceSitemapResource> localizer, string area = null)
+        public InterfaceSitemapWithViews(IExpressionLocalizer<InterfaceSitemapResource> localizer, string area = null)
             : base(localizer, area)
         {
             var homeController = "Home";
             var accountController = "Account";
             var manageController = "Manage";
 
-            var index = new RouteDescriptor(nameof(Index), homeController, area: null);
-            Index = new NavigationDescriptor(index, Localizer[nameof(Index)]);
+            // Index
+            Index = new NavigationDescriptor(new RouteDescriptor(nameof(Index), homeController, area: null), Localizer);
 
-            var accessDenied = new RouteDescriptor(nameof(AccessDenied), homeController, area: null);
-            AccessDenied = new NavigationDescriptor(accessDenied, Localizer[nameof(AccessDenied)]);
+            // Home
+            AccessDenied = new NavigationDescriptor(new RouteDescriptor(nameof(AccessDenied), homeController, area: null), Localizer);
 
-            var privacy = new RouteDescriptor(nameof(Privacy), homeController, area: null);
-            Privacy = new NavigationDescriptor(privacy, Localizer[nameof(Privacy)]);
+            Privacy = new NavigationDescriptor(new RouteDescriptor(nameof(Privacy), homeController, area: null), Localizer);
 
-            var sitemap = new RouteDescriptor(nameof(Sitemap), homeController, area: null);
-            Sitemap = new NavigationDescriptor(sitemap, Localizer[nameof(Sitemap)]);
+            Sitemap = new NavigationDescriptor(new RouteDescriptor(nameof(Sitemap), homeController, area: null), Localizer);
 
+            // Account
+            Login = new NavigationDescriptor(new RouteDescriptor(nameof(Login), accountController, Area), Localizer);
 
-            var login = new RouteDescriptor(nameof(Login), accountController, Area);
-            Login = new NavigationDescriptor(login, Localizer[nameof(Login)]);
+            Logout = new NavigationDescriptor<InterfaceSitemapResource>(new RouteDescriptor("LogOff", accountController, Area), Localizer, p => p.Logout);
 
-            var logout = new RouteDescriptor("LogOff", accountController, Area);
-            Logout = new NavigationDescriptor(logout, Localizer[nameof(Logout)]);
+            Register = new NavigationDescriptor(new RouteDescriptor(nameof(Register), accountController, Area), Localizer);
 
-            var register = new RouteDescriptor(nameof(Register), accountController, Area);
-            Register = new NavigationDescriptor(register, Localizer[nameof(Register)]);
-
-            var manage = new RouteDescriptor(nameof(Index), manageController, Area);
-            Manage = new NavigationDescriptor(manage, Localizer[nameof(Manage)]);
+            // Manage
+            Manage = new NavigationDescriptor<InterfaceSitemapResource>(new RouteDescriptor(nameof(Index), manageController, Area), Localizer, p => p.Manage);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -43,6 +44,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                     .AddStoreHubWithAccessor<TestStoreHub>()
                     .AddInitializerWithAccessor<IdentityServerStoreInitializer>()
                     .AddIdentifier<IdentityServerStoreIdentifier>()
+                    .AddDbDesignTime<SqlServerDesignTimeServices>()
                     .AddIdentity<IdentityServerDbContextAccessor>(options =>
                     {
                         options.Stores.MaxLengthForKeys = 128;
@@ -50,7 +52,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                     .AddEncryption().AddDeveloperGlobalSigningCredentials()
                     .AddIdentityServer<IdentityServerDbContextAccessor, DefaultIdentityUser<string>>(dependency =>
                     {
-                        dependency.RawAction = options =>
+                        dependency.IdentityServer = options =>
                         {
                             options.Events.RaiseErrorEvents = true;
                             options.Events.RaiseInformationEvents = true;
@@ -58,7 +60,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                             options.Events.RaiseSuccessEvents = true;
                             options.Authentication.CookieAuthenticationScheme = IdentityConstants.ApplicationScheme;
                         };
-                        dependency.OptionsAction = builder =>
+                        dependency.Builder.Action = builder =>
                         {
                             builder.Authorizations.Clients.AddIdentityServerSPA("Librame.AspNetCore.IdentityServer.Api", _ => { });
                         };

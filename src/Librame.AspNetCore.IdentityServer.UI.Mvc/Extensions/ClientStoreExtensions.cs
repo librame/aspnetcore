@@ -11,7 +11,7 @@ namespace Librame.AspNetCore.IdentityServer
     /// <summary>
     /// 抽象客户端存储静态扩展。
     /// </summary>
-    public static class AbstractionClientStoreExtensions
+    public static class ClientStoreExtensions
     {
         /// <summary>
         /// 确定客户端是否配置为使用 PKCE。
@@ -21,10 +21,10 @@ namespace Librame.AspNetCore.IdentityServer
         /// <returns>返回一个包含布尔值的异步操作。</returns>
         public static async Task<bool> IsPkceClientAsync(this IClientStore store, string clientId)
         {
-            if (clientId.IsNullOrEmpty())
+            if (clientId.IsEmpty())
                 return false;
 
-            var client = await store.FindEnabledClientByIdAsync(clientId);
+            var client = await store.FindEnabledClientByIdAsync(clientId).ConfigureAndResultAsync();
             return client?.RequirePkce == true;
         }
 

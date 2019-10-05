@@ -16,8 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -28,16 +26,19 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
     using AspNetCore.UI;
     using Extensions;
     using Extensions.Core;
+    using Extensions.Data;
     using Extensions.Network;
 
     /// <summary>
     /// 用户控制器。
     /// </summary>
     [Authorize]
-    public class AccountController : ApplicationController
+    [GenericApplicationModel]
+    public class AccountController<TUser> : ApplicationController
+        where TUser : class, IId<string>
     {
         [InjectionService]
-        private ILogger<AccountController> _logger = null;
+        private ILogger<AccountController<TUser>> _logger = null;
 
         [InjectionService]
         private IEmailService _emailService = null;
@@ -61,22 +62,19 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         private IExpressionHtmlLocalizer<SendCodeViewResource> _sendCodeLocalizer = null;
 
         [InjectionService]
-        private IIdentityBuilderWrapper _builderWrapper = null;
-
-        [InjectionService]
-        private IServiceProvider _scopeServiceProvider = null;
-
-        [InjectionService]
         private IdentityStoreIdentifier _storeIdentifier = null;
 
-        private readonly dynamic _signInManager = null;
-        private readonly dynamic _userManager = null;
-        private readonly dynamic _userStore = null;
-        //private readonly dynamic _emailStore;
+        [InjectionService]
+        private IUserStore<TUser> _userStore = null;
+
+        [InjectionService]
+        private SignInManager<TUser> _signInManager = null;
+
+        private readonly UserManager<TUser> _userManager = null;
 
 
         /// <summary>
-        /// 构造一个 <see cref="AccountController"/>。
+        /// 构造一个 <see cref="AccountController{TUser}"/>。
         /// </summary>
         /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
         /// <param name="application">给定的 <see cref="IApplicationContext"/>。</param>
@@ -85,12 +83,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         {
             injectionService.Inject(this);
 
-            _signInManager = _scopeServiceProvider.GetService(typeof(SignInManager<>)
-                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
             _userManager = _signInManager.UserManager;
-            _userStore = _scopeServiceProvider.GetService(typeof(IUserStore<>)
-                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
-            //_emailStore = _userStore.GetUserEmailStore(_userManager);
         }
 
 
@@ -105,6 +98,10 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
             ViewData["ExternalSchemes"] = _signInManager.GetExternalAuthenticationSchemesAsync().Result;
+
+            ViewBag.BuilderOptions = _builderOptions.Value;
+            ViewBag.Options = _options.Value;
+            ViewBag.Localizer = _registerLocalizer;
 
             return View();
         }
@@ -125,7 +122,9 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email,
+                        model.Password, model.RememberMe, lockoutOnFailure: false).ConfigureAndResultAsync();
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
@@ -184,15 +183,17 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                dynamic user = _builderWrapper.RawBuilder.UserType.EnsureCreateObject();
-                user.Id = await _storeIdentifier.GetUserIdAsync();
+                var user = typeof(TUser).EnsureCreate<TUser>();
+                user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await _userManager.CreateUserByEmail(_userStore, model.Email, model.Password, user);
+                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore,
+                    model.Email, model.Password, user).ConfigureAndResultAsync();
+
                 if (result.Succeeded)
                 {
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
 
                     var callbackUrl = Url.Action("ConfirmEmail", "Account",
                         new { userId = user.Id, code },
@@ -200,9 +201,9 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
 
                     await _emailService.SendAsync(model.Email,
                         _registerLocalizer[r => r.ConfirmYourEmail]?.Value,
-                        _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value);
+                        _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value).ConfigureAndWaitAsync();
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                     _logger.LogInformation(3, "User created a new account with password.");
 
                     return this.RedirectToLocalUrlOrIdentityIndex(returnUrl);
@@ -223,7 +224,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()
         {
-            await _signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync().ConfigureAndWaitAsync();
             _logger.LogInformation(4, "User logged out.");
             return RedirectToSitemapIndex();
         }
@@ -261,18 +262,20 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.FromExternalProvider, remoteError].Value);
                 return View(nameof(Login));
             }
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+            var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAndResultAsync();
             if (info == null)
             {
                 return RedirectToAction(nameof(Login));
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false)
+                .ConfigureAndResultAsync();
+
             if (result.Succeeded)
             {
                 // Update any authentication tokens if login succeeded
-                await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
+                await _signInManager.UpdateExternalAuthenticationTokensAsync(info).ConfigureAndWaitAsync();
 
                 _logger.LogInformation(5, "User logged in with {Name} provider.", (string)info.LoginProvider);
                 return this.RedirectToLocalUrlOrIdentityIndex(returnUrl);
@@ -290,6 +293,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["ProviderDisplayName"] = info.ProviderDisplayName;
+
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
             }
@@ -310,26 +314,28 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
-                var info = await _signInManager.GetExternalLoginInfoAsync();
+                var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAndResultAsync();
                 if (info == null)
                 {
                     return View("ExternalLoginFailure");
                 }
 
-                dynamic user = _builderWrapper.RawBuilder.UserType.EnsureCreateObject();
-                user.Id = await _storeIdentifier.GetUserIdAsync();
+                var user = typeof(TUser).EnsureCreate<TUser>();
+                user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await _userManager.CreateUserByEmail(_userStore, model.Email, password: null, user: (IDefaultIdentityUser)user);
+                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore,
+                    model.Email, password: null, user: user).ConfigureAndResultAsync();
+
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
+                    result = await _userManager.AddLoginAsync(user, info).ConfigureAndResultAsync();
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                         _logger.LogInformation(6, "User created an account using {Name} provider.", (string)info.LoginProvider);
 
                         // Update any authentication tokens as well
-                        await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
+                        await _signInManager.UpdateExternalAuthenticationTokensAsync(info).ConfigureAndWaitAsync();
 
                         return this.RedirectToLocalUrlOrIdentityIndex(returnUrl);
                     }
@@ -356,12 +362,12 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             {
                 return View("Error");
             }
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId).ConfigureAndResultAsync();
             if (user == null)
             {
                 return View("Error");
             }
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAndResultAsync();
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -389,8 +395,8 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                var user = await _userManager.FindByEmailAsync(model.Email).ConfigureAndResultAsync();
+                if (user == null || !await _userManager.IsEmailConfirmedAsync(user).ConfigureAndResultAsync())
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -430,7 +436,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         [AllowAnonymous]
         public IActionResult ResetPassword(string code = null)
         {
-            if (code.IsNotNullOrEmpty())
+            if (code.IsNotEmpty())
                 return View("Error");
 
             ViewBag.BuilderOptions = _builderOptions.Value;
@@ -454,13 +460,13 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             {
                 return View(model);
             }
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email).ConfigureAndResultAsync();
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction(nameof(ResetPasswordConfirmation), "Account");
             }
-            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password).ConfigureAndResultAsync();
             if (result.Succeeded)
             {
                 return RedirectToAction(nameof(ResetPasswordConfirmation), "Account");
@@ -494,13 +500,15 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         {
             ViewBag.Localizer = _sendCodeLocalizer;
 
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
             if (user == null)
             {
                 return View("Error");
             }
-            IList<string> userFactors = await _userManager.GetValidTwoFactorProvidersAsync(user);
+
+            var userFactors = await _userManager.GetValidTwoFactorProvidersAsync(user).ConfigureAndResultAsync();
             var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
+            
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
@@ -519,7 +527,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 return View();
             }
 
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
             if (user == null)
             {
                 return View("Error");
@@ -531,7 +539,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             }
 
             // Generate the token and send it
-            var code = await _userManager.GenerateTwoFactorTokenAsync(user, model.SelectedProvider);
+            var code = await _userManager.GenerateTwoFactorTokenAsync(user, model.SelectedProvider).ConfigureAndResultAsync();
             if (string.IsNullOrWhiteSpace(code))
             {
                 return View("Error");
@@ -540,11 +548,11 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             var message = _sendCodeLocalizer[r => r.YourSecurityCodeIs].Value + code;
             if (model.SelectedProvider == "Email")
             {
-                await _emailService.SendAsync(await _userManager.GetEmailAsync(user), _sendCodeLocalizer[r => r.SecurityCode].Value, message);
+                await _emailService.SendAsync(await _userManager.GetEmailAsync(user).ConfigureAndResultAsync(), _sendCodeLocalizer[r => r.SecurityCode].Value, message).ConfigureAndWaitAsync();
             }
             else if (model.SelectedProvider == "Phone")
             {
-                await _smsService.SendAsync(await _userManager.GetPhoneNumberAsync(user), message);
+                await _smsService.SendAsync(await _userManager.GetPhoneNumberAsync(user).ConfigureAndResultAsync(), message).ConfigureAndWaitAsync();
             }
 
             return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, model.ReturnUrl, model.RememberMe });
@@ -563,7 +571,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         public async Task<IActionResult> VerifyCode(string provider, bool rememberMe, string returnUrl = null)
         {
             // Require that the user has already logged in via username/password or external login
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
             if (user == null)
             {
                 return View("Error");
@@ -589,7 +597,9 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             // The following code protects for brute force attacks against the two factor codes.
             // If a user enters incorrect codes for a specified amount of time then the user account
             // will be locked out for a specified amount of time.
-            var result = await _signInManager.TwoFactorSignInAsync(model.Provider, model.Code, model.RememberMe, model.RememberBrowser);
+            var result = await _signInManager.TwoFactorSignInAsync(model.Provider,
+                model.Code, model.RememberMe, model.RememberBrowser).ConfigureAndResultAsync();
+
             if (result.Succeeded)
             {
                 return this.RedirectToLocalUrlOrIdentityIndex(model.ReturnUrl);
@@ -618,7 +628,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         public async Task<IActionResult> VerifyAuthenticatorCode(bool rememberMe, string returnUrl = null)
         {
             // Require that the user has already logged in via username/password or external login
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
             if (user == null)
             {
                 return View("Error");
@@ -644,7 +654,9 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             // The following code protects for brute force attacks against the two factor codes.
             // If a user enters incorrect codes for a specified amount of time then the user account
             // will be locked out for a specified amount of time.
-            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(model.Code, model.RememberMe, model.RememberBrowser);
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(model.Code,
+                model.RememberMe, model.RememberBrowser).ConfigureAndResultAsync();
+
             if (result.Succeeded)
             {
                 return this.RedirectToLocalUrlOrIdentityIndex(model.ReturnUrl);
@@ -672,7 +684,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         public async Task<IActionResult> UseRecoveryCode(string returnUrl = null)
         {
             // Require that the user has already logged in via username/password or external login
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
             if (user == null)
             {
                 return View("Error");
@@ -695,7 +707,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 return View(model);
             }
 
-            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(model.Code);
+            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(model.Code).ConfigureAndResultAsync();
             if (result.Succeeded)
             {
                 return this.RedirectToLocalUrlOrIdentityIndex(model.ReturnUrl);
@@ -716,11 +728,6 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-        }
-
-        private Task<dynamic> GetCurrentUserAsync()
-        {
-            return _userManager.GetUserAsync(HttpContext.User);
         }
 
         #endregion

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,7 +43,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
             .AddIdentityCookies(cookies => { });
 
             var mvcBuilder = services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddRazorPagesOptions(options =>
                 {
                     // Examples
@@ -70,6 +71,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddIdentifier<IdentityStoreIdentifier>()
+                .AddDbDesignTime<SqlServerDesignTimeServices>()
                 .AddIdentity<IdentityDbContextAccessor>(options =>
                 {
                     options.Stores.MaxLengthForKeys = 128;
@@ -96,10 +98,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            app.UseAuthorization();
             app.UseLibrameCore()
                 .UseIdentity();
 
-            app.UseMvcWithDefaultRoute();
+            app.UseRouting();
+            app.UseEndpoints(routes =>
+            {
+                routes.MapRazorPages();
+            });
         }
 
     }

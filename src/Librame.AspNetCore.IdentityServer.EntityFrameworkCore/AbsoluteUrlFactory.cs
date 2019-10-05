@@ -41,7 +41,7 @@ namespace Librame.AspNetCore.IdentityServer
 
         private bool ShouldProcessPath(string path)
         {
-            if (path.IsNullOrEmpty() || !Uri.IsWellFormedUriString(path, UriKind.RelativeOrAbsolute))
+            if (path.IsEmpty() || !Uri.IsWellFormedUriString(path, UriKind.RelativeOrAbsolute))
                 return false;
 
             if (Uri.IsWellFormedUriString(path, UriKind.Absolute))

@@ -26,13 +26,13 @@ namespace Librame.AspNetCore.IdentityServer.Tests
 
         public TestStoreHub UseDefaultDbConnection()
         {
-            Accessor.ToggleTenant(t => t.DefaultConnectionString);
+            Accessor.SwitchTenant(t => t.DefaultConnectionString);
             return this;
         }
 
         public TestStoreHub UseWriteDbConnection()
         {
-            Accessor.ToggleTenant(t => t.WritingConnectionString);
+            Accessor.SwitchTenant(t => t.WritingConnectionString);
             return this;
         }
     }

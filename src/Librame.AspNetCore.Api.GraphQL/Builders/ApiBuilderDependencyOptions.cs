@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// API 构建器依赖选项。
     /// </summary>
-    public class ApiBuilderDependencyOptions : ExtensionBuilderDependencyOptions<ApiBuilderOptions>
+    public class ApiBuilderDependencyOptions : ExtensionBuilderDependencyOptions<ApiBuilderDependencyOptions, ApiBuilderOptions>
     {
     }
 }

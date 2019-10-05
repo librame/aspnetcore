@@ -70,7 +70,7 @@
         <!-- <h3>Localizer[r => r.ExternalLoginDescr]</h3> -->
         <div class="social-login-buttons">
             @{
-                if (Model.ExternalLogins.IsNullOrEmpty())
+                if (Model.ExternalLogins.IsEmpty())
                 {
                     <div>
                         <p>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -40,6 +41,7 @@ namespace Librame.AspNetCore.Identity.Tests
                     .AddStoreHubWithAccessor<TestStoreHub>()
                     .AddInitializerWithAccessor<IdentityStoreInitializer>()
                     .AddIdentifier<IdentityStoreIdentifier>()
+                    .AddDbDesignTime<SqlServerDesignTimeServices>()
                     .AddIdentity<IdentityDbContextAccessor>(options =>
                     {
                         options.Stores.MaxLengthForKeys = 128;

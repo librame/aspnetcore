@@ -4,12 +4,12 @@
 }
 <nav class="pull-left">
     <ul class="nav">
-        @if (sitemap.ManageFootbar.IsNotNullOrEmpty())
+        @if (sitemap.ManageFootbar.IsNotEmpty())
         {
             foreach (var nav in sitemap.ManageFootbar)
             {
                 <li class="nav-item">
-                    <a class="nav-link" href="@nav.ToRouteString(Url)" title="@nav.Title" @nav.Target>
+                    <a class="nav-link" href="@nav.ToRouteString(Url)" title="@nav.TagTitle" @nav.TagTarget>
                         @nav.Text
                     </a>
                 </li>

@@ -21,9 +21,9 @@ using System;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// ASP.NET 核心构建器服务集合静态扩展。
+    /// <see cref="CoreBuilder"/> for ASP.NET Core 服务集合静态扩展。
     /// </summary>
-    public static class AspNetCoreBuilderServiceCollectionExtensions
+    public static class AspNetCoreCoreBuilderServiceCollectionExtensions
     {
         /// <summary>
         /// 添加 Librame for ASP.NET Core。
@@ -34,13 +34,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
         public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
             Action<RequestLocalizationOptions> requestLocalizationAction,
-            Func<IServiceCollection, AspNetCoreBuilderDependencyOptions, ICoreBuilder> builderFactory = null)
+            Func<IServiceCollection, AspNetCoreCoreBuilderDependencyOptions, ICoreBuilder> builderFactory = null)
         {
             requestLocalizationAction.NotNull(nameof(requestLocalizationAction));
 
             return services.AddLibrameCore(dependency =>
             {
-                dependency.RequestLocalizationAction = requestLocalizationAction;
+                dependency.RequestLocalization.Action = requestLocalizationAction;
             },
             builderFactory);
         }
@@ -54,7 +54,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
         public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
             Action<ILoggingBuilder> loggingAction,
-            Func<IServiceCollection, AspNetCoreBuilderDependencyOptions, ICoreBuilder> builderFactory = null)
+            Func<IServiceCollection, AspNetCoreCoreBuilderDependencyOptions, ICoreBuilder> builderFactory = null)
         {
             loggingAction.NotNull(nameof(loggingAction));
 
@@ -74,13 +74,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
         public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
             Action<CoreBuilderOptions> builderAction,
-            Func<IServiceCollection, AspNetCoreBuilderDependencyOptions, ICoreBuilder> builderFactory = null)
+            Func<IServiceCollection, AspNetCoreCoreBuilderDependencyOptions, ICoreBuilder> builderFactory = null)
         {
             builderAction.NotNull(nameof(builderAction));
 
             return services.AddLibrameCore(dependency =>
             {
-                dependency.OptionsAction = builderAction;
+                dependency.Builder.Action = builderAction;
             },
             builderFactory);
         }
@@ -93,12 +93,26 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builderFactory">给定创建核心构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
         public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
-            Action<AspNetCoreBuilderDependencyOptions> dependencyAction = null,
-            Func<IServiceCollection, AspNetCoreBuilderDependencyOptions, ICoreBuilder> builderFactory = null)
-        {
-            var builder = services.AddLibrame(dependencyAction, builderFactory);
+            Action<AspNetCoreCoreBuilderDependencyOptions> dependencyAction = null,
+            Func<IServiceCollection, AspNetCoreCoreBuilderDependencyOptions, ICoreBuilder> builderFactory = null)
+            => services.AddLibrameCore<AspNetCoreCoreBuilderDependencyOptions>(dependencyAction, builderFactory);
 
-            return builder.AddAspNetCore();
+        /// <summary>
+        /// 添加 Librame for ASP.NET Core。
+        /// </summary>
+        /// <typeparam name="TDependencyOptions">指定的依赖类型。</typeparam>
+        /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
+        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="builderFactory">给定创建核心构建器的工厂方法（可选）。</param>
+        /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
+        public static ICoreBuilder AddLibrameCore<TDependencyOptions>(this IServiceCollection services,
+            Action<TDependencyOptions> dependencyAction = null,
+            Func<IServiceCollection, TDependencyOptions, ICoreBuilder> builderFactory = null)
+            where TDependencyOptions : AspNetCoreCoreBuilderDependencyOptions, new()
+        {
+            return services
+                .AddLibrame(dependencyAction, builderFactory)
+                .AddAspNetCore();
         }
 
         private static ICoreBuilder AddAspNetCore(this ICoreBuilder builder)

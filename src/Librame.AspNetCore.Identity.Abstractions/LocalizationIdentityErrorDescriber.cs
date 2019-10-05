@@ -21,14 +21,14 @@ namespace Librame.AspNetCore.Identity
     /// </summary>
     public class LocalizationIdentityErrorDescriber : IdentityErrorDescriber
     {
-        private readonly IExpressionStringLocalizer<IdentityErrorDescriberResource> _localizer;
+        private readonly IExpressionLocalizer<IdentityErrorDescriberResource> _localizer;
 
 
         /// <summary>
         /// 构造一个 <see cref="LocalizationIdentityErrorDescriber"/>。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IExpressionStringLocalizer{IdentityErrorDescriberResource}"/>。</param>
-        public LocalizationIdentityErrorDescriber(IExpressionStringLocalizer<IdentityErrorDescriberResource> localizer)
+        /// <param name="localizer">给定的 <see cref="IExpressionLocalizer{IdentityErrorDescriberResource}"/>。</param>
+        public LocalizationIdentityErrorDescriber(IExpressionLocalizer<IdentityErrorDescriberResource> localizer)
         {
             _localizer = localizer;
         }

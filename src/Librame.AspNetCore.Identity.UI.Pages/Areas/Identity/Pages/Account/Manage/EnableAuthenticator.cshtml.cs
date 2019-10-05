@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     /// <summary>
     /// 启用验证器页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(EnableAuthenticatorPageModel<>))]
+    [GenericApplicationModel(typeof(EnableAuthenticatorPageModel<>))]
     public class EnableAuthenticatorPageModel : PageModel
     {
         /// <summary>
@@ -84,8 +84,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly UrlEncoder _urlEncoder;
         private readonly ILogger<EnableAuthenticatorPageModel> _logger;
-        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
-        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
         private readonly IdentityBuilderOptions _options;
 
 
@@ -93,8 +93,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             UserManager<TUser> userManager,
             UrlEncoder urlEncoder,
             ILogger<EnableAuthenticatorPageModel> logger,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer,
-            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer,
+            IExpressionLocalizer<StatusMessageResource> statusLocalizer,
+            IExpressionLocalizer<ErrorMessageResource> errorLocalizer,
             IOptions<IdentityBuilderOptions> options)
         {
             _userManager = userManager;
@@ -108,20 +108,20 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadSharedKeyAndQrCodeUriAsync(user);
+            await LoadSharedKeyAndQrCodeUriAsync(user).ConfigureAndWaitAsync();
 
             return Page();
         }
 
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -129,7 +129,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
-                await LoadSharedKeyAndQrCodeUriAsync(user);
+                await LoadSharedKeyAndQrCodeUriAsync(user).ConfigureAndWaitAsync();
                 return Page();
             }
 
@@ -137,24 +137,24 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             var verificationCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
             var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
-                user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
+                user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode).ConfigureAndResultAsync();
 
             if (!is2faTokenValid)
             {
                 ModelState.AddModelError(nameof(Input.TwoFactorCode), _errorLocalizer[r => r.InvalidVerificationCode]);
-                await LoadSharedKeyAndQrCodeUriAsync(user);
+                await LoadSharedKeyAndQrCodeUriAsync(user).ConfigureAndWaitAsync();
                 return Page();
             }
 
-            await _userManager.SetTwoFactorEnabledAsync(user, true);
-            var userId = await _userManager.GetUserIdAsync(user);
+            await _userManager.SetTwoFactorEnabledAsync(user, true).ConfigureAndResultAsync();
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
             _logger.LogInformation("User with ID '{UserId}' has enabled 2FA with an authenticator app.", userId);
 
             StatusMessage = _statusLocalizer[r => r.EnableAuthenticator];
 
-            if (await _userManager.CountRecoveryCodesAsync(user) == 0)
+            if (await _userManager.CountRecoveryCodesAsync(user).ConfigureAndResultAsync() == 0)
             {
-                var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+                var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10).ConfigureAndResultAsync();
                 RecoveryCodes = recoveryCodes.ToArray();
                 return RedirectToPage("./ShowRecoveryCodes");
             }
@@ -167,16 +167,16 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private async Task LoadSharedKeyAndQrCodeUriAsync(TUser user)
         {
             // Load the authenticator key & QR code URI to display on the form
-            var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+            var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
             if (string.IsNullOrEmpty(unformattedKey))
             {
-                await _userManager.ResetAuthenticatorKeyAsync(user);
-                unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+                await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
+                unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
             }
 
             SharedKey = FormatKey(unformattedKey);
 
-            var email = await _userManager.GetEmailAsync(user);
+            var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
             AuthenticatorUri = GenerateQrCodeUri(email, unformattedKey);
         }
 
@@ -205,7 +205,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             var descriptor = new IdentityAuthenticatorDescriptor(schemeName, email, unformattedKey);
             var qrCodeUri = _options.AuthenticatorUriFactory?.Invoke(descriptor);
-            if (qrCodeUri.IsNullOrEmpty())
+            if (qrCodeUri.IsEmpty())
                 qrCodeUri = descriptor.BuildOtpAuthUriString();
 
             return qrCodeUri;

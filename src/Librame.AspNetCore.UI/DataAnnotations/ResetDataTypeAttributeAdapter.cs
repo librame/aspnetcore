@@ -40,7 +40,7 @@ namespace Librame.AspNetCore.UI
             : base(attribute, stringLocalizer)
         {
             _stringLocalizerFactory = stringLocalizerFactory.NotNull(nameof(stringLocalizerFactory));
-            RuleName = ruleName.NotNullOrEmpty(nameof(ruleName));
+            RuleName = ruleName.NotEmpty(nameof(ruleName));
         }
 
 

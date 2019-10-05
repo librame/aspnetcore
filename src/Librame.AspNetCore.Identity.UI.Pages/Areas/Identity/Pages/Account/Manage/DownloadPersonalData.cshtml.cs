@@ -24,11 +24,12 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
 
     /// <summary>
     /// 下载个人数据页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(DownloadPersonalDataModel<>))]
+    [GenericApplicationModel(typeof(DownloadPersonalDataModel<>))]
     public class DownloadPersonalDataPageModel : PageModel
     {
         /// <summary>
@@ -70,7 +71,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -88,13 +89,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
                 personalData.Add(p.Name, p.GetValue(user)?.ToString() ?? "null");
             }
 
-            var logins = await _userManager.GetLoginsAsync(user);
+            var logins = await _userManager.GetLoginsAsync(user).ConfigureAndResultAsync();
             foreach (var l in logins)
             {
                 personalData.Add($"{l.LoginProvider} external login provider key", l.ProviderKey);
             }
 
-            personalData.Add($"Authenticator Key", await _userManager.GetAuthenticatorKeyAsync(user));
+            personalData.Add($"Authenticator Key", await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync());
 
             Response.Headers.Add("Content-Disposition", "attachment; filename=PersonalData.json");
             return new FileContentResult(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(personalData)), "text/json");

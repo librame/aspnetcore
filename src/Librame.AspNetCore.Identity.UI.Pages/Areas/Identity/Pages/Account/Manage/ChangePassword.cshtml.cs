@@ -21,12 +21,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 修改密码页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(ChangePasswordPageModel<>))]
+    [GenericApplicationModel(typeof(ChangePasswordPageModel<>))]
     public class ChangePasswordPageModel : PageModel
     {
         /// <summary>
@@ -94,13 +95,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly ILogger<ChangePasswordPageModel> _logger;
-        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public ChangePasswordPageModel(
             SignInManager<TUser> signInManager,
             ILogger<ChangePasswordPageModel> logger,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer,
+            IExpressionLocalizer<StatusMessageResource> statusLocalizer,
             IExpressionHtmlLocalizer<RegisterViewResource> registerLocalizer,
             IOptions<IdentityBuilderOptions> builderOptions,
             IOptions<IdentityOptions> options)
@@ -115,13 +116,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var hasPassword = await _userManager.HasPasswordAsync(user);
+            var hasPassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync();
             if (!hasPassword)
             {
                 return RedirectToPage("./SetPassword");
@@ -137,13 +138,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword).ConfigureAndResultAsync();
             if (!changePasswordResult.Succeeded)
             {
                 foreach (var error in changePasswordResult.Errors)
@@ -153,7 +154,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
                 return Page();
             }
 
-            await _signInManager.RefreshSignInAsync(user);
+            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
             _logger.LogInformation("User changed their password successfully.");
             
             StatusMessage = _statusLocalizer[r => r.ChangePassword];

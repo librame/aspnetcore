@@ -20,12 +20,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
+    using Extensions;
 
     /// <summary>
     /// 确认电邮页面模型。
     /// </summary>
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(ConfirmEmailPageModel<>))]
+    [GenericApplicationModel(typeof(ConfirmEmailPageModel<>))]
     public class ConfirmEmailPageModel : PageModel
     {
         /// <summary>
@@ -58,13 +59,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 return RedirectToPage("/Index");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAndResultAsync();
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Error confirming email for user with ID '{userId}':");

@@ -21,12 +21,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
+    using Extensions;
 
     /// <summary>
     /// 重置密码页面模型。
     /// </summary>
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(ResetPasswordPageModel<>))]
+    [GenericApplicationModel(typeof(ResetPasswordPageModel<>))]
     public class ResetPasswordPageModel : PageModel
     {
         /// <summary>
@@ -123,14 +124,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 return Page();
             }
 
-            var user = await _userManager.FindByNameAsync(Input.Email);
+            var user = await _userManager.FindByNameAsync(Input.Email).ConfigureAndResultAsync();
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
+            var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password).ConfigureAndResultAsync();
             if (result.Succeeded)
             {
                 return RedirectToPage("./ResetPasswordConfirmation");

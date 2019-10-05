@@ -1,42 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>6.0.1643.201</Version>
+    <Version>7.0.1722.211</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.Api.GraphQL on Identity API package.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
-    <PackageIconUrl>https://avatars0.githubusercontent.com/u/10363349?v=3&amp;s=460</PackageIconUrl>
+    <PackageIconUrl>https://www.gravatar.com/avatar/fb757161b3495689c02ece689cb0267f?s=64</PackageIconUrl>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Librame,AspNetCore,Identity,API,GraphQL</PackageTags>
     <PackageReleaseNotes>Based Librame.AspNetCore.Api.GraphQL on Identity API package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>6.0.1643.201</AssemblyVersion>
-    <FileVersion>6.0.1907.181</FileVersion>
+    <AssemblyVersion>7.0.1722.211</AssemblyVersion>
+    <FileVersion>7.0.1910.51</FileVersion>
     <RootNamespace>Librame.AspNetCore.Identity.Api</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Identity.Api.GraphQL.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\netstandard2.1\Librame.AspNetCore.Identity.Api.GraphQL.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\netstandard2.0\Librame.AspNetCore.Identity.Api.GraphQL.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\netstandard2.1\Librame.AspNetCore.Identity.Api.GraphQL.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
     
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="6.1.889.202" />
+    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="7.0.902.211" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

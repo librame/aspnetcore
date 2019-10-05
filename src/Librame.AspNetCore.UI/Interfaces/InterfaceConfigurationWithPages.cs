@@ -43,7 +43,7 @@ namespace Librame.AspNetCore.UI
         public virtual void PostConfigure(string name, RazorPagesOptions options)
         {
             options = options ?? new RazorPagesOptions();
-            options.AllowAreas = Area.IsNotNullOrEmpty();
+            //options.AllowAreas = Area.IsNotEmpty();
 
             ConfigurePageConventions(options.Conventions);
         }
@@ -68,6 +68,6 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         /// <returns>返回 <see cref="IPageApplicationModelConvention"/>。</returns>
         protected virtual IPageApplicationModelConvention GetPageApplicationModelConvention()
-            => new InterfaceTemplateWithUserPageConvention(Builder);
+            => new GenericPageModelConventionWithUser(Builder);
     }
 }

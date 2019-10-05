@@ -1,0 +1,33 @@
+@using Microsoft.AspNetCore.Builder
+@using Microsoft.Extensions.Options
+@using System.Globalization
+@model IApplicationContext
+@{
+    var options = Model.ServiceFactory.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+}
+@if (options.SupportedCultures.IsNotEmpty())
+{
+    var otherCultures = options.SupportedCultures.Except(CultureInfo.CurrentCulture.YieldEnumerable()).ToList();
+
+    <ul class="nav navbar-nav navbar-right">
+        <li class="nav-item dropdown">
+            <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+                <span>@CultureInfo.CurrentCulture.DisplayName</span>
+            </a>
+
+            @if (otherCultures.IsNotEmpty())
+            {
+                <ul class="dropdown-menu dropdown-user">
+                    @foreach (var culture in otherCultures)
+                    {
+                        <li>
+                            <a class="dropdown-item" asp-route-culture="@culture.Name" asp-route-uiculture="@culture.Name">
+                                <i class="ti-user"></i> @culture.DisplayName
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+        </li>
+    </ul>
+}

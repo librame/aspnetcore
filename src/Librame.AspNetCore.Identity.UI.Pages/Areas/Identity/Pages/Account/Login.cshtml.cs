@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(LoginPageModel<>))]
+    [GenericApplicationModel(typeof(LoginPageModel<>))]
     public class LoginPageModel : PageModel
     {
         /// <summary>
@@ -79,12 +79,12 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly ILogger<LoginPageModel> _logger;
-        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
 
 
         public LoginPageModel(SignInManager<TUser> signInManager,
             ILogger<LoginPageModel> logger,
-            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
+            IExpressionLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
             _logger = logger;
@@ -94,15 +94,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
         public override async Task OnGetAsync(string returnUrl = null)
         {
-            if (ErrorMessage.IsNotNullOrEmpty())
+            if (ErrorMessage.IsNotEmpty())
                 ModelState.AddModelError(string.Empty, ErrorMessage);
 
             returnUrl = returnUrl ?? Url.Content("~/");
 
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAndWaitAsync();
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAndResultAsync()).ToList();
 
             ReturnUrl = returnUrl;
         }
@@ -115,7 +115,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

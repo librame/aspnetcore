@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// ×¢²áÒ³ÃæÄ£ÐÍ¡£
     /// </summary>
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(RegisterPageModel<>))]
+    [GenericApplicationModel(typeof(RegisterPageModel<>))]
     public class RegisterPageModel : PageModel
     {
         /// <summary>
@@ -135,12 +135,12 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-                user.Id = await _storeIdentifier.GetUserIdAsync();
+                user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore, Input.Email, Input.Password, user);
+                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore, Input.Email, Input.Password, user).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
 
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
@@ -150,9 +150,9 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
                     await _emailService.SendAsync(Input.Email,
                         Localizer[r => r.ConfirmYourEmail]?.Value,
-                        Localizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value);
+                        Localizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value).ConfigureAndWaitAsync();
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                     _logger.LogInformation(3, "User created a new account with password.");
 
                     return LocalRedirect(returnUrl);

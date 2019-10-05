@@ -20,12 +20,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 设置密码页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(SetPasswordPageModel<>))]
+    [GenericApplicationModel(typeof(SetPasswordPageModel<>))]
     public class SetPasswordPageModel : PageModel
     {
         /// <summary>
@@ -92,13 +93,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     {
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
-        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public SetPasswordPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer,
+            IExpressionLocalizer<StatusMessageResource> statusLocalizer,
             IExpressionHtmlLocalizer<RegisterViewResource> registerLocalizer,
             IOptions<IdentityBuilderOptions> builderOptions,
             IOptions<IdentityOptions> options)
@@ -112,13 +113,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var hasPassword = await _userManager.HasPasswordAsync(user);
+            var hasPassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync();
 
             if (hasPassword)
             {
@@ -135,13 +136,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var addPasswordResult = await _userManager.AddPasswordAsync(user, Input.NewPassword);
+            var addPasswordResult = await _userManager.AddPasswordAsync(user, Input.NewPassword).ConfigureAndResultAsync();
             if (!addPasswordResult.Succeeded)
             {
                 foreach (var error in addPasswordResult.Errors)
@@ -151,7 +152,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
                 return Page();
             }
 
-            await _signInManager.RefreshSignInAsync(user);
+            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
 
             StatusMessage = _statusLocalizer[r => r.SetPassword]?.ToString();
 

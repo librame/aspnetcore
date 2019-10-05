@@ -20,12 +20,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 双因子验证页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(TwoFactorAuthenticationPageModel<>))]
+    [GenericApplicationModel(typeof(TwoFactorAuthenticationPageModel<>))]
     public class TwoFactorAuthenticationPageModel : PageModel
     {
         /// <summary>
@@ -79,14 +80,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly ILogger<TwoFactorAuthenticationPageModel> _logger;
-        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public TwoFactorAuthenticationPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
             ILogger<TwoFactorAuthenticationPageModel> logger,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
+            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -97,29 +98,29 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null;
-            Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
-            IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user);
-            RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user);
+            HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync() != null;
+            Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync();
+            IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user).ConfigureAndResultAsync();
+            RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user).ConfigureAndResultAsync();
 
             return Page();
         }
 
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await _signInManager.ForgetTwoFactorClientAsync();
+            await _signInManager.ForgetTwoFactorClientAsync().ConfigureAndWaitAsync();
 
             StatusMessage = _statusLocalizer[r => r.TwoFactorAuthentication]?.ToString();
 

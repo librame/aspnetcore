@@ -109,7 +109,7 @@ namespace Librame.AspNetCore.UI
 
         private static IMvcBuilder AddRazorRelatedParts(IMvcBuilder builder, params Assembly[] assemblies)
         {
-            assemblies.NotNullOrEmpty(nameof(assemblies));
+            assemblies.NotEmpty(nameof(assemblies));
 
             // For preview1, we don't have a good mechanism to plug in additional parts.
             // We need to provide API surface to allow libraries to plug in existing parts

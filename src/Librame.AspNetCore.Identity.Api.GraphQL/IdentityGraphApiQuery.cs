@@ -11,6 +11,7 @@
 #endregion
 
 using GraphQL.Types;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Api
@@ -19,16 +20,17 @@ namespace Librame.AspNetCore.Identity.Api
     using Extensions;
     using Extensions.Data;
 
-    class IdentityGraphApiQuery : ObjectGraphType, IGraphApiQuery
+    class IdentityGraphApiQuery<TAccessor> : ObjectGraphType, IGraphApiQuery
+        where TAccessor : DbContext, IIdentityDbContextAccessor
     {
-        private readonly IStoreHub<IdentityDbContextAccessor> _stores;
+        private readonly IStoreHub<TAccessor> _stores;
 
 
-        public IdentityGraphApiQuery(IStoreHub<IdentityDbContextAccessor> stores)
+        public IdentityGraphApiQuery(IStoreHub<TAccessor> stores)
         {
             _stores = stores.NotNull(nameof(stores));
 
-            Name = nameof(GraphQL.Types.ISchema.Query);
+            Name = nameof(ISchema.Query);
 
             AddIdentityUserTypeFields();
         }

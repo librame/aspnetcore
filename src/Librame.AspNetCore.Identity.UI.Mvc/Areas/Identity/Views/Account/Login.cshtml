@@ -5,6 +5,7 @@
 @{
     ViewData["Title"] = Localizer[r => r.Title];
     var loginProviders = ViewData["ExternalSchemes"] as IEnumerable<AuthenticationScheme>;
+    var registerLocalizer = ViewBag.Localizer as IExpressionHtmlLocalizer<RegisterViewResource>;
 }
 <!-- Login -->
 <div class="row">
@@ -30,7 +31,11 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Password" class="sr-only"></label>
-                    <input asp-for="Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Password) ..." />
+                    <input asp-for="Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Password) ..."
+                           title="@registerLocalizer[r => r.PasswordRulePrompts]"
+                           data-content="@Html.Raw(ViewBag.BuilderOptions.PasswordRulePromptEnabled ? PasswordRulePromptHelper.GetHtmlContent(ViewBag.Options, registerLocalizer) : string.Empty)"
+                           data-html="true"
+                           data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -72,7 +77,7 @@
         <!-- <h3>Localizer[r => r.ExternalLoginDescr]</h3> -->
         <div class="social-login-buttons">
             @{
-                if (loginProviders.IsNullOrEmpty())
+                if (loginProviders.IsEmpty())
                 {
                     <div>
                         <p>
@@ -97,3 +102,11 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("[data-toggle='popover']").popover();
+        });
+    </script>
+}

@@ -56,7 +56,7 @@ namespace Librame.AspNetCore.UI
 
         public IInterfaceInfo GetInterfaceInfo(string name, bool orDefault = true)
         {
-            if (name.IsNotNullOrEmpty() && InterfaceInfos.ContainsKey(name))
+            if (name.IsNotEmpty() && InterfaceInfos.ContainsKey(name))
                 return InterfaceInfos[name];
 
             if (!orDefault)
@@ -75,7 +75,7 @@ namespace Librame.AspNetCore.UI
 
         public IThemepackInfo GetThemepackInfo(string name, bool orDefault = true)
         {
-            if (name.IsNotNullOrEmpty() && ThemepackInfos.ContainsKey(name))
+            if (name.IsNotEmpty() && ThemepackInfos.ContainsKey(name))
                 return ThemepackInfos[name];
 
             if (!orDefault)

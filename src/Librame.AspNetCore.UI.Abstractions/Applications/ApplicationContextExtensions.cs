@@ -17,6 +17,9 @@ using System.Text;
 
 namespace Librame.AspNetCore.UI
 {
+    using Extensions;
+    using Extensions.Core;
+
     /// <summary>
     /// 应用上下文静态扩展。
     /// </summary>
@@ -37,36 +40,74 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回字符串。</returns>
         public static string GetFooterCopyrightInfo(this IApplicationContext context, bool displayMiniInfo = false)
         {
+            context.NotNull(nameof(context));
+
+            var localizer = context.ServiceFactory.GetRequiredService<IExpressionLocalizer<CopyrightInfoResource>>();
             var interInfo = context.CurrentInterfaceInfo;
             var themeInfo = context.CurrentThemepackInfo;
 
-            string framework;
-            if (interInfo.Framework.Equals(themeInfo.Framework))
-                framework = interInfo.Framework.Replace(",Version=v", " ");
-            else
-                framework = $"{interInfo.Framework.Replace(",Version=v", " ")} / {themeInfo.Framework.Replace(",Version=v", " ")}";
-
             var sb = new StringBuilder();
-            sb.Append($"Copyright © {DateTime.Now.ToString("yyyy")} {GetNuGetLink(LibrameCoreArchitecture, LibrameCore)} Powered by {GetFrameworkLink(framework)} on {RuntimeInformation.OSDescription}; Culture: {CultureInfo.CurrentUICulture.Name}");
+            sb.Append($"{GetCopyrightString(localizer)} {GetNuGetLink(localizer, LibrameCoreArchitecture, LibrameCore)} {GetPoweredByString(interInfo, themeInfo, localizer)}; {GetCultureString(localizer)}");
             
             if (!displayMiniInfo)
-                sb.AppendLine($"<br />Application: {GetNuGetLink(interInfo.AssemblyName.Name, interInfo.Name)} {interInfo.Version} [{interInfo.Authors}] / Themepack: {GetNuGetLink(themeInfo.AssemblyName.Name, themeInfo.Name)} {themeInfo.Version} [{themeInfo.Authors}]");
+                sb.AppendLine($"<br />{GetApplicationString(interInfo, localizer)} / {GetThemepackString(themeInfo, localizer)}");
             
             return sb.ToString();
         }
 
-        private static string GetNuGetLink(string assemblyName, string displayName = null)
-            => $"<a href='https://www.nuget.org/packages?q={assemblyName}' title='Search in NuGet.org' target='_blank'>{displayName ?? assemblyName}</a>";
 
-        private static string GetFrameworkLink(string framework)
+        private static string GetCopyrightString(IExpressionLocalizer<CopyrightInfoResource> localizer)
+            => $"{localizer[r => r.Copyright]} © {DateTime.UtcNow.ToString("yyyy", CultureInfo.CurrentCulture)}";
+
+        private static string GetPoweredByString(IInterfaceInfo interInfo, IThemepackInfo themeInfo, IExpressionLocalizer<CopyrightInfoResource> localizer)
         {
-            if (framework.Contains("Standard"))
-                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/standard/net-standard' title='Goto microsoft.com' target='_blank'>{framework}</a>";
+            string framework;
+            if (interInfo.Framework.Equals(themeInfo.Framework, StringComparison.OrdinalIgnoreCase))
+                framework = GetFrameworkString(interInfo.Framework);
+            else
+                framework = $"{GetFrameworkString(interInfo.Framework)} / {GetFrameworkString(themeInfo.Framework)}";
 
-            if (framework.Contains("Core"))
-                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/core/' title='Goto microsoft.com' target='_blank'>{framework}</a>";
+            return localizer[r => r.PoweredBy, GetFrameworkLink(localizer, framework), RuntimeInformation.OSDescription];
 
-            return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/framework/' title='Goto microsoft.com' target='_blank'>{framework}</a>";
+            string GetFrameworkString(string framework)
+            {
+                // 格式：.NETCoreApp,Version=v3.0
+                var pair = framework.SplitPair(",");
+                var version = pair.Value.TrimStart("Version=v");
+
+                if (pair.Key.StartsWith(".netcore", StringComparison.OrdinalIgnoreCase))
+                    return $".NET Core {version}";
+
+                if (pair.Key.StartsWith(".netstandard", StringComparison.OrdinalIgnoreCase))
+                    return $".NET Standard {version}";
+
+                return $"{pair.Key} {version}";
+            }
+        }
+
+        private static string GetCultureString(IExpressionLocalizer<CopyrightInfoResource> localizer)
+            => $"{localizer[r => r.Culture]}: {CultureInfo.CurrentUICulture.DisplayName}";
+
+
+        private static string GetApplicationString(IInterfaceInfo interInfo, IExpressionLocalizer<CopyrightInfoResource> localizer)
+            => $"{localizer[r => r.Application]}: {GetNuGetLink(localizer, interInfo.AssemblyName.Name, interInfo.Name)} {interInfo.Version} [{interInfo.Authors}]";
+
+        private static string GetThemepackString(IThemepackInfo themeInfo, IExpressionLocalizer<CopyrightInfoResource> localizer)
+            => $"{localizer[r => r.Themepack]}: {GetNuGetLink(localizer, themeInfo.AssemblyName.Name, themeInfo.Name)} {themeInfo.Version} [{themeInfo.Authors}]";
+
+
+        private static string GetNuGetLink(IExpressionLocalizer<CopyrightInfoResource> localizer, string assemblyName, string displayName = null)
+            => $"<a href='https://www.nuget.org/packages?q={assemblyName}' title='{localizer[r => r.SearchInNuget]}' target='_blank'>{displayName ?? assemblyName}</a>";
+
+        private static string GetFrameworkLink(IExpressionLocalizer<CopyrightInfoResource> localizer, string framework)
+        {
+            if (framework.Contains("Standard", StringComparison.OrdinalIgnoreCase))
+                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/standard/net-standard' title='{localizer[r => r.GotoMicrosoft]}' target='_blank'>{framework}</a>";
+
+            if (framework.Contains("Core", StringComparison.OrdinalIgnoreCase))
+                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/core/' title='{localizer[r => r.GotoMicrosoft]}' target='_blank'>{framework}</a>";
+
+            return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/framework/' title='{localizer[r => r.GotoMicrosoft]}' target='_blank'>{framework}</a>";
         }
     }
 }

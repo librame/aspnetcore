@@ -21,12 +21,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
+    using Extensions;
 
     /// <summary>
     /// 登出页面模型。
     /// </summary>
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(LogoutPageModel<>))]
+    [GenericApplicationModel(typeof(LogoutPageModel<>))]
     public class LogoutPageModel : PageModel
     {
         /// <summary>
@@ -63,7 +64,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
         public override async Task<IActionResult> OnPost(string returnUrl = null)
         {
-            await _signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync().ConfigureAndWaitAsync();
             _logger.LogInformation("User logged out.");
             if (returnUrl != null)
             {

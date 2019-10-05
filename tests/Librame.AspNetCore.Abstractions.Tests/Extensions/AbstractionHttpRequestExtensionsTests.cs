@@ -25,7 +25,7 @@ namespace Librame.Extensions
             dict.Add("X-Original-For", IPAddress.Loopback.ToString() + "," + IPAddress.IPv6Loopback.ToString());
 
             var headers = new HeaderDictionary(dict);
-            var tuple = await headers.GetIPAddressTupleAsync();
+            var tuple = await headers.GetIPAddressTupleAsync().ConfigureAndResultAsync();
             Assert.NotNull(tuple.IPv4);
             Assert.NotNull(tuple.IPv6);
             Assert.False(tuple.IPv4.IsNullOrNone());

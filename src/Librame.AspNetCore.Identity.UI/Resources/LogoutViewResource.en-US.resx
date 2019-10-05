@@ -120,6 +120,9 @@
   <data name="Descr" xml:space="preserve">
     <value>You have successfully logged out of the application.</value>
   </data>
+  <data name="ReturnIndex" xml:space="preserve">
+    <value>Return Index</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>Log out</value>
   </data>

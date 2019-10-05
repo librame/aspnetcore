@@ -30,7 +30,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="@sitemap.Index.ToRouteString(Url)">@sitemap.Index.Text</a></li>
-                    @if (sitemap.CommonHeader.IsNotNullOrEmpty())
+                    @if (sitemap.CommonHeader.IsNotEmpty())
                     {
                         foreach (var nav in sitemap.CommonHeader)
                         {
@@ -38,7 +38,10 @@
                         }
                     }
                 </ul>
-                @await Html.PartialAsync("Common/_LoginPartial", Application)
+
+                @await Html.PartialAsync("Common/_LoginPartial", Application).ConfigureAndResultAsync()
+
+                @await Html.PartialAsync("Common/_LocalizationPartial", Application).ConfigureAndResultAsync()
             </div>
         </div>
     </nav>

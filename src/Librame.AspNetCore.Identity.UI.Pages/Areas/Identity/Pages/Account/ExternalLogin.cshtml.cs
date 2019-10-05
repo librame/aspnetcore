@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     /// 外部登入确认页面模型。
     /// </summary>
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(ExternalLoginPageModel<>))]
+    [GenericApplicationModel(typeof(ExternalLoginPageModel<>))]
     public class ExternalLoginPageModel : PageModel
     {
         /// <summary>
@@ -98,7 +98,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
         private readonly ILogger<ExternalLoginPageModel> _logger;
-        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
         private readonly IdentityStoreIdentifier _storeIdentifier;
 
 
@@ -106,7 +106,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
             ILogger<ExternalLoginPageModel> logger,
-            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer,
+            IExpressionLocalizer<ErrorMessageResource> errorLocalizer,
             IdentityStoreIdentifier storeIdentifier)
         {
             _signInManager = signInManager;
@@ -140,7 +140,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+            var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAndResultAsync();
             if (info == null)
             {
                 ErrorMessage = _errorLocalizer[r => r.LoadingExternalLogin]?.ToString();
@@ -148,7 +148,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true).ConfigureAndResultAsync();
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
@@ -180,7 +180,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             // Get the information about the user from the external login provider
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+            var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAndResultAsync();
             if (info == null)
             {
                 ErrorMessage = _errorLocalizer[r => r.LoadingExternalLoginWhenConfirmation]?.ToString();
@@ -190,15 +190,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-                user.Id = await _storeIdentifier.GetUserIdAsync();
+                user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore, Input.Email, password: null, user);
+                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore, Input.Email, password: null, user).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
+                    result = await _userManager.AddLoginAsync(user, info).ConfigureAndResultAsync();
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return LocalRedirect(returnUrl);
                     }

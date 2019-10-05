@@ -14,7 +14,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// 是重定向。
         /// </summary>
         public bool IsRedirect
-            => RedirectUri.IsNotNullOrEmpty();
+            => RedirectUri.IsNotEmpty();
 
         /// <summary>
         /// 重定向 URI。
@@ -41,7 +41,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// 有验证错误。
         /// </summary>
         public bool HasValidationError
-            => ValidationError.IsNotNullOrEmpty();
+            => ValidationError.IsNotEmpty();
 
         /// <summary>
         /// 验证错误。

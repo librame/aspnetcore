@@ -22,12 +22,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 外部登入页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(ExternalLoginsPageModel<>))]
+    [GenericApplicationModel(typeof(ExternalLoginsPageModel<>))]
     public class ExternalLoginsPageModel : PageModel
     {
         /// <summary>
@@ -91,14 +92,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly IUserStore<TUser> _userStore;
-        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public ExternalLoginsPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
+            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -109,21 +110,21 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            CurrentLogins = await _userManager.GetLoginsAsync(user);
-            OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())
+            CurrentLogins = await _userManager.GetLoginsAsync(user).ConfigureAndResultAsync();
+            OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAndResultAsync())
                 .Where(auth => CurrentLogins.All(ul => auth.Name != ul.LoginProvider))
                 .ToList();
 
             string passwordHash = null;
             if (_userStore is IUserPasswordStore<TUser> userPasswordStore)
             {
-                passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted);
+                passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted).ConfigureAndResultAsync();
             }
 
             ShowRemoveButton = passwordHash != null || CurrentLogins.Count > 1;
@@ -132,20 +133,20 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnPostRemoveLoginAsync(string loginProvider, string providerKey)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
+            var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey).ConfigureAndResultAsync();
             if (!result.Succeeded)
             {
-                var userId = await _userManager.GetUserIdAsync(user);
+                var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
                 throw new InvalidOperationException($"Unexpected error occurred removing external login for user with ID '{userId}'.");
             }
 
-            await _signInManager.RefreshSignInAsync(user);
+            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
 
             StatusMessage = _statusLocalizer[r => r.ExternalLoginRemoved]?.ToString();
 
@@ -155,7 +156,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         public override async Task<IActionResult> OnPostLinkLoginAsync(string provider)
         {
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAndWaitAsync();
 
             // Request a redirect to the external login provider to link a login for the current user
             var redirectUrl = Url.Page("./ExternalLogins", pageHandler: "LinkLoginCallback");
@@ -165,27 +166,27 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetLinkLoginCallbackAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var userId = await _userManager.GetUserIdAsync(user);
-            var info = await _signInManager.GetExternalLoginInfoAsync(userId);
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+            var info = await _signInManager.GetExternalLoginInfoAsync(userId).ConfigureAndResultAsync();
             if (info == null)
             {
                 throw new InvalidOperationException($"Unexpected error occurred loading external login info for user with ID '{userId}'.");
             }
 
-            var result = await _userManager.AddLoginAsync(user, info);
+            var result = await _userManager.AddLoginAsync(user, info).ConfigureAndResultAsync();
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred adding external login for user with ID '{userId}'.");
             }
 
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAndWaitAsync();
 
             StatusMessage = _statusLocalizer[r => r.ExternalLoginAdded]?.ToString();
             return RedirectToPage();

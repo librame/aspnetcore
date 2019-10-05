@@ -35,5 +35,21 @@ namespace Librame.AspNetCore.Identity.UI
             );
         }
 
+
+        /// <summary>
+        /// 映射身份区域控制器路由。
+        /// </summary>
+        /// <param name="builder">给定的 <see cref="IEndpointRouteBuilder"/>。</param>
+        /// <returns>返回 <see cref="ControllerActionEndpointConventionBuilder"/>。</returns>
+        public static ControllerActionEndpointConventionBuilder MapIdentityAreaControllerRoute(this IEndpointRouteBuilder builder)
+        {
+            return builder.MapAreaControllerRoute(
+                name: "Identity",
+                areaName: "Identity",
+                pattern: "Identity/{controller}/{action}/{id?}",
+                defaults: new { controller = "Manage", action = "Index" }
+            );
+        }
+
     }
 }

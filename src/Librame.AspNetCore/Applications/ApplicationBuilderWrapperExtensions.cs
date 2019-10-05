@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.AspNetCore.Builder;
-using System;
 
 namespace Librame.AspNetCore
 {
@@ -24,14 +23,12 @@ namespace Librame.AspNetCore
         /// 使用 Librame for ASP.NET Core。
         /// </summary>
         /// <param name="rawBuilder">给定的 <see cref="IApplicationBuilder"/>。</param>
-        /// <param name="requestLocalizationAction">给定的请求本地化选项动作（可选）。</param>
         /// <returns>返回 <see cref="IApplicationBuilderWrapper"/>。</returns>
-        public static IApplicationBuilderWrapper UseLibrameCore(this IApplicationBuilder rawBuilder,
-            Action<RequestLocalizationOptions> requestLocalizationAction = null)
+        public static IApplicationBuilderWrapper UseLibrameCore(this IApplicationBuilder rawBuilder)
         {
             var builderWrapper = new ApplicationBuilderWrapper(rawBuilder);
 
-            return builderWrapper.UseLocalization(requestLocalizationAction);
+            return builderWrapper.UseLocalization();
         }
 
     }

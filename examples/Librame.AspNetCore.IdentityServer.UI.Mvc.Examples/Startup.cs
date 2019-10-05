@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -41,7 +42,7 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
             .AddIdentityCookies(cookies => { });
 
             var mvcBuilder = services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
@@ -63,6 +64,7 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddIdentifier<IdentityStoreIdentifier>()
+                .AddDbDesignTime<SqlServerDesignTimeServices>()
                 .AddIdentityServer<IdentityServerDbContextAccessor,
                     DefaultIdentityUser<string>>(options =>
                     {
@@ -86,18 +88,16 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
 
             app.UseStaticFiles();
 
+            app.UseAuthorization();
             app.UseLibrameCore()
                 .UseIdentityServer();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(routes =>
             {
-                routes.MapIdentityServerAreaRoute();
+                routes.MapIdentityServerAreaControllerRoute();
 
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "Home", action = "Index" }
-                );
+                routes.MapDefaultControllerRoute();
             });
         }
 

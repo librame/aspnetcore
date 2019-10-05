@@ -98,8 +98,8 @@ namespace Librame.AspNetCore.Identity
         /// <summary>
         /// 初始化核心。
         /// </summary>
-        /// <param name="stores">给定的 <see cref="IStoreHub{TAccessor}"/>。</param>
-        protected override void InitializeCore(IStoreHub<TAccessor> stores)
+        /// <param name="stores">给定的 <see cref="IStoreHub{TAccessor, TAudit, TEntity, TMigration, TTenant}"/>。</param>
+        protected override void InitializeCore<TAudit, TEntity, TMigration, TTenant>(IStoreHub<TAccessor, TAudit, TEntity, TMigration, TTenant> stores)
         {
             base.InitializeCore(stores);
 
@@ -130,6 +130,8 @@ namespace Librame.AspNetCore.Identity
                     accessor.Roles.Add(role);
                     //_roleMananger.CreateAsync(role).Wait();
                 }
+
+                RequiredSaveChanges = true;
             }
             else
             {
@@ -164,8 +166,8 @@ namespace Librame.AspNetCore.Identity
                     user.CreatedBy = _defaultCreatedBy;
 
                     user.PasswordHash = _signInManager.UserManager.PasswordHasher.HashPassword(user, _options.DefaultPassword);
-                    user.NormalizedUserName = _signInManager.UserManager.NormalizeKey(user.UserName);
-                    user.NormalizedEmail = _signInManager.UserManager.NormalizeKey(user.Email);
+                    user.NormalizedUserName = _signInManager.UserManager.NormalizeName(user.UserName);
+                    user.NormalizedEmail = _signInManager.UserManager.NormalizeEmail(user.Email);
 
                     var identifier = new RandomNumberAlgorithmIdentifier(20, Base32AlgorithmConverter.Default);
                     user.SecurityStamp = identifier;
@@ -186,6 +188,8 @@ namespace Librame.AspNetCore.Identity
 
                     i++;
                 }
+
+                RequiredSaveChanges = true;
             }
             else
             {
@@ -220,6 +224,8 @@ namespace Librame.AspNetCore.Identity
                     }
                     //_signInManager.UserManager.AddClaimsAsync(user, claims).Wait();
                 }
+
+                RequiredSaveChanges = true;
             }
         }
 

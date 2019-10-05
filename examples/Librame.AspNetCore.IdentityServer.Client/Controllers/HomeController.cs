@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Client.Controllers
 {
+    using Extensions;
     using Models;
 
     public class HomeController : Controller
@@ -44,7 +45,7 @@ namespace Librame.AspNetCore.IdentityServer.Client.Controllers
         [Authorize]
         public async Task Logout()
         {
-            await HttpContext.SignOutAsync(); //IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME
+            await HttpContext.SignOutAsync().ConfigureAndWaitAsync(); //IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME
             //await HttpContext.SignOutAsync(IdentityExtensionConfigurator.Defaults.OIDC_AUTH_SCHEME);
         }
 

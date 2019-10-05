@@ -20,17 +20,17 @@ namespace Librame.AspNetCore
     using Extensions.Core;
 
     /// <summary>
-    /// 表达式字符串定位器工厂核心。
+    /// <see cref="CoreResourceManagerStringLocalizerFactory"/> for ASP.NET Core。
     /// </summary>
-    public class ExpressionStringLocalizerFactoryCore : ExpressionStringLocalizerFactory
+    public class AspNetCoreCoreResourceManagerStringLocalizerFactory : CoreResourceManagerStringLocalizerFactory
     {
         /// <summary>
-        /// 构造一个 <see cref="ExpressionStringLocalizerFactoryCore"/>。
+        /// 构造一个 <see cref="AspNetCoreCoreResourceManagerStringLocalizerFactory"/>。
         /// </summary>
         /// <param name="localizationOptions">给定的 <see cref="IOptions{LocalizationOptions}"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         /// <param name="builderOptions">给定的 <see cref="IOptions{CoreBuilderOptions}"/>。</param>
-        public ExpressionStringLocalizerFactoryCore(IOptions<LocalizationOptions> localizationOptions,
+        public AspNetCoreCoreResourceManagerStringLocalizerFactory(IOptions<LocalizationOptions> localizationOptions,
             ILoggerFactory loggerFactory, IOptions<CoreBuilderOptions> builderOptions)
             : base(localizationOptions, loggerFactory, builderOptions)
         {
@@ -52,7 +52,7 @@ namespace Librame.AspNetCore
         /// <returns>返回 <see cref="ResourceManagerStringLocalizer"/>。</returns>
         protected override ResourceManagerStringLocalizer CreateResourceManagerStringLocalizer(Assembly assembly, string baseName)
         {
-            var resourceManager = new ResourceManagerCore(baseName, assembly, LoggerFactory.CreateLogger<ResourceManagerCore>());
+            var resourceManager = new AspNetCoreResourceManager(baseName, assembly, LoggerFactory.CreateLogger<AspNetCoreResourceManager>());
             return new ResourceManagerStringLocalizer(resourceManager, assembly, baseName, ResourceNamesCache, Logger);
         }
 

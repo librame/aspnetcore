@@ -10,6 +10,7 @@
 
 #endregion
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -38,7 +39,7 @@ namespace Librame.AspNetCore.UI
 
             return builder.AddUI(dependency =>
             {
-                dependency.OptionsAction = builderAction;
+                dependency.Builder.Action = builderAction;
             },
             builderFactory);
         }
@@ -53,16 +54,30 @@ namespace Librame.AspNetCore.UI
         public static IUiBuilder AddUI(this IExtensionBuilder builder,
             Action<UiBuilderDependencyOptions> dependencyAction = null,
             Func<IExtensionBuilder, UiBuilderDependencyOptions, IUiBuilder> builderFactory = null)
+            => builder.AddUI<UiBuilderDependencyOptions>(dependencyAction, builderFactory);
+
+        /// <summary>
+        /// 添加 UI 扩展。
+        /// </summary>
+        /// <typeparam name="TDependencyOptions">指定的依赖类型。</typeparam>
+        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="builderFactory">给定创建 UI 构建器的工厂方法（可选）。</param>
+        /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
+        public static IUiBuilder AddUI<TDependencyOptions>(this IExtensionBuilder builder,
+            Action<TDependencyOptions> dependencyAction = null,
+            Func<IExtensionBuilder, TDependencyOptions, IUiBuilder> builderFactory = null)
+            where TDependencyOptions : UiBuilderDependencyOptions, new()
         {
             // Add Dependencies
-            var dependency = dependencyAction.ConfigureDependencyOptions();
+            var dependency = dependencyAction.ConfigureDependency();
+            builder.Services.AddAllOptionsConfigurators(dependency);
 
-            // Add Builder
-            builder.Services.OnlyConfigure(dependency.OptionsAction, dependency.OptionsName);
-
+            // Create Builder
             var uiBuilder = builderFactory.NotNullOrDefault(()
                 => (b, d) => new UiBuilder(b, d)).Invoke(builder, dependency);
 
+            // Configure Builder
             return uiBuilder
                 .AddApplications()
                 .AddDataAnnotations()

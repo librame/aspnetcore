@@ -18,7 +18,7 @@ namespace Librame.AspNetCore.Api
 
     class ApiBuilder : AbstractExtensionBuilder, IApiBuilder
     {
-        public ApiBuilder(IExtensionBuilder builder, IExtensionBuilderDependencyOptions dependencyOptions)
+        public ApiBuilder(IExtensionBuilder builder, ApiBuilderDependencyOptions dependencyOptions)
             : base(builder, dependencyOptions)
         {
             Services.AddSingleton<IApiBuilder>(this);

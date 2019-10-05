@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,7 +87,7 @@ namespace Librame.AspNetCore.IdentityServer
         {
             return builder.AddIdentityServer<TConfigurationAccessor, TPersistedGrantAccessor, TUser>(dependency =>
             {
-                dependency.RawAction = rawAction;
+                dependency.IdentityServer = rawAction;
             },
             builderFactory);
         }
@@ -109,19 +110,19 @@ namespace Librame.AspNetCore.IdentityServer
             where TUser : class
         {
             // Add Dependencies
-            var dependency = dependencyAction.ConfigureDependencyOptions();
+            var dependency = dependencyAction.ConfigureDependency();
+            builder.Services.AddAllOptionsConfigurators(dependency);
 
+            // Configure Dependencies
             var rawBuilder = builder.Services
-                .AddIdentityServer(dependency.RawAction)
+                .AddIdentityServer(dependency.IdentityServer)
                 .AddConfigurationStore<TConfigurationAccessor>(dependency.ConfigurationAction)
                 .AddOperationalStore<TPersistedGrantAccessor>(dependency.OperationalAction)
                 .AddAspNetIdentity<TUser>()
                 .ConfigureReplacedServices()
                 .AddAuthorization();
 
-            // Add Builder
-            builder.Services.OnlyConfigure(dependency.OptionsAction, dependency.OptionsName);
-
+            // Create Builder
             var builderWrapper = builderFactory.NotNullOrDefault(()
                 => (r, b, d) => new IdentityServerBuilderWrapper(typeof(TUser), r, b, d)).Invoke(rawBuilder, builder, dependency);
 
@@ -167,7 +168,12 @@ namespace Librame.AspNetCore.IdentityServer
                     var service = sp.GetRequiredService<ISigningCredentialsService>();
                     options.Value.Authorizations.SigningCredentials = service.GetGlobalSigningCredentials();
                 }
-                return new DefaultValidationKeysStore(options.Value.Authorizations.SigningCredentials.Key.YieldEnumerable());
+                var keyInfo = new SecurityKeyInfo
+                {
+                    Key = options.Value.Authorizations.SigningCredentials.Key,
+                    SigningAlgorithm = SecurityAlgorithms.RsaSha256
+                };
+                return new DefaultValidationKeysStore(keyInfo.YieldEnumerable());
             });
 
             return builder;

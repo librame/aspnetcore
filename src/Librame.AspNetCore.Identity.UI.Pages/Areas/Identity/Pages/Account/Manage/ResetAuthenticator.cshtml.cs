@@ -20,12 +20,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 重置验证器页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(ResetAuthenticatorPageModel<>))]
+    [GenericApplicationModel(typeof(ResetAuthenticatorPageModel<>))]
     public class ResetAuthenticatorPageModel : PageModel
     {
         /// <summary>
@@ -57,14 +58,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly ILogger<ResetAuthenticatorPageModel> _logger;
-        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public ResetAuthenticatorPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
             ILogger<ResetAuthenticatorPageModel> logger,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
+            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -75,7 +76,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -86,18 +87,18 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await _userManager.SetTwoFactorEnabledAsync(user, false);
-            await _userManager.ResetAuthenticatorKeyAsync(user);
-            var userId = await _userManager.GetUserIdAsync(user);
+            await _userManager.SetTwoFactorEnabledAsync(user, false).ConfigureAndResultAsync();
+            await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
             _logger.LogInformation("User with ID '{UserId}' has reset their authentication app key.", userId);
 
-            await _signInManager.RefreshSignInAsync(user);
+            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
 
             StatusMessage = _statusLocalizer[r => r.ResetAuthenticator]?.ToString();
 

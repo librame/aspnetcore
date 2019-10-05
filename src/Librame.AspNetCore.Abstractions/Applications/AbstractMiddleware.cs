@@ -56,23 +56,25 @@ namespace Librame.AspNetCore
         /// <returns>返回一个异步操作。</returns>
         public async Task Invoke(HttpContext context)
         {
+            context.NotNull(nameof(context));
+
             // 如果未通过路径验证
-            if (!RestrictRequestPath.Equals(PathString.Empty)
-                && !context.Request.Path.StartsWithSegments(RestrictRequestPath))
+            if (!RestrictRequestPath.Equals(PathString.Empty, StringComparison.OrdinalIgnoreCase)
+                && !context.Request.Path.StartsWithSegments(RestrictRequestPath, StringComparison.OrdinalIgnoreCase))
             {
-                await _next.Invoke(context);
+                await _next.Invoke(context).ConfigureAndWaitAsync();
                 return;
             }
 
             // 如果未通过方法验证
-            if (RestrictRequestMethod.IsNotNullOrEmpty()
+            if (RestrictRequestMethod.IsNotEmpty()
                 && !RestrictRequestMethod.Equals(context.Request.Method, StringComparison.OrdinalIgnoreCase))
             {
-                await _next.Invoke(context);
+                await _next.Invoke(context).ConfigureAndWaitAsync();
                 return;
             }
 
-            await InvokeCore(context);
+            await InvokeCore(context).ConfigureAndWaitAsync();
         }
 
         /// <summary>

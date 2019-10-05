@@ -20,12 +20,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 删除个人数据页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(DeletePersonalDataPageModel<>))]
+    [GenericApplicationModel(typeof(DeletePersonalDataPageModel<>))]
     public class DeletePersonalDataPageModel : PageModel
     {
         /// <summary>
@@ -62,13 +63,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly ILogger<DeletePersonalDataPageModel> _logger;
-        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
 
 
         public DeletePersonalDataPageModel(
             SignInManager<TUser> signInManager,
             ILogger<DeletePersonalDataPageModel> logger,
-            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
+            IExpressionLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
@@ -79,42 +80,42 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            RequirePassword = await _userManager.HasPasswordAsync(user);
+            RequirePassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync();
             return Page();
         }
 
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            RequirePassword = await _userManager.HasPasswordAsync(user);
+            RequirePassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync();
             if (RequirePassword)
             {
-                if (!await _userManager.CheckPasswordAsync(user, Input.Password))
+                if (!await _userManager.CheckPasswordAsync(user, Input.Password).ConfigureAndResultAsync())
                 {
                     ModelState.AddModelError(string.Empty, _errorLocalizer[r => r.PasswordNotCorrect]);
                     return Page();
                 }
             }
 
-            var result = await _userManager.DeleteAsync(user);
-            var userId = await _userManager.GetUserIdAsync(user);
+            var result = await _userManager.DeleteAsync(user).ConfigureAndResultAsync();
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleteing user with ID '{userId}'.");
             }
 
-            await _signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync().ConfigureAndWaitAsync();
 
             _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
 

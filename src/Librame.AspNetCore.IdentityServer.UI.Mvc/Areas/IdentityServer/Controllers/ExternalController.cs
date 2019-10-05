@@ -29,7 +29,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     [SecurityHeaders]
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(ExternalController<>))]
+    [GenericApplicationModel(typeof(ExternalController<>))]
     public class ExternalController<TUser> : Controller
         where TUser : IdentityUser<string>, new()
     {
@@ -72,7 +72,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         [HttpGet]
         public async Task<IActionResult> Challenge(string provider, string returnUrl)
         {
-            if (returnUrl.IsNullOrEmpty())
+            if (returnUrl.IsEmpty())
                 returnUrl = "~/";
 
             // validate returnUrl - either it is a valid OIDC URL or back to a local page
@@ -85,7 +85,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             if (_options.WindowsAuthenticationSchemeName == provider)
             {
                 // windows authentication needs special handling
-                return await ProcessWindowsLoginAsync(returnUrl);
+                return await ProcessWindowsLoginAsync(returnUrl).ConfigureAndResultAsync();
             }
             else
             {
@@ -111,20 +111,20 @@ namespace Librame.AspNetCore.IdentityServer.UI
         public async Task<IActionResult> Callback()
         {
             // read external identity from the temporary cookie
-            var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+            var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme).ConfigureAndResultAsync();
             if (result?.Succeeded != true)
             {
                 throw new Exception("External authentication error");
             }
 
             // lookup our user and external provider info
-            var (user, provider, providerUserId, claims) = await FindUserFromExternalProviderAsync(result);
+            var (user, provider, providerUserId, claims) = await FindUserFromExternalProviderAsync(result).ConfigureAndResultAsync();
             if (user == null)
             {
                 // this might be where you might initiate a custom workflow for user registration
                 // in this sample we don't show how that would be done, as our sample implementation
                 // simply auto-provisions new external user
-                user = await AutoProvisionUserAsync(provider, providerUserId, claims);
+                user = await AutoProvisionUserAsync(provider, providerUserId, claims).ConfigureAndResultAsync();
             }
 
             // this allows us to collect any additonal claims or properties
@@ -139,14 +139,14 @@ namespace Librame.AspNetCore.IdentityServer.UI
             // issue authentication cookie for user
             // we must issue the cookie maually, and can't use the SignInManager because
             // it doesn't expose an API to issue additional claims from the login workflow
-            var principal = await _signInManager.CreateUserPrincipalAsync(user);
+            var principal = await _signInManager.CreateUserPrincipalAsync(user).ConfigureAndResultAsync();
             additionalLocalClaims.AddRange(principal.Claims);
             var name = principal.FindFirst(JwtClaimTypes.Name)?.Value ?? user.Id;
-            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id, name));
-            await HttpContext.SignInAsync(user.Id, name, provider, localSignInProps, additionalLocalClaims.ToArray());
+            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id, name)).ConfigureAndWaitAsync();
+            await HttpContext.SignInAsync(user.Id, name, provider, localSignInProps, additionalLocalClaims.ToArray()).ConfigureAndWaitAsync();
 
             // delete temporary cookie used during external authentication
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAndWaitAsync();
 
             // validate return URL and redirect back to authorization endpoint or a local page
             var returnUrl = result.Properties.Items["returnUrl"];
@@ -161,7 +161,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         private async Task<IActionResult> ProcessWindowsLoginAsync(string returnUrl)
         {
             // see if windows auth has already been requested and succeeded
-            var result = await HttpContext.AuthenticateAsync(_options.WindowsAuthenticationSchemeName);
+            var result = await HttpContext.AuthenticateAsync(_options.WindowsAuthenticationSchemeName).ConfigureAndResultAsync();
             if (result?.Principal is WindowsPrincipal wp)
             {
                 // we will issue the external cookie and then redirect the
@@ -193,7 +193,8 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 await HttpContext.SignInAsync(
                     IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme,
                     new ClaimsPrincipal(id),
-                    props);
+                    props).ConfigureAndWaitAsync();
+
                 return Redirect(props.RedirectUri);
             }
             else
@@ -225,7 +226,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             var providerUserId = userIdClaim.Value;
 
             // find external user
-            var user = await _userManager.FindByLoginAsync(provider, providerUserId);
+            var user = await _userManager.FindByLoginAsync(provider, providerUserId).ConfigureAndResultAsync();
 
             return (user, provider, providerUserId, claims);
         }
@@ -274,16 +275,16 @@ namespace Librame.AspNetCore.IdentityServer.UI
             {
                 UserName = Guid.NewGuid().ToString(),
             };
-            var identityResult = await _userManager.CreateAsync(user);
+            var identityResult = await _userManager.CreateAsync(user).ConfigureAndResultAsync();
             if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
 
             if (filtered.Any())
             {
-                identityResult = await _userManager.AddClaimsAsync(user, filtered);
+                identityResult = await _userManager.AddClaimsAsync(user, filtered).ConfigureAndResultAsync();
                 if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
             }
 
-            identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
+            identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider)).ConfigureAndResultAsync();
             if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
 
             return user;

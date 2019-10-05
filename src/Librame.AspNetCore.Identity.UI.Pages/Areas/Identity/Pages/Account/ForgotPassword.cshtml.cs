@@ -21,13 +21,14 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Network;
 
     /// <summary>
     /// 忘记密码页面模型。
     /// </summary>
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(ForgotPasswordPageModel<>))]
+    [GenericApplicationModel(typeof(ForgotPasswordPageModel<>))]
     public class ForgotPasswordPageModel : PageModel
     {
         /// <summary>
@@ -98,7 +99,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(Input.Email);
+                var user = await _userManager.FindByEmailAsync(Input.Email).ConfigureAndResultAsync();
                 if (user == null)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
@@ -107,7 +108,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
                 // For more information on how to enable account confirmation and password reset please 
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAndResultAsync();
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
                     pageHandler: null,
@@ -117,7 +118,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 await _emailService.SendAsync(
                     Input.Email,
                     Localizer[r => r.ResetPassword]?.Value,
-                    Localizer[r => r.ResetPasswordFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value);
+                    Localizer[r => r.ResetPasswordFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value).ConfigureAndWaitAsync();
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

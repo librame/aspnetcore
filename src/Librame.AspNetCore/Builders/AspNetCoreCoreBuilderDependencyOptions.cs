@@ -12,7 +12,6 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization.Routing;
-using System;
 using System.Globalization;
 
 namespace Librame.AspNetCore
@@ -20,9 +19,9 @@ namespace Librame.AspNetCore
     using Extensions.Core;
 
     /// <summary>
-    /// CoreBuilderDependencyOptions for ASP.NET Core。
+    /// <see cref="CoreBuilderDependencyOptions"/> for ASP.NET Core。
     /// </summary>
-    public class AspNetCoreBuilderDependencyOptions : CoreBuilderDependencyOptions
+    public class AspNetCoreCoreBuilderDependencyOptions : CoreBuilderDependencyOptions
     {
         /// <summary>
         /// 默认文化信息数组。
@@ -36,15 +35,15 @@ namespace Librame.AspNetCore
 
 
         /// <summary>
-        /// <see cref="RequestLocalizationOptions"/> 配置动作（默认已对美英、简中、繁中提供支持）。
+        /// 请求本地化选项配置器。
         /// </summary>
-        public Action<RequestLocalizationOptions> RequestLocalizationAction { get; set; }
-            = options =>
+        public OptionsActionConfigurator<RequestLocalizationOptions> RequestLocalization { get; set; }
+            = new OptionsActionConfigurator<RequestLocalizationOptions>(options =>
             {
                 options.SupportedCultures = DefaultCultureInfos;
                 options.SupportedUICultures = DefaultCultureInfos;
                 // Add RouteData
                 options.RequestCultureProviders.Insert(0, new RouteDataRequestCultureProvider { Options = options });
-            };
+            });
     }
 }

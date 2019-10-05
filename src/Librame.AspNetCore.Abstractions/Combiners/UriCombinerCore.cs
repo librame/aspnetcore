@@ -13,13 +13,10 @@
 using Microsoft.AspNetCore.Http;
 using System;
 
-namespace Librame.AspNetCore
+namespace Librame.Extensions.Core
 {
-    using Extensions;
-    using Extensions.Core;
-
     /// <summary>
-    /// URI 组合器核心。
+    /// <see cref="UriCombiner"/> for ASP.NET Core。
     /// </summary>
     public class UriCombinerCore : UriCombiner
     {

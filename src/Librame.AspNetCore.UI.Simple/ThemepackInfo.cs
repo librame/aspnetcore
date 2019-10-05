@@ -24,14 +24,14 @@ namespace Librame.AspNetCore.UI.Themepack.Simple
         /// 名称。
         /// </summary>
         public override string Name
-            => nameof(Simple);
+            => Localizer[nameof(Name)];
 
 
         /// <summary>
         /// 本地化定位器。
         /// </summary>
         public override IStringLocalizer Localizer
-            => new ThemepackStringLocalizer<ThemepackInfoResource>();
+            => new ThemepackExpressionLocalizer<ThemepackInfoResource>();
 
 
         /// <summary>

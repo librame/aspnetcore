@@ -35,7 +35,7 @@ namespace Librame.Extensions
         /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsAjaxRequest(this HttpRequest request)
-            => request.Headers.IsAjaxRequest();
+            => request.NotNull(nameof(request)).Headers.IsAjaxRequest();
 
         /// <summary>
         /// 是否为 AJAX 请求。
@@ -44,7 +44,7 @@ namespace Librame.Extensions
         /// <returns>返回布尔值。</returns>
         public static bool IsAjaxRequest(this IHeaderDictionary headers)
         {
-            if ((bool)headers?.TryGetValue("X-Requested-With", out StringValues value))
+            if (true == headers?.TryGetValue("X-Requested-With", out StringValues value))
                 return "XMLHttpRequest".Equals(value, StringComparison.OrdinalIgnoreCase);
 
             return false;
@@ -61,6 +61,8 @@ namespace Librame.Extensions
         /// <returns>返回字符串。</returns>
         public static string AsAbsoluteUrl(this HttpRequest request)
         {
+            request.NotNull(nameof(request));
+
             return new StringBuilder()
                 .Append(request.Scheme)
                 .Append(Uri.SchemeDelimiter)
@@ -81,6 +83,8 @@ namespace Librame.Extensions
         /// <returns>返回字符串。</returns>
         public static string AsRootUrl(this HttpRequest request)
         {
+            request.NotNull(nameof(request));
+
             return new StringBuilder()
                 .Append(request.Scheme)
                 .Append(Uri.SchemeDelimiter)
@@ -117,7 +121,7 @@ namespace Librame.Extensions
         public static async Task<IPAddress> GetIPv4Async(this HttpRequest request,
             string addressKey = null)
         {
-            var tuple = await request.GetIPAddressTupleAsync(addressKey);
+            var tuple = await request.GetIPAddressTupleAsync(addressKey).ConfigureAndResultAsync();
             return tuple.IPv4;
         }
 
@@ -130,7 +134,7 @@ namespace Librame.Extensions
         public static async Task<IPAddress> GetIPv6Async(this HttpRequest request,
             string addressKey = null)
         {
-            var tuple = await request.GetIPAddressTupleAsync(addressKey);
+            var tuple = await request.GetIPAddressTupleAsync(addressKey).ConfigureAndResultAsync();
             return tuple.IPv6;
         }
 
@@ -142,7 +146,7 @@ namespace Librame.Extensions
         /// <returns>返回一个包含 <see cref="Tuple{IPAddress, IPAddress}"/> 的元组。</returns>
         public static Task<(IPAddress IPv4, IPAddress IPv6)> GetIPAddressTupleAsync(this HttpRequest request,
             string addressKey = null)
-            => request.Headers.GetIPAddressTupleAsync(addressKey);
+            => request.NotNull(nameof(request)).Headers.GetIPAddressTupleAsync(addressKey);
 
 
         /// <summary>
@@ -154,7 +158,7 @@ namespace Librame.Extensions
         public static async Task<IPAddress> GetIPv4Async(this IHeaderDictionary headers,
             string ipAddressKey = null)
         {
-            var tuple = await headers.GetIPAddressTupleAsync(ipAddressKey);
+            var tuple = await headers.GetIPAddressTupleAsync(ipAddressKey).ConfigureAndResultAsync();
             return tuple.IPv4;
         }
 
@@ -167,7 +171,7 @@ namespace Librame.Extensions
         public static async Task<IPAddress> GetIPv6Async(this IHeaderDictionary headers,
             string addressKey = null)
         {
-            var tuple = await headers.GetIPAddressTupleAsync(addressKey);
+            var tuple = await headers.GetIPAddressTupleAsync(addressKey).ConfigureAndResultAsync();
             return tuple.IPv6;
         }
 
@@ -180,14 +184,14 @@ namespace Librame.Extensions
         public static async Task<(IPAddress IPv4, IPAddress IPv6)> GetIPAddressTupleAsync(this IHeaderDictionary headers,
             string addressKey = null)
         {
-            if (addressKey.IsNullOrEmpty())
+            if (addressKey.IsEmpty())
                 addressKey = "X-Original-For";
 
-            if (!(bool)headers?.TryGetValue(addressKey, out StringValues value))
+            if (false == headers?.TryGetValue(addressKey, out StringValues value))
                 return (null, null);
 
             var address = value.ToString();
-            if (address.IndexOf(",") > 0)
+            if (address.IndexOf(",", StringComparison.OrdinalIgnoreCase) > 0)
             {
                 var dictionary = new Dictionary<string, string>();
 
@@ -207,7 +211,7 @@ namespace Librame.Extensions
 
             var host = new HostString(address);
             if (host.IsLocalIPAddress())
-                return await DnsUtility.GetLocalIPAddressTupleAsync();
+                return await DnsUtility.GetLocalIPAddressTupleAsync().ConfigureAndResultAsync();
 
             if (IPAddress.TryParse(host.Host, out IPAddress current))
             {

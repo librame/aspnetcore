@@ -99,7 +99,7 @@ namespace Librame.AspNetCore
                         if (uiCultureInfo == null)
                         {
                             EnsureLogger(context);
-                           _logger?.UnsupportedUICultures(provider.GetType().Name, uiCultures);
+                            _logger?.UnsupportedUICultures(provider.GetType().Name, uiCultures);
                         }
                     }
 

@@ -36,7 +36,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="resourceDictionary">给定的 <see cref="IResourceDictionary"/>。</param>
         public AbstractResourceDictionaryHtmlLocalizer(IResourceDictionary resourceDictionary)
         {
-            ResourceDictionary = resourceDictionary.NotNullOrEmpty(nameof(resourceDictionary));
+            ResourceDictionary = resourceDictionary.NotEmpty(nameof(resourceDictionary));
         }
 
 

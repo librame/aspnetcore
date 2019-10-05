@@ -48,7 +48,7 @@
                     <!-- Login Info -->
                     @{
                         await Engine.RenderThemepackPartialViewAsync(ViewContext, "Manage/_LoginPartial",
-                            viewName => Html.RenderPartialAsync(viewName, Application));
+                            viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
                     }
                 </div>
             </nav>
@@ -59,7 +59,7 @@
                 <!-- Sidebar -->
                 @{
                     await Engine.RenderThemepackPartialViewAsync(ViewContext, "Manage/_SidebarPartial",
-                        viewName => Html.RenderPartialAsync(viewName, Application));
+                        viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
                 }
             </div>
         </div>
@@ -76,7 +76,7 @@
                     <!-- Footbar -->
                     @{
                         await Engine.RenderThemepackPartialViewAsync(ViewContext, "Manage/_FootbarPartial",
-                            viewName => Html.RenderPartialAsync(viewName, Application));
+                            viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
                     }
                 </div>
             </footer>

@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// UI 构建器依赖选项。
     /// </summary>
-    public class UiBuilderDependencyOptions : ExtensionBuilderDependencyOptions<UiBuilderOptions>
+    public class UiBuilderDependencyOptions : ExtensionBuilderDependencyOptions<UiBuilderDependencyOptions, UiBuilderOptions>
     {
     }
 }

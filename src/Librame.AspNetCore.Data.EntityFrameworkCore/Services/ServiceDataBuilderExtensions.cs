@@ -18,7 +18,7 @@ namespace Librame.Extensions.Data
     {
         public static IDataBuilder AddServices(this IDataBuilder builder)
         {
-            builder.Services.TryReplace<ITenantService, HttpTenantService>();
+            builder.Services.TryReplace<IDataTenantService, AspNetCoreDataTenantService>();
 
             return builder;
         }

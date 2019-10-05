@@ -14,12 +14,10 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Concurrent;
 
-namespace Librame.AspNetCore
+namespace Librame.Extensions.Core
 {
-    using Extensions;
-
     /// <summary>
-    /// 抽象 URI 组合器核心静态扩展。
+    /// 抽象 <see cref="UriCombinerCore"/> 静态扩展。
     /// </summary>
     public static class AbstractionUriCombinerCoreExtensions
     {
@@ -109,7 +107,7 @@ namespace Librame.AspNetCore
             HostString newHost = default, PathString newPath = default, QueryString newQuery = default,
             Action<ConcurrentDictionary<string, string>> queriesAction = null, string newAnchor = null)
         {
-            if (newScheme.IsNotNullOrEmpty())
+            if (newScheme.IsNotEmpty())
                 locator.ChangeScheme(newScheme);
 
             if (newHost.HasValue)
@@ -124,7 +122,7 @@ namespace Librame.AspNetCore
             if (queriesAction.IsNotNull())
                 locator.ChangeQueries(queriesAction);
 
-            if (newAnchor.IsNotNullOrEmpty())
+            if (newAnchor.IsNotEmpty())
                 locator.ChangeAnchor(newAnchor);
 
             return locator;

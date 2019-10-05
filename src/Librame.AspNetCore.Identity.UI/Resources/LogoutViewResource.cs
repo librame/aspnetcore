@@ -19,5 +19,9 @@ namespace Librame.AspNetCore.Identity.UI
     /// </summary>
     public class LogoutViewResource : AbstractViewResource
     {
+        /// <summary>
+        /// 返回首页。
+        /// </summary>
+        public string ReturnIndex { get; set; }
     }
 }

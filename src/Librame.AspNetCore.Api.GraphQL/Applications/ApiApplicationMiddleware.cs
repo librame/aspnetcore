@@ -22,6 +22,8 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Api
 {
+    using Extensions;
+
     class ApiApplicationMiddleware : AbstractApiApplicationMiddleware
     {
         public ApiApplicationMiddleware(RequestDelegate next)
@@ -35,7 +37,7 @@ namespace Librame.AspNetCore.Api
             string body;
             using (var sr = new StreamReader(context.Request.Body))
             {
-                body = await sr.ReadToEndAsync();
+                body = await sr.ReadToEndAsync().ConfigureAndResultAsync();
             }
 
             var executor = context.RequestServices.GetRequiredService<IDocumentExecuter>();
@@ -54,10 +56,10 @@ namespace Librame.AspNetCore.Api
                     MaxDepth = 15
                 };
             })
-            .ConfigureAwait(false);
+            .ConfigureAndResultAsync();
 
             var writer = context.RequestServices.GetRequiredService<IDocumentWriter>();
-            await writer.WriteAsync(context.Response.Body, result);
+            await writer.WriteAsync(context.Response.Body, result).ConfigureAndWaitAsync();
         }
 
     }

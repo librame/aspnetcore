@@ -12,13 +12,13 @@ namespace Librame.AspNetCore.Identity.UI.Tests
         public void ResourceTest()
         {
             var cultureNames = new string[] { "en-US", "zh-CN", "zh-TW" };
-            var localizer = TestServiceProvider.Current.GetRequiredService<IExpressionStringLocalizer<UserViewModelResource>>();
+            var localizer = TestServiceProvider.Current.GetRequiredService<IExpressionLocalizer<UserViewModelResource>>();
 
             foreach (var name in cultureNames)
                 RunTest(localizer, name);
         }
 
-        private void RunTest(IExpressionStringLocalizer<UserViewModelResource> localizer, string cultureName)
+        private void RunTest(IExpressionLocalizer<UserViewModelResource> localizer, string cultureName)
         {
             CultureInfo.CurrentCulture
                 = CultureInfo.CurrentUICulture

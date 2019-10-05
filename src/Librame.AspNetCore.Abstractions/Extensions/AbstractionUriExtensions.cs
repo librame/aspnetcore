@@ -73,7 +73,7 @@ namespace Librame.Extensions
             }
             else
             {
-                if (pathOrUri.StartsWith("~/"))
+                if (pathOrUri.StartsWith("~/", StringComparison.OrdinalIgnoreCase))
                     pathOrUri = pathOrUri.TrimStart('~'); // PathString 不支持 ~/ 路径模式
 
                 path = new PathString(pathOrUri);

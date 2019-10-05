@@ -40,7 +40,7 @@ namespace Librame.AspNetCore.Api
 
             return builder.AddApi(dependency =>
             {
-                dependency.OptionsAction = builderAction;
+                dependency.Builder.Action = builderAction;
             },
             builderFactory);
         }
@@ -71,14 +71,14 @@ namespace Librame.AspNetCore.Api
             where TDependencyOptions : ApiBuilderDependencyOptions, new()
         {
             // Add Dependencies
-            var dependency = dependencyAction.ConfigureDependencyOptions();
+            var dependency = dependencyAction.ConfigureDependency();
+            builder.Services.AddAllOptionsConfigurators(dependency);
 
-            // Add Builder
-            builder.Services.OnlyConfigure(dependency.OptionsAction, dependency.OptionsName);
-
+            // Create Builder
             var apiBuilder = builderFactory.NotNullOrDefault(()
                 => (b, d) => new ApiBuilder(b, d)).Invoke(builder, dependency);
 
+            // Configure Builder
             return apiBuilder
                 .AddGraphQL();
         }

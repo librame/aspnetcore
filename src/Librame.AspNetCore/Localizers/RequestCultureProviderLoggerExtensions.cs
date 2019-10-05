@@ -8,10 +8,11 @@ using Microsoft.Extensions.Primitives;
 
 namespace Librame.AspNetCore
 {
-    internal static class RequestCultureProviderLoggerExtensions
+    static class RequestCultureProviderLoggerExtensions
     {
         private static readonly Action<ILogger, string, IList<StringSegment>, Exception> _unsupportedCulture;
         private static readonly Action<ILogger, string, IList<StringSegment>, Exception> _unsupportedUICulture;
+
 
         static RequestCultureProviderLoggerExtensions()
         {
@@ -24,6 +25,7 @@ namespace Librame.AspNetCore
                 2,
                 "{requestCultureProvider} returned the following unsupported UI Cultures '{uiCultures}'.");
         }
+
 
         public static void UnsupportedCultures(this ILogger logger, string requestCultureProvider, IList<StringSegment> cultures)
         {

@@ -20,11 +20,12 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
 
     /// <summary>
     /// 个人数据页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(PersonalDataPageModel<>))]
+    [GenericApplicationModel(typeof(PersonalDataPageModel<>))]
     public class PersonalDataPageModel : PageModel
     {
         /// <summary>
@@ -53,7 +54,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");

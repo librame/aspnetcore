@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
@@ -35,7 +36,7 @@ namespace Librame.AspNetCore.IdentityServer.Api
             .AddIdentityServerJwt();
 
             var mvcBuilder = services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             // 默认使用测试项目的写入库
             //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
@@ -55,6 +56,7 @@ namespace Librame.AspNetCore.IdentityServer.Api
                         sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddIdentifier<IdentityServerStoreIdentifier>()
+                .AddDbDesignTime<SqlServerDesignTimeServices>()
                 .AddIdentity<IdentityServerDbContextAccessor>(options =>
                 {
                     options.Stores.MaxLengthForKeys = 128;
@@ -65,7 +67,7 @@ namespace Librame.AspNetCore.IdentityServer.Api
                 .AddNetwork()
                 .AddIdentityServer<IdentityServerDbContextAccessor, DefaultIdentityUser<string>>(dependency =>
                 {
-                    dependency.RawAction = options =>
+                    dependency.IdentityServer = options =>
                     {
                         options.Events.RaiseErrorEvents = true;
                         options.Events.RaiseInformationEvents = true;
@@ -73,7 +75,7 @@ namespace Librame.AspNetCore.IdentityServer.Api
                         options.Events.RaiseSuccessEvents = true;
                         options.Authentication.CookieAuthenticationScheme = IdentityConstants.ApplicationScheme;
                     };
-                    dependency.OptionsAction = builder =>
+                    dependency.Builder.Action = builder =>
                     {
                         builder.Authorizations.Clients.AddIdentityServerSPA("Librame.AspNetCore.IdentityServer.Api", _ => { });
                     };

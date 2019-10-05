@@ -12,7 +12,6 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.DataAnnotations.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -22,9 +21,12 @@ namespace Librame.AspNetCore.UI
     {
         public static IUiBuilder AddDataAnnotations(this IUiBuilder builder)
         {
-            builder.Services.TryReplace(typeof(IConfigureOptions<MvcOptions>), typeof(MvcDataAnnotationsMvcOptionsSetup),
-                typeof(ResetMvcDataAnnotationsMvcOptionsSetup));
             builder.Services.TryReplace<IValidationAttributeAdapterProvider, ResetValidationAttributeAdapterProvider>();
+
+            var mvcDataAnnotationsMvcOptionsSetupType = typeof(IValidationAttributeAdapterProvider).Assembly
+                .GetType("Microsoft.Extensions.DependencyInjection.MvcDataAnnotationsMvcOptionsSetup");
+            builder.Services.TryReplace(typeof(IConfigureOptions<MvcOptions>), mvcDataAnnotationsMvcOptionsSetupType,
+                typeof(ResetMvcDataAnnotationsMvcOptionsSetup));
 
             return builder;
         }

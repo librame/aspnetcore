@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// <see cref="SignInManager{TUser}"/> 实用工具。
     /// </summary>
-    public class SignInManagerUtility
+    public static class SignInManagerUtility
     {
         /// <summary>
         /// 通过电话号码创建用户。
@@ -38,18 +38,18 @@ namespace Librame.AspNetCore.UI
             UserManager<TUser> userManager, string phoneNumber, string password = null, TUser user = null)
             where TUser : class
         {
-            await CreateUser(userStore, phoneNumber, user);
+            await CreateUser(userStore, phoneNumber, user).ConfigureAndWaitAsync();
 
             if (!userManager.SupportsUserPhoneNumber)
                 throw new NotSupportedException("The identity builder requires a user store with phone number support.");
 
             var phoneNumberStore = (IUserPhoneNumberStore<TUser>)userStore;
-            await phoneNumberStore.SetPhoneNumberAsync(user, phoneNumber, CancellationToken.None);
+            await phoneNumberStore.SetPhoneNumberAsync(user, phoneNumber, CancellationToken.None).ConfigureAndWaitAsync();
 
-            if (password.IsNotNullOrEmpty())
-                return await userManager.CreateAsync(user, password);
+            if (password.IsNotEmpty())
+                return await userManager.CreateAsync(user, password).ConfigureAndResultAsync();
 
-            return await userManager.CreateAsync(user);
+            return await userManager.CreateAsync(user).ConfigureAndResultAsync();
         }
 
         /// <summary>
@@ -66,18 +66,18 @@ namespace Librame.AspNetCore.UI
             IUserStore<TUser> userStore, string email, string password = null, TUser user = null)
             where TUser : class
         {
-            await CreateUser(userStore, email, user);
+            await CreateUser(userStore, email, user).ConfigureAndWaitAsync();
 
             if (!userManager.SupportsUserEmail)
                 throw new NotSupportedException("The identity builder requires a user store with email support.");
 
             var emailStore = (IUserEmailStore<TUser>)userStore;
-            await emailStore.SetEmailAsync(user, email, CancellationToken.None);
+            await emailStore.SetEmailAsync(user, email, CancellationToken.None).ConfigureAndWaitAsync();
 
-            if (password.IsNotNullOrEmpty())
-                return await userManager.CreateAsync(user, password);
+            if (password.IsNotEmpty())
+                return await userManager.CreateAsync(user, password).ConfigureAndResultAsync();
 
-            return await userManager.CreateAsync(user);
+            return await userManager.CreateAsync(user).ConfigureAndResultAsync();
         }
 
         private static async Task CreateUser<TUser>(IUserStore<TUser> userStore, string userName, TUser user = null)
@@ -86,7 +86,7 @@ namespace Librame.AspNetCore.UI
             if (user.IsNull())
                 user = typeof(TUser).EnsureCreate<TUser>();
 
-            await userStore.SetUserNameAsync(user, userName, CancellationToken.None);
+            await userStore.SetUserNameAsync(user, userName, CancellationToken.None).ConfigureAndWaitAsync();
         }
 
     }

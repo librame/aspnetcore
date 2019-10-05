@@ -52,8 +52,8 @@ namespace Librame.AspNetCore.IdentityServer
         /// <summary>
         /// 初始化核心。
         /// </summary>
-        /// <param name="stores">给定的 <see cref="IStoreHub{IdentityServerDbContextAccessor}"/>。</param>
-        protected override void InitializeCore(IStoreHub<IdentityServerDbContextAccessor> stores)
+        /// <param name="stores">给定的 <see cref="IStoreHub{IdentityServerDbContextAccessor, TAudit, TEntity, TMigration, TTenant}"/>。</param>
+        protected override void InitializeCore<TAudit, TEntity, TMigration, TTenant>(IStoreHub<IdentityServerDbContextAccessor, TAudit, TEntity, TMigration, TTenant> stores)
         {
             base.InitializeCore(stores);
         }

@@ -1,13 +1,14 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Examples
 {
+    using Extensions;
     using Extensions.Core;
     using Extensions.Network;
     using UI;
@@ -24,20 +25,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
         //private ISmsService _smsService = null;
 
         [InjectionService]
-        private IExpressionStringLocalizer<RegisterViewResource> _registerLocalizer = null;
+        private IExpressionLocalizer<RegisterViewResource> _registerLocalizer = null;
 
         [InjectionService]
-        private IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer = null;
+        private IExpressionLocalizer<StatusMessageResource> _statusLocalizer = null;
 
         [InjectionService]
-        private IIdentityBuilderWrapper _builderWrapper = null;
+        private SignInManager<DefaultIdentityUser<string>> _signInManager = null;
 
-        [InjectionService]
-        private IServiceProvider _serviceProvider = null;
-
-        private readonly dynamic _signInManager = null;
-        private readonly dynamic _userManager = null;
-        private readonly dynamic _userStore = null;
+        private readonly UserManager<DefaultIdentityUser<string>> _userManager = null;
 
 
         /// <summary>
@@ -48,11 +44,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
         {
             injectionService.Inject(this);
 
-            _signInManager = _serviceProvider.GetService(typeof(SignInManager<>)
-                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
             _userManager = _signInManager.UserManager;
-            _userStore = _serviceProvider.GetService(typeof(IUserStore<>)
-                .MakeGenericType(_builderWrapper.RawBuilder.UserType));
         }
 
 
@@ -97,7 +89,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
         /// <returns></returns>
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -111,7 +103,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                 Phone = user.PhoneNumber
             };
 
-            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user).ConfigureAndResultAsync();
 
             return Page();
         }
@@ -127,13 +119,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var updateProfileResult = await _userManager.UpdateAsync(user);
+            var updateProfileResult = await _userManager.UpdateAsync(user).ConfigureAndResultAsync();
             if (!updateProfileResult.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error ocurred updating the profile for user with ID '{user.Id}'");
@@ -141,7 +133,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
 
             if (Input.Email != user.Email)
             {
-                var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email);
+                var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email).ConfigureAndResultAsync();
                 if (!setEmailResult.Succeeded)
                 {
                     throw new InvalidOperationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
@@ -150,14 +142,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
 
             if (Input.Phone != user.PhoneNumber)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.Phone);
+                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.Phone).ConfigureAndResultAsync();
                 if (!setPhoneResult.Succeeded)
                 {
                     throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
                 }
             }
 
-            await _signInManager.RefreshSignInAsync(user);
+            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
 
             StatusMessage = _statusLocalizer[r => r.ProfileUpdated];
 
@@ -171,15 +163,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var userId = await _userManager.GetUserIdAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+            var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
 
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
@@ -190,7 +182,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
             await _emailService.SendAsync(
                 email,
                 _registerLocalizer[r => r.ConfirmYourEmail],
-                _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]);
+                _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]).ConfigureAndWaitAsync();
 
             StatusMessage = _statusLocalizer[r => r.VerificationEmailSent];
 

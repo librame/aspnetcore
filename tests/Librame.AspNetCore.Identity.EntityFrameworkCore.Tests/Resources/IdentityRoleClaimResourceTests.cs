@@ -11,13 +11,13 @@ namespace Librame.AspNetCore.Identity.Tests
         public void ResourceTest()
         {
             var cultureNames = new string[] { "en-US", "zh-CN", "zh-TW" };
-            var localizer = TestServiceProvider.Current.GetRequiredService<IExpressionStringLocalizer<IdentityRoleClaimResource>>();
+            var localizer = TestServiceProvider.Current.GetRequiredService<IExpressionLocalizer<IdentityRoleClaimResource>>();
 
             foreach (var name in cultureNames)
                 RunTest(localizer, name);
         }
 
-        private void RunTest(IExpressionStringLocalizer<IdentityRoleClaimResource> localizer, string cultureName)
+        private void RunTest(IExpressionLocalizer<IdentityRoleClaimResource> localizer, string cultureName)
         {
             CultureInfo.CurrentCulture
                 = CultureInfo.CurrentUICulture

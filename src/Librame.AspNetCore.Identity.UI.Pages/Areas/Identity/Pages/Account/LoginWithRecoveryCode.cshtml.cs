@@ -21,13 +21,14 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 恢复码登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(LoginWithRecoveryCodePageModel<>))]
+    [GenericApplicationModel(typeof(LoginWithRecoveryCodePageModel<>))]
     public class LoginWithRecoveryCodePageModel : PageModel
     {
         /// <summary>
@@ -66,14 +67,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly ILogger<LoginWithRecoveryCodePageModel> _logger;
-        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
 
 
         public LoginWithRecoveryCodePageModel(
             SignInManager<TUser> signInManager,
             UserManager<TUser> userManager,
             ILogger<LoginWithRecoveryCodePageModel> logger,
-            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
+            IExpressionLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -85,7 +86,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         public override async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
             if (user == null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
@@ -103,15 +104,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 return Page();
             }
 
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
             if (user == null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
 
-            var userId = await _userManager.GetUserIdAsync(user);
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
             var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
-            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
+            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode).ConfigureAndResultAsync();
             if (result.Succeeded)
             {
                 _logger.LogInformation("User with ID '{UserId}' logged in with a recovery code.", userId);

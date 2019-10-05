@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @Application.CurrentInterfaceInfo.Title</title>
+    <title>@ViewData["Title"] - @Application.CurrentInterfaceInfo.Name</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -25,12 +25,12 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <a href="/" class="navbar-brand">@Application.CurrentInterfaceInfo.Title</a>
+                <a href="/" class="navbar-brand">@Application.CurrentInterfaceInfo.Name</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="@sitemap.Index.ToRouteString(Url)">@sitemap.Index.Text</a></li>
-                    @if (sitemap.CommonHeader.IsNotNullOrEmpty())
+                    @if (sitemap.CommonHeader.IsNotEmpty())
                     {
                         foreach (var nav in sitemap.CommonHeader)
                         {
@@ -38,7 +38,7 @@
                         }
                     }
                 </ul>
-                @await Html.PartialAsync("Common/_LoginPartial", Application)
+                @await Html.PartialAsync("Common/_LoginPartial", Application).ConfigureAndResultAsync()
             </div>
         </div>
     </nav>

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Librame.AspNetCore.IdentityServer.UI
 {
+    using Extensions;
+
     /// <summary>
     /// Õï¶Ï¿ØÖÆÆ÷¡£
     /// </summary>
@@ -28,7 +30,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 return NotFound();
             }
 
-            var model = new DiagnosticsViewModel(await HttpContext.AuthenticateAsync());
+            var model = new DiagnosticsViewModel(await HttpContext.AuthenticateAsync().ConfigureAndResultAsync());
             return View(model);
         }
 

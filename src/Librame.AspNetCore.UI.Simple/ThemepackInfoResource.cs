@@ -28,5 +28,10 @@ namespace Librame.AspNetCore.UI.Themepack.Simple
         /// 隐私和 Cookie 策略。
         /// </summary>
         public string PrivacyAndCookiePolicy { get; set; }
+
+        /// <summary>
+        /// 隐私和 Cookie 策略按钮。
+        /// </summary>
+        public string PrivacyAndCookiePolicyButton { get; set; }
     }
 }

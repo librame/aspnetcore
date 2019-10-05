@@ -21,12 +21,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 生成恢复码集合页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(GenerateRecoveryCodesPageModel<>))]
+    [GenericApplicationModel(typeof(GenerateRecoveryCodesPageModel<>))]
     public class GenerateRecoveryCodesPageModel : PageModel
     {
         /// <summary>
@@ -63,13 +64,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     {
         private readonly UserManager<TUser> _userManager;
         private readonly ILogger<GenerateRecoveryCodesPageModel> _logger;
-        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public GenerateRecoveryCodesPageModel(
             UserManager<TUser> userManager,
             ILogger<GenerateRecoveryCodesPageModel> logger,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
+            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _logger = logger;
@@ -79,16 +80,16 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
+            var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync();
             if (!isTwoFactorEnabled)
             {
-                var userId = await _userManager.GetUserIdAsync(user);
+                var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
                 throw new InvalidOperationException($"Cannot generate recovery codes for user with ID '{userId}' because they do not have 2FA enabled.");
             }
 
@@ -97,20 +98,20 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
-            var userId = await _userManager.GetUserIdAsync(user);
+            var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync();
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
             if (!isTwoFactorEnabled)
             {
                 throw new InvalidOperationException($"Cannot generate recovery codes for user with ID '{userId}' as they do not have 2FA enabled.");
             }
 
-            var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+            var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10).ConfigureAndResultAsync();
             RecoveryCodes = recoveryCodes.ToArray();
 
             _logger.LogInformation("User with ID '{UserId}' has generated new 2FA recovery codes.", userId);

@@ -11,11 +11,13 @@
 #endregion
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Librame.AspNetCore.Identity.UI
 {
     using AspNetCore.UI;
+    using Extensions;
 
     class IdentityInterfaceConfigurationWithPages : InterfaceConfigurationWithPages
     {
@@ -32,10 +34,13 @@ namespace Librame.AspNetCore.Identity.UI
             conventions.AuthorizeAreaFolder(Area, Info.Sitemap.Manage.Route);
             conventions.AuthorizeAreaPage(Area, Info.Sitemap.Logout.Route);
 
-            var filter = new ExternalAuthenticationSchemesPageFilter(Builder, BuilderOptions);
+            var filter = typeof(ExternalAuthenticationSchemesPageFilter<>)
+                .MakeGenericType(Builder.UserType)
+                .EnsureCreateObject(BuilderOptions);
+
             conventions.AddAreaFolderApplicationModelConvention(Area,
                 Info.Sitemap.Manage.Route,
-                model => model.Filters.Add(filter));
+                model => model.Filters.Add((IFilterMetadata)filter));
         }
     }
 }

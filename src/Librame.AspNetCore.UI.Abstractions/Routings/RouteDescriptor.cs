@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="url">给定的 URL。</param>
         public RouteDescriptor(string url)
         {
-            Url = url.NotNullOrEmpty(nameof(url));
+            Url = url.NotEmpty(nameof(url));
         }
 
         /// <summary>
@@ -107,13 +107,13 @@ namespace Librame.AspNetCore.UI
         /// 是页面模式。
         /// </summary>
         public virtual bool IsPage
-            => Page.IsNotNullOrEmpty();
+            => Page.IsNotEmpty();
 
         /// <summary>
         /// 是 MVC 模式。
         /// </summary>
         public virtual bool IsMvc
-            => Action.IsNotNullOrEmpty() || Controller.IsNotNullOrEmpty();
+            => Action.IsNotEmpty() || Controller.IsNotEmpty();
 
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
         public RouteDescriptor ChangePage(string newPage)
         {
-            Page = newPage.NotNullOrEmpty(nameof(newPage));
+            Page = newPage.NotEmpty(nameof(newPage));
             return this;
         }
 
@@ -141,7 +141,7 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
         public RouteDescriptor ChangeAction(string newAction)
         {
-            Action = newAction.NotNullOrEmpty(nameof(newAction));
+            Action = newAction.NotEmpty(nameof(newAction));
             return this;
         }
 
@@ -152,7 +152,7 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
         public RouteDescriptor ChangeController(string newController)
         {
-            Controller = newController.NotNullOrEmpty(nameof(newController));
+            Controller = newController.NotEmpty(nameof(newController));
             return this;
         }
 
@@ -174,7 +174,7 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
         public RouteDescriptor ChangeUrl(string newUrl)
         {
-            Url = newUrl.NotNullOrEmpty(nameof(newUrl));
+            Url = newUrl.NotEmpty(nameof(newUrl));
             return this;
         }
 
@@ -238,16 +238,16 @@ namespace Librame.AspNetCore.UI
         {
             var sb = new StringBuilder();
 
-            if (Area.IsNotNullOrEmpty())
+            if (Area.IsNotEmpty())
                 sb.Append($"/{Area}");
 
-            if (Controller.IsNotNullOrEmpty())
+            if (Controller.IsNotEmpty())
                 sb.Append($"/{Controller}");
 
-            if (Action.IsNotNullOrEmpty())
+            if (Action.IsNotEmpty())
                 sb.Append($"/{Action}");
 
-            if (Id.IsNotNullOrEmpty())
+            if (Id.IsNotEmpty())
                 sb.Append($"/{Id}");
 
             return ToString(sb.ToString());
@@ -264,12 +264,12 @@ namespace Librame.AspNetCore.UI
             {
                 var sb = new StringBuilder();
 
-                if (Area.IsNotNullOrEmpty())
+                if (Area.IsNotEmpty())
                     sb.Append($"/{Area}");
 
                 sb.Append($"{Page}");
 
-                if (Id.IsNotNullOrEmpty())
+                if (Id.IsNotEmpty())
                     sb.Append($"/{Id}");
 
                 return sb.ToString();

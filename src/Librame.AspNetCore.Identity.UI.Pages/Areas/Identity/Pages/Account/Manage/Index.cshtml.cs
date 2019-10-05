@@ -21,13 +21,14 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
     using Extensions.Network;
 
     /// <summary>
     /// 首页页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(IndexPageModel<>))]
+    [GenericApplicationModel(typeof(IndexPageModel<>))]
     public class IndexPageModel : PageModel
     {
         /// <summary>
@@ -109,21 +110,21 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly IEmailService _emailService;
-        private readonly ISmsService _smsService;
-        private readonly IExpressionStringLocalizer<RegisterViewResource> _registerLocalizer;
-        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+        //private readonly ISmsService _smsService;
+        private readonly IExpressionLocalizer<RegisterViewResource> _registerLocalizer;
+        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public IndexPageModel(SignInManager<TUser> signInManager,
             IEmailService emailService,
-            ISmsService smsService,
-            IExpressionStringLocalizer<RegisterViewResource> registerLocalizer,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
+            //ISmsService smsService,
+            IExpressionLocalizer<RegisterViewResource> registerLocalizer,
+            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
             _emailService = emailService;
-            _smsService = smsService;
+            //_smsService = smsService;
             _registerLocalizer = registerLocalizer;
             _statusLocalizer = statusLocalizer;
         }
@@ -131,15 +132,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var userName = await _userManager.GetUserNameAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            //var userName = await _userManager.GetUserNameAsync(user).ConfigureAndResultAsync();
+            var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
+            var phoneNumber = await _userManager.GetPhoneNumberAsync(user).ConfigureAndResultAsync();
             
             Input = new InputModel
             {
@@ -147,7 +148,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
                 Phone = phoneNumber
             };
 
-            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user).ConfigureAndResultAsync();
 
             return Page();
         }
@@ -159,44 +160,44 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var email = await _userManager.GetEmailAsync(user);
+            var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
             if (Input.Email != email)
             {
-                var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email);
+                var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email).ConfigureAndResultAsync();
                 if (!setEmailResult.Succeeded)
                 {
-                    var userId = await _userManager.GetUserIdAsync(user);
+                    var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
                     throw new InvalidOperationException($"Unexpected error occurred setting email for user with ID '{userId}'.");
                 }
 
                 // In our UI email and user name are one and the same, so when we update the email
                 // we need to update the user name.
-                var setUserNameResult = await _userManager.SetUserNameAsync(user, Input.Email);
+                var setUserNameResult = await _userManager.SetUserNameAsync(user, Input.Email).ConfigureAndResultAsync();
                 if (!setUserNameResult.Succeeded)
                 {
-                    var userId = await _userManager.GetUserIdAsync(user);
+                    var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
                     throw new InvalidOperationException($"Unexpected error occurred setting name for user with ID '{userId}'.");
                 }
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var phoneNumber = await _userManager.GetPhoneNumberAsync(user).ConfigureAndResultAsync();
             if (Input.Phone != phoneNumber)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.Phone);
+                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.Phone).ConfigureAndResultAsync();
                 if (!setPhoneResult.Succeeded)
                 {
-                    var userId = await _userManager.GetUserIdAsync(user);
+                    var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
                     throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
                 }
             }
 
-            await _signInManager.RefreshSignInAsync(user);
+            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
 
             StatusMessage = _statusLocalizer[r => r.ProfileUpdated]?.ToString();
 
@@ -210,15 +211,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
             
-            var userId = await _userManager.GetUserIdAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+            var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
 
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
@@ -229,7 +230,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             await _emailService.SendAsync(
                 email,
                 _registerLocalizer[r => r.ConfirmYourEmail]?.ToString(),
-                _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.ToString());
+                _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.ToString()).ConfigureAndWaitAsync();
 
             StatusMessage = _statusLocalizer[r => r.VerificationEmailSent]?.ToString();
 

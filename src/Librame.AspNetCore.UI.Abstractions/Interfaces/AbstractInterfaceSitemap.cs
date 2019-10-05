@@ -25,9 +25,9 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 构造一个 <see cref="AbstractInterfaceSitemap"/>。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IExpressionStringLocalizer{ApplicationSiteMapResource}"/>。</param>
+        /// <param name="localizer">给定的 <see cref="IExpressionLocalizer{ApplicationSiteMapResource}"/>。</param>
         /// <param name="area">给定的区域（可选）。</param>
-        protected AbstractInterfaceSitemap(IExpressionStringLocalizer<InterfaceSitemapResource> localizer, string area = null)
+        protected AbstractInterfaceSitemap(IExpressionLocalizer<InterfaceSitemapResource> localizer, string area = null)
         {
             Localizer = localizer.NotNull(nameof(localizer));
             Area = area;
@@ -37,7 +37,7 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 本地化界面站点地图。
         /// </summary>
-        protected IExpressionStringLocalizer<InterfaceSitemapResource> Localizer { get; }
+        protected IExpressionLocalizer<InterfaceSitemapResource> Localizer { get; }
 
 
         /// <summary>

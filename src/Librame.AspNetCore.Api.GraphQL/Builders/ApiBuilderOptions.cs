@@ -10,8 +10,6 @@
 
 #endregion
 
-using System;
-
 namespace Librame.AspNetCore.Api
 {
     using Extensions.Core;
@@ -19,7 +17,7 @@ namespace Librame.AspNetCore.Api
     /// <summary>
     /// API 构建器选项。
     /// </summary>
-    public class ApiBuilderOptions : AbstractExtensionBuilderOptions
+    public class ApiBuilderOptions : IExtensionBuilderOptions
     {
     }
 }

@@ -19,6 +19,7 @@ using System;
 
 namespace Librame.AspNetCore.Identity
 {
+    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
@@ -140,8 +141,8 @@ namespace Librame.AspNetCore.Identity
         {
             base.OnModelCreating(modelBuilder);
 
-            var options = ServiceProvider.GetRequiredService<IOptions<IdentityBuilderOptions>>().Value;
-            var coreOptions = ServiceProvider.GetRequiredService<IOptions<IdentityOptions>>().Value;
+            var options = ServiceFactory.GetRequiredService<IOptions<IdentityBuilderOptions>>().Value;
+            var coreOptions = ServiceFactory.GetRequiredService<IOptions<IdentityOptions>>().Value;
             var dataProtector = ServiceProvider.GetService<IPersonalDataProtector>();
 
             modelBuilder.ConfigureIdentityStore<TRole, TRoleClaim, TUserRole,

@@ -66,7 +66,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         [HttpGet]
         public async Task<IActionResult> Index(string returnUrl)
         {
-            var vm = await BuildViewModelAsync(returnUrl);
+            var vm = await BuildViewModelAsync(returnUrl).ConfigureAndResultAsync();
             if (vm != null)
             {
                 return View("Index", vm);
@@ -82,11 +82,11 @@ namespace Librame.AspNetCore.IdentityServer.UI
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(ConsentInputModel model)
         {
-            var result = await ProcessConsent(model);
+            var result = await ProcessConsent(model).ConfigureAndResultAsync();
 
             if (result.IsRedirect)
             {
-                if (await _clientStore.IsPkceClientAsync(result.ClientId))
+                if (await _clientStore.IsPkceClientAsync(result.ClientId).ConfigureAndResultAsync())
                 {
                     // if the client is PKCE then we assume it's native, so this change in how to
                     // return the response is for better UX for the end user.
@@ -117,7 +117,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             var result = new ProcessConsentResult();
 
             // validate return url is still valid
-            var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+            var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl).ConfigureAndResultAsync();
             if (request == null) return result;
 
             ConsentResponse grantedConsent = null;
@@ -128,7 +128,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 grantedConsent = ConsentResponse.Denied;
 
                 // emit event
-                await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), result.ClientId, request.ScopesRequested));
+                await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), result.ClientId, request.ScopesRequested)).ConfigureAndWaitAsync();
             }
             // user clicked 'yes' - validate the data
             else if (model.Button == "yes" && model != null)
@@ -149,7 +149,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                     };
 
                     // emit event
-                    await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.ClientId, request.ScopesRequested, grantedConsent.ScopesConsented, grantedConsent.RememberConsent));
+                    await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.ClientId, request.ScopesRequested, grantedConsent.ScopesConsented, grantedConsent.RememberConsent)).ConfigureAndWaitAsync();
                 }
                 else
                 {
@@ -164,7 +164,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             if (grantedConsent != null)
             {
                 // communicate outcome of consent back to identityserver
-                await _interaction.GrantConsentAsync(request, grantedConsent);
+                await _interaction.GrantConsentAsync(request, grantedConsent).ConfigureAndWaitAsync();
 
                 // indicate that's it ok to redirect back to authorization endpoint
                 result.RedirectUri = model.ReturnUrl;
@@ -173,7 +173,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             else
             {
                 // we need to redisplay the consent UI
-                result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model);
+                result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model).ConfigureAndResultAsync();
             }
 
             return result;
@@ -181,13 +181,13 @@ namespace Librame.AspNetCore.IdentityServer.UI
 
         private async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel model = null)
         {
-            var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            var request = await _interaction.GetAuthorizationContextAsync(returnUrl).ConfigureAndResultAsync();
             if (request != null)
             {
-                var client = await _clientStore.FindEnabledClientByIdAsync(request.ClientId);
+                var client = await _clientStore.FindEnabledClientByIdAsync(request.ClientId).ConfigureAndResultAsync();
                 if (client != null)
                 {
-                    var resources = await _resourceStore.FindEnabledResourcesByScopeAsync(request.ScopesRequested);
+                    var resources = await _resourceStore.FindEnabledResourcesByScopeAsync(request.ScopesRequested).ConfigureAndResultAsync();
                     if (resources != null && (resources.IdentityResources.Any() || resources.ApiResources.Any()))
                     {
                         return CreateConsentViewModel(model, returnUrl, request, client, resources);

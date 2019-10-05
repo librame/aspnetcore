@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     ///  UI 构建器选项。
     /// </summary>
-    public class UiBuilderOptions : AbstractExtensionBuilderOptions
+    public class UiBuilderOptions : IExtensionBuilderOptions
     {
         /// <summary>
         /// 激活视图键名。

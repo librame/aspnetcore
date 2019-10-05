@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.AspNetCore.Identity;
-using System;
 
 namespace Librame.AspNetCore.Identity
 {
@@ -20,12 +19,12 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 身份构建器依赖选项。
     /// </summary>
-    public class IdentityBuilderDependencyOptions : ExtensionBuilderDependencyOptions<IdentityBuilderOptions>
+    public class IdentityBuilderDependencyOptions : ExtensionBuilderDependencyOptions<IdentityBuilderDependencyOptions, IdentityBuilderOptions>
     {
         /// <summary>
-        /// <see cref="IdentityOptions"/> 配置动作。
+        /// 身份选项配置器。
         /// </summary>
-        public Action<IdentityOptions> RawAction { get; set; }
-            = _ => { };
+        public OptionsActionConfigurator<IdentityOptions> Identity { get; set; }
+            = new OptionsActionConfigurator<IdentityOptions>(autoConfigureAction: false);
     }
 }

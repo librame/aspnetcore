@@ -17,7 +17,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
 
     class IdentityServerInterfaceSitemapWithViews : InterfaceSitemapWithViews
     {
-        public IdentityServerInterfaceSitemapWithViews(IExpressionStringLocalizer<InterfaceSitemapResource> localizer)
+        public IdentityServerInterfaceSitemapWithViews(IExpressionLocalizer<InterfaceSitemapResource> localizer)
             : base(localizer, nameof(IdentityServer))
         {
         }

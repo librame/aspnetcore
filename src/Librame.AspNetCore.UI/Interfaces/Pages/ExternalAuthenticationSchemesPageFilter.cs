@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.UI
@@ -22,21 +23,19 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 外部认证方案集合页过滤器。
     /// </summary>
-    public class ExternalAuthenticationSchemesPageFilter : IAsyncPageFilter
+    /// <typeparam name="TUser">给定的用户类型。</typeparam>
+    public class ExternalAuthenticationSchemesPageFilter<TUser> : IAsyncPageFilter
+        where TUser : class
     {
-        private readonly IUiBuilder _builder;
         private readonly UiBuilderOptions _options;
 
 
         /// <summary>
-        /// 构造一个 <see cref="ExternalAuthenticationSchemesPageFilter"/>。
+        /// 构造一个 <see cref="ExternalAuthenticationSchemesPageFilter{TUser}"/>。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IUiBuilder"/>。</param>
         /// <param name="options">给定的 <see cref="UiBuilderOptions"/>。</param>
-        public ExternalAuthenticationSchemesPageFilter(IUiBuilder builder,
-            UiBuilderOptions options)
+        public ExternalAuthenticationSchemesPageFilter(UiBuilderOptions options)
         {
-            _builder = builder.NotNull(nameof(builder));
             _options = options.NotNull(nameof(options));
         }
 
@@ -50,16 +49,16 @@ namespace Librame.AspNetCore.UI
         public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context,
             PageHandlerExecutionDelegate next)
         {
-            var executedContext = await next();
+            if (next.IsNull())
+                return;
+
+            var executedContext = await next.Invoke().ConfigureAndResultAsync();
             if (executedContext.Result is PageResult pageResult)
             {
-                dynamic signInManager = context.HttpContext.RequestServices
-                    .GetService(typeof(SignInManager<>)
-                    .MakeGenericType(_builder.UserType));
+                var signInManager = context.HttpContext.RequestServices.GetRequiredService<SignInManager<TUser>>();
+                var schemes = await signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAndResultAsync();
 
-                var schemes = await signInManager.GetExternalAuthenticationSchemesAsync();
-                pageResult.ViewData[_options.HasExternalAuthenticationSchemesKey]
-                    = schemes.IsNotNullOrEmpty();
+                pageResult.ViewData[_options.HasExternalAuthenticationSchemesKey] = schemes.IsNotEmpty();
             }
         }
 

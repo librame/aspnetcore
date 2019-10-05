@@ -11,16 +11,13 @@
 #endregion
 
 using Microsoft.AspNetCore.Builder;
-using System;
 
 namespace Librame.AspNetCore
 {
     static class LocalizerApplicationBuilderWrapperExtensions
     {
-        public static IApplicationBuilderWrapper UseLocalization(this IApplicationBuilderWrapper builderWrapper,
-            Action<RequestLocalizationOptions> optionsAction = null)
+        public static IApplicationBuilderWrapper UseLocalization(this IApplicationBuilderWrapper builderWrapper)
         {
-            //builderWrapper.RawBuilder.UseRequestLocalization(optionsAction ?? (_ => { }));
             builderWrapper.RawBuilder.UseMiddleware<RequestLocalizationMiddleware>();
 
             return builderWrapper;

@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer
 {
+    using Extensions;
+
     class AutoRedirectEndSessionEndpoint : IEndpointHandler
     {
         private readonly ILogger _logger;
@@ -46,9 +48,9 @@ namespace Librame.AspNetCore.IdentityServer
                 return validtionResult;
             }
 
-            var parameters = await GetParametersAsync(ctx.Request);
-            var user = await _session.GetUserAsync();
-            var result = await _requestvalidator.ValidateAsync(parameters, user);
+            var parameters = await GetParametersAsync(ctx.Request).ConfigureAndResultAsync();
+            var user = await _session.GetUserAsync().ConfigureAndResultAsync();
+            var result = await _requestvalidator.ValidateAsync(parameters, user).ConfigureAndResultAsync();
             if (result.IsError)
             {
                 _logger.LogError($"Error ending session {result.Error}");
@@ -62,11 +64,11 @@ namespace Librame.AspNetCore.IdentityServer
                 var signInScheme = _identityServerOptions.Value.Authentication.CookieAuthenticationScheme;
                 if (signInScheme != null)
                 {
-                    await ctx.SignOutAsync(signInScheme);
+                    await ctx.SignOutAsync(signInScheme).ConfigureAndWaitAsync();
                 }
                 else
                 {
-                    await ctx.SignOutAsync();
+                    await ctx.SignOutAsync().ConfigureAndWaitAsync();
                 }
 
                 return new RedirectResult(result.ValidatedRequest.PostLogOutUri);
@@ -85,7 +87,7 @@ namespace Librame.AspNetCore.IdentityServer
             }
             else
             {
-                var form = await request.ReadFormAsync();
+                var form = await request.ReadFormAsync().ConfigureAndResultAsync();
                 return form.AsNameValueCollection();
             }
         }

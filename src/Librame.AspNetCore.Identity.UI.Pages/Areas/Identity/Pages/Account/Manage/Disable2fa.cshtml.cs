@@ -20,12 +20,13 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 禁用双因子验证页面模型。
     /// </summary>
-    [InterfaceTemplateWithUser(typeof(Disable2faPageModel<>))]
+    [GenericApplicationModel(typeof(Disable2faPageModel<>))]
     public class Disable2faPageModel : PageModel
     {
         /// <summary>
@@ -55,13 +56,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     {
         private readonly UserManager<TUser> _userManager;
         private readonly ILogger<Disable2faPageModel> _logger;
-        private readonly IExpressionStringLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public Disable2faPageModel(
             UserManager<TUser> userManager,
             ILogger<Disable2faPageModel> logger,
-            IExpressionStringLocalizer<StatusMessageResource> statusLocalizer)
+            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _logger = logger;
@@ -71,13 +72,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!await _userManager.GetTwoFactorEnabledAsync(user))
+            if (!await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync())
             {
                 throw new InvalidOperationException($"Cannot disable 2FA for user with ID '{_userManager.GetUserId(User)}' as it's not currently enabled.");
             }
@@ -87,13 +88,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
+            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false).ConfigureAndResultAsync();
             if (!disable2faResult.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred disabling 2FA for user with ID '{_userManager.GetUserId(User)}'.");

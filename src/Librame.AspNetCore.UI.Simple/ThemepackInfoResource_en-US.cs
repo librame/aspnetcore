@@ -14,7 +14,7 @@ namespace Librame.AspNetCore.UI.Themepack.Simple
 {
     using Extensions.Core;
 
-    class ThemepackInfoResource_en_US : AbstractResourceDictionary
+    class ThemepackInfoResource_en_US : ResourceDictionary
     {
         public ThemepackInfoResource_en_US()
             : base()

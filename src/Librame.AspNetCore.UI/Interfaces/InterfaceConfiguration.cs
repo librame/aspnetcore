@@ -42,7 +42,7 @@ namespace Librame.AspNetCore.UI
         protected InterfaceConfiguration(IApplicationContext context, string area)
             : base(context)
         {
-            Area = area.NotNullOrEmpty(nameof(area));
+            Area = area.NotEmpty(nameof(area));
         }
 
 

@@ -27,6 +27,6 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 显示请求标识。
         /// </summary>
-        public bool ShowRequestId => RequestId.IsNotNullOrEmpty();
+        public bool ShowRequestId => RequestId.IsNotEmpty();
     }
 }

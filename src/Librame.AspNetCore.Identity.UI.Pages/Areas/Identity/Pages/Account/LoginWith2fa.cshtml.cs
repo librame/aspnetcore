@@ -21,13 +21,14 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.UI.Pages.Account
 {
     using AspNetCore.UI;
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
     /// 抽象双因子登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [InterfaceTemplateWithUser(typeof(LoginWith2faPageModel<>))]
+    [GenericApplicationModel(typeof(LoginWith2faPageModel<>))]
     public class LoginWith2faPageModel : PageModel
     {
         /// <summary>
@@ -72,13 +73,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly ILogger<LoginWith2faPageModel> _logger;
-        private readonly IExpressionStringLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
 
 
         public LoginWith2faPageModel(
             SignInManager<TUser> signInManager,
             ILogger<LoginWith2faPageModel> logger,
-            IExpressionStringLocalizer<ErrorMessageResource> errorLocalizer)
+            IExpressionLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
@@ -90,7 +91,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         public override async Task<IActionResult> OnGetAsync(bool rememberMe, string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
 
             if (user == null)
             {
@@ -112,15 +113,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
             if (user == null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
             
-            var userId = await _userManager.GetUserIdAsync(user);
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
             var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
-            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, Input.RememberMachine);
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, Input.RememberMachine).ConfigureAndResultAsync();
             if (result.Succeeded)
             {
                 _logger.LogInformation("User with ID '{UserId}' logged in with 2fa.", userId);

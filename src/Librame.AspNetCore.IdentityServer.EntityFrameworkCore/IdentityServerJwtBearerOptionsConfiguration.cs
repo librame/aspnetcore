@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer
 {
+    using Extensions;
+
     class IdentityServerJwtBearerOptionsConfiguration : IConfigureNamedOptions<JwtBearerOptions>
     {
         private readonly string _scheme;
@@ -61,7 +63,7 @@ namespace Librame.AspNetCore.IdentityServer
             if (options.TokenValidationParameters.ValidIssuer == null || options.TokenValidationParameters.IssuerSigningKey == null)
             {
                 var store = messageReceivedContext.HttpContext.RequestServices.GetRequiredService<ISigningCredentialStore>();
-                var credential = await store.GetSigningCredentialsAsync();
+                var credential = await store.GetSigningCredentialsAsync().ConfigureAndResultAsync();
                 options.Authority = options.Authority ?? messageReceivedContext.HttpContext.GetIdentityServerIssuerUri();
                 options.TokenValidationParameters.IssuerSigningKey = credential.Key;
                 options.TokenValidationParameters.ValidIssuer = options.Authority;

@@ -12,6 +12,7 @@
 
 using Microsoft.Extensions.Localization;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 
@@ -31,7 +32,7 @@ namespace Librame.AspNetCore
         /// <param name="viewName">给定的视图名称。</param>
         public ViewResourceMappingAttribute(string viewName)
         {
-            ViewName = viewName.NotNullOrEmpty(nameof(viewName));
+            ViewName = viewName.NotEmpty(nameof(viewName));
         }
 
 
@@ -53,11 +54,13 @@ namespace Librame.AspNetCore
         /// <returns>返回字符串。</returns>
         public virtual string GetResourceBaseName(Type viewResourceType)
         {
-            if (ViewLocation.IsNullOrEmpty())
+            viewResourceType.NotNull(nameof(viewResourceType));
+
+            if (ViewLocation.IsEmpty())
                 return $"{viewResourceType.Namespace}.{ViewName}";
 
-            if (ViewLocation.Contains(Path.AltDirectorySeparatorChar.ToString()) ||
-                ViewLocation.Contains(Path.DirectorySeparatorChar.ToString()))
+            if (ViewLocation.Contains(Path.AltDirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.OrdinalIgnoreCase) ||
+                ViewLocation.Contains(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.OrdinalIgnoreCase))
             {
                 // 格式化为点分隔符（如：Resources.）
                 ViewLocation = ViewLocation
@@ -76,6 +79,8 @@ namespace Librame.AspNetCore
         /// <returns>返回字符串。</returns>
         protected virtual string GetRootNamespace(Type sourceViewType)
         {
+            sourceViewType.NotNull(nameof(sourceViewType));
+
             if (sourceViewType.Assembly.TryGetCustomAttribute(out RootNamespaceAttribute rootNamespace))
                 return rootNamespace.RootNamespace;
 

@@ -37,7 +37,7 @@ namespace Librame.AspNetCore.Identity.UI
         /// 名称。
         /// </summary>
         public override string Name
-            => nameof(Identity);
+            => Localizer[nameof(Name)];
 
 
         /// <summary>
