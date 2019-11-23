@@ -14,8 +14,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -47,6 +49,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         /// <summary>
         /// ∑µªÿ¡¥Ω”°£
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string ReturnUrl { get; set; }
 
         /// <summary>
@@ -98,7 +101,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
         private readonly ILogger<ExternalLoginPageModel> _logger;
-        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IStringLocalizer<ErrorMessageResource> _errorLocalizer;
         private readonly IdentityStoreIdentifier _storeIdentifier;
 
 
@@ -106,7 +109,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
             ILogger<ExternalLoginPageModel> logger,
-            IExpressionLocalizer<ErrorMessageResource> errorLocalizer,
+            IStringLocalizer<ErrorMessageResource> errorLocalizer,
             IdentityStoreIdentifier storeIdentifier)
         {
             _signInManager = signInManager;
@@ -136,14 +139,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
-                ErrorMessage = _errorLocalizer[r => r.FromExternalProvider, remoteError]?.ToString();
+                ErrorMessage = _errorLocalizer.GetString(r => r.FromExternalProvider, remoteError)?.ToString();
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
             var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAndResultAsync();
             if (info == null)
             {
-                ErrorMessage = _errorLocalizer[r => r.LoadingExternalLogin]?.ToString();
+                ErrorMessage = _errorLocalizer.GetString(r => r.LoadingExternalLogin)?.ToString();
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
@@ -183,7 +186,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAndResultAsync();
             if (info == null)
             {
-                ErrorMessage = _errorLocalizer[r => r.LoadingExternalLoginWhenConfirmation]?.ToString();
+                ErrorMessage = _errorLocalizer.GetString(r => r.LoadingExternalLoginWhenConfirmation)?.ToString();
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 

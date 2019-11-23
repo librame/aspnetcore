@@ -1,38 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using IdentityServer4.EntityFramework.Entities;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Librame.AspNetCore.IdentityServer.Tests
 {
     using Extensions.Data;
+    using Identity;
 
-    public class TestStoreHub : StoreHubBase<IdentityServerDbContextAccessor>
+    public class TestStoreHub : StoreHub<IdentityServerDbContextAccessor, IdentityServerStoreInitializer>
     {
-        public TestStoreHub(IAccessor accessor, IStoreInitializer<IdentityServerDbContextAccessor> initializer)
-            : base(accessor, initializer)
+        public TestStoreHub(IStoreInitializer initializer, IAccessor accessor)
+            : base(initializer, accessor)
         {
         }
 
 
-        //public IList<DefaultIdentityRole<string>> GetRoles()
-        //{
-        //    return Accessor.Roles.ToList();
-        //}
+        public IList<DefaultIdentityRole<string>> GetRoles()
+            => Accessor.Roles.ToList();
 
-        //public IPageable<DefaultIdentityUser<string>> GetUsers()
-        //{
-        //    return Accessor.Users.AsPagingByIndex(ordered => ordered.OrderBy(k => k.Id), 1, 10);
-        //}
+        public IPageable<DefaultIdentityUser<string>> GetUsers()
+            => Accessor.Users.AsPagingByIndex(ordered => ordered.OrderBy(k => k.Id), 1, 10);
+
+
+        public IList<ApiResource> GetApiResources()
+            => Accessor.ApiResources.ToList();
+
+        public IList<Client> GetClients()
+            => Accessor.Clients.ToList();
+
+        public IList<IdentityResource> GetIdentityResources()
+            => Accessor.IdentityResources.ToList();
 
 
         public TestStoreHub UseDefaultDbConnection()
         {
-            Accessor.SwitchTenant(t => t.DefaultConnectionString);
+            Accessor.ChangeDbConnection(t => t.DefaultConnectionString);
             return this;
         }
 
         public TestStoreHub UseWriteDbConnection()
         {
-            Accessor.SwitchTenant(t => t.WritingConnectionString);
+            Accessor.ChangeDbConnection(t => t.WritingConnectionString);
             return this;
         }
     }

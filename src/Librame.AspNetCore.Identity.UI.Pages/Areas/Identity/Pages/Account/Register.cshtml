@@ -1,7 +1,7 @@
 @page
 @model RegisterPageModel
 @{
-    ViewData["Title"] = Model.Localizer[r => r.Title];
+    ViewData["Title"] = Model.Localizer.GetString(r => r.Title);
 }
 <!-- Register -->
 <div class="row">
@@ -9,7 +9,7 @@
         <div class="form-top">
             <div class="form-top-left">
                 <h3>@ViewData["Title"]</h3>
-                <p>@Model.Localizer[r => r.Descr]</p>
+                <p>@Model.Localizer.GetString(r => r.Descr)</p>
             </div>
             <div class="form-top-right">
                 <!-- <i class="fa fa-key"></i> -->
@@ -28,7 +28,7 @@
                 <div class="form-group">
                     <label asp-for="Input.Password" class="sr-only"></label>
                     <input asp-for="Input.Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Input.Password) ..."
-                           title="@Model.Localizer[r => r.PasswordRulePrompts]"
+                           title="@Model.Localizer.GetString(r => r.PasswordRulePrompts)"
                            data-content="@Html.Raw(Model.BuilderOptions.PasswordRulePromptEnabled ? PasswordRulePromptHelper.GetHtmlContent(Model.Options, Model.Localizer) : string.Empty)"
                            data-html="true"
                            data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" />
@@ -41,13 +41,13 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">@Model.Localizer[r => r.ButtonText]</button>
+                    <button type="submit" class="btn">@Model.Localizer.GetString(r => r.ButtonText)</button>
                 </div>
 
                 <div class="form-group">
                     <p>
                         <a id="login" asp-page="./Login">
-                            @Model.Localizer[r => r.Login]
+                            @Model.Localizer.GetString(r => r.Login)
                         </a>
                     </p>
                 </div>

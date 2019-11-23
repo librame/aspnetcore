@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Librame.AspNetCore.UI
@@ -39,6 +40,7 @@ namespace Librame.AspNetCore.UI
         /// 应用约定。
         /// </summary>
         /// <param name="model">给定的 <see cref="PageApplicationModel"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
         public void Apply(PageApplicationModel model)
         {
             if (model.ModelType.TryGetCustomAttribute(out GenericApplicationModelAttribute attribute))

@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -80,14 +81,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly ILogger<TwoFactorAuthenticationPageModel> _logger;
-        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IStringLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public TwoFactorAuthenticationPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
             ILogger<TwoFactorAuthenticationPageModel> logger,
-            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
+            IStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -122,7 +123,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             await _signInManager.ForgetTwoFactorClientAsync().ConfigureAndWaitAsync();
 
-            StatusMessage = _statusLocalizer[r => r.TwoFactorAuthentication]?.ToString();
+            StatusMessage = _statusLocalizer.GetString(r => r.TwoFactorAuthentication)?.ToString();
 
             return RedirectToPage();
         }

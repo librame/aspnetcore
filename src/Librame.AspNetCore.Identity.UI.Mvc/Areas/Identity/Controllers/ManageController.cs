@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Linq;
@@ -47,19 +48,19 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         private IOptions<IdentityOptions> _options = null;
 
         [InjectionService]
-        private IExpressionHtmlLocalizer<RegisterViewResource> _registerLocalizer = null;
+        private IHtmlLocalizer<RegisterViewResource> _registerLocalizer = null;
 
         [InjectionService]
-        private IExpressionHtmlLocalizer<IndexViewResource> _indexLocalizer = null;
+        private IHtmlLocalizer<IndexViewResource> _indexLocalizer = null;
 
         [InjectionService]
-        private IExpressionHtmlLocalizer<AddPhoneNumberViewResource> _addPhoneNumberLocalizer = null;
+        private IHtmlLocalizer<AddPhoneNumberViewResource> _addPhoneNumberLocalizer = null;
 
         [InjectionService]
-        private IExpressionHtmlLocalizer<VerifyPhoneNumberViewResource> _verifyPhoneNumberLocalizer = null;
+        private IHtmlLocalizer<VerifyPhoneNumberViewResource> _verifyPhoneNumberLocalizer = null;
 
         [InjectionService]
-        private IExpressionHtmlLocalizer<ExternalLoginsViewResource> _manageLoginsLocalizer = null;
+        private IHtmlLocalizer<ExternalLoginsViewResource> _manageLoginsLocalizer = null;
 
         [InjectionService]
         private SignInManager<TUser> _signInManager = null;
@@ -90,12 +91,12 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
-                message == ManageMessageId.ChangePasswordSuccess ? _indexLocalizer[r => r.ChangePasswordSuccess].Value
-                : message == ManageMessageId.SetPasswordSuccess ? _indexLocalizer[r => r.SetPasswordSuccess].Value
-                : message == ManageMessageId.SetTwoFactorSuccess ? _indexLocalizer[r => r.SetTwoFactorSuccess].Value
-                : message == ManageMessageId.Error ? _indexLocalizer[r => r.Error].Value
-                : message == ManageMessageId.AddPhoneSuccess ? _indexLocalizer[r => r.AddPhoneSuccess].Value
-                : message == ManageMessageId.RemovePhoneSuccess ? _indexLocalizer[r => r.RemovePhoneSuccess].Value
+                message == ManageMessageId.ChangePasswordSuccess ? _indexLocalizer.GetString(r => r.ChangePasswordSuccess).Value
+                : message == ManageMessageId.SetPasswordSuccess ? _indexLocalizer.GetString(r => r.SetPasswordSuccess).Value
+                : message == ManageMessageId.SetTwoFactorSuccess ? _indexLocalizer.GetString(r => r.SetTwoFactorSuccess).Value
+                : message == ManageMessageId.Error ? _indexLocalizer.GetString(r => r.Error).Value
+                : message == ManageMessageId.AddPhoneSuccess ? _indexLocalizer.GetString(r => r.AddPhoneSuccess).Value
+                : message == ManageMessageId.RemovePhoneSuccess ? _indexLocalizer.GetString(r => r.RemovePhoneSuccess).Value
                 : "";
 
             ViewBag.Localizer = _indexLocalizer;
@@ -166,7 +167,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
             var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.Phone).ConfigureAndResultAsync();
             
-            await _smsService.SendAsync(model.Phone, _addPhoneNumberLocalizer[r => r.YourSecurityCodeIs].Value + code).ConfigureAndWaitAsync();
+            await _smsService.SendAsync(model.Phone, _addPhoneNumberLocalizer.GetString(r => r.YourSecurityCodeIs).Value + code).ConfigureAndWaitAsync();
             
             return RedirectToAction(nameof(VerifyPhoneNumber), new { phoneNumber = model.Phone });
         }
@@ -288,7 +289,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 }
             }
             // If we got this far, something failed, redisplay the form
-            ModelState.AddModelError(string.Empty, _verifyPhoneNumberLocalizer[r => r.Failed].Value);
+            ModelState.AddModelError(string.Empty, _verifyPhoneNumberLocalizer.GetString(r => r.Failed).Value);
             return View(model);
         }
 
@@ -414,10 +415,11 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             ViewBag.Localizer = _manageLoginsLocalizer;
 
             ViewData["StatusMessage"] =
-                message == ManageMessageId.RemoveLoginSuccess ? _manageLoginsLocalizer[r => r.RemoveLoginSuccess].Value
-                : message == ManageMessageId.AddLoginSuccess ? _manageLoginsLocalizer[r => r.AddLoginSuccess].Value
-                : message == ManageMessageId.Error ? _manageLoginsLocalizer[r => r.Error].Value
+                message == ManageMessageId.RemoveLoginSuccess ? _manageLoginsLocalizer.GetString(r => r.RemoveLoginSuccess).Value
+                : message == ManageMessageId.AddLoginSuccess ? _manageLoginsLocalizer.GetString(r => r.AddLoginSuccess).Value
+                : message == ManageMessageId.Error ? _manageLoginsLocalizer.GetString(r => r.Error).Value
                 : "";
+
             var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
             if (user == null)
             {

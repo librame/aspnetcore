@@ -10,74 +10,61 @@
 
 #endregion
 
+using Microsoft.Extensions.Localization;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Identity.UI
 {
     using AspNetCore.UI;
-    using Extensions.Core;
 
-    class IdentityInterfaceSitemapWithViews : InterfaceSitemapWithViews
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+    internal class IdentityInterfaceSitemapWithViews : InterfaceSitemapWithViews
     {
-        public IdentityInterfaceSitemapWithViews(IExpressionLocalizer<LayoutViewResource> layoutLocalizer,
-            IExpressionLocalizer<InterfaceSitemapResource> localizer)
+        public IdentityInterfaceSitemapWithViews(IStringLocalizer<LayoutViewResource> layoutLocalizer,
+            IStringLocalizer<InterfaceSitemapResource> localizer)
             : base(localizer, "Identity")
         {
+            Logout.Route.ChangeAction("LogOff");
+
             ManageFootbar = IdentityInterfaceSitemapHelper.GetManageFootbar(layoutLocalizer);
             ManageSidebar = GetManageSidebar(layoutLocalizer);
             CommonHeader = GetCommonHeader(layoutLocalizer);
         }
 
 
-        private List<NavigationDescriptor> GetCommonHeader(IExpressionLocalizer<LayoutViewResource> layoutLocalizer)
+        private List<NavigationDescriptor> GetCommonHeader(IStringLocalizer<LayoutViewResource> layoutLocalizer)
         {
+            var controller = "Home";
+
             return new List<NavigationDescriptor>
             {
-                new NavigationDescriptor(new RouteDescriptor("About", "Home", area: null), layoutLocalizer)
-                {
-                    TagId = "about",
-                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
-                },
-                new NavigationDescriptor(new RouteDescriptor("Contact", "Home", area: null), layoutLocalizer)
-                {
-                    TagId = "contact",
-                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
-                }
+                layoutLocalizer.AsNavigation(RouteDescriptor.ByController("About", controller))
+                    .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("about")),
+
+                layoutLocalizer.AsNavigation(RouteDescriptor.ByController("Contact", controller))
+                    .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("contact"))
             };
         }
 
 
-        private List<NavigationDescriptor> GetManageSidebar(IExpressionLocalizer<LayoutViewResource> layoutLocalizer)
+        private List<NavigationDescriptor> GetManageSidebar(IStringLocalizer<LayoutViewResource> layoutLocalizer)
         {
-            var manageController = "Manage";
+            var controller = "Manage";
 
             return new List<NavigationDescriptor>
             {
-                new NavigationDescriptor<LayoutViewResource>(new RouteDescriptor("Index", manageController, Area), layoutLocalizer, p => p.Profile)
-                {
-                    TagId = "profile",
-                    Icon = "la la-user",
-                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
-                },
-                new NavigationDescriptor(new RouteDescriptor("ChangePassword", manageController, Area), layoutLocalizer)
-                {
-                    TagId = "change-password",
-                    Icon = "la la-unlock",
-                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
-                },
-                new NavigationDescriptor(new RouteDescriptor("ManageLogins", manageController, Area), layoutLocalizer)
-                {
-                    TagId = "external-login",
-                    Icon = "la la-key",
-                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
-                    VisibilityFactory = (page, nav) => ViewDataDictionaryUtility.GetHasExternalLogins(page.ViewContext)
-                },
-                new NavigationDescriptor(new RouteDescriptor("AddPhoneNumber", manageController, Area), layoutLocalizer)
-                {
-                    TagId = "add-phone-number",
-                    Icon = "la la-superscript",
-                    ActiveCssClassNameFactory = (page, nav) => ViewContextUtility.ActiveViewCssClassNameOrEmpty(page.ViewContext, nav),
-                }
+                layoutLocalizer.AsNavigation(RouteDescriptor.ByController("Index", controller, Area), p => p.Profile)
+                    .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("profile").ChangeIcon("la la-user")),
+
+                layoutLocalizer.AsNavigation(RouteDescriptor.ByController("ChangePassword", controller, Area))
+                    .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("change-password").ChangeIcon("la la-unlock")),
+
+                layoutLocalizer.AsNavigation(RouteDescriptor.ByController("ManageLogins", controller, Area), p => p.ExternalLogins)
+                    .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("external-login").ChangeIcon("la la-key")),
+
+                layoutLocalizer.AsNavigation(RouteDescriptor.ByController("AddPhoneNumber", controller, Area))
+                    .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("add-phone-number").ChangeIcon("la la-superscript"))
             };
         }
 

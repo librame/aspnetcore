@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Librame.AspNetCore.UI
@@ -20,13 +21,14 @@ namespace Librame.AspNetCore.UI
     using Extensions;
     using Extensions.Core;
 
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     class ApplicationContext : IApplicationContext
     {
-        public ApplicationContext(ServiceFactoryDelegate serviceFactory)
+        public ApplicationContext(ServiceFactory serviceFactory)
         {
             ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
 
-            InterfaceInfos = ApplicationInfoHelper.GetInterfaces(serviceFactory);
+            InterfaceInfos = ApplicationInfoHelper.GetInterfaceInfos(serviceFactory);
             ThemepackInfos = ApplicationInfoHelper.Themepacks;
             ThemepackInfos.Values.ForEach(info => info.ApplyServiceFactory(serviceFactory));
 
@@ -34,14 +36,14 @@ namespace Librame.AspNetCore.UI
         }
 
 
-        public ServiceFactoryDelegate ServiceFactory { get; }
+        public ServiceFactory ServiceFactory { get; }
 
 
         public IApplicationPrincipal Principal
             => ServiceFactory.GetService<IApplicationPrincipal>();
 
-        public IHostingEnvironment Environment
-            => ServiceFactory.GetService<IHostingEnvironment>();
+        public IWebHostEnvironment Environment
+            => ServiceFactory.GetService<IWebHostEnvironment>();
 
 
         public ConcurrentDictionary<string, IInterfaceInfo> InterfaceInfos { get; }

@@ -1,11 +1,11 @@
 ﻿@model IndexViewModel
 @{
-    var localizer = ViewBag.Localizer as IExpressionHtmlLocalizer<IndexViewResource>;
-    ViewData["Title"] = localizer[r => r.Title];
+    var localizer = ViewBag.Localizer as IHtmlLocalizer<IndexViewResource>;
+    ViewData["Title"] = localizer.GetString(r => r.Title);
 }
 
 <!-- Index -->
-<h4>@localizer[r => r.ChangeAccountSettings]</h4>
+<h4>@localizer.GetString(r => r.ChangeAccountSettings)</h4>
 
 <p class="text-success">@ViewData["StatusMessage"]</p>
 
@@ -13,49 +13,49 @@
     <div class="col-md-10">
         <div class="form-horizontal">
             <div class="form-group">
-                <h5>@localizer[r => r.Password]</h5>
+                <h5>@localizer.GetString(r => r.Password)</h5>
 
                 @if (Model.HasPassword)
                 {
-                    <text>[&nbsp;&nbsp;<a asp-controller="Manage" asp-action="ChangePassword">@localizer[r => r.ChangePassword]</a>&nbsp;&nbsp;]</text>
+                    <text>[&nbsp;&nbsp;<a asp-controller="Manage" asp-action="ChangePassword">@localizer.GetString(r => r.ChangePassword)</a>&nbsp;&nbsp;]</text>
                 }
                 else
                 {
-                    <text>[&nbsp;&nbsp;<a asp-controller="Manage" asp-action="SetPassword">@localizer[r => r.SetPassword]</a>&nbsp;&nbsp;]</text>
+                    <text>[&nbsp;&nbsp;<a asp-controller="Manage" asp-action="SetPassword">@localizer.GetString(r => r.SetPassword)</a>&nbsp;&nbsp;]</text>
                 }
             </div>
 
             <div class="form-group">
-                <h5>@localizer[r => r.ExternalLogins]</h5>
+                <h5>@localizer.GetString(r => r.ExternalLogins)</h5>
 
-                @Model.Logins.Count [&nbsp;&nbsp;<a asp-controller="Manage" asp-action="ManageLogins">@localizer[r => r.ManageLogins]</a>&nbsp;&nbsp;]
+                @Model.Logins.Count [&nbsp;&nbsp;<a asp-controller="Manage" asp-action="ManageLogins">@localizer.GetString(r => r.ManageLogins)</a>&nbsp;&nbsp;]
             </div>
 
             <div class="form-group">
-                <h5>@localizer[r => r.PhoneNumber]</h5>
+                <h5>@localizer.GetString(r => r.PhoneNumber)</h5>
 
                 <!--<p>
                     Phone Numbers can used as a second factor of verification in two-factor authentication.
                     See <a href="http://go.microsoft.com/fwlink/?LinkID=532713">this article</a>
                     for details on setting up this ASP.NET application to support two-factor authentication using SMS.
                 </p>-->
-                @(Model.PhoneNumber ?? localizer[r => r.NonePhoneNumber].Value)
+                @(Model.PhoneNumber ?? localizer.GetString(r => r.NonePhoneNumber).Value)
                 @if (Model.PhoneNumber != null)
                 {
                     <br />
-                    <text>[&nbsp;&nbsp;<a asp-controller="Manage" asp-action="AddPhoneNumber">@localizer[r => r.ChangePhoneNumber]</a>&nbsp;&nbsp;]</text>
+                    <text>[&nbsp;&nbsp;<a asp-controller="Manage" asp-action="AddPhoneNumber">@localizer.GetString(r => r.ChangePhoneNumber)</a>&nbsp;&nbsp;]</text>
                     <form asp-controller="Manage" asp-action="RemovePhoneNumber" method="post" role="form">
-                        [<button type="submit" class="btn-link">@localizer[r => r.RemovePhoneNumber]</button>]
+                        [<button type="submit" class="btn-link">@localizer.GetString(r => r.RemovePhoneNumber)</button>]
                     </form>
                 }
                 else
                 {
-                    <text>[&nbsp;&nbsp;<a asp-controller="Manage" asp-action="AddPhoneNumber">@localizer[r => r.AddPhoneNumber]</a>&nbsp;&nbsp;]</text>
+                    <text>[&nbsp;&nbsp;<a asp-controller="Manage" asp-action="AddPhoneNumber">@localizer.GetString(r => r.AddPhoneNumber)</a>&nbsp;&nbsp;]</text>
                 }
             </div>
 
             <div class="form-group">
-                <h5>@localizer[r => r.TwoFactorAuthentication]</h5>
+                <h5>@localizer.GetString(r => r.TwoFactorAuthentication)</h5>
 
                 <!--<p>
                     There are no two-factor authentication providers configured. See <a href="http://go.microsoft.com/fwlink/?LinkID=532713">this article</a>
@@ -64,31 +64,31 @@
                 @if (Model.TwoFactor)
                 {
                     <form asp-controller="Manage" asp-action="DisableTwoFactorAuthentication" method="post" class="form-horizontal" role="form">
-                        @localizer[r => r.EnableTwoFactor] [<button type="submit" class="btn-link">@localizer[r => r.DisableTwoFactor]</button>]
+                        @localizer.GetString(r => r.EnableTwoFactor) [<button type="submit" class="btn-link">@localizer.GetString(r => r.DisableTwoFactor)</button>]
                     </form>
                 }
                 else
                 {
                     <form asp-controller="Manage" asp-action="EnableTwoFactorAuthentication" method="post" class="form-horizontal" role="form">
-                        [<button type="submit" class="btn-link">@localizer[r => r.EnableTwoFactor]</button>] @localizer[r => r.DisableTwoFactor]
+                        [<button type="submit" class="btn-link">@localizer.GetString(r => r.EnableTwoFactor)</button>] @localizer.GetString(r => r.DisableTwoFactor)
                     </form>
                 }
             </div>
 
             <div class="form-group">
-                <h5>@localizer[r => r.AuthenticationApp]</h5>
+                <h5>@localizer.GetString(r => r.AuthenticationApp)</h5>
 
                 @if (Model.AuthenticatorKey == null)
                 {
                     <form asp-controller="Manage" asp-action="ResetAuthenticatorKey" method="post" class="form-horizontal" role="form">
-                        [<button type="submit" class="btn-link">@localizer[r => r.ResetAuthenticatorKey]</button>]
+                        [<button type="submit" class="btn-link">@localizer.GetString(r => r.ResetAuthenticatorKey)</button>]
                     </form>
                 }
                 else
                 {
-                    <text>@localizer[r => r.YourKeyIs] @Model.AuthenticatorKey</text>
+                    <text>@localizer.GetString(r => r.YourKeyIs) @Model.AuthenticatorKey</text>
                     <form asp-controller="Manage" asp-action="GenerateRecoveryCode" method="post" class="form-horizontal" role="form">
-                        [<button type="submit" class="btn-link">@localizer[r => r.GenerateRecoveryCode]</button>]
+                        [<button type="submit" class="btn-link">@localizer.GetString(r => r.GenerateRecoveryCode)</button>]
                     </form>
                 }
             </div>

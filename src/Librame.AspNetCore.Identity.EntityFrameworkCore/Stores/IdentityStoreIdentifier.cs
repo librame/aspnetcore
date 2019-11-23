@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 身份存储标识符。
     /// </summary>
-    public class IdentityStoreIdentifier : StoreIdentifierBase
+    public class IdentityStoreIdentifier : StoreIdentifier
     {
         /// <summary>
         /// 构造一个 <see cref="IdentityStoreIdentifier"/>。

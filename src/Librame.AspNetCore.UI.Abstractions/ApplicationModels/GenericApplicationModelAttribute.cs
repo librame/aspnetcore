@@ -11,6 +11,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.UI
 {
@@ -57,6 +58,7 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         /// <param name="typeArguments">给定的类型参数数组。</param>
         /// <returns>返回 <see cref="Type"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1303:DoNotPassLiteralsAsLocalizedParameters")]
         public Type BuildImplementationType(params Type[] typeArguments)
         {
             GenericType.NotNull(nameof(GenericType));

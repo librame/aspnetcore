@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit;
 
-namespace Librame.Extensions
+namespace Microsoft.AspNetCore.Http
 {
     public class AbstractionUriExtensionsTests
     {

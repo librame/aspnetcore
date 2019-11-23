@@ -37,27 +37,27 @@ namespace Librame.AspNetCore.IdentityServer
             = options =>
             {
                 // Client
-                options.Client = TableConfigurationUtility.CreateTableConfiguration<Client>();
-                options.ClientClaim = TableConfigurationUtility.CreateTableConfiguration<ClientClaim>();
-                options.ClientCorsOrigin = TableConfigurationUtility.CreateTableConfiguration<ClientCorsOrigin>();
-                options.ClientGrantType = TableConfigurationUtility.CreateTableConfiguration<ClientGrantType>();
-                options.ClientIdPRestriction = TableConfigurationUtility.CreateTableConfiguration<ClientIdPRestriction>();
-                options.ClientPostLogoutRedirectUri = TableConfigurationUtility.CreateTableConfiguration<ClientPostLogoutRedirectUri>();
-                options.ClientProperty = TableConfigurationUtility.CreateTableConfiguration<ClientProperty>();
-                options.ClientRedirectUri = TableConfigurationUtility.CreateTableConfiguration<ClientRedirectUri>();
-                options.ClientScopes = TableConfigurationUtility.CreateTableConfiguration<ClientScope>();
-                options.ClientSecret = TableConfigurationUtility.CreateTableConfiguration<ClientSecret>();
+                options.Client = TableConfigurationHelper.Create<Client>();
+                options.ClientClaim = TableConfigurationHelper.Create<ClientClaim>();
+                options.ClientCorsOrigin = TableConfigurationHelper.Create<ClientCorsOrigin>();
+                options.ClientGrantType = TableConfigurationHelper.Create<ClientGrantType>();
+                options.ClientIdPRestriction = TableConfigurationHelper.Create<ClientIdPRestriction>();
+                options.ClientPostLogoutRedirectUri = TableConfigurationHelper.Create<ClientPostLogoutRedirectUri>();
+                options.ClientProperty = TableConfigurationHelper.Create<ClientProperty>();
+                options.ClientRedirectUri = TableConfigurationHelper.Create<ClientRedirectUri>();
+                options.ClientScopes = TableConfigurationHelper.Create<ClientScope>();
+                options.ClientSecret = TableConfigurationHelper.Create<ClientSecret>();
 
                 // Resource
-                options.IdentityClaim = TableConfigurationUtility.CreateTableConfiguration<IdentityClaim>();
-                options.IdentityResource = TableConfigurationUtility.CreateTableConfiguration<IdentityResource>();
-                options.IdentityResourceProperty = TableConfigurationUtility.CreateTableConfiguration<IdentityResourceProperty>();
-                options.ApiClaim = TableConfigurationUtility.CreateTableConfiguration<ApiResourceClaim>();
-                options.ApiResource = TableConfigurationUtility.CreateTableConfiguration<ApiResource>();
-                options.ApiResourceProperty = TableConfigurationUtility.CreateTableConfiguration<ApiResourceProperty>();
-                options.ApiScope = TableConfigurationUtility.CreateTableConfiguration<ApiScope>();
-                options.ApiScopeClaim = TableConfigurationUtility.CreateTableConfiguration<ApiScopeClaim>();
-                options.ApiSecret = TableConfigurationUtility.CreateTableConfiguration<ApiSecret>();
+                options.IdentityClaim = TableConfigurationHelper.Create<IdentityClaim>();
+                options.IdentityResource = TableConfigurationHelper.Create<IdentityResource>();
+                options.IdentityResourceProperty = TableConfigurationHelper.Create<IdentityResourceProperty>();
+                options.ApiClaim = TableConfigurationHelper.Create<ApiResourceClaim>();
+                options.ApiResource = TableConfigurationHelper.Create<ApiResource>();
+                options.ApiResourceProperty = TableConfigurationHelper.Create<ApiResourceProperty>();
+                options.ApiScope = TableConfigurationHelper.Create<ApiScope>();
+                options.ApiScopeClaim = TableConfigurationHelper.Create<ApiScopeClaim>();
+                options.ApiSecret = TableConfigurationHelper.Create<ApiSecret>();
             };
 
         /// <summary>
@@ -66,8 +66,8 @@ namespace Librame.AspNetCore.IdentityServer
         public Action<OperationalStoreOptions> OperationalAction { get; set; }
             = options =>
             {
-                options.PersistedGrants = TableConfigurationUtility.CreateTableConfiguration<PersistedGrant>();
-                options.DeviceFlowCodes = TableConfigurationUtility.CreateTableConfiguration<DeviceFlowCodes>();
+                options.PersistedGrants = TableConfigurationHelper.Create<PersistedGrant>();
+                options.DeviceFlowCodes = TableConfigurationHelper.Create<DeviceFlowCodes>();
             };
     }
 }

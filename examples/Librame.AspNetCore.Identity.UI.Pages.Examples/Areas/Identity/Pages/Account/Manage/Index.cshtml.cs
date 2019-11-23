@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
@@ -25,10 +26,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
         //private ISmsService _smsService = null;
 
         [InjectionService]
-        private IExpressionLocalizer<RegisterViewResource> _registerLocalizer = null;
+        private IStringLocalizer<RegisterViewResource> _registerLocalizer = null;
 
         [InjectionService]
-        private IExpressionLocalizer<StatusMessageResource> _statusLocalizer = null;
+        private IStringLocalizer<StatusMessageResource> _statusLocalizer = null;
 
         [InjectionService]
         private SignInManager<DefaultIdentityUser<string>> _signInManager = null;
@@ -51,7 +52,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
         /// <summary>
         /// 用户名。
         /// </summary>
-        public string Username { get; set; }
+        public string UserName { get; set; }
 
         /// <summary>
         /// 是否电邮确认。
@@ -73,7 +74,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
         /// <summary>
         /// 输入模型。
         /// </summary>
-        [ViewResourceMapping("Index")]
+        //[ViewResourceMapping("Index")]
         public class InputModel : Account.Manage.IndexPageModel.InputModel
         {
             [Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
@@ -95,7 +96,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            Username = user.UserName;
+            UserName = user.UserName;
 
             Input = new InputModel
             {
@@ -151,7 +152,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
 
             await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
 
-            StatusMessage = _statusLocalizer[r => r.ProfileUpdated];
+            StatusMessage = _statusLocalizer.GetString(r => r.ProfileUpdated);
 
             return RedirectToPage();
         }
@@ -181,10 +182,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
 
             await _emailService.SendAsync(
                 email,
-                _registerLocalizer[r => r.ConfirmYourEmail],
-                _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]).ConfigureAndWaitAsync();
+                _registerLocalizer.GetString(r => r.ConfirmYourEmail),
+                _registerLocalizer.GetString(r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl))).ConfigureAndWaitAsync();
 
-            StatusMessage = _statusLocalizer[r => r.VerificationEmailSent];
+            StatusMessage = _statusLocalizer.GetString(r => r.VerificationEmailSent);
 
             return RedirectToPage();
         }

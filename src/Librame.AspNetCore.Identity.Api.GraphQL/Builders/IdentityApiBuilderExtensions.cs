@@ -10,16 +10,16 @@
 
 #endregion
 
+using Librame.AspNetCore.Api;
+using Librame.AspNetCore.Identity;
+using Librame.AspNetCore.Identity.Api;
+using Librame.Extensions.Core;
+using Librame.Extensions.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace Librame.AspNetCore.Identity.Api
+namespace Microsoft.Extensions.DependencyInjection
 {
-    using AspNetCore.Api;
-    using Extensions.Core;
-    using Extensions.Data;
-
     /// <summary>
     /// 身份 API 构建器静态扩展。
     /// </summary>

@@ -10,21 +10,13 @@ namespace Librame.AspNetCore
 {
     static class RequestCultureProviderLoggerExtensions
     {
-        private static readonly Action<ILogger, string, IList<StringSegment>, Exception> _unsupportedCulture;
-        private static readonly Action<ILogger, string, IList<StringSegment>, Exception> _unsupportedUICulture;
-
-
-        static RequestCultureProviderLoggerExtensions()
-        {
-            _unsupportedCulture = LoggerMessage.Define<string, IList<StringSegment>>(
-                LogLevel.Warning,
-                1,
+        private static readonly Action<ILogger, string, IList<StringSegment>, Exception> _unsupportedCulture
+            = LoggerMessage.Define<string, IList<StringSegment>>(LogLevel.Warning, 1,
                 "{requestCultureProvider} returned the following unsupported cultures '{cultures}'.");
-            _unsupportedUICulture = LoggerMessage.Define<string, IList<StringSegment>>(
-                LogLevel.Warning,
-                2,
+
+        private static readonly Action<ILogger, string, IList<StringSegment>, Exception> _unsupportedUICulture
+            = LoggerMessage.Define<string, IList<StringSegment>>(LogLevel.Warning, 2,
                 "{requestCultureProvider} returned the following unsupported UI Cultures '{uiCultures}'.");
-        }
 
 
         public static void UnsupportedCultures(this ILogger logger, string requestCultureProvider, IList<StringSegment> cultures)

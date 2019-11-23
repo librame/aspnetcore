@@ -24,7 +24,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 重置最小长度特性适配器。
     /// </summary>
-    public class ResetMinLengthAttributeAdapter : AttributeAdapterBase<MinLengthAttribute>
+    internal class ResetMinLengthAttributeAdapter : AttributeAdapterBase<MinLengthAttribute>
     {
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
         private readonly string _min;

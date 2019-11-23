@@ -15,9 +15,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -43,11 +45,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         /// <summary>
         /// 外部登入方案列表。
         /// </summary>
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         /// <summary>
         /// 返回 URL。
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string ReturnUrl { get; set; }
 
         /// <summary>
@@ -62,6 +66,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         /// </summary>
         /// <param name="returnUrl">给定的返回 URL。</param>
         /// <returns>返回一个异步操作。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public virtual Task OnGetAsync(string returnUrl = null)
             => throw new NotImplementedException();
 
@@ -70,6 +75,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         /// </summary>
         /// <param name="returnUrl">给定的返回 URL。</param>
         /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public virtual Task<IActionResult> OnPostAsync(string returnUrl = null)
             => throw new NotImplementedException();
     }
@@ -79,12 +85,12 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly ILogger<LoginPageModel> _logger;
-        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
 
         public LoginPageModel(SignInManager<TUser> signInManager,
             ILogger<LoginPageModel> logger,
-            IExpressionLocalizer<ErrorMessageResource> errorLocalizer)
+            IStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
             _logger = logger;
@@ -132,7 +138,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, _errorLocalizer[r => r.InvalidLoginAttempt]?.ToString());
+                    ModelState.AddModelError(string.Empty, _errorLocalizer.GetString(r => r.InvalidLoginAttempt)?.ToString());
                     return Page();
                 }
             }

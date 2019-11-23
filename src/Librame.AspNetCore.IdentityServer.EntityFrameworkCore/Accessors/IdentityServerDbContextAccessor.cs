@@ -14,11 +14,12 @@ using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer
 {
+    using Extensions.Core;
     using Identity;
 
     /// <summary>
@@ -33,6 +34,7 @@ namespace Librame.AspNetCore.IdentityServer
         public IdentityServerDbContextAccessor(DbContextOptions options)
             : base(options)
         {
+            Migrate();
         }
 
 
@@ -78,11 +80,11 @@ namespace Librame.AspNetCore.IdentityServer
         {
             base.OnModelCreating(modelBuilder);
 
-            var configOptions = ServiceProvider.GetRequiredService<ConfigurationStoreOptions>();
+            var configOptions = ServiceFactory.GetRequiredService<IOptions<ConfigurationStoreOptions>>().Value;
             modelBuilder.ConfigureClientContext(configOptions);
             modelBuilder.ConfigureResourcesContext(configOptions);
 
-            var operatOptions = ServiceProvider.GetRequiredService<OperationalStoreOptions>();
+            var operatOptions = ServiceFactory.GetRequiredService<IOptions<OperationalStoreOptions>>().Value;
             modelBuilder.ConfigurePersistedGrantContext(operatOptions);
         }
     }

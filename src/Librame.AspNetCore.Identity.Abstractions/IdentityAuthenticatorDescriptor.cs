@@ -11,6 +11,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Identity
 {
@@ -71,6 +72,7 @@ namespace Librame.AspNetCore.Identity
         /// 建立 OTP 验证 URI 字符串。
         /// </summary>
         /// <returns>返回字符串。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1055:UriReturnValuesShouldNotBeStrings")]
         public string BuildOtpAuthUriString()
             => $"otpauth://totp/{SchemeName}:{AccountName}?secret={SecretKey}&issuer={Issuer}&digits={PasswordDigits}";
 
@@ -97,7 +99,7 @@ namespace Librame.AspNetCore.Identity
         /// </summary>
         /// <returns>返回整数。</returns>
         public override int GetHashCode()
-            => ToString().GetHashCode();
+            => ToString().GetHashCode(StringComparison.OrdinalIgnoreCase);
 
 
         /// <summary>

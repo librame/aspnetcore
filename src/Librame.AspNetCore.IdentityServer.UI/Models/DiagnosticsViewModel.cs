@@ -5,10 +5,13 @@ using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Librame.AspNetCore.IdentityServer.UI
 {
+    using Extensions;
+
     /// <summary>
     /// 诊断视图模型。
     /// </summary>
@@ -18,9 +21,10 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// 构造一个 <see cref="DiagnosticsViewModel"/>。
         /// </summary>
         /// <param name="result">给定的 <see cref="Microsoft.AspNetCore.Authentication.AuthenticateResult"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "result")]
         public DiagnosticsViewModel(AuthenticateResult result)
         {
-            AuthenticateResult = result;
+            AuthenticateResult = result.NotNull(nameof(result));
 
             if (result.Properties.Items.ContainsKey("client_list"))
             {

@@ -10,20 +10,20 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Http;
+using Librame.Extensions;
+using Librame.Extensions.Core;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Librame.Extensions
+namespace Microsoft.AspNetCore.Http
 {
-    using Extensions.Core;
-
     /// <summary>
     /// 抽象 HTTP 请求静态扩展。
     /// </summary>
@@ -59,6 +59,8 @@ namespace Librame.Extensions
         /// </example>
         /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
         /// <returns>返回字符串。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "request")]
+        [SuppressMessage("Microsoft.Design", "CA1055:UriReturnValuesShouldNotBeStrings")]
         public static string AsAbsoluteUrl(this HttpRequest request)
         {
             request.NotNull(nameof(request));
@@ -81,6 +83,8 @@ namespace Librame.Extensions
         /// </example>
         /// <param name="request">给定的 HTTP 请求。</param>
         /// <returns>返回字符串。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "request")]
+        [SuppressMessage("Microsoft.Design", "CA1055:UriReturnValuesShouldNotBeStrings")]
         public static string AsRootUrl(this HttpRequest request)
         {
             request.NotNull(nameof(request));

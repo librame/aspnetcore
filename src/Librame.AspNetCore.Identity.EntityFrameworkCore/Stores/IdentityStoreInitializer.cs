@@ -12,22 +12,23 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 
 namespace Librame.AspNetCore.Identity
 {
+    using Extensions;
     using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
     /// 身份存储初始化器。
     /// </summary>
-    public class IdentityStoreInitializer : IdentityStoreInitializer<IdentityDbContextAccessor, IdentityStoreIdentifier>
+    public class IdentityStoreInitializer : IdentityStoreInitializer<IdentityStoreIdentifier>
     {
         /// <summary>
         /// 构造一个 <see cref="IdentityStoreInitializer"/>。
@@ -35,16 +36,13 @@ namespace Librame.AspNetCore.Identity
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
         /// <param name="userStore">给定的 <see cref="IUserStore{TUser}"/>。</param>
-        /// <param name="options">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
-        /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="identifier">给定的 <see cref="IStoreIdentifier"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         public IdentityStoreInitializer(SignInManager<DefaultIdentityUser<string>> signInManager,
             RoleManager<DefaultIdentityRole<string>> roleMananger,
             IUserStore<DefaultIdentityUser<string>> userStore,
-            IOptions<IdentityBuilderOptions> options,
-            IClockService clock, IStoreIdentifier identifier, ILoggerFactory loggerFactory)
-            : base(signInManager, roleMananger, userStore, options, clock, identifier, loggerFactory)
+            IStoreIdentifier identifier, ILoggerFactory loggerFactory)
+            : base(signInManager, roleMananger, userStore, identifier, loggerFactory)
         {
         }
     }
@@ -53,11 +51,9 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 身份存储初始化器。
     /// </summary>
-    /// <typeparam name="TAccessor">指定的身份数据库上下文访问器类型。</typeparam>
-    /// <typeparam name="TIdentifier">指定的身份存储标识符类型。</typeparam>
-    public class IdentityStoreInitializer<TAccessor, TIdentifier> : StoreInitializerBase<TAccessor, TIdentifier>
-        where TAccessor : IdentityDbContextAccessor
-        where TIdentifier : IdentityStoreIdentifier
+    /// <typeparam name="TIdentifier">指定的标识符类型。</typeparam>
+    public class IdentityStoreInitializer<TIdentifier> : StoreInitializer<TIdentifier>
+         where TIdentifier : IdentityStoreIdentifier
     {
         private readonly string _defaultCreatedBy
             = nameof(IdentityStoreInitializer);
@@ -65,49 +61,49 @@ namespace Librame.AspNetCore.Identity
         private readonly SignInManager<DefaultIdentityUser<string>> _signInManager;
         private readonly RoleManager<DefaultIdentityRole<string>> _roleMananger;
         private readonly IUserStore<DefaultIdentityUser<string>> _userStore;
-        private readonly IdentityBuilderOptions _options;
 
         private IList<DefaultIdentityRole<string>> _roles;
         private IList<DefaultIdentityUser<string>> _users;
 
 
         /// <summary>
-        /// 构造一个 <see cref="IdentityStoreInitializer"/>。
+        /// 构造一个身份存储初始化器。
         /// </summary>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
         /// <param name="userStore">给定的 <see cref="IUserStore{TUser}"/>。</param>
-        /// <param name="options">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
-        /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="identifier">给定的 <see cref="IStoreIdentifier"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         public IdentityStoreInitializer(SignInManager<DefaultIdentityUser<string>> signInManager,
             RoleManager<DefaultIdentityRole<string>> roleMananger,
             IUserStore<DefaultIdentityUser<string>> userStore,
-            IOptions<IdentityBuilderOptions> options,
-            IClockService clock, IStoreIdentifier identifier, ILoggerFactory loggerFactory)
-            : base(clock, identifier, loggerFactory)
+            IStoreIdentifier identifier, ILoggerFactory loggerFactory)
+            : base(identifier, loggerFactory)
         {
             _signInManager = signInManager;
             _roleMananger = roleMananger;
             _userStore = userStore;
-            _options = options.Value;
         }
 
 
         /// <summary>
         /// 初始化核心。
         /// </summary>
-        /// <param name="stores">给定的 <see cref="IStoreHub{TAccessor, TAudit, TEntity, TMigration, TTenant}"/>。</param>
-        protected override void InitializeCore<TAudit, TEntity, TMigration, TTenant>(IStoreHub<TAccessor, TAudit, TEntity, TMigration, TTenant> stores)
+        /// <param name="stores">给定的 <see cref="StoreHub{TAccessor, TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId}"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "stores")]
+        protected override void InitializeCore<TAccessor, TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId>
+            (StoreHub<TAccessor, TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId> stores)
         {
             base.InitializeCore(stores);
 
-            InitializeRoles(stores.Accessor);
+            if (stores.Accessor is IdentityDbContextAccessor dbContextAccessor)
+            {
+                InitializeRoles(dbContextAccessor);
 
-            InitializeUsers(stores.Accessor);
+                InitializeUsers(dbContextAccessor);
 
-            InitializeClaims(stores.Accessor);
+                InitializeClaims(dbContextAccessor);
+            }
         }
 
         private void InitializeRoles(IdentityDbContextAccessor accessor)
@@ -122,13 +118,13 @@ namespace Librame.AspNetCore.Identity
 
                 foreach (var role in _roles)
                 {
-                    role.Id = Identifier.GetRoleIdAsync().Result;
-                    role.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
+                    role.Id = Identifier.GetRoleIdAsync().ConfigureAndResult();
+                    role.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
                     role.CreatedBy = _defaultCreatedBy;
                     role.NormalizedName = _roleMananger.NormalizeKey(role.Name);
 
                     accessor.Roles.Add(role);
-                    //_roleMananger.CreateAsync(role).Wait();
+                    //_roleMananger.CreateAsync(role).ConfigureAndWait();
                 }
 
                 RequiredSaveChanges = true;
@@ -143,6 +139,8 @@ namespace Librame.AspNetCore.Identity
         {
             if (!accessor.Users.Any())
             {
+                var defaultPasswordService = accessor.ServiceFactory.GetRequiredService<IDefaultPasswordService>();
+
                 // Identity 默认以邮箱为用户名
                 _users = new List<DefaultIdentityUser<string>>
                 {
@@ -156,31 +154,33 @@ namespace Librame.AspNetCore.Identity
                     if (_signInManager.UserManager.SupportsUserEmail)
                     {
                         var emailStore = (IUserEmailStore<DefaultIdentityUser<string>>)_userStore;
-                        emailStore.SetEmailAsync(user, user.UserName, CancellationToken.None).Wait();
+                        emailStore.SetEmailAsync(user, user.UserName, CancellationToken.None).ConfigureAndWait();
                     }
 
-                    _userStore.SetUserNameAsync(user, user.UserName, default).Wait();
+                    _userStore.SetUserNameAsync(user, user.UserName, default).ConfigureAndWait();
 
-                    user.Id = Identifier.GetUserIdAsync().Result;
-                    user.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
-                    user.CreatedBy = _defaultCreatedBy;
-
-                    user.PasswordHash = _signInManager.UserManager.PasswordHasher.HashPassword(user, _options.DefaultPassword);
                     user.NormalizedUserName = _signInManager.UserManager.NormalizeName(user.UserName);
                     user.NormalizedEmail = _signInManager.UserManager.NormalizeEmail(user.Email);
+
+                    user.Id = Identifier.GetUserIdAsync().ConfigureAndResult();
+                    user.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
+                    user.CreatedBy = _defaultCreatedBy;
 
                     var identifier = new RandomNumberAlgorithmIdentifier(20, Base32AlgorithmConverter.Default);
                     user.SecurityStamp = identifier;
                     user.EmailConfirmed = true;
 
+                    var defaultPassword = defaultPasswordService.GetDefaultPassword(user);
+                    user.PasswordHash = _signInManager.UserManager.PasswordHasher.HashPassword(user, defaultPassword);
+
                     accessor.Users.Add(user);
-                    //result = _signInManager.UserManager.CreateAsync(user, _options.DefaultPassword).Result;
+                    //result = _signInManager.UserManager.CreateAsync(user, _options.DefaultPassword).ConfigureAndResult();
 
                     var userRole = new DefaultIdentityUserRole<string>
                     {
                         RoleId = _roles[i].Id,
                         UserId = user.Id,
-                        CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result,
+                        CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult(),
                         CreatedBy = _defaultCreatedBy
                     };
 
@@ -217,12 +217,12 @@ namespace Librame.AspNetCore.Identity
                         };
                         userClaim.InitializeFromClaim(claim);
 
-                        userClaim.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
+                        userClaim.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
                         userClaim.CreatedBy = _defaultCreatedBy;
 
                         accessor.UserClaims.Add(userClaim);
                     }
-                    //_signInManager.UserManager.AddClaimsAsync(user, claims).Wait();
+                    //_signInManager.UserManager.AddClaimsAsync(user, claims).ConfigureAndWait();
                 }
 
                 RequiredSaveChanges = true;

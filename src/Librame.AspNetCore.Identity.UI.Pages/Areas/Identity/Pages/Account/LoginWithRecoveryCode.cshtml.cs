@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -67,14 +68,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly ILogger<LoginWithRecoveryCodePageModel> _logger;
-        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
 
         public LoginWithRecoveryCodePageModel(
             SignInManager<TUser> signInManager,
             UserManager<TUser> userManager,
             ILogger<LoginWithRecoveryCodePageModel> logger,
-            IExpressionLocalizer<ErrorMessageResource> errorLocalizer)
+            IStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -111,7 +112,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             }
 
             var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
-            var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
+            var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty, StringComparison.OrdinalIgnoreCase);
             var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode).ConfigureAndResultAsync();
             if (result.Succeeded)
             {
@@ -126,7 +127,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             else
             {
                 _logger.LogWarning("Invalid recovery code entered for user with ID '{UserId}' ", userId);
-                ModelState.AddModelError(string.Empty, _errorLocalizer[r => r.InvalidRecoveryCodeEntered]?.ToString());
+                ModelState.AddModelError(string.Empty, _errorLocalizer.GetString(r => r.InvalidRecoveryCodeEntered)?.ToString());
                 return Page();
             }
         }

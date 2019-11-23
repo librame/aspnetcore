@@ -12,6 +12,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Claims;
 
@@ -23,22 +24,20 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 默认角色存储。
     /// </summary>
-    public class DefaultRoleStore : RoleStore<DefaultIdentityRole<string>,
-        IdentityDbContextAccessor, string,
+    /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
+    public class DefaultRoleStore<TAccessor> : RoleStore<DefaultIdentityRole<string>,
+        TAccessor, string,
         DefaultIdentityUserRole<string>, DefaultIdentityRoleClaim<string>>
+        where TAccessor : DbContext
     {
-        private readonly string _defaultCreatedBy
-            = nameof(DefaultRoleStore);
-
-
         /// <summary>
-        /// 构造一个 <see cref="DefaultRoleStore"/>。
+        /// 构造一个默认角色存储。
         /// </summary>
         /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
-        /// <param name="context">给定的 <see cref="IdentityDbContextAccessor"/>。</param>
+        /// <param name="accessor">给定的 <typeparamref name="TAccessor"/>。</param>
         /// <param name="describer">给定的 <see cref="IdentityErrorDescriber"/>（可选）。</param>
-        public DefaultRoleStore(IClockService clock, IdentityDbContextAccessor context, IdentityErrorDescriber describer = null)
-            : base(context, describer)
+        public DefaultRoleStore(IClockService clock, TAccessor accessor, IdentityErrorDescriber describer = null)
+            : base(accessor, describer)
         {
             Clock = clock.NotNull(nameof(clock));
         }
@@ -59,8 +58,8 @@ namespace Librame.AspNetCore.Identity
         protected override DefaultIdentityRoleClaim<string> CreateRoleClaim(DefaultIdentityRole<string> role, Claim claim)
         {
             var roleClaim = base.CreateRoleClaim(role, claim);
-            roleClaim.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
-            roleClaim.CreatedBy = _defaultCreatedBy;
+            roleClaim.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
+            roleClaim.CreatedBy = GetType().GetSimpleFullName();
 
             return roleClaim;
         }

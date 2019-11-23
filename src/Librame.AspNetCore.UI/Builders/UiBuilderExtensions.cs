@@ -10,15 +10,15 @@
 
 #endregion
 
+using Librame.AspNetCore.UI;
+using Librame.Extensions;
+using Librame.Extensions.Core;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Librame.AspNetCore.UI
+namespace Microsoft.Extensions.DependencyInjection
 {
-    using Extensions;
-    using Extensions.Core;
-
     /// <summary>
     /// UI 构建器静态扩展。
     /// </summary>
@@ -64,6 +64,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
         /// <param name="builderFactory">给定创建 UI 构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
         public static IUiBuilder AddUI<TDependencyOptions>(this IExtensionBuilder builder,
             Action<TDependencyOptions> dependencyAction = null,
             Func<IExtensionBuilder, TDependencyOptions, IUiBuilder> builderFactory = null)

@@ -10,12 +10,11 @@
 
 #endregion
 
+using Librame.AspNetCore.UI;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Librame.AspNetCore.Identity.UI
 {
-    using AspNetCore.UI;
-
     /// <summary>
     /// 身份 Pages UI 构建器静态扩展。
     /// </summary>
@@ -28,6 +27,7 @@ namespace Librame.AspNetCore.Identity.UI
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
         public static IUiBuilder AddIdentityInterfaceWithPages(this IUiBuilder builder, IMvcBuilder mvcBuilder)
-            => builder.AddInterfaceWithPages<IdentityInterfaceConfigurationWithPages, IdentityInterfaceSitemapWithPages>(mvcBuilder, typeof(IdentityPagesUiBuilderExtensions).Assembly);
+            => builder.AddInterfaceWithPages<IdentityInterfaceConfigurationWithPages, IdentityInterfaceSitemapWithPages>(mvcBuilder,
+                typeof(IdentityPagesUiBuilderExtensions).Assembly);
     }
 }

@@ -23,7 +23,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 重置必填特性适配器。
     /// </summary>
-    public class ResetRequiredAttributeAdapter : AttributeAdapterBase<RequiredAttribute>
+    internal class ResetRequiredAttributeAdapter : AttributeAdapterBase<RequiredAttribute>
     {
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
 

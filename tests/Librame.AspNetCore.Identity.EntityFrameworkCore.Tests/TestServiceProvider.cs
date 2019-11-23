@@ -34,14 +34,13 @@ namespace Librame.AspNetCore.Identity.Tests
                     })
                     .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                     {
-                        var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
                         optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
+                            sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetSimpleAssemblyName()));
                     })
-                    .AddStoreHubWithAccessor<TestStoreHub>()
-                    .AddInitializerWithAccessor<IdentityStoreInitializer>()
-                    .AddIdentifier<IdentityStoreIdentifier>()
                     .AddDbDesignTime<SqlServerDesignTimeServices>()
+                    .AddIdentifier<IdentityStoreIdentifier>()
+                    .AddInitializer<IdentityStoreInitializer>()
+                    .AddStoreHub<TestStoreHub>()
                     .AddIdentity<IdentityDbContextAccessor>(options =>
                     {
                         options.Stores.MaxLengthForKeys = 128;

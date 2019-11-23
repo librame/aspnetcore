@@ -11,9 +11,11 @@
 #endregion
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Localization;
 
 namespace Librame.AspNetCore.Identity
 {
+    using Extensions;
     using Extensions.Core;
 
     /// <summary>
@@ -21,16 +23,16 @@ namespace Librame.AspNetCore.Identity
     /// </summary>
     public class LocalizationIdentityErrorDescriber : IdentityErrorDescriber
     {
-        private readonly IExpressionLocalizer<IdentityErrorDescriberResource> _localizer;
+        private readonly IStringLocalizer<IdentityErrorDescriberResource> _localizer;
 
 
         /// <summary>
         /// 构造一个 <see cref="LocalizationIdentityErrorDescriber"/>。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IExpressionLocalizer{IdentityErrorDescriberResource}"/>。</param>
-        public LocalizationIdentityErrorDescriber(IExpressionLocalizer<IdentityErrorDescriberResource> localizer)
+        /// <param name="localizer">给定的 <see cref="IStringLocalizer{IdentityErrorDescriberResource}"/>。</param>
+        public LocalizationIdentityErrorDescriber(IStringLocalizer<IdentityErrorDescriberResource> localizer)
         {
-            _localizer = localizer;
+            _localizer = localizer.NotNull(nameof(localizer));
         }
 
 
@@ -43,7 +45,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(DefaultError),
-                Description = _localizer[r => r.DefaultError]
+                Description = _localizer.GetString(r => r.DefaultError)
             };
         }
 
@@ -56,7 +58,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(ConcurrencyFailure),
-                Description = _localizer[r => r.ConcurrencyFailure]
+                Description = _localizer.GetString(r => r.ConcurrencyFailure)
             };
         }
 
@@ -69,7 +71,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(PasswordMismatch),
-                Description = _localizer[r => r.PasswordMismatch]
+                Description = _localizer.GetString(r => r.PasswordMismatch)
             };
         }
 
@@ -82,7 +84,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(InvalidToken),
-                Description = _localizer[r => r.InvalidToken]
+                Description = _localizer.GetString(r => r.InvalidToken)
             };
         }
 
@@ -95,7 +97,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(RecoveryCodeRedemptionFailed),
-                Description = _localizer[r => r.RecoveryCodeRedemptionFailed]
+                Description = _localizer.GetString(r => r.RecoveryCodeRedemptionFailed)
             };
         }
 
@@ -108,7 +110,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(LoginAlreadyAssociated),
-                Description = _localizer[r => r.LoginAlreadyAssociated]
+                Description = _localizer.GetString(r => r.LoginAlreadyAssociated)
             };
         }
 
@@ -122,7 +124,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(InvalidUserName),
-                Description = _localizer[r => r.InvalidUserName, userName]
+                Description = _localizer.GetString(r => r.InvalidUserName, userName)
             };
         }
 
@@ -136,7 +138,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(InvalidEmail),
-                Description = _localizer[r => r.InvalidEmail, email]
+                Description = _localizer.GetString(r => r.InvalidEmail, email)
             };
         }
 
@@ -150,7 +152,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(DuplicateUserName),
-                Description = _localizer[r => r.DuplicateUserName, userName]
+                Description = _localizer.GetString(r => r.DuplicateUserName, userName)
             };
         }
 
@@ -164,7 +166,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(DuplicateEmail),
-                Description = _localizer[r => r.DuplicateEmail, email]
+                Description = _localizer.GetString(r => r.DuplicateEmail, email)
             };
         }
 
@@ -178,7 +180,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(InvalidRoleName),
-                Description = _localizer[r => r.InvalidRoleName, role]
+                Description = _localizer.GetString(r => r.InvalidRoleName, role)
             };
         }
 
@@ -192,7 +194,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(DuplicateRoleName),
-                Description = _localizer[r => r.DuplicateRoleName, role]
+                Description = _localizer.GetString(r => r.DuplicateRoleName, role)
             };
         }
 
@@ -205,7 +207,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(UserAlreadyHasPassword),
-                Description = _localizer[r => r.UserAlreadyHasPassword]
+                Description = _localizer.GetString(r => r.UserAlreadyHasPassword)
             };
         }
 
@@ -218,7 +220,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(UserLockoutNotEnabled),
-                Description = _localizer[r => r.UserLockoutNotEnabled]
+                Description = _localizer.GetString(r => r.UserLockoutNotEnabled)
             };
         }
 
@@ -232,7 +234,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(UserAlreadyInRole),
-                Description = _localizer[r => r.UserAlreadyInRole, role]
+                Description = _localizer.GetString(r => r.UserAlreadyInRole, role)
             };
         }
 
@@ -246,7 +248,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(UserNotInRole),
-                Description = _localizer[r => r.UserNotInRole, role]
+                Description = _localizer.GetString(r => r.UserNotInRole, role)
             };
         }
 
@@ -260,7 +262,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(PasswordTooShort),
-                Description = _localizer[r => r.PasswordTooShort, length]
+                Description = _localizer.GetString(r => r.PasswordTooShort, length)
             };
         }
 
@@ -274,7 +276,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(PasswordRequiresUniqueChars),
-                Description = _localizer[r => r.PasswordRequiresUniqueChars, uniqueChars]
+                Description = _localizer.GetString(r => r.PasswordRequiresUniqueChars, uniqueChars)
             };
         }
 
@@ -287,7 +289,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(PasswordRequiresNonAlphanumeric),
-                Description = _localizer[r => r.PasswordRequiresNonAlphanumeric]
+                Description = _localizer.GetString(r => r.PasswordRequiresNonAlphanumeric)
             };
         }
 
@@ -300,7 +302,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(PasswordRequiresDigit),
-                Description = _localizer[r => r.PasswordRequiresDigit]
+                Description = _localizer.GetString(r => r.PasswordRequiresDigit)
             };
         }
 
@@ -313,7 +315,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(PasswordRequiresLower),
-                Description = _localizer[r => r.PasswordRequiresLower]
+                Description = _localizer.GetString(r => r.PasswordRequiresLower)
             };
         }
 
@@ -326,7 +328,7 @@ namespace Librame.AspNetCore.Identity
             return new IdentityError
             {
                 Code = nameof(PasswordRequiresUpper),
-                Description = _localizer[r => r.PasswordRequiresUpper]
+                Description = _localizer.GetString(r => r.PasswordRequiresUpper)
             };
         }
     }

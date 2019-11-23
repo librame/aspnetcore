@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using IdentityServer4;
+using IdentityServer4.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +12,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
     using Extensions;
     using Extensions.Data;
     using Extensions.Encryption;
+    using Models;
 
     internal static class TestServiceProvider
     {
@@ -31,26 +34,24 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                     .AddDataCore(options =>
                     {
                         // Use Identity Database
-                        options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-                        options.DefaultTenant.WritingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
+                        options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_default;Integrated Security=True";
+                        options.DefaultTenant.WritingConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_writing;Integrated Security=True";
                         options.DefaultTenant.WritingSeparation = true;
                     })
                     .AddAccessor<IdentityServerDbContextAccessor>((options, optionsBuilder) =>
                     {
-                        var migrationsAssembly = typeof(IdentityServerDbContextAccessor).Assembly.GetName().Name;
                         optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
+                            sql => sql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetSimpleAssemblyName()));
                     })
-                    .AddStoreHubWithAccessor<TestStoreHub>()
-                    .AddInitializerWithAccessor<IdentityServerStoreInitializer>()
-                    .AddIdentifier<IdentityServerStoreIdentifier>()
                     .AddDbDesignTime<SqlServerDesignTimeServices>()
+                    .AddIdentifier<IdentityServerStoreIdentifier>()
+                    .AddInitializer<TestStoreInitializer>()
+                    .AddStoreHub<TestStoreHub>()
                     .AddIdentity<IdentityServerDbContextAccessor>(options =>
                     {
                         options.Stores.MaxLengthForKeys = 128;
                     })
-                    .AddEncryption().AddDeveloperGlobalSigningCredentials()
-                    .AddIdentityServer<IdentityServerDbContextAccessor, DefaultIdentityUser<string>>(dependency =>
+                    .AddIdentityServer<DefaultIdentityUser<string>>(dependency =>
                     {
                         dependency.IdentityServer = options =>
                         {
@@ -58,13 +59,12 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                             options.Events.RaiseInformationEvents = true;
                             options.Events.RaiseFailureEvents = true;
                             options.Events.RaiseSuccessEvents = true;
+
                             options.Authentication.CookieAuthenticationScheme = IdentityConstants.ApplicationScheme;
                         };
-                        dependency.Builder.Action = builder =>
-                        {
-                            builder.Authorizations.Clients.AddIdentityServerSPA("Librame.AspNetCore.IdentityServer.Api", _ => { });
-                        };
-                    });
+                    })
+                    .AddAccessorStores<IdentityServerDbContextAccessor>()
+                    .AddEncryption().AddDeveloperGlobalSigningCredentials();
 
                 return services.BuildServiceProvider();
             });

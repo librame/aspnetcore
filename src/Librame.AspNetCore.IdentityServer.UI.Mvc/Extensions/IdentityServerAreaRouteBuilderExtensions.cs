@@ -11,9 +11,8 @@
 #endregion
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
 
-namespace Librame.AspNetCore.IdentityServer.UI
+namespace Microsoft.AspNetCore.Routing
 {
     /// <summary>
     /// 身份服务器区域路由构建器静态扩展。
@@ -30,8 +29,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             return builder.MapAreaRoute(
                 name: "IdentityServer",
                 areaName: "IdentityServer",
-                template: "IdentityServer/{controller}/{action}/{id?}",
-                defaults: new { controller = "Home", action = "Index" }
+                template: "IdentityServer/{controller}/{action}/{id?}"
             );
         }
 
@@ -46,8 +44,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             return builder.MapAreaControllerRoute(
                 name: "IdentityServer",
                 areaName: "IdentityServer",
-                pattern: "IdentityServer/{controller}/{action}/{id?}",
-                defaults: new { controller = "Home", action = "Index" }
+                pattern: "IdentityServer/{controller}/{action}/{id?}"
             );
         }
 

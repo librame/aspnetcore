@@ -13,7 +13,6 @@
 using Microsoft.Extensions.Localization;
 using System;
 using System.Reflection;
-using System.Runtime.Versioning;
 
 namespace Librame.AspNetCore
 {
@@ -25,6 +24,10 @@ namespace Librame.AspNetCore
     /// </summary>
     public abstract class AbstractApplicationInfo : IApplicationInfo
     {
+        private readonly AppDomainSetup _appDomainSetup
+            = AppDomain.CurrentDomain.SetupInformation;
+
+
         /// <summary>
         /// 名称。
         /// </summary>
@@ -58,7 +61,7 @@ namespace Librame.AspNetCore
         /// 框架。
         /// </summary>
         public virtual string Framework
-            => Assembly.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
+            => _appDomainSetup.TargetFrameworkName;
 
         /// <summary>
         /// 版本。
@@ -93,15 +96,15 @@ namespace Librame.AspNetCore
         /// <summary>
         /// 服务工厂。
         /// </summary>
-        public ServiceFactoryDelegate ServiceFactory { get; private set; }
+        public ServiceFactory ServiceFactory { get; private set; }
 
 
         /// <summary>
         /// 应用服务工厂。
         /// </summary>
-        /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
+        /// <param name="serviceFactory">给定的 <see cref="Extensions.Core.ServiceFactory"/>。</param>
         /// <returns>返回 <see cref="IApplicationInfo"/>。</returns>
-        public virtual IApplicationInfo ApplyServiceFactory(ServiceFactoryDelegate serviceFactory)
+        public virtual IApplicationInfo ApplyServiceFactory(ServiceFactory serviceFactory)
         {
             ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
             return this;
@@ -130,7 +133,7 @@ namespace Librame.AspNetCore
         /// </summary>
         /// <returns>返回 32 位整数。</returns>
         public override int GetHashCode()
-            => ToString().GetHashCode();
+            => ToString().GetHashCode(StringComparison.OrdinalIgnoreCase);
 
 
         /// <summary>
@@ -138,7 +141,7 @@ namespace Librame.AspNetCore
         /// </summary>
         /// <returns>返回字符串。</returns>
         public override string ToString()
-            => Localizer[nameof(Name)];
+            => Localizer.GetString(nameof(Name));
 
 
         /// <summary>

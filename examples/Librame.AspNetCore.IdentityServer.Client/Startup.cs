@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Librame.AspNetCore.IdentityServer.Client
 {
@@ -30,47 +31,41 @@ namespace Librame.AspNetCore.IdentityServer.Client
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            IdentityModelEventSource.ShowPII = true;
+
+            var builder = services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddResetOpenIdConnect(options =>
+            {
+                options.ClientId = Librame.Models.IdentityServerConfiguration.DefaultClient.ClientId;
+                //options.ClientSecret = "secret";
+                options.Authority = "https://localhost:44303";
+                options.RequireHttpsMetadata = false;
+
+                options.CallbackPath = new PathString("/Home/Index"); // 与 Server 端 RedirectUris 保持一致
+                options.SignedOutCallbackPath = new PathString("/Logout"); // 与 Server 端 PostLogoutRedirectUris 保持一致
+                options.RemoteSignOutPath = new PathString("/Account/LogoutRemote");
+
+                options.ResponseType = OpenIdConnectResponseType.IdToken; // IdentityServer4.Constants.ResponseTypeToGrantTypeMapping
+                options.SaveTokens = true;
+                options.GetClaimsFromUserInfoEndpoint = true;
+                //options.AccessDeniedPath = "/";
+            });
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
-            //services.AddAuthentication("Bearer")
-            //    .AddIdentityServerAuthentication(options =>
-            //    {
-            //        options.Authority = "https://localhost:44303";
-            //        options.RequireHttpsMetadata = true;
-            //        options.ApiName = "IdentityServer.Api";
-            //    });
-
-            // Add LibrameCore
-            //services.AddLibrameCore(options =>
-            //{
-            //    options.BuildPathConfiguration = () => new CorePathConfiguration();
-            //},
-            //(extensions, options) =>
-            //{
-            //    extensions.AddCoreExtensionsWithOidcAuthentication(options, opts =>
-            //    {
-            //        opts.SignInScheme = IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME;
-
-            //        opts.Authority = "https://localhost:44303";
-            //        opts.RequireHttpsMetadata = true;
-
-            //        opts.ClientId = "IdentityClient";
-            //        opts.ClientSecret = "secret";
-            //        opts.ResponseType = "id_token code";
-            //        opts.SaveTokens = true;
-            //        opts.GetClaimsFromUserInfoEndpoint = true;
-
-            //        //opts.Scope.Clear();
-            //        opts.Scope.Add("IdentityApi");
-            //        opts.Scope.Add("offline_access");
-            //    });
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -82,13 +77,18 @@ namespace Librame.AspNetCore.IdentityServer.Client
                 app.UseHsts();
             }
 
-            //app.UseLibrame().ApplyAuthentication();
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseMvcWithDefaultRoute();
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(routes =>
+            {
+                routes.MapDefaultControllerRoute();
+            });
         }
     }
 }

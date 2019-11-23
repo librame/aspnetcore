@@ -10,8 +10,11 @@
 
 #endregion
 
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Librame.AspNetCore.UI
@@ -35,21 +38,8 @@ namespace Librame.AspNetCore.UI
         {
             Themepacks = Themepacks.EnsureSingleton(() =>
             {
-                var infos = new ConcurrentDictionary<string, IThemepackInfo>();
-                var interfaceType = typeof(IThemepackInfo);
-
-                var regex = new Regex(_themepackAssemblyNamePattern);
-                var assemblies = AssemblyUtility.CurrentDomainAssembliesWithoutSystem
-                    .Where(assem => regex.IsMatch(assem.GetName().Name));
-
-                assemblies.InvokeTypes(type =>
-                {
-                    var info = type.EnsureCreate<IThemepackInfo>();
-                    infos.AddOrUpdate(info.Name, info, (key, value) => info);
-                },
-                types => types.Where(type => interfaceType.IsAssignableFrom(type) && type.IsConcreteType()));
-
-                return infos;
+                return GetApplicationInfos(_themepackAssemblyNamePattern,
+                    type => type.EnsureCreate<IThemepackInfo>());
             });
         }
 
@@ -63,25 +53,48 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 获取界面信息集合。
         /// </summary>
-        /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
+        /// <param name="serviceFactory">给定的 <see cref="ServiceFactory"/>。</param>
         /// <param name="pattern">给定验证界面程序集名的正则表达式（可选）。</param>
         /// <returns>返回 <see cref="ConcurrentDictionary{TKey, TValue}"/>。</returns>
-        public static ConcurrentDictionary<string, IInterfaceInfo> GetInterfaces(ServiceFactoryDelegate serviceFactory,
+        public static ConcurrentDictionary<string, IInterfaceInfo> GetInterfaceInfos(ServiceFactory serviceFactory,
             string pattern = null)
         {
-            var infos = new ConcurrentDictionary<string, IInterfaceInfo>();
+            return GetApplicationInfos(pattern.NotEmptyOrDefault(_interfaceAssemblyNamePattern),
+                type => type.EnsureCreate<IInterfaceInfo>(serviceFactory));
+        }
 
-            var regex = new Regex(pattern.NotEmptyOrDefault(_interfaceAssemblyNamePattern));
-            var assemblies = AssemblyUtility.CurrentDomainAssembliesWithoutSystem
-                .Where(assem => regex.IsMatch(assem.GetName().Name));
 
-            var interfaceType = typeof(IInterfaceInfo);
-            assemblies.InvokeTypes(type =>
+        /// <summary>
+        /// 从程序集集合中获取指定的应用信息字典集合。
+        /// </summary>
+        /// <typeparam name="TAppInfo">指定的应用信息类型。</typeparam>
+        /// <param name="pattern">给定匹配程序集名称的正则表达式模式。</param>
+        /// <param name="createInfoFactory">给定创建信息实例的工厂方法。</param>
+        /// <param name="assemblies">给定的程序集集合（可选；默认使用 <see cref="AssemblyUtility.CurrentDomainAssembliesWithoutSystem"/>）。</param>
+        /// <returns>返回加载的字典集合。</returns>
+        public static ConcurrentDictionary<string, TAppInfo> GetApplicationInfos<TAppInfo>(string pattern,
+            Func<Type, TAppInfo> createInfoFactory, IEnumerable<Assembly> assemblies = null)
+            where TAppInfo : IApplicationInfo
+        {
+            pattern.NotEmpty(nameof(pattern));
+            createInfoFactory.NotNull(nameof(createInfoFactory));
+
+            var regex = new Regex(pattern);
+            var filterAssemblies = (assemblies ?? AssemblyUtility.CurrentDomainAssembliesWithoutSystem)
+                .Where(assembly => regex.IsMatch(assembly.GetSimpleName()))
+                .ToList();
+
+            var infoType = typeof(TAppInfo);
+            if (filterAssemblies.IsEmpty())
+                throw new Exception($"Available application information '{infoType.FullName}' that matches the assembly name pattern '{pattern}' could not be found.");
+
+            var infos = new ConcurrentDictionary<string, TAppInfo>();
+            filterAssemblies.InvokeTypes(type =>
             {
-                var info = type.EnsureCreate<IInterfaceInfo>(serviceFactory);
+                var info = createInfoFactory.Invoke(type);
                 infos.AddOrUpdate(info.Name, info, (key, value) => info);
             },
-            types => types.Where(type => interfaceType.IsAssignableFrom(type) && type.IsConcreteType()));
+            types => types.Where(type => infoType.IsAssignableFrom(type) && type.IsConcreteType()));
 
             return infos;
         }

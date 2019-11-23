@@ -10,15 +10,16 @@
 
 #endregion
 
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Librame.AspNetCore.UI
 {
     static class LocalizerUiBuilderExtensions
     {
-        public static IUiBuilder AddLocalizers(this IUiBuilder builder)
+        internal static IUiBuilder AddLocalizers(this IUiBuilder builder)
         {
-            builder.Services.AddTransient(typeof(IExpressionHtmlLocalizer<>), typeof(ExpressionHtmlLocalizer<>));
+            builder.Services.TryAddTransient(typeof(IDictionaryHtmlLocalizer<>), typeof(DictionaryHtmlLocalizer<>));
+            builder.Services.TryAddSingleton<IDictionaryHtmlLocalizerFactory, DictionaryHtmlLocalizerFactory>();
 
             return builder;
         }

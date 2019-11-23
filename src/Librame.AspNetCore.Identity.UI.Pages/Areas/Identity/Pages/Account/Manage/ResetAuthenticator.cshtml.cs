@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -58,14 +59,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly ILogger<ResetAuthenticatorPageModel> _logger;
-        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IStringLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public ResetAuthenticatorPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
             ILogger<ResetAuthenticatorPageModel> logger,
-            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
+            IStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -100,7 +101,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
 
-            StatusMessage = _statusLocalizer[r => r.ResetAuthenticator]?.ToString();
+            StatusMessage = _statusLocalizer.GetString(r => r.ResetAuthenticator)?.ToString();
 
             return RedirectToPage("./EnableAuthenticator");
         }

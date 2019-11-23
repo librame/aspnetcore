@@ -1,9 +1,9 @@
 @page
 @model IndexPageModel
-@inject IExpressionHtmlLocalizer<IndexViewResource> Localizer
+@inject IHtmlLocalizer<IndexViewResource> Localizer
 @{
     Layout = "Manage/_Layout";
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
 }
 
 <h4>@ViewData["Title"]</h4>
@@ -27,7 +27,7 @@
                 else
                 {
                     <input asp-for="Input.Email" class="form-control" placeholder="@Html.DisplayNameFor(m => m.Input.Email) ..." />
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">@Localizer[r => r.SendButtonText]</button>
+                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">@Localizer.GetString(r => r.SendButtonText)</button>
                 }
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
@@ -38,7 +38,7 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-default">@Localizer[r => r.ButtonText]</button>
+                <button type="submit" class="btn btn-default">@Localizer.GetString(r => r.ButtonText)</button>
             </div>
         </form>
     </div>

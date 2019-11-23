@@ -1,0 +1,8 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+<h2>@ViewData["Title"]</h2>
+
+<p>Hello @User.Identity.EnsureAuthenticatedName()!</p>
+
+<p><a href="/">Return Index</a></p>

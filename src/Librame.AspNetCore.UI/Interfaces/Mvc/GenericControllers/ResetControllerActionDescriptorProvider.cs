@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Librame.AspNetCore.UI
 {
-    internal class ResetControllerActionDescriptorProvider : IActionDescriptorProvider
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+    class ResetControllerActionDescriptorProvider : IActionDescriptorProvider
     {
         private readonly ApplicationPartManager _partManager;
         private readonly ResetApplicationModelFactory _applicationModelFactory;

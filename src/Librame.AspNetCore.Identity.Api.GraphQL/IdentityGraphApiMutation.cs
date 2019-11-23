@@ -12,9 +12,11 @@
 
 using GraphQL.Types;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Encodings.Web;
 
@@ -26,6 +28,7 @@ namespace Librame.AspNetCore.Identity.Api
     using Extensions.Data;
     using Extensions.Network;
 
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     class IdentityGraphApiMutation<TUser> : ObjectGraphType, IGraphApiMutation
         where TUser : class, IId<string>
     {
@@ -39,7 +42,7 @@ namespace Librame.AspNetCore.Identity.Api
         private IEmailService _emailService = null;
 
         [InjectionService]
-        private IExpressionLocalizer<RegisterApiModelResource> _localizer = null;
+        private IStringLocalizer<RegisterApiModelResource> _localizer = null;
 
         [InjectionService]
         private IUserStore<TUser> _userStore = null;
@@ -139,8 +142,8 @@ namespace Librame.AspNetCore.Identity.Api
                         var confirmEmailExternalLink = HtmlEncoder.Default.Encode(confirmEmailLocator.ToString());
 
                         await _emailService.SendAsync(model.Email,
-                            _localizer[r => r.ConfirmYourEmail]?.Value,
-                            _localizer[r => r.ConfirmYourEmailFormat, confirmEmailExternalLink]?.Value).ConfigureAndWaitAsync();
+                            _localizer.GetString(r => r.ConfirmYourEmail)?.Value,
+                            _localizer.GetString(r => r.ConfirmYourEmailFormat, confirmEmailExternalLink)?.Value).ConfigureAndWaitAsync();
                         //await userStore.GetUserEmailStore(signInManager).SetEmailAsync(user, model.Email, default);
 
                         await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();

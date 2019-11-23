@@ -1,8 +1,8 @@
 ﻿@page
 @model EnableAuthenticatorPageModel
-@inject IExpressionHtmlLocalizer<EnableAuthenticatorViewResource> Localizer
+@inject IHtmlLocalizer<EnableAuthenticatorViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
     ViewData["ActiveView"] = ViewPageNames.TwoFactorAuthentication;
 }
 
@@ -12,34 +12,34 @@
 <h4>@ViewData["Title"]</h4>
 
 <div>
-    <p>@Localizer[r => r.Descr]</p>
+    <p>@Localizer.GetString(r => r.Descr)</p>
     <ol class="list">
         <li>
             <p>
-                @Localizer[r => r.DownloadAuthenticator]
+                @Localizer.GetString(r => r.DownloadAuthenticator)
             </p>
         </li>
         <li>
-            <p>@Localizer[r => r.ScanQRCode, Model.SharedKey]</p>
-            <div class="alert alert-info">@Localizer[r => r.ReadDocument])</div>
+            <p>@Localizer.GetString(r => r.ScanQRCode, Model.SharedKey)</p>
+            <div class="alert alert-info">@Localizer.GetString(r => r.ReadDocument))</div>
             <div id="qrCode"></div>
             <div id="qrCodeData" data-url="@Model.AuthenticatorUri"></div>
         </li>
         <li>
             <p>
-                @Localizer[r => r.VerificationCodeInfo]
+                @Localizer.GetString(r => r.VerificationCodeInfo)
             </p>
             <div class="row">
                 <div class="col-md-6">
                     <form id="send-code" method="post">
                         <div class="form-group">
-                            <label asp-for="Input.TwoFactorCode" class="control-label">@Localizer[r => r.VerificationCode]</label>
+                            <label asp-for="Input.TwoFactorCode" class="control-label">@Localizer.GetString(r => r.VerificationCode)</label>
                             <input asp-for="Input.TwoFactorCode" class="form-control" autocomplete="off" />
                             <span asp-validation-for="Input.TwoFactorCode" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-default">@Localizer[r => r.ButtonText]</button>
+                            <button type="submit" class="btn btn-default">@Localizer.GetString(r => r.ButtonText)</button>
                         </div>
 
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>

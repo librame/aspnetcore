@@ -12,6 +12,7 @@
 
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore
@@ -54,6 +55,7 @@ namespace Librame.AspNetCore
         /// </summary>
         /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
         /// <returns>返回一个异步操作。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
         public async Task Invoke(HttpContext context)
         {
             context.NotNull(nameof(context));

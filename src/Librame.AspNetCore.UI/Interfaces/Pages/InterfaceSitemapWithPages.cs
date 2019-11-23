@@ -10,10 +10,10 @@
 
 #endregion
 
+using Microsoft.Extensions.Localization;
+
 namespace Librame.AspNetCore.UI
 {
-    using Extensions.Core;
-
     /// <summary>
     /// 带页面集合的界面站点地图。
     /// </summary>
@@ -22,30 +22,27 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 构造一个 <see cref="InterfaceSitemapWithPages"/>。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IExpressionLocalizer{InterfaceSitemapResource}"/>。</param>
+        /// <param name="localizer">给定的 <see cref="IStringLocalizer{InterfaceSitemapResource}"/>。</param>
         /// <param name="area">给定的区域（可选）。</param>
-        public InterfaceSitemapWithPages(IExpressionLocalizer<InterfaceSitemapResource> localizer, string area = null)
+        public InterfaceSitemapWithPages(IStringLocalizer<InterfaceSitemapResource> localizer, string area = null)
             : base(localizer, area)
         {
-            // Index
-            Index = new NavigationDescriptor<InterfaceSitemapResource>(new RouteDescriptor("/", area: null), Localizer, p => p.Index);
+            var index = Localizer.AsNavigation(RouteDescriptor.ByPage("/"), p => p.Index);
+            var login = index.NewRoutePage("/Account/Login", Area);
 
             // Home
-            AccessDenied = new NavigationDescriptor(new RouteDescriptor("/Home/AccessDenied", area: null), Localizer);
-
-            Privacy = new NavigationDescriptor(new RouteDescriptor("/Home/Privacy", area: null), Localizer);
-
-            Sitemap = new NavigationDescriptor(new RouteDescriptor("/Home/Sitemap", area: null), Localizer);
+            Index = index;
+            AccessDenied = index.NewRoutePage("/Home/AccessDenied");
+            Privacy = index.NewRoutePage("/Home/Privacy");
+            Sitemap = index.NewRoutePage("/Home/Sitemap");
 
             // Account
-            Login = new NavigationDescriptor(new RouteDescriptor("/Account/Login", Area), Localizer);
-
-            Logout = new NavigationDescriptor(new RouteDescriptor("/Account/Logout", Area), Localizer);
-
-            Register = new NavigationDescriptor(new RouteDescriptor("/Account/Register", Area), Localizer);
+            Login = login;
+            Logout = login.NewRoutePage("/Account/Logout");
+            Register = login.NewRoutePage("/Account/Register");
 
             // Manage
-            Manage = new NavigationDescriptor<InterfaceSitemapResource>(new RouteDescriptor("/Account/Manage/Index", Area), Localizer, p => p.Manage);
+            Manage = login.NewRoutePage("/Account/Manage/Index", nameof(Manage), Area);
         }
     }
 }

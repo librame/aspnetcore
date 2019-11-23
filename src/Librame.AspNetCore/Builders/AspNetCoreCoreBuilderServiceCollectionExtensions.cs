@@ -119,8 +119,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            return builder
-                .AddLocalizers();
+            return builder;
         }
 
     }

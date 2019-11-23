@@ -1,8 +1,8 @@
 @page
 @model LoginPageModel
-@inject IExpressionHtmlLocalizer<LoginViewResource> Localizer
+@inject IHtmlLocalizer<LoginViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
 }
 <!-- Login -->
 <div class="row">
@@ -10,7 +10,7 @@
         <div class="form-top">
             <div class="form-top-left">
                 <h3>@ViewData["Title"]</h3>
-                <p>@Localizer[r => r.Descr]</p>
+                <p>@Localizer.GetString(r => r.Descr)</p>
             </div>
             <div class="form-top-right">
                 <i class="fa fa-key"></i>
@@ -41,21 +41,21 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">@Localizer[r => r.ButtonText]</button>
+                    <button type="submit" class="btn">@Localizer.GetString(r => r.ButtonText)</button>
                 </div>
 
                 <div class="form-group overflow-hidden">
                     <div class="col-sm-6">
                         <p>
                             <a asp-page="./ForgotPassword">
-                                @Localizer[r => r.ForgotPassword]
+                                @Localizer.GetString(r => r.ForgotPassword)
                             </a>
                         </p>
                     </div>
                     <div class="col-sm-6 text-right">
                         <p>
                             <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
-                                @Localizer[r => r.RegisterUser]
+                                @Localizer.GetString(r => r.RegisterUser)
                             </a>
                         </p>
                     </div>
@@ -67,14 +67,14 @@
 
 <div class="row">
     <div class="col-sm-6 col-sm-offset-3 social-login">
-        <!-- <h3>Localizer[r => r.ExternalLoginDescr]</h3> -->
+        <!-- <h3>Localizer.GetString(r => r.ExternalLoginDescr)</h3> -->
         <div class="social-login-buttons">
             @{
                 if (Model.ExternalLogins.IsEmpty())
                 {
                     <div>
                         <p>
-                            <!-- Localizer[r => r.ExternalLoginInfo] -->
+                            <!-- Localizer.GetString(r => r.ExternalLoginInfo) -->
                         </p>
                     </div>
                 }
@@ -85,7 +85,7 @@
                             <p>
                                 @foreach (var provider in Model.ExternalLogins)
                                 {
-                                    <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="@Localizer[r => r.ExternalLoginTitle, provider.DisplayName]">@provider.DisplayName</button>
+                                    <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="@Localizer.GetString(r => r.ExternalLoginTitle, provider.DisplayName)">@provider.DisplayName</button>
                                 }
                             </p>
                         </div>

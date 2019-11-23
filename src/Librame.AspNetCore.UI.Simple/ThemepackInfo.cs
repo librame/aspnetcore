@@ -24,7 +24,7 @@ namespace Librame.AspNetCore.UI.Themepack.Simple
         /// 名称。
         /// </summary>
         public override string Name
-            => Localizer[nameof(Name)];
+            => Localizer.GetString(nameof(Name));
 
 
         /// <summary>

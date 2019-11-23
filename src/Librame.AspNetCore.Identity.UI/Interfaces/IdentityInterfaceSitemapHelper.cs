@@ -10,13 +10,13 @@
 
 #endregion
 
+using Microsoft.Extensions.Localization;
 using System.Collections.Generic;
 
 namespace Librame.AspNetCore.Identity.UI
 {
     using AspNetCore.UI;
     using Extensions;
-    using Extensions.Core;
 
     /// <summary>
     /// 身份界面站点地图助手。
@@ -26,22 +26,22 @@ namespace Librame.AspNetCore.Identity.UI
         /// <summary>
         /// 获取管理底栏站点地图。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IExpressionLocalizer{LayoutViewResource}"/>。</param>
+        /// <param name="localizer">给定的 <see cref="IStringLocalizer{LayoutViewResource}"/>。</param>
         /// <returns>返回 <see cref="List{NavigationDescriptor}"/>。</returns>
-        public static List<NavigationDescriptor> GetManageFootbar(IExpressionLocalizer<LayoutViewResource> localizer)
+        public static List<NavigationDescriptor> GetManageFootbar(IStringLocalizer<LayoutViewResource> localizer)
         {
             localizer.NotNull(nameof(localizer));
 
             return new List<NavigationDescriptor>
             {
-                new NavigationDescriptor<LayoutViewResource>(new RouteDescriptor("https://github.com/librame/LibrameCore"),
-                    localizer, p => p.Repository).ChangeTagTarget("_blank"),
+                localizer.AsNavigation(new RouteDescriptor("https://github.com/librame/LibrameCore"),
+                    p => p.Repository, optional => optional.ChangeTagTarget("_blank")),
 
-                new NavigationDescriptor<LayoutViewResource>(new RouteDescriptor("https://github.com/librame/LibrameCore/issues"),
-                    localizer, p => p.Issues).ChangeTagTarget("_blank"),
+                localizer.AsNavigation(new RouteDescriptor("https://github.com/librame/LibrameCore/issues"),
+                    p => p.Issues, optional => optional.ChangeTagTarget("_blank")),
 
-                new NavigationDescriptor<LayoutViewResource>(new RouteDescriptor("https://github.com/librame/LibrameCore/blob/master/LICENSE.txt"),
-                    localizer, p => p.Licenses).ChangeTagTarget("_blank")
+                localizer.AsNavigation(new RouteDescriptor("https://github.com/librame/LibrameCore/blob/master/LICENSE.txt"),
+                    p => p.Licenses, optional => optional.ChangeTagTarget("_blank"))
             };
         }
 

@@ -1,6 +1,6 @@
-﻿@inject IExpressionHtmlLocalizer<ConfirmEmailViewResource> Localizer
+﻿@inject IHtmlLocalizer<ConfirmEmailViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
 }
 <!-- ConfirmEmail -->
 <div class="row">
@@ -8,7 +8,7 @@
         <div class="form-top">
             <div class="form-top-left">
                 <h3>@ViewData["Title"]</h3>
-                <p>@Localizer[r => r.Descr]</p>
+                <p>@Localizer.GetString(r => r.Descr)</p>
                 <p>
                     <!-- Please <a asp-controller="Account" asp-action="Login">Click here to Log in</a>. -->
                 </p>

@@ -19,39 +19,13 @@ namespace Librame.AspNetCore.Identity
 {
     using Extensions.Data;
 
-    ///// <summary>
-    ///// 默认身份角色。
-    ///// </summary>
-    //[Description("默认身份角色")]
-    //public class DefaultIdentityRole : DefaultIdentityRole<string>
-    //{
-    //    /// <summary>
-    //    /// 构造一个 <see cref="DefaultIdentityRole"/>。
-    //    /// </summary>
-    //    public DefaultIdentityRole()
-    //        : this(null)
-    //    {
-    //    }
-
-    //    /// <summary>
-    //    /// 构造一个 <see cref="DefaultIdentityRole"/>。
-    //    /// </summary>
-    //    /// <param name="userName">给定的用户名称。</param>
-    //    public DefaultIdentityRole(string userName)
-    //        : base(userName)
-    //    {
-    //        Id = EntityUtility.EmptyCombGuid;
-    //    }
-    //}
-
-
     /// <summary>
     /// 默认身份角色。
     /// </summary>
-    /// <typeparam name="TId">指定的标识类型。</typeparam>
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     [Description("默认身份角色")]
-    public class DefaultIdentityRole<TId> : IdentityRole<TId>, IId<TId>, ICreation<TId, DateTimeOffset>, IEquatable<DefaultIdentityRole<TId>>
-        where TId : IEquatable<TId>
+    public class DefaultIdentityRole<TGenId> : IdentityRole<TGenId>, IId<TGenId>, ICreation<string, DateTimeOffset>, IEquatable<DefaultIdentityRole<TGenId>>
+        where TGenId : IEquatable<TGenId>
     {
         /// <summary>
         /// 构造一个 <see cref="DefaultIdentityRole{TId}"/>。
@@ -81,30 +55,30 @@ namespace Librame.AspNetCore.Identity
         /// 创建者。
         /// </summary>
         [Display(Name = nameof(CreatedBy), ResourceType = typeof(AbstractEntityResource))]
-        public virtual TId CreatedBy { get; set; }
+        public virtual string CreatedBy { get; set; }
 
 
         /// <summary>
         /// 获取创建时间。
         /// </summary>
         /// <returns>返回日期与时间。</returns>
-        public virtual object GetCreatedTime()
+        public virtual object GetCustomCreatedTime()
             => CreatedTime;
 
         /// <summary>
         /// 获取创建者。
         /// </summary>
         /// <returns>返回创建者。</returns>
-        public virtual object GetCreatedBy()
+        public virtual object GetCustomCreatedBy()
             => CreatedBy;
 
 
         /// <summary>
         /// 唯一索引是否相等。
         /// </summary>
-        /// <param name="other">给定的 <see cref="DataEntity"/>。</param>
+        /// <param name="other">给定的 <see cref="DefaultIdentityRole{TGenId}"/>。</param>
         /// <returns>返回布尔值。</returns>
-        public bool Equals(DefaultIdentityRole<TId> other)
+        public bool Equals(DefaultIdentityRole<TGenId> other)
             => NormalizedName == other?.NormalizedName;
 
         /// <summary>
@@ -113,7 +87,7 @@ namespace Librame.AspNetCore.Identity
         /// <param name="obj">给定要比较的对象。</param>
         /// <returns>返回布尔值。</returns>
         public override bool Equals(object obj)
-            => (obj is DefaultIdentityRole<TId> other) ? Equals(other) : false;
+            => (obj is DefaultIdentityRole<TGenId> other) ? Equals(other) : false;
 
 
         /// <summary>
@@ -121,7 +95,7 @@ namespace Librame.AspNetCore.Identity
         /// </summary>
         /// <returns>返回 32 位整数。</returns>
         public override int GetHashCode()
-            => ToString().GetHashCode();
+            => ToString().GetHashCode(StringComparison.OrdinalIgnoreCase);
 
 
         /// <summary>

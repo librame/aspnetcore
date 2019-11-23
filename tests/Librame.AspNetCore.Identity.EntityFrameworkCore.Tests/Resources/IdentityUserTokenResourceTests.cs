@@ -1,5 +1,6 @@
 ﻿using Librame.Extensions.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using System.Globalization;
 using Xunit;
 
@@ -11,28 +12,28 @@ namespace Librame.AspNetCore.Identity.Tests
         public void ResourceTest()
         {
             var cultureNames = new string[] { "en-US", "zh-CN", "zh-TW" };
-            var localizer = TestServiceProvider.Current.GetRequiredService<IExpressionLocalizer<IdentityUserTokenResource>>();
+            var localizer = TestServiceProvider.Current.GetRequiredService<IStringLocalizer<IdentityUserTokenResource>>();
 
             foreach (var name in cultureNames)
                 RunTest(localizer, name);
         }
 
-        private void RunTest(IExpressionLocalizer<IdentityUserTokenResource> localizer, string cultureName)
+        private void RunTest(IStringLocalizer<IdentityUserTokenResource> localizer, string cultureName)
         {
             CultureInfo.CurrentCulture
                 = CultureInfo.CurrentUICulture
                 = new CultureInfo(cultureName);
 
-            var userId = localizer[r => r.UserId];
+            var userId = localizer.GetString(r => r.UserId);
             Assert.False(userId.ResourceNotFound);
 
-            var loginProvider = localizer[r => r.LoginProvider];
+            var loginProvider = localizer.GetString(r => r.LoginProvider);
             Assert.False(loginProvider.ResourceNotFound);
 
-            var name = localizer[r => r.Name];
+            var name = localizer.GetString(r => r.Name);
             Assert.False(name.ResourceNotFound);
 
-            var value = localizer[r => r.Value];
+            var value = localizer.GetString(r => r.Value);
             Assert.False(value.ResourceNotFound);
         }
 

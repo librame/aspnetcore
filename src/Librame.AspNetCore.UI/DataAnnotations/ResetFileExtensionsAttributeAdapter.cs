@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.Localization;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -24,7 +25,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 重置文件扩展集合特性适配器。
     /// </summary>
-    public class ResetFileExtensionsAttributeAdapter : AttributeAdapterBase<FileExtensionsAttribute>
+    internal class ResetFileExtensionsAttributeAdapter : AttributeAdapterBase<FileExtensionsAttribute>
     {
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
         private readonly string _extensions;
@@ -46,7 +47,11 @@ namespace Librame.AspNetCore.UI
             // https://jqueryvalidation.org/extension-method/
 
             // These lines follow the same approach as the FileExtensionsAttribute.
-            var normalizedExtensions = Attribute.Extensions.Replace(" ", string.Empty).Replace(".", string.Empty).ToLowerInvariant();
+            var normalizedExtensions = Attribute.Extensions
+                .Replace(" ", string.Empty, StringComparison.OrdinalIgnoreCase)
+                .Replace(".", string.Empty, StringComparison.OrdinalIgnoreCase)
+                .ToLowerInvariant();
+
             var parsedExtensions = normalizedExtensions.Split(',').Select(e => "." + e);
 
             _formattedExtensions = string.Join(", ", parsedExtensions);

@@ -1,8 +1,8 @@
 ﻿@page
 @model LoginWith2faPageModel
-@inject IExpressionHtmlLocalizer<LoginWith2faViewResource> Localizer
+@inject IHtmlLocalizer<LoginWith2faViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
 }
 <!-- LoginWith2fa -->
 <div class="row">
@@ -10,7 +10,7 @@
         <div class="form-top">
             <div class="form-top-left">
                 <h3>@ViewData["Title"]</h3>
-                <p>@Localizer[r => r.Descr]</p>
+                <p>@Localizer.GetString(r => r.Descr)</p>
             </div>
             <div class="form-top-right">
                 <i class="fa fa-key"></i>
@@ -37,12 +37,12 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">@Localizer[r => r.ButtonText]</button>
+                    <button type="submit" class="btn">@Localizer.GetString(r => r.ButtonText)</button>
                 </div>
 
                 <div class="form-group">
                     <p>
-                        @Localizer[r => r.LoginWithRecoveryCodeDescr, Model.ReturnUrl]
+                        @Localizer.GetString(r => r.LoginWithRecoveryCodeDescr, Model.ReturnUrl)
                     </p>
                 </div>
             </form>

@@ -1,8 +1,8 @@
 @page
 @model LogoutPageModel
-@inject IExpressionHtmlLocalizer<LogoutViewResource> Localizer
+@inject IHtmlLocalizer<LogoutViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
 }
 <!-- Logout -->
 <div class="row">
@@ -10,7 +10,7 @@
         <div class="form-top">
             <div class="form-top-left">
                 <h3>@ViewData["Title"]</h3>
-                <p>@Localizer[r => r.Descr]</p>
+                <p>@Localizer.GetString(r => r.Descr)</p>
             </div>
             <div class="form-top-right">
                 <i class="fa fa-key"></i>
@@ -19,7 +19,7 @@
 
         <div class="form-bottom">
             <p>
-                <a href="/">@Localizer[r => r.ReturnIndex]</a>
+                <a href="/">@Localizer.GetString(r => r.ReturnIndex)</a>
             </p>
         </div>
     </div>

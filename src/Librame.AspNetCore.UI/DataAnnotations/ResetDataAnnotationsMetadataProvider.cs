@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -53,6 +54,7 @@ namespace Librame.AspNetCore.UI
         /// 创建绑定元数据。
         /// </summary>
         /// <param name="context">给定的 <see cref="BindingMetadataProviderContext"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
         public void CreateBindingMetadata(BindingMetadataProviderContext context)
         {
             context.NotNull(nameof(context));
@@ -67,6 +69,7 @@ namespace Librame.AspNetCore.UI
         /// 创建显示元数据。
         /// </summary>
         /// <param name="context">给定的 <see cref="DisplayMetadataProviderContext"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
         public void CreateDisplayMetadata(DisplayMetadataProviderContext context)
         {
             context.NotNull(nameof(context));
@@ -128,7 +131,7 @@ namespace Librame.AspNetCore.UI
                         displayMetadata.Description = () =>
                         {
                             var resourceTypeLocalizer = _stringLocalizerFactory.Create(displayAttribute.ResourceType);
-                            return resourceTypeLocalizer[displayAttribute.Description];
+                            return resourceTypeLocalizer.GetString(displayAttribute.Description);
                         };
                     }
                     else
@@ -160,7 +163,7 @@ namespace Librame.AspNetCore.UI
                         displayMetadata.DisplayName = () =>
                         {
                             var resourceTypeLocalizer = _stringLocalizerFactory.Create(displayAttribute.ResourceType);
-                            return resourceTypeLocalizer[displayAttribute.Name];
+                            return resourceTypeLocalizer.GetString(displayAttribute.Name);
                         };
                     }
                     else
@@ -342,6 +345,7 @@ namespace Librame.AspNetCore.UI
         /// 创建验证元数据。
         /// </summary>
         /// <param name="context">给定的 <see cref="ValidationMetadataProviderContext"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
         public void CreateValidationMetadata(ValidationMetadataProviderContext context)
         {
             context.NotNull(nameof(context));
@@ -377,7 +381,7 @@ namespace Librame.AspNetCore.UI
                 var name = display.GetName();
                 if (stringLocalizer != null && !string.IsNullOrEmpty(name) && display.ResourceType == null)
                 {
-                    name = stringLocalizer[name];
+                    name = stringLocalizer.GetString(name);
                 }
 
                 return name ?? field.Name;

@@ -1,5 +1,6 @@
 ﻿using Librame.Extensions.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using System.Globalization;
 using Xunit;
 
@@ -11,61 +12,61 @@ namespace Librame.AspNetCore.Identity.Tests
         public void ResourceTest()
         {
             var cultureNames = new string[] { "en-US", "zh-CN", "zh-TW" };
-            var localizer = TestServiceProvider.Current.GetRequiredService<IExpressionLocalizer<IdentityUserResource>>();
+            var localizer = TestServiceProvider.Current.GetRequiredService<IStringLocalizer<IdentityUserResource>>();
 
             foreach (var name in cultureNames)
                 RunTest(localizer, name);
         }
 
-        private void RunTest(IExpressionLocalizer<IdentityUserResource> localizer, string cultureName)
+        private void RunTest(IStringLocalizer<IdentityUserResource> localizer, string cultureName)
         {
             CultureInfo.CurrentCulture
                 = CultureInfo.CurrentUICulture
                 = new CultureInfo(cultureName);
 
-            var id = localizer[r => r.Id];
+            var id = localizer.GetString(r => r.Id);
             Assert.False(id.ResourceNotFound);
 
-            var accessFailedCount = localizer[r => r.AccessFailedCount];
+            var accessFailedCount = localizer.GetString(r => r.AccessFailedCount);
             Assert.False(accessFailedCount.ResourceNotFound);
 
-            var passwordHash = localizer[r => r.PasswordHash];
+            var passwordHash = localizer.GetString(r => r.PasswordHash);
             Assert.False(passwordHash.ResourceNotFound);
 
-            var normalizedUserName = localizer[r => r.NormalizedUserName];
+            var normalizedUserName = localizer.GetString(r => r.NormalizedUserName);
             Assert.False(normalizedUserName.ResourceNotFound);
 
-            var userName = localizer[r => r.UserName];
+            var userName = localizer.GetString(r => r.UserName);
             Assert.False(userName.ResourceNotFound);
 
-            var normalizedEmail = localizer[r => r.NormalizedEmail];
+            var normalizedEmail = localizer.GetString(r => r.NormalizedEmail);
             Assert.False(normalizedEmail.ResourceNotFound);
 
-            var email = localizer[r => r.Email];
+            var email = localizer.GetString(r => r.Email);
             Assert.False(email.ResourceNotFound);
 
-            var emailConfirmed = localizer[r => r.EmailConfirmed];
+            var emailConfirmed = localizer.GetString(r => r.EmailConfirmed);
             Assert.False(emailConfirmed.ResourceNotFound);
 
-            var phoneNumber = localizer[r => r.PhoneNumber];
+            var phoneNumber = localizer.GetString(r => r.PhoneNumber);
             Assert.False(phoneNumber.ResourceNotFound);
 
-            var phoneNumberConfirmed = localizer[r => r.PhoneNumberConfirmed];
+            var phoneNumberConfirmed = localizer.GetString(r => r.PhoneNumberConfirmed);
             Assert.False(phoneNumberConfirmed.ResourceNotFound);
 
-            var lockoutEnabled = localizer[r => r.LockoutEnabled];
+            var lockoutEnabled = localizer.GetString(r => r.LockoutEnabled);
             Assert.False(lockoutEnabled.ResourceNotFound);
 
-            var lockoutEnd = localizer[r => r.LockoutEnd];
+            var lockoutEnd = localizer.GetString(r => r.LockoutEnd);
             Assert.False(lockoutEnd.ResourceNotFound);
 
-            var twoFactorEnabled = localizer[r => r.TwoFactorEnabled];
+            var twoFactorEnabled = localizer.GetString(r => r.TwoFactorEnabled);
             Assert.False(twoFactorEnabled.ResourceNotFound);
 
-            var concurrencyStamp = localizer[r => r.ConcurrencyStamp];
+            var concurrencyStamp = localizer.GetString(r => r.ConcurrencyStamp);
             Assert.False(concurrencyStamp.ResourceNotFound);
 
-            var securityStamp = localizer[r => r.SecurityStamp];
+            var securityStamp = localizer.GetString(r => r.SecurityStamp);
             Assert.False(securityStamp.ResourceNotFound);
         }
 

@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -84,8 +85,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly UrlEncoder _urlEncoder;
         private readonly ILogger<EnableAuthenticatorPageModel> _logger;
-        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
-        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IStringLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IStringLocalizer<ErrorMessageResource> _errorLocalizer;
         private readonly IdentityBuilderOptions _options;
 
 
@@ -93,8 +94,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             UserManager<TUser> userManager,
             UrlEncoder urlEncoder,
             ILogger<EnableAuthenticatorPageModel> logger,
-            IExpressionLocalizer<StatusMessageResource> statusLocalizer,
-            IExpressionLocalizer<ErrorMessageResource> errorLocalizer,
+            IStringLocalizer<StatusMessageResource> statusLocalizer,
+            IStringLocalizer<ErrorMessageResource> errorLocalizer,
             IOptions<IdentityBuilderOptions> options)
         {
             _userManager = userManager;
@@ -141,7 +142,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             if (!is2faTokenValid)
             {
-                ModelState.AddModelError(nameof(Input.TwoFactorCode), _errorLocalizer[r => r.InvalidVerificationCode]);
+                ModelState.AddModelError(nameof(Input.TwoFactorCode), _errorLocalizer.GetString(r => r.InvalidVerificationCode));
                 await LoadSharedKeyAndQrCodeUriAsync(user).ConfigureAndWaitAsync();
                 return Page();
             }
@@ -150,7 +151,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
             _logger.LogInformation("User with ID '{UserId}' has enabled 2FA with an authenticator app.", userId);
 
-            StatusMessage = _statusLocalizer[r => r.EnableAuthenticator];
+            StatusMessage = _statusLocalizer.GetString(r => r.EnableAuthenticator);
 
             if (await _userManager.CountRecoveryCodesAsync(user).ConfigureAndResultAsync() == 0)
             {

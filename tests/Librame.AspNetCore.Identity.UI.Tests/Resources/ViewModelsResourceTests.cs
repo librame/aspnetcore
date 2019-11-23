@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using System.Globalization;
 using Xunit;
 
@@ -12,40 +13,40 @@ namespace Librame.AspNetCore.Identity.UI.Tests
         public void ResourceTest()
         {
             var cultureNames = new string[] { "en-US", "zh-CN", "zh-TW" };
-            var localizer = TestServiceProvider.Current.GetRequiredService<IExpressionLocalizer<UserViewModelResource>>();
+            var localizer = TestServiceProvider.Current.GetRequiredService<IStringLocalizer<UserViewModelResource>>();
 
             foreach (var name in cultureNames)
                 RunTest(localizer, name);
         }
 
-        private void RunTest(IExpressionLocalizer<UserViewModelResource> localizer, string cultureName)
+        private void RunTest(IStringLocalizer<UserViewModelResource> localizer, string cultureName)
         {
             CultureInfo.CurrentCulture
                 = CultureInfo.CurrentUICulture
                 = new CultureInfo(cultureName);
 
-            var email = localizer[r => r.Email];
+            var email = localizer.GetString(r => r.Email);
             Assert.False(email.ResourceNotFound);
 
-            var password = localizer[r => r.Password];
+            var password = localizer.GetString(r => r.Password);
             Assert.False(password.ResourceNotFound);
 
-            var confirmPassword = localizer[r => r.ConfirmPassword];
+            var confirmPassword = localizer.GetString(r => r.ConfirmPassword);
             Assert.False(confirmPassword.ResourceNotFound);
 
-            var newPassword = localizer[r => r.NewPassword];
+            var newPassword = localizer.GetString(r => r.NewPassword);
             Assert.False(newPassword.ResourceNotFound);
 
-            var confirmNewPassword = localizer[r => r.ConfirmNewPassword];
+            var confirmNewPassword = localizer.GetString(r => r.ConfirmNewPassword);
             Assert.False(confirmNewPassword.ResourceNotFound);
 
-            var oldPassword = localizer[r => r.OldPassword];
+            var oldPassword = localizer.GetString(r => r.OldPassword);
             Assert.False(oldPassword.ResourceNotFound);
 
-            var phoneNumber = localizer[r => r.Phone];
+            var phoneNumber = localizer.GetString(r => r.Phone);
             Assert.False(phoneNumber.ResourceNotFound);
 
-            var rememberMe = localizer[r => r.RememberMe];
+            var rememberMe = localizer.GetString(r => r.RememberMe);
             Assert.False(rememberMe.ResourceNotFound);
         }
 

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 
 namespace Librame.AspNetCore.UI
@@ -21,7 +22,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 重置可验证对象适配器。
     /// </summary>
-    public class ResetValidatableObjectAdapter : IModelValidator
+    internal class ResetValidatableObjectAdapter : IModelValidator
     {
         /// <summary>
         /// 验证模型。
@@ -36,7 +37,7 @@ namespace Librame.AspNetCore.UI
 
             if (!(model is IValidatableObject validatable))
             {
-                var message = string.Format("The model object inside the metadata claimed to be compatible with '{0}', but was actually '{1}'.",
+                var message = string.Format(CultureInfo.InvariantCulture, "The model object inside the metadata claimed to be compatible with '{0}', but was actually '{1}'.",
                     typeof(IValidatableObject).Name, model.GetType());
 
                 throw new InvalidOperationException(message);

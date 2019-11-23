@@ -2,27 +2,29 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.0.1722.301</Version>
+    <Version>7.0.1771.301</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>The Pages UI for Librame.AspNetCore.Identity</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
-    <PackageIconUrl>https://www.gravatar.com/avatar/fb757161b3495689c02ece689cb0267f?s=64</PackageIconUrl>
+    <PackageIcon>LibrameCore.png</PackageIcon>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Pages,UI,Identity,AspNet,Librame,NETStandard</PackageTags>
     <PackageReleaseNotes>The Pages UI for Librame.AspNetCore.Identity</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.0.1722.301</AssemblyVersion>
-    <FileVersion>7.0.1910.51</FileVersion>
+    <AssemblyVersion>7.0.1771.301</AssemblyVersion>
+    <FileVersion>7.0.1911.231</FileVersion>
     <RootNamespace>Librame.AspNetCore.Identity.UI</RootNamespace>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -37,17 +39,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Librame.AspNetCore.Identity.UI\Librame.AspNetCore.Identity.UI.csproj" />
     <ProjectReference Include="..\Librame.AspNetCore.Identity.EntityFrameworkCore\Librame.AspNetCore.Identity.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LibrameCore.png" Pack="true" Visible="false" PackagePath="\" />
   </ItemGroup>
 
 </Project>

@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Librame.AspNetCore.UI
@@ -47,6 +48,7 @@ namespace Librame.AspNetCore.UI
         /// 添加验证。
         /// </summary>
         /// <param name="context">给定的 <see cref="ClientModelValidationContext"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
         public override void AddValidation(ClientModelValidationContext context)
         {
             context.NotNull(nameof(context));
@@ -56,12 +58,13 @@ namespace Librame.AspNetCore.UI
             MergeAttribute(context.Attributes, "data-val-equalto-other", _otherProperty);
         }
 
-        
+
         /// <summary>
         /// 获取错误消息。
         /// </summary>
         /// <param name="validationContext">给定的 <see cref="ModelValidationContextBase"/>。</param>
         /// <returns>返回字符串。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "validationContext")]
         public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
             validationContext.NotNull(nameof(validationContext));
@@ -86,7 +89,7 @@ namespace Librame.AspNetCore.UI
             public ModelValidationContextBase ValidationContext { get; set; }
 
             public CompareAttributeWrapper(CompareAttribute attribute, IStringLocalizerFactory stringLocalizerFactory)
-                : base(attribute.OtherProperty)
+                : base(attribute?.OtherProperty)
             {
                 _stringLocalizerFactory = stringLocalizerFactory;
 
@@ -112,7 +115,7 @@ namespace Librame.AspNetCore.UI
                 if (ErrorMessageResourceType != null)
                 {
                     var resourceTypeLocalizer = _stringLocalizerFactory.Create(ErrorMessageResourceType);
-                    errorMessageString = resourceTypeLocalizer[displayName];
+                    errorMessageString = resourceTypeLocalizer.GetString(displayName);
                 }
                 else
                 {

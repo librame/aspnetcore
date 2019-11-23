@@ -12,6 +12,7 @@
 
 using GraphQL.Types;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Api
@@ -20,6 +21,7 @@ namespace Librame.AspNetCore.Identity.Api
     using Extensions;
     using Extensions.Data;
 
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     class IdentityGraphApiQuery<TAccessor> : ObjectGraphType, IGraphApiQuery
         where TAccessor : DbContext, IIdentityDbContextAccessor
     {

@@ -15,7 +15,6 @@ using Microsoft.Extensions.Localization;
 namespace Librame.AspNetCore.IdentityServer.UI
 {
     using AspNetCore.UI;
-    using Extensions;
     using Extensions.Core;
 
     /// <summary>
@@ -26,8 +25,8 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// <summary>
         /// 构造一个 <see cref="IdentityServerInterfaceInfo"/>。
         /// </summary>
-        /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
-        public IdentityServerInterfaceInfo(ServiceFactoryDelegate serviceFactory)
+        /// <param name="serviceFactory">给定的 <see cref="ServiceFactory"/>。</param>
+        public IdentityServerInterfaceInfo(ServiceFactory serviceFactory)
             : base(serviceFactory)
         {
         }
@@ -37,13 +36,13 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// 名称。
         /// </summary>
         public override string Name
-            => Localizer[nameof(Name)];
+            => Localizer.GetString(nameof(Name));
 
 
         /// <summary>
         /// 本地化定位器。
         /// </summary>
         public override IStringLocalizer Localizer
-            => ServiceFactory.NotNull(nameof(ServiceFactory)).GetRequiredService<IStringLocalizer<IdentityServerInterfaceInfoResource>>();
+            => ServiceFactory.GetRequiredService<IStringLocalizer<IdentityServerInterfaceInfoResource>>();
     }
 }

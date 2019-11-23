@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -64,13 +65,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     {
         private readonly UserManager<TUser> _userManager;
         private readonly ILogger<GenerateRecoveryCodesPageModel> _logger;
-        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IStringLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public GenerateRecoveryCodesPageModel(
             UserManager<TUser> userManager,
             ILogger<GenerateRecoveryCodesPageModel> logger,
-            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
+            IStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _logger = logger;
@@ -116,7 +117,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             _logger.LogInformation("User with ID '{UserId}' has generated new 2FA recovery codes.", userId);
 
-            StatusMessage = _statusLocalizer[r => r.GenerateRecoveryCodes]?.ToString();
+            StatusMessage = _statusLocalizer.GetString(r => r.GenerateRecoveryCodes)?.ToString();
 
             return RedirectToPage("./ShowRecoveryCodes");
         }

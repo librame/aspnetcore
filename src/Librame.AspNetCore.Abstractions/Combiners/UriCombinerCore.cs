@@ -138,32 +138,6 @@ namespace Librame.Extensions.Core
 
 
         /// <summary>
-        /// 隐式转换为字符串。
-        /// </summary>
-        /// <param name="locator">给定的 <see cref="UriCombinerCore"/>。</param>
-        public static implicit operator string(UriCombinerCore locator)
-            => locator.ToString();
-
-        /// <summary>
-        /// 显式转换为 URI 组合器核心。
-        /// </summary>
-        /// <param name="uriString">给定的绝对 URI 字符串。</param>
-        public static explicit operator UriCombinerCore(string uriString)
-        {
-            if (uriString.IsAbsoluteUri(out Uri result))
-                return new UriCombinerCore(result);
-
-            throw new ArgumentException($"Invalid absolute uri string: {uriString}.");
-        }
-        /// <summary>
-        /// 显式转换为 URI 组合器核心。
-        /// </summary>
-        /// <param name="uri">给定的 <see cref="Uri"/>。</param>
-        public static explicit operator UriCombinerCore(Uri uri)
-            => new UriCombinerCore(uri);
-
-
-        /// <summary>
         /// 组合 URI。
         /// </summary>
         /// <param name="scheme">给定的协议。</param>

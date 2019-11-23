@@ -1,11 +1,11 @@
 @using System.Collections.Generic
 @using Microsoft.AspNetCore.Authentication
 @model LoginViewModel
-@inject IExpressionHtmlLocalizer<LoginViewResource> Localizer
+@inject IHtmlLocalizer<LoginViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
     var loginProviders = ViewData["ExternalSchemes"] as IEnumerable<AuthenticationScheme>;
-    var registerLocalizer = ViewBag.Localizer as IExpressionHtmlLocalizer<RegisterViewResource>;
+    var registerLocalizer = ViewBag.Localizer as IHtmlLocalizer<RegisterViewResource>;
 }
 <!-- Login -->
 <div class="row">
@@ -13,7 +13,7 @@
         <div class="form-top">
             <div class="form-top-left">
                 <h3>@ViewData["Title"]</h3>
-                <p>@Localizer[r => r.Descr]</p>
+                <p>@Localizer.GetString(r => r.Descr)</p>
             </div>
             <div class="form-top-right">
                 <i class="fa fa-key"></i>
@@ -32,7 +32,7 @@
                 <div class="form-group">
                     <label asp-for="Password" class="sr-only"></label>
                     <input asp-for="Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Password) ..."
-                           title="@registerLocalizer[r => r.PasswordRulePrompts]"
+                           title="@registerLocalizer.GetString(r => r.PasswordRulePrompts)"
                            data-content="@Html.Raw(ViewBag.BuilderOptions.PasswordRulePromptEnabled ? PasswordRulePromptHelper.GetHtmlContent(ViewBag.Options, registerLocalizer) : string.Empty)"
                            data-html="true"
                            data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" />
@@ -48,21 +48,21 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">@Localizer[r => r.ButtonText]</button>
+                    <button type="submit" class="btn">@Localizer.GetString(r => r.ButtonText)</button>
                 </div>
 
                 <div class="form-group overflow-hidden">
                     <div class="col-sm-6">
                         <p>
                             <a asp-action="ForgotPassword">
-                                @Localizer[r => r.ForgotPassword]
+                                @Localizer.GetString(r => r.ForgotPassword)
                             </a>
                         </p>
                     </div>
                     <div class="col-sm-6 text-right">
                         <p>
                             <a asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]">
-                                @Localizer[r => r.RegisterUser]
+                                @Localizer.GetString(r => r.RegisterUser)
                             </a>
                         </p>
                     </div>
@@ -74,14 +74,14 @@
 
 <div class="row">
     <div class="col-sm-6 col-sm-offset-3 social-login">
-        <!-- <h3>Localizer[r => r.ExternalLoginDescr]</h3> -->
+        <!-- <h3>Localizer.GetString(r => r.ExternalLoginDescr]</h3> -->
         <div class="social-login-buttons">
             @{
                 if (loginProviders.IsEmpty())
                 {
                     <div>
                         <p>
-                            <!--Localizer[r => r.ExternalLoginInfo]-->
+                            <!--Localizer.GetString(r => r.ExternalLoginInfo]-->
                         </p>
                     </div>
                 }
@@ -92,7 +92,7 @@
                             <p>
                                 @foreach (var provider in loginProviders)
                                 {
-                                    <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="@Localizer[r => r.ExternalLoginTitle, provider.DisplayName]">@provider.DisplayName</button>
+                                    <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="@Localizer.GetString(r => r.ExternalLoginTitle, provider.DisplayName)">@provider.DisplayName</button>
                                 }
                             </p>
                         </div>

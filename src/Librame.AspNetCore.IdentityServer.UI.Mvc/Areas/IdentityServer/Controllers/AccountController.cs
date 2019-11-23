@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
     /// </summary>
     [SecurityHeaders]
     [AllowAnonymous]
-    [GenericApplicationModel(typeof(ExternalController<>))]
+    [GenericApplicationModel(typeof(AccountController<>))]
     public class AccountController<TUser> : Controller
         where TUser : IdentityUser<string>, new()
     {
@@ -74,6 +75,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// Entry point into the login workflow
         /// </summary>
         [HttpGet]
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public async Task<IActionResult> Login(string returnUrl)
         {
             // build a model so we know what to show on the login page
@@ -84,7 +86,8 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 // we only have one option for logging in and it's an external provider
                 return RedirectToAction("Challenge", "External", new
                 {
-                    provider = vm.ExternalLoginScheme, returnUrl
+                    provider = vm.ExternalLoginScheme,
+                    returnUrl
                 });
             }
 
@@ -96,8 +99,11 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
         public async Task<IActionResult> Login(LoginInputModel model, string button)
         {
+            model.NotNull(nameof(model));
+
             // check if we are in the context of an authorization request
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl).ConfigureAndResultAsync();
 
@@ -130,11 +136,13 @@ namespace Librame.AspNetCore.IdentityServer.UI
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true).ConfigureAndResultAsync();
+                var result = await _signInManager.PasswordSignInAsync(model.Email,
+                    model.Password, model.RememberLogin, lockoutOnFailure: true).ConfigureAndResultAsync();
+
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByNameAsync(model.Username).ConfigureAndResultAsync();
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName)).ConfigureAndWaitAsync();
+                    var user = await _userManager.FindByEmailAsync(model.Email).ConfigureAndResultAsync();
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.Id, user.UserName)).ConfigureAndWaitAsync();
 
                     if (context != null)
                     {
@@ -165,7 +173,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                     }
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials")).ConfigureAndWaitAsync();
+                await _events.RaiseAsync(new UserLoginFailureEvent(model.Email, "invalid credentials")).ConfigureAndWaitAsync();
                 ModelState.AddModelError(string.Empty, _options.InvalidCredentialsErrorMessage);
             }
 
@@ -199,8 +207,11 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
         public async Task<IActionResult> Logout(LogoutInputModel model)
         {
+            model.NotNull(nameof(model));
+
             // build a model so the logged out page knows what to display
             var vm = await BuildLoggedOutViewModelAsync(model.LogoutId).ConfigureAndResultAsync();
 
@@ -243,7 +254,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 {
                     EnableLocalLogin = false,
                     ReturnUrl = returnUrl,
-                    Username = context?.LoginHint,
+                    Email = context?.LoginHint,
                     ExternalProviders = new ExternalProvider[]
                     {
                         new ExternalProvider { AuthenticationScheme = context.IdP }
@@ -283,7 +294,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 AllowRememberLogin = _options.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && _options.AllowLocalLogin,
                 ReturnUrl = returnUrl,
-                Username = context?.LoginHint,
+                Email = context?.LoginHint,
                 ExternalProviders = providers.ToArray()
             };
         }
@@ -291,7 +302,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
         {
             var vm = await BuildLoginViewModelAsync(model.ReturnUrl).ConfigureAndResultAsync();
-            vm.Username = model.Username;
+            vm.Email = model.Email;
             vm.RememberLogin = model.RememberLogin;
             return vm;
         }

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,14 +93,14 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly IUserStore<TUser> _userStore;
-        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IStringLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public ExternalLoginsPageModel(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
-            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
+            IStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -148,7 +149,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
 
-            StatusMessage = _statusLocalizer[r => r.ExternalLoginRemoved]?.ToString();
+            StatusMessage = _statusLocalizer.GetString(r => r.ExternalLoginRemoved)?.ToString();
 
             return RedirectToPage();
         }
@@ -188,7 +189,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAndWaitAsync();
 
-            StatusMessage = _statusLocalizer[r => r.ExternalLoginAdded]?.ToString();
+            StatusMessage = _statusLocalizer.GetString(r => r.ExternalLoginAdded)?.ToString();
             return RedirectToPage();
         }
     }

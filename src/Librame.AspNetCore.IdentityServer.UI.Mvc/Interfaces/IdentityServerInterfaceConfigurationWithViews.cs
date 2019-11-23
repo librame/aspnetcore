@@ -10,11 +10,14 @@
 
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Librame.AspNetCore.IdentityServer.UI
 {
     using AspNetCore.UI;
 
-    class IdentityServerInterfaceConfigurationWithViews : InterfaceConfiguration
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+    internal class IdentityServerInterfaceConfigurationWithViews : InterfaceConfiguration
     {
         public IdentityServerInterfaceConfigurationWithViews(IApplicationContext context)
             : base(context, nameof(IdentityServer))

@@ -37,7 +37,7 @@ namespace Librame.AspNetCore.Api
         /// </summary>
         /// <typeparam name="TInputType">指定的输入类型。</typeparam>
         /// <returns>返回字符串。</returns>
-        public static string GetInputTypeName<TInputType>()
+        protected static string GetInputTypeName<TInputType>()
             where TInputType : IInputObjectGraphType
             => typeof(TInputType).Name.TrimEnd("Type");
     }

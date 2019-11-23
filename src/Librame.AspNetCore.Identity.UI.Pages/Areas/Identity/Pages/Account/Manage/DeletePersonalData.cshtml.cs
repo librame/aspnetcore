@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -63,13 +64,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly ILogger<DeletePersonalDataPageModel> _logger;
-        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
 
         public DeletePersonalDataPageModel(
             SignInManager<TUser> signInManager,
             ILogger<DeletePersonalDataPageModel> logger,
-            IExpressionLocalizer<ErrorMessageResource> errorLocalizer)
+            IStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
@@ -103,7 +104,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
             {
                 if (!await _userManager.CheckPasswordAsync(user, Input.Password).ConfigureAndResultAsync())
                 {
-                    ModelState.AddModelError(string.Empty, _errorLocalizer[r => r.PasswordNotCorrect]);
+                    ModelState.AddModelError(string.Empty, _errorLocalizer.GetString(r => r.PasswordNotCorrect));
                     return Page();
                 }
             }

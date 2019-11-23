@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.IdentityServer.UI
 {
@@ -18,11 +19,13 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// <summary>
         /// 客户端 URL。
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string ClientUrl { get; set; }
 
         /// <summary>
         /// 客户端标志 URL。
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string ClientLogoUrl { get; set; }
 
         /// <summary>

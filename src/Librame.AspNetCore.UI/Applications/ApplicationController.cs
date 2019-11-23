@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.UI
 {
@@ -55,6 +56,7 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         /// <param name="returnUrl">给定的返回 URL。</param>
         /// <returns>返回 <see cref="IActionResult"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
         public IActionResult RedirectToLocalUrlOrSitemapIndex(string returnUrl)
             => Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : RedirectToSitemapIndex();
     }

@@ -10,10 +10,13 @@
 
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Librame.AspNetCore.UI.Themepack.Simple
 {
     using Extensions.Core;
 
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     class ThemepackInfoResource_en_US : ResourceDictionary
     {
         public ThemepackInfoResource_en_US()

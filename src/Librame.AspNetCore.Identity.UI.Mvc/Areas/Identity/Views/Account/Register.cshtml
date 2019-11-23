@@ -1,7 +1,7 @@
 ﻿@model RegisterViewModel
 @{
-    var localizer = ViewBag.Localizer as IExpressionHtmlLocalizer<RegisterViewResource>;
-    ViewData["Title"] = localizer[r => r.Title];
+    var localizer = ViewBag.Localizer as IHtmlLocalizer<RegisterViewResource>;
+    ViewData["Title"] = localizer.GetString(r => r.Title);
 }
 <!-- Register -->
 <div class="row">
@@ -9,7 +9,7 @@
         <div class="form-top">
             <div class="form-top-left">
                 <h3>@ViewData["Title"]</h3>
-                <p>@localizer[r => r.Descr]</p>
+                <p>@localizer.GetString(r => r.Descr)</p>
             </div>
             <div class="form-top-right">
                 <!-- <i class="fa fa-key"></i> -->
@@ -28,7 +28,7 @@
                 <div class="form-group">
                     <label asp-for="Password" class="sr-only"></label>
                     <input asp-for="Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Password) ..."
-                           title="@localizer[r => r.PasswordRulePrompts]"
+                           title="@localizer.GetString(r => r.PasswordRulePrompts)"
                            data-content="@Html.Raw(ViewBag.BuilderOptions.PasswordRulePromptEnabled ? PasswordRulePromptHelper.GetHtmlContent(ViewBag.Options, localizer) : string.Empty)"
                            data-html="true"
                            data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" />
@@ -41,13 +41,13 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">@localizer[r => r.ButtonText]</button>
+                    <button type="submit" class="btn">@localizer.GetString(r => r.ButtonText)</button>
                 </div>
 
                 <div class="form-group">
                     <p>
                         <a id="login" asp-action="Login">
-                            @localizer[r => r.Login]
+                            @localizer.GetString(r => r.Login)
                         </a>
                     </p>
                 </div>

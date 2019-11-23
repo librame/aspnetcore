@@ -18,7 +18,7 @@ namespace Librame.AspNetCore.UI
     /// 主题包表达式定位器。
     /// </summary>
     /// <typeparam name="TResource">指定的资源类型。</typeparam>
-    public class ThemepackExpressionLocalizer<TResource> : DictionaryExpressionLocalizer<TResource>
+    public class ThemepackExpressionLocalizer<TResource> : DictionaryStringLocalizer<TResource>
         where TResource : class, IResource
     {
         /// <summary>

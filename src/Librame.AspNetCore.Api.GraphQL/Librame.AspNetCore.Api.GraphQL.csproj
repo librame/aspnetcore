@@ -1,43 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.0.1722.211</Version>
+    <Version>7.0.1771.301</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.Api.Abstractions on GraphQL extension implementation.</Description>
     <Copyright>Copyright © 2012-2019</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/librame/Librame</PackageProjectUrl>
-    <PackageIconUrl>https://www.gravatar.com/avatar/fb757161b3495689c02ece689cb0267f?s=64</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
+    <PackageIcon>LibrameCore.png</PackageIcon>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Librame,AspNetCore,Api,GraphQL</PackageTags>
     <PackageReleaseNotes>Based Librame.AspNetCore.Api.Abstractions on GraphQL extension implementation.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.0.1722.211</AssemblyVersion>
-    <FileVersion>7.0.1910.51</FileVersion>
+    <AssemblyVersion>7.0.1771.301</AssemblyVersion>
+    <FileVersion>7.0.1911.231</FileVersion>
     <RootNamespace>Librame.AspNetCore.Api</RootNamespace>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\netstandard2.1\Librame.AspNetCore.Api.GraphQL.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\netcoreapp3.0\Librame.AspNetCore.Api.GraphQL.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\netstandard2.1\Librame.AspNetCore.Api.GraphQL.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\netcoreapp3.0\Librame.AspNetCore.Api.GraphQL.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="GraphQL" Version="2.4.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -46,6 +47,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Librame.AspNetCore.Api.Abstractions\Librame.AspNetCore.Api.Abstractions.csproj" />
     <ProjectReference Include="..\Librame.AspNetCore\Librame.AspNetCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LibrameCore.png" Pack="true" Visible="false" PackagePath="\" />
   </ItemGroup>
 
 </Project>

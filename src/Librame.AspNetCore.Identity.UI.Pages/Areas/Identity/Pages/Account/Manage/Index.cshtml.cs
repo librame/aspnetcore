@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
@@ -111,15 +112,15 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
         private readonly IEmailService _emailService;
         //private readonly ISmsService _smsService;
-        private readonly IExpressionLocalizer<RegisterViewResource> _registerLocalizer;
-        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IStringLocalizer<RegisterViewResource> _registerLocalizer;
+        private readonly IStringLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public IndexPageModel(SignInManager<TUser> signInManager,
             IEmailService emailService,
             //ISmsService smsService,
-            IExpressionLocalizer<RegisterViewResource> registerLocalizer,
-            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
+            IStringLocalizer<RegisterViewResource> registerLocalizer,
+            IStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
@@ -199,7 +200,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
 
-            StatusMessage = _statusLocalizer[r => r.ProfileUpdated]?.ToString();
+            StatusMessage = _statusLocalizer.GetString(r => r.ProfileUpdated)?.ToString();
 
             return RedirectToPage();
         }
@@ -229,10 +230,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             await _emailService.SendAsync(
                 email,
-                _registerLocalizer[r => r.ConfirmYourEmail]?.ToString(),
-                _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.ToString()).ConfigureAndWaitAsync();
+                _registerLocalizer.GetString(r => r.ConfirmYourEmail)?.ToString(),
+                _registerLocalizer.GetString(r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl))?.ToString()).ConfigureAndWaitAsync();
 
-            StatusMessage = _statusLocalizer[r => r.VerificationEmailSent]?.ToString();
+            StatusMessage = _statusLocalizer.GetString(r => r.VerificationEmailSent)?.ToString();
 
             return RedirectToPage();
         }

@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.UI
 {
@@ -52,8 +53,11 @@ namespace Librame.AspNetCore.UI
         /// 配置页面约束。
         /// </summary>
         /// <param name="conventions">给定的 <see cref="PageConventionCollection"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "conventions")]
         protected virtual void ConfigurePageConventions(PageConventionCollection conventions)
         {
+            conventions.NotNull(nameof(conventions));
+
             var convention = GetPageApplicationModelConvention();
             if (convention.IsNotNull())
             {

@@ -1,7 +1,7 @@
 ﻿@model SendCodeViewModel
 @{
-    var localizer = ViewBag.Localizer as IExpressionHtmlLocalizer<SendCodeViewResource>;
-    ViewData["Title"] = localizer[r => r.Title];
+    var localizer = ViewBag.Localizer as IHtmlLocalizer<SendCodeViewResource>;
+    ViewData["Title"] = localizer.GetString(r => r.Title);
 }
 <!-- SendCode -->
 <div class="row">
@@ -20,12 +20,12 @@
                 <div asp-validation-summary="All" class="text-danger"></div>
 
                 <div class="form-group">
-                    <label asp-for="SelectedProvider" class="sr-only">@localizer[r => r.SelectedProvider]</label>
+                    <label asp-for="SelectedProvider" class="sr-only">@localizer.GetString(r => r.SelectedProvider)</label>
                     <select asp-for="SelectedProvider" asp-items="Model.Providers"></select>
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">@localizer[r => r.ButtonText]</button>
+                    <button type="submit" class="btn">@localizer.GetString(r => r.ButtonText)</button>
                 </div>
             </form>
         </div>

@@ -1,8 +1,8 @@
 ﻿@page
 @model Disable2faPageModel
-@inject IExpressionHtmlLocalizer<Disable2faViewResource> Localizer
+@inject IHtmlLocalizer<Disable2faViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
     ViewData["ActiveView"] = ViewPageNames.TwoFactorAuthentication;
 }
 
@@ -14,10 +14,10 @@
 <div class="alert alert-warning" role="alert">
     <p>
         <span class="glyphicon glyphicon-warning-sign"></span>
-        <strong>@Localizer[r => r.Descr]</strong>
+        <strong>@Localizer.GetString(r => r.Descr)</strong>
     </p>
     <p>
-        @Localizer[r => r.Info]
+        @Localizer.GetString(r => r.Info)
     </p>
 </div>
 
@@ -25,7 +25,7 @@
     <div class="col-md-6">
         <form method="post" class="form-group">
             <div class="form-group">
-                <button type="submit" class="btn btn-default">@Localizer[r => r.ButtonText]</button>
+                <button type="submit" class="btn btn-default">@Localizer.GetString(r => r.ButtonText)</button>
             </div>
         </form>
     </div>

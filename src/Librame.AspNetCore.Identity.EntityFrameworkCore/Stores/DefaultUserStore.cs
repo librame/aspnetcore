@@ -12,6 +12,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Claims;
 
@@ -23,23 +24,21 @@ namespace Librame.AspNetCore.Identity
     /// <summary>
     /// 默认用户存储。
     /// </summary>
-    public class DefaultUserStore : UserStore<DefaultIdentityUser<string>,
-        DefaultIdentityRole<string>, IdentityDbContextAccessor, string,
+    /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
+    public class DefaultUserStore<TAccessor> : UserStore<DefaultIdentityUser<string>,
+        DefaultIdentityRole<string>, TAccessor, string,
         DefaultIdentityUserClaim<string>, DefaultIdentityUserRole<string>, DefaultIdentityUserLogin<string>,
         DefaultIdentityUserToken<string>, DefaultIdentityRoleClaim<string>>
+        where TAccessor : DbContext
     {
-        private readonly string _defaultCreatedBy
-            = nameof(DefaultUserStore);
-
-
         /// <summary>
-        /// 构造一个 <see cref="DefaultUserStore"/>。
+        /// 构造一个默认用户存储。
         /// </summary>
         /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
-        /// <param name="context">给定的 <see cref="IdentityDbContextAccessor"/>。</param>
+        /// <param name="accessor">给定的 <typeparamref name="TAccessor"/>。</param>
         /// <param name="describer">给定的 <see cref="IdentityErrorDescriber"/>（可选）。</param>
-        public DefaultUserStore(IClockService clock, IdentityDbContextAccessor context, IdentityErrorDescriber describer = null)
-            : base(context, describer)
+        public DefaultUserStore(IClockService clock, TAccessor accessor, IdentityErrorDescriber describer = null)
+            : base(accessor, describer)
         {
             Clock = clock.NotNull(nameof(clock));
         }
@@ -60,8 +59,8 @@ namespace Librame.AspNetCore.Identity
         protected override DefaultIdentityUserClaim<string> CreateUserClaim(DefaultIdentityUser<string> user, Claim claim)
         {
             var userClaim = base.CreateUserClaim(user, claim);
-            userClaim.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
-            userClaim.CreatedBy = _defaultCreatedBy;
+            userClaim.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
+            userClaim.CreatedBy = GetType().GetSimpleFullName();
 
             return userClaim;
         }
@@ -75,8 +74,8 @@ namespace Librame.AspNetCore.Identity
         protected override DefaultIdentityUserLogin<string> CreateUserLogin(DefaultIdentityUser<string> user, UserLoginInfo login)
         {
             var userLogin = base.CreateUserLogin(user, login);
-            userLogin.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
-            userLogin.CreatedBy = _defaultCreatedBy;
+            userLogin.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
+            userLogin.CreatedBy = GetType().GetSimpleFullName();
 
             return userLogin;
         }
@@ -90,8 +89,8 @@ namespace Librame.AspNetCore.Identity
         protected override DefaultIdentityUserRole<string> CreateUserRole(DefaultIdentityUser<string> user, DefaultIdentityRole<string> role)
         {
             var userRole = base.CreateUserRole(user, role);
-            userRole.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
-            userRole.CreatedBy = _defaultCreatedBy;
+            userRole.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
+            userRole.CreatedBy = GetType().GetSimpleFullName();
 
             return userRole;
         }
@@ -107,8 +106,8 @@ namespace Librame.AspNetCore.Identity
         protected override DefaultIdentityUserToken<string> CreateUserToken(DefaultIdentityUser<string> user, string loginProvider, string name, string value)
         {
             var userToken = base.CreateUserToken(user, loginProvider, name, value);
-            userToken.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).Result;
-            userToken.CreatedBy = _defaultCreatedBy;
+            userToken.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
+            userToken.CreatedBy = GetType().GetSimpleFullName();
 
             return userToken;
         }

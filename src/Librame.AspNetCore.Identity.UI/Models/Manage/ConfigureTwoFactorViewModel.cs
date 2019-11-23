@@ -12,7 +12,7 @@
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Identity.UI
 {
@@ -29,6 +29,7 @@ namespace Librame.AspNetCore.Identity.UI
         /// <summary>
         /// 提供程序集合。
         /// </summary>
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ICollection<SelectListItem> Providers { get; set; }
     }
 }

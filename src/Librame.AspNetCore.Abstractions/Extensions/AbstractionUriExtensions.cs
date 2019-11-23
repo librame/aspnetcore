@@ -10,11 +10,12 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Http;
+using Librame.Extensions;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
-namespace Librame.Extensions
+namespace Microsoft.AspNetCore.Http
 {
     /// <summary>
     /// 抽象 URI 静态扩展。
@@ -27,6 +28,7 @@ namespace Librame.Extensions
         /// <param name="uriString">给定的路径或 URL 字符串。</param>
         /// <param name="host">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "uriString")]
         public static bool SameHost(this string uriString, HostString host)
             => uriString.SameHost(host.ToString());
 
@@ -36,6 +38,7 @@ namespace Librame.Extensions
         /// </summary>
         /// <param name="uriString">给定的 URI 字符串。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "uriString")]
         public static HostString GetHostString(this string uriString)
             => uriString.GetHostString(out _);
 
@@ -45,6 +48,7 @@ namespace Librame.Extensions
         /// <param name="uriString">给定的 URI 字符串。</param>
         /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "uriString")]
         public static HostString GetHostString(this string uriString, out Uri result)
             => uriString.IsAbsoluteUri(out result) ? new HostString(result.Authority) : default;
 
@@ -54,6 +58,7 @@ namespace Librame.Extensions
         /// </summary>
         /// <param name="pathOrUri">给定的路径或 URI。</param>
         /// <returns>返回 <see cref="PathString"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "pathOrUri")]
         public static PathString GetPathString(this string pathOrUri)
             => pathOrUri.GetPathString(out _);
 
@@ -63,6 +68,8 @@ namespace Librame.Extensions
         /// <param name="pathOrUri">给定的路径或 URI。</param>
         /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
         /// <returns>返回 <see cref="PathString"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "pathOrUri")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "pathOrUri")]
         public static PathString GetPathString(this string pathOrUri, out Uri result)
         {
             PathString path;
@@ -88,6 +95,7 @@ namespace Librame.Extensions
         /// </summary>
         /// <param name="uriString">给定的 URI 字符串。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "uriString")]
         public static QueryString GetQueryString(this string uriString)
             => uriString.GetQueryString(out _);
 
@@ -97,6 +105,7 @@ namespace Librame.Extensions
         /// <param name="uriString">给定的 URI 字符串。</param>
         /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "uriString")]
         public static QueryString GetQueryString(this string uriString, out Uri result)
             => uriString.IsAbsoluteUri(out result) ? new QueryString(result.Query) : default;
 

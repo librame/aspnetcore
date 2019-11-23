@@ -13,9 +13,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -53,13 +55,13 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         private IOptions<IdentityOptions> _options = null;
 
         [InjectionService]
-        private IExpressionHtmlLocalizer<RegisterViewResource> _registerLocalizer = null;
+        private IHtmlLocalizer<RegisterViewResource> _registerLocalizer = null;
 
         [InjectionService]
-        private IExpressionHtmlLocalizer<ErrorMessageResource> _errorMessageLocalizer = null;
+        private IHtmlLocalizer<ErrorMessageResource> _errorMessageLocalizer = null;
 
         [InjectionService]
-        private IExpressionHtmlLocalizer<SendCodeViewResource> _sendCodeLocalizer = null;
+        private IHtmlLocalizer<SendCodeViewResource> _sendCodeLocalizer = null;
 
         [InjectionService]
         private IdentityStoreIdentifier _storeIdentifier = null;
@@ -94,6 +96,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public IActionResult Login(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -141,7 +144,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.InvalidLoginAttempt].Value);
+                    ModelState.AddModelError(string.Empty, _errorMessageLocalizer.GetString(r => r.InvalidLoginAttempt).Value);
                     return View(model);
                 }
             }
@@ -200,8 +203,8 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                         protocol: HttpContext.Request.Scheme);
 
                     await _emailService.SendAsync(model.Email,
-                        _registerLocalizer[r => r.ConfirmYourEmail]?.Value,
-                        _registerLocalizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value).ConfigureAndWaitAsync();
+                        _registerLocalizer.GetString(r => r.ConfirmYourEmail)?.Value,
+                        _registerLocalizer.GetString(r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl))?.Value).ConfigureAndWaitAsync();
 
                     await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                     _logger.LogInformation(3, "User created a new account with password.");
@@ -259,7 +262,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
         {
             if (remoteError != null)
             {
-                ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.FromExternalProvider, remoteError].Value);
+                ModelState.AddModelError(string.Empty, _errorMessageLocalizer.GetString(r => r.FromExternalProvider, remoteError).Value);
                 return View(nameof(Login));
             }
             var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAndResultAsync();
@@ -545,10 +548,10 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
                 return View("Error");
             }
 
-            var message = _sendCodeLocalizer[r => r.YourSecurityCodeIs].Value + code;
+            var message = _sendCodeLocalizer.GetString(r => r.YourSecurityCodeIs).Value + code;
             if (model.SelectedProvider == "Email")
             {
-                await _emailService.SendAsync(await _userManager.GetEmailAsync(user).ConfigureAndResultAsync(), _sendCodeLocalizer[r => r.SecurityCode].Value, message).ConfigureAndWaitAsync();
+                await _emailService.SendAsync(await _userManager.GetEmailAsync(user).ConfigureAndResultAsync(), _sendCodeLocalizer.GetString(r => r.SecurityCode).Value, message).ConfigureAndWaitAsync();
             }
             else if (model.SelectedProvider == "Phone")
             {
@@ -611,7 +614,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.InvalidAuthenticatorCode].Value);
+                ModelState.AddModelError(string.Empty, _errorMessageLocalizer.GetString(r => r.InvalidAuthenticatorCode).Value);
                 return View(model);
             }
         }
@@ -668,7 +671,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.InvalidAuthenticatorCode].Value);
+                ModelState.AddModelError(string.Empty, _errorMessageLocalizer.GetString(r => r.InvalidAuthenticatorCode).Value);
                 return View(model);
             }
         }
@@ -714,7 +717,7 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, _errorMessageLocalizer[r => r.InvalidRecoveryCode].Value);
+                ModelState.AddModelError(string.Empty, _errorMessageLocalizer.GetString(r => r.InvalidRecoveryCode).Value);
                 return View(model);
             }
         }

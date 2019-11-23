@@ -17,6 +17,7 @@ using GraphQL.Validation.Complexity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -24,6 +25,7 @@ namespace Librame.AspNetCore.Api
 {
     using Extensions;
 
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     class ApiApplicationMiddleware : AbstractApiApplicationMiddleware
     {
         public ApiApplicationMiddleware(RequestDelegate next)

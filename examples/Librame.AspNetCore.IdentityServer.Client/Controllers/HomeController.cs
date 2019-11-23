@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Client.Controllers
 {
-    using Extensions;
     using Models;
 
     public class HomeController : Controller
@@ -23,7 +19,6 @@ namespace Librame.AspNetCore.IdentityServer.Client.Controllers
             return View();
         }
 
-        [Authorize]
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
@@ -42,12 +37,12 @@ namespace Librame.AspNetCore.IdentityServer.Client.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [Authorize]
-        public async Task Logout()
-        {
-            await HttpContext.SignOutAsync().ConfigureAndWaitAsync(); //IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME
-            //await HttpContext.SignOutAsync(IdentityExtensionConfigurator.Defaults.OIDC_AUTH_SCHEME);
-        }
+        //[Authorize]
+        //public async Task Logout()
+        //{
+        //    await HttpContext.SignOutAsync().ConfigureAndWaitAsync(); //IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME
+        //    //await HttpContext.SignOutAsync(IdentityExtensionConfigurator.Defaults.OIDC_AUTH_SCHEME);
+        //}
 
     }
 }

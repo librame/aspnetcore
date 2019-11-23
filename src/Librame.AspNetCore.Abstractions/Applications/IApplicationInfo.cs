@@ -82,14 +82,14 @@ namespace Librame.AspNetCore
         /// <summary>
         /// 服务工厂。
         /// </summary>
-        ServiceFactoryDelegate ServiceFactory { get; }
+        ServiceFactory ServiceFactory { get; }
 
 
         /// <summary>
         /// 应用服务工厂。
         /// </summary>
-        /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
+        /// <param name="serviceFactory">给定的服务工厂。</param>
         /// <returns>返回 <see cref="IApplicationInfo"/>。</returns>
-        IApplicationInfo ApplyServiceFactory(ServiceFactoryDelegate serviceFactory);
+        IApplicationInfo ApplyServiceFactory(ServiceFactory serviceFactory);
     }
 }

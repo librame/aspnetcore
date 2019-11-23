@@ -233,7 +233,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             return vm;
         }
 
-        private ScopeViewModel CreateScopeViewModel(IdentityResource identity, bool check)
+        private static ScopeViewModel CreateScopeViewModel(IdentityResource identity, bool check)
         {
             return new ScopeViewModel
             {
@@ -246,7 +246,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             };
         }
 
-        private ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
+        private static ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
         {
             return new ScopeViewModel
             {
@@ -258,6 +258,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
                 Checked = check || scope.Required
             };
         }
+
         private ScopeViewModel GetOfflineAccessScope(bool check)
         {
             return new ScopeViewModel

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.IdentityServer.UI
 {
@@ -11,25 +12,31 @@ namespace Librame.AspNetCore.IdentityServer.UI
     public class LoginInputModel
     {
         /// <summary>
-        /// 用户名。
+        /// 电邮。
         /// </summary>
-        [Required]
-        public string Username { get; set; }
+        [Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
+        [Display(Name = nameof(Email), ResourceType = typeof(UserViewModelResource))]
+        [EmailAddress(ErrorMessageResourceName = nameof(EmailAddressAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
+        public string Email { get; set; }
 
         /// <summary>
         /// 密码。
         /// </summary>
-        [Required]
+        [StringLength(20, MinimumLength = 6, ErrorMessageResourceName = nameof(Password), ErrorMessageResourceType = typeof(ErrorMessageResource))]
+        [DataType(DataType.Password)]
+        [Display(Name = nameof(Password), ResourceType = typeof(UserViewModelResource))]
         public string Password { get; set; }
 
         /// <summary>
         /// 记住登入。
         /// </summary>
+        [Display(Name = nameof(RememberLogin), ResourceType = typeof(UserViewModelResource))]
         public bool RememberLogin { get; set; }
 
         /// <summary>
         /// 返回 URL。
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string ReturnUrl { get; set; }
     }
 }

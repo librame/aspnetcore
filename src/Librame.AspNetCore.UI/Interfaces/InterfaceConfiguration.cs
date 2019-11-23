@@ -19,6 +19,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Librame.AspNetCore.UI
@@ -139,8 +140,11 @@ namespace Librame.AspNetCore.UI
         /// 添加静态文件提供程序集合。
         /// </summary>
         /// <param name="fileProviders">给定的当前 <see cref="IList{IFileProvider}"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "fileProviders")]
         protected virtual void AddStaticFileProviders(List<IFileProvider> fileProviders)
         {
+            fileProviders.NotNull(nameof(fileProviders));
+
             var staticFileProviders = Context.ThemepackInfos.Select(t => t.Value.GetStaticFileProvider());
             fileProviders.AddRange(staticFileProviders);
         }

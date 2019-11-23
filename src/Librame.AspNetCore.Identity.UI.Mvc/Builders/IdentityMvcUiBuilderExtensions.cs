@@ -10,12 +10,11 @@
 
 #endregion
 
+using Librame.AspNetCore.UI;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Librame.AspNetCore.Identity.UI
 {
-    using AspNetCore.UI;
-
     /// <summary>
     /// 身份 MVC UI 构建器静态扩展。
     /// </summary>

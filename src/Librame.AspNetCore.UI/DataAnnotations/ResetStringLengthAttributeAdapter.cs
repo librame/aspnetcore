@@ -24,7 +24,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 重置字符串长度特性适配器。
     /// </summary>
-    public class ResetStringLengthAttributeAdapter : AttributeAdapterBase<StringLengthAttribute>
+    internal class ResetStringLengthAttributeAdapter : AttributeAdapterBase<StringLengthAttribute>
     {
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
         private readonly string _max;

@@ -11,53 +11,56 @@
 #endregion
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Localization;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Librame.AspNetCore.Identity.UI
 {
-    using AspNetCore.UI;
+    using Extensions.Core;
 
     /// <summary>
     /// 密码规则提示助手。
     /// </summary>
-    public class PasswordRulePromptHelper
+    public static class PasswordRulePromptHelper
     {
         /// <summary>
         /// 获取 HTML 内容。
         /// </summary>
         /// <param name="options">给定的 <see cref="IdentityOptions"/>。</param>
-        /// <param name="localizer">给定的 <see cref="IExpressionHtmlLocalizer{RegisterViewResource}"/>。</param>
+        /// <param name="localizer">给定的 <see cref="IHtmlLocalizer{RegisterViewResource}"/>。</param>
         /// <returns>返回字符串。</returns>
-        public static string GetHtmlContent(IdentityOptions options, IExpressionHtmlLocalizer<RegisterViewResource> localizer)
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "options")]
+        public static string GetHtmlContent(IdentityOptions options, IHtmlLocalizer<RegisterViewResource> localizer)
         {
             var prompts = new StringBuilder();
 
-            prompts.Append(localizer[r => r.PasswordRequiredLength].Value);
+            prompts.Append(localizer.GetString(r => r.PasswordRequiredLength).Value);
             prompts.Append("<br />");
-            prompts.Append(localizer[r => r.PasswordRequiredUniqueChars].Value);
+            prompts.Append(localizer.GetString(r => r.PasswordRequiredUniqueChars).Value);
 
             if (options.Password.RequireNonAlphanumeric)
             {
                 prompts.Append("<br />");
-                prompts.Append(localizer[r => r.PasswordRequireNonAlphanumeric].Value);
+                prompts.Append(localizer.GetString(r => r.PasswordRequireNonAlphanumeric).Value);
             }
 
             if (options.Password.RequireLowercase)
             {
                 prompts.Append("<br />");
-                prompts.Append(localizer[r => r.PasswordRequireLowercase].Value);
+                prompts.Append(localizer.GetString(r => r.PasswordRequireLowercase).Value);
             }
 
             if (options.Password.RequireLowercase)
             {
                 prompts.Append("<br />");
-                prompts.Append(localizer[r => r.PasswordRequireUppercase].Value);
+                prompts.Append(localizer.GetString(r => r.PasswordRequireUppercase).Value);
             }
 
             if (options.Password.RequireLowercase)
             {
                 prompts.Append("<br />");
-                prompts.Append(localizer[r => r.PasswordRequireDigit].Value);
+                prompts.Append(localizer.GetString(r => r.PasswordRequireDigit).Value);
             }
 
             return prompts.ToString();

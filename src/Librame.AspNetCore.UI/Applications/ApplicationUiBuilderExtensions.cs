@@ -10,12 +10,14 @@
 
 #endregion
 
+using Librame.AspNetCore.UI;
+using Librame.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
-namespace Librame.AspNetCore.UI
+namespace Microsoft.Extensions.DependencyInjection
 {
     using Extensions;
 
@@ -31,8 +33,8 @@ namespace Librame.AspNetCore.UI
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
         internal static IUiBuilder AddApplications(this IUiBuilder builder)
         {
-            builder.Services.AddSingleton<IApplicationContext, ApplicationContext>();
-            builder.Services.AddSingleton<IApplicationPrincipal, ApplicationPrincipal>();
+            builder.Services.TryAddSingleton<IApplicationContext, ApplicationContext>();
+            builder.Services.TryAddSingleton<IApplicationPrincipal, ApplicationPrincipal>();
 
             return builder;
         }
@@ -47,11 +49,14 @@ namespace Librame.AspNetCore.UI
         /// <typeparam name="TSitemap">指定的站点地图类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IUiBuilder"/>。</param>
         /// <returns>返回 <see cref="IUiBuilder"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
         public static IUiBuilder AddInterface<TConfiguration, TSitemap>(this IUiBuilder builder)
             where TConfiguration : InterfaceConfiguration
             where TSitemap : class, IInterfaceSitemap
         {
-            builder.Services.AddSingleton<IInterfaceSitemap, TSitemap>();
+            builder.NotNull(nameof(builder));
+
+            builder.Services.TryAddSingleton<IInterfaceSitemap, TSitemap>();
             builder.Services.ConfigureOptions(typeof(TConfiguration));
 
             return builder;

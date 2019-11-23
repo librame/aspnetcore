@@ -14,5 +14,4 @@ using Microsoft.Extensions.Localization;
 using System.Reflection;
 
 [assembly: RootNamespace("Librame.AspNetCore.Identity")]
-//[assembly: ResourceLocation("Resources")]
-[assembly: ResourceMapping]
+[assembly: ResourceLocation("Resources")]

@@ -1,8 +1,8 @@
 @page
 @model TwoFactorAuthenticationPageModel
-@inject IExpressionHtmlLocalizer<TwoFactorAuthenticationViewResource> Localizer
+@inject IHtmlLocalizer<TwoFactorAuthenticationViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
 }
 
 <partial name="_StatusMessagePartial" model="Model.StatusMessage" />
@@ -15,22 +15,22 @@
     if (Model.RecoveryCodesLeft == 0)
     {
         <div class="alert alert-danger">
-            <strong>@Localizer[r => r.RecoveryCodesLeft0Title]</strong>
-            <p>@Localizer[r => r.RecoveryCodesLeft0Info]</p>
+            <strong>@Localizer.GetString(r => r.RecoveryCodesLeft0Title)</strong>
+            <p>@Localizer.GetString(r => r.RecoveryCodesLeft0Info)</p>
         </div>
     }
     else if (Model.RecoveryCodesLeft == 1)
     {
         <div class="alert alert-danger">
-            <strong>@Localizer[r => r.RecoveryCodesLeft1Title]</strong>
-            <p>@Localizer[r => r.RecoveryCodesLeft1Info]</p>
+            <strong>@Localizer.GetString(r => r.RecoveryCodesLeft1Title)</strong>
+            <p>@Localizer.GetString(r => r.RecoveryCodesLeft1Info)</p>
         </div>
     }
     else if (Model.RecoveryCodesLeft <= 3)
     {
         <div class="alert alert-warning">
-            <strong>@Localizer[r => r.RecoveryCodesLeftFewTitle, Model.RecoveryCodesLeft]</strong>
-            <p>@Localizer[r => r.RecoveryCodesLeftFewInfo]</p>
+            <strong>@Localizer.GetString(r => r.RecoveryCodesLeftFewTitle, Model.RecoveryCodesLeft)</strong>
+            <p>@Localizer.GetString(r => r.RecoveryCodesLeftFewInfo)</p>
         </div>
     }
 
@@ -40,26 +40,26 @@
             <div class="col-md-6">
                 <form method="post" style="display: inline-block">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-default">@Localizer[r => r.ButtonText]</button>
+                        <button type="submit" class="btn btn-default">@Localizer.GetString(r => r.ButtonText)</button>
                     </div>
                 </form>
             </div>
         </div>
     }
-    <a asp-page="./Disable2fa" class="btn btn-default">@Localizer[r => r.Disable2fa]</a>
-    <a asp-page="./GenerateRecoveryCodes" class="btn btn-default">@Localizer[r => r.GenerateRecoveryCodes]</a>
+    <a asp-page="./Disable2fa" class="btn btn-default">@Localizer.GetString(r => r.Disable2fa)</a>
+    <a asp-page="./GenerateRecoveryCodes" class="btn btn-default">@Localizer.GetString(r => r.GenerateRecoveryCodes)</a>
 }
 
 <p />
 
-<h4>@Localizer[r => r.AuthenticatorApp]</h4>
+<h4>@Localizer.GetString(r => r.AuthenticatorApp)</h4>
 
 @if (!Model.HasAuthenticator)
 {
-    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-default">@Localizer[r => r.AddAuthenticatorApp]</a>
+    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-default">@Localizer.GetString(r => r.AddAuthenticatorApp)</a>
 }
 else
 {
-    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-default">@Localizer[r => r.SetupAuthenticatorApp]</a>
-    <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-default">@Localizer[r => r.ResetAuthenticatorApp]</a>
+    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-default">@Localizer.GetString(r => r.SetupAuthenticatorApp)</a>
+    <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-default">@Localizer.GetString(r => r.ResetAuthenticatorApp)</a>
 }

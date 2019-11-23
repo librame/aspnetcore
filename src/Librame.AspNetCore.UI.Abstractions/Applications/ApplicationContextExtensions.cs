@@ -10,7 +10,9 @@
 
 #endregion
 
+using Microsoft.Extensions.Localization;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -25,7 +27,7 @@ namespace Librame.AspNetCore.UI
     /// </summary>
     public static class ApplicationContextExtensions
     {
-        private static readonly string LibrameCore
+        private const string LibrameCore
             = nameof(LibrameCore);
 
         private static readonly string LibrameCoreArchitecture
@@ -38,11 +40,12 @@ namespace Librame.AspNetCore.UI
         /// <param name="context">给定的 <see cref="IApplicationContext"/>。</param>
         /// <param name="displayMiniInfo">显示迷你信息（可选；默认显示完整信息）。</param>
         /// <returns>返回字符串。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
         public static string GetFooterCopyrightInfo(this IApplicationContext context, bool displayMiniInfo = false)
         {
             context.NotNull(nameof(context));
 
-            var localizer = context.ServiceFactory.GetRequiredService<IExpressionLocalizer<CopyrightInfoResource>>();
+            var localizer = context.ServiceFactory.GetRequiredService<IStringLocalizer<CopyrightInfoResource>>();
             var interInfo = context.CurrentInterfaceInfo;
             var themeInfo = context.CurrentThemepackInfo;
 
@@ -56,10 +59,10 @@ namespace Librame.AspNetCore.UI
         }
 
 
-        private static string GetCopyrightString(IExpressionLocalizer<CopyrightInfoResource> localizer)
-            => $"{localizer[r => r.Copyright]} © {DateTime.UtcNow.ToString("yyyy", CultureInfo.CurrentCulture)}";
+        private static string GetCopyrightString(IStringLocalizer<CopyrightInfoResource> localizer)
+            => $"{localizer.GetString(r => r.Copyright)} © {DateTime.UtcNow.ToString("yyyy", CultureInfo.CurrentCulture)}";
 
-        private static string GetPoweredByString(IInterfaceInfo interInfo, IThemepackInfo themeInfo, IExpressionLocalizer<CopyrightInfoResource> localizer)
+        private static string GetPoweredByString(IInterfaceInfo interInfo, IThemepackInfo themeInfo, IStringLocalizer<CopyrightInfoResource> localizer)
         {
             string framework;
             if (interInfo.Framework.Equals(themeInfo.Framework, StringComparison.OrdinalIgnoreCase))
@@ -67,7 +70,7 @@ namespace Librame.AspNetCore.UI
             else
                 framework = $"{GetFrameworkString(interInfo.Framework)} / {GetFrameworkString(themeInfo.Framework)}";
 
-            return localizer[r => r.PoweredBy, GetFrameworkLink(localizer, framework), RuntimeInformation.OSDescription];
+            return localizer.GetString(r => r.PoweredBy, GetFrameworkLink(localizer, framework), RuntimeInformation.OSDescription);
 
             string GetFrameworkString(string framework)
             {
@@ -85,29 +88,29 @@ namespace Librame.AspNetCore.UI
             }
         }
 
-        private static string GetCultureString(IExpressionLocalizer<CopyrightInfoResource> localizer)
-            => $"{localizer[r => r.Culture]}: {CultureInfo.CurrentUICulture.DisplayName}";
+        private static string GetCultureString(IStringLocalizer<CopyrightInfoResource> localizer)
+            => $"{localizer.GetString(r => r.Culture)}: {CultureInfo.CurrentUICulture.DisplayName}";
 
 
-        private static string GetApplicationString(IInterfaceInfo interInfo, IExpressionLocalizer<CopyrightInfoResource> localizer)
-            => $"{localizer[r => r.Application]}: {GetNuGetLink(localizer, interInfo.AssemblyName.Name, interInfo.Name)} {interInfo.Version} [{interInfo.Authors}]";
+        private static string GetApplicationString(IInterfaceInfo interInfo, IStringLocalizer<CopyrightInfoResource> localizer)
+            => $"{localizer.GetString(r => r.Application)}: {GetNuGetLink(localizer, interInfo.AssemblyName.Name, interInfo.Name)} {interInfo.Version} [{interInfo.Authors}]";
 
-        private static string GetThemepackString(IThemepackInfo themeInfo, IExpressionLocalizer<CopyrightInfoResource> localizer)
-            => $"{localizer[r => r.Themepack]}: {GetNuGetLink(localizer, themeInfo.AssemblyName.Name, themeInfo.Name)} {themeInfo.Version} [{themeInfo.Authors}]";
+        private static string GetThemepackString(IThemepackInfo themeInfo, IStringLocalizer<CopyrightInfoResource> localizer)
+            => $"{localizer.GetString(r => r.Themepack)}: {GetNuGetLink(localizer, themeInfo.AssemblyName.Name, themeInfo.Name)} {themeInfo.Version} [{themeInfo.Authors}]";
 
 
-        private static string GetNuGetLink(IExpressionLocalizer<CopyrightInfoResource> localizer, string assemblyName, string displayName = null)
-            => $"<a href='https://www.nuget.org/packages?q={assemblyName}' title='{localizer[r => r.SearchInNuget]}' target='_blank'>{displayName ?? assemblyName}</a>";
+        private static string GetNuGetLink(IStringLocalizer<CopyrightInfoResource> localizer, string assemblyName, string displayName = null)
+            => $"<a href='https://www.nuget.org/packages?q={assemblyName}' title='{localizer.GetString(r => r.SearchInNuget)}' target='_blank'>{displayName ?? assemblyName}</a>";
 
-        private static string GetFrameworkLink(IExpressionLocalizer<CopyrightInfoResource> localizer, string framework)
+        private static string GetFrameworkLink(IStringLocalizer<CopyrightInfoResource> localizer, string framework)
         {
             if (framework.Contains("Standard", StringComparison.OrdinalIgnoreCase))
-                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/standard/net-standard' title='{localizer[r => r.GotoMicrosoft]}' target='_blank'>{framework}</a>";
+                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/standard/net-standard' title='{localizer.GetString(r => r.GotoMicrosoft)}' target='_blank'>{framework}</a>";
 
             if (framework.Contains("Core", StringComparison.OrdinalIgnoreCase))
-                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/core/' title='{localizer[r => r.GotoMicrosoft]}' target='_blank'>{framework}</a>";
+                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/core/' title='{localizer.GetString(r => r.GotoMicrosoft)}' target='_blank'>{framework}</a>";
 
-            return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/framework/' title='{localizer[r => r.GotoMicrosoft]}' target='_blank'>{framework}</a>";
+            return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/framework/' title='{localizer.GetString(r => r.GotoMicrosoft)}' target='_blank'>{framework}</a>";
         }
     }
 }

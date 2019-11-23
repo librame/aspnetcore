@@ -10,8 +10,11 @@
 
 #endregion
 
+using IdentityServer4.Models;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.IdentityServer
 {
@@ -144,30 +147,23 @@ namespace Librame.AspNetCore.IdentityServer
         /// <summary>
         /// 身份资源集合。
         /// </summary>
-        public IdentityResourceCollection IdentityResources { get; set; }
-            = new IdentityResourceCollection
-            {
-                IdentityResourceBuilder.OpenId()
-                    .AllowAllClients()
-                    .FromDefault()
-                    .Build(),
-                IdentityResourceBuilder.Profile()
-                    .AllowAllClients()
-                    .FromDefault()
-                    .Build()
-            };
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public List<IdentityResource> IdentityResources { get; set; }
+            = new List<IdentityResource>();
 
         /// <summary>
         /// API 资源集合。
         /// </summary>
-        public ApiResourceCollection ApiResources { get; set; }
-            = new ApiResourceCollection();
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public List<ApiResource> ApiResources { get; set; }
+            = new List<ApiResource>();
 
         /// <summary>
         /// 客户端集合。
         /// </summary>
-        public ClientCollection Clients { get; set; }
-            = new ClientCollection();
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public List<Client> Clients { get; set; }
+            = new List<Client>();
 
         /// <summary>
         /// 用于签名令牌的签名证书。

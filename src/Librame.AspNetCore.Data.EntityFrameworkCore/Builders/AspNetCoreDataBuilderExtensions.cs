@@ -10,14 +10,15 @@
 
 #endregion
 
+using Librame.Extensions;
+using Librame.Extensions.Core;
+using Librame.Extensions.Data;
 using System;
 
-namespace Librame.Extensions.Data
+namespace Microsoft.Extensions.DependencyInjection
 {
-    using Core;
-
     /// <summary>
-    /// <see cref="DataBuilder"/> for ASP.NET Core 静态扩展。
+    /// <see cref="IDataBuilder"/> for ASP.NET Core 静态扩展。
     /// </summary>
     public static class AspNetCoreDataBuilderExtensions
     {

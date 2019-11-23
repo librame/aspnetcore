@@ -13,6 +13,5 @@
 using Microsoft.Extensions.Localization;
 using System.Reflection;
 
-[assembly: AbstractionRootNamespace("Librame.AspNetCore.Identity.Api")]
-//[assembly: ResourceLocation("Resources")]
-[assembly: ResourceMapping]
+[assembly: RootNamespace("Librame.AspNetCore.Identity.Api")]
+[assembly: ResourceLocation("Resources")]

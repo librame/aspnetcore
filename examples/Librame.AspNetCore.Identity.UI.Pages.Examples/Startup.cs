@@ -2,16 +2,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Librame.AspNetCore.Identity.UI.Pages.Examples
 {
+    using Extensions;
     using Extensions.Data;
-    using Extensions.Network;
 
     public class Startup
     {
@@ -42,16 +42,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
             })
             .AddIdentityCookies(cookies => { });
 
-            var mvcBuilder = services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddRazorPagesOptions(options =>
-                {
-                    // Examples
-                    options.RootDirectory = "/Pages";
-                    options.Conventions.AddPageRoute("/Home/Index", "");
-                })
-                .AddViewLocalization()
-                .AddDataAnnotationsLocalization();
+            var mvcBuilder = services.AddRazorPages(options =>
+            {
+                // Examples
+                options.UsePagesRouteStartWithHomeIndex();
+            })
+            .AddViewLocalization()
+            .AddDataAnnotationsLocalization();
 
             // 默认使用测试项目的写入库
             //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
@@ -66,12 +63,12 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
                 })
                 .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                 {
-                    var migrationsAssembly = typeof(IdentityDbContextAccessor).Assembly.GetName().Name;
                     optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
+                        sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetSimpleAssemblyName()));
                 })
-                .AddIdentifier<IdentityStoreIdentifier>()
                 .AddDbDesignTime<SqlServerDesignTimeServices>()
+                .AddIdentifier<IdentityStoreIdentifier>()
+                //.AddInitializer<IdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(options =>
                 {
                     options.Stores.MaxLengthForKeys = 128;
@@ -82,7 +79,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
         }
 
         
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -98,15 +95,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseAuthorization();
-            app.UseLibrameCore()
-                .UseIdentity();
-
             app.UseRouting();
-            app.UseEndpoints(routes =>
-            {
-                routes.MapRazorPages();
-            });
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            // 使用身份应用认证
+            app.UseLibrameCore()
+                .UseIdentityEndpointRoute();
         }
 
     }

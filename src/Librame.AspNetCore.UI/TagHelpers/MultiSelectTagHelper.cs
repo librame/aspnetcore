@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.AspNetCore.Razor.TagHelpers
 {
@@ -129,6 +130,7 @@ namespace Microsoft.AspNetCore.Razor.TagHelpers
         /// </summary>
         /// <param name="context">给定的 <see cref="TagHelperContext"/>。</param>
         /// <param name="output">给定的 <see cref="TagHelperOutput"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             context.NotNull(nameof(context));

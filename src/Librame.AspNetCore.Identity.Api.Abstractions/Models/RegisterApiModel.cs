@@ -10,6 +10,8 @@
 
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Librame.AspNetCore.Identity.Api
 {
     using AspNetCore.Api;
@@ -32,6 +34,7 @@ namespace Librame.AspNetCore.Identity.Api
         /// <summary>
         /// 确认邮件 URL。
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string ConfirmEmailUrl { get; set; }
 
         /// <summary>

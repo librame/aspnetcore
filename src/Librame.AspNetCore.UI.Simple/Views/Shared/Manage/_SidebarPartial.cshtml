@@ -7,9 +7,9 @@
     {
         foreach (var nav in sitemap.ManageSidebar)
         {
-            if ((nav.VisibilityFactory?.Invoke(this, nav)).Value)
+            if (nav.VisibilityFactory.Invoke(this, nav))
             {
-                <li class="nav-item @nav.ActiveCssClassNameFactory?.Invoke(this, nav)">
+                <li class="nav-item @nav.ActiveCssClassNameFactory.Invoke(this, nav)">
                     <a id="@nav.TagId" href="@nav.ToRouteString(Url)" title="@nav.TagTitle">
                         <i class="@nav.Icon"></i>
                         <p>@nav.Text</p>

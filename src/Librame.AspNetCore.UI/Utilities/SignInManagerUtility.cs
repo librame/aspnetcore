@@ -12,6 +12,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,6 +35,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="password">给定的密码（可选）。</param>
         /// <param name="user">给定的 <typeparamref name="TUser"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IdentityResult"/> 的异步操作。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static async Task<IdentityResult> CreateUserByPhoneNumber<TUser>(IUserStore<TUser> userStore,
             UserManager<TUser> userManager, string phoneNumber, string password = null, TUser user = null)
             where TUser : class
@@ -62,6 +64,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="password">给定的密码（可选）。</param>
         /// <param name="user">给定的 <typeparamref name="TUser"/>（可选）。</param>
         /// <returns>返回一个包含 <see cref="IdentityResult"/> 的异步操作。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static async Task<IdentityResult> CreateUserByEmail<TUser>(UserManager<TUser> userManager,
             IUserStore<TUser> userStore, string email, string password = null, TUser user = null)
             where TUser : class

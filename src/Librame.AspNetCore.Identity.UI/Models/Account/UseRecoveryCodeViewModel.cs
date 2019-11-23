@@ -11,6 +11,7 @@
 #endregion
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Identity.UI
 {
@@ -29,6 +30,7 @@ namespace Librame.AspNetCore.Identity.UI
         /// <summary>
         /// 返回 URL。
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string ReturnUrl { get; set; }
     }
 }

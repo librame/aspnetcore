@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Api
 {
@@ -37,6 +38,7 @@ namespace Librame.AspNetCore.Api
         /// <summary>
         /// 错误列表。
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public List<Exception> Errors
             => _errors;
 
@@ -54,6 +56,7 @@ namespace Librame.AspNetCore.Api
         /// <summary>
         /// 重定向 URL。
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string RedirectUrl { get; set; }
     }
 }

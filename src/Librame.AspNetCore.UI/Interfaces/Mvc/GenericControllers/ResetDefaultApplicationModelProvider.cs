@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -19,7 +20,8 @@ namespace Librame.AspNetCore.UI
 {
     using Extensions;
 
-    internal class ResetDefaultApplicationModelProvider : IApplicationModelProvider
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+    class ResetDefaultApplicationModelProvider : IApplicationModelProvider
     {
         private readonly MvcOptions _mvcOptions;
         private readonly IModelMetadataProvider _modelMetadataProvider;
@@ -679,7 +681,7 @@ namespace Librame.AspNetCore.UI
             return selectorModel;
         }
 
-        private bool IsIDisposableMethod(MethodInfo methodInfo)
+        private static bool IsIDisposableMethod(MethodInfo methodInfo)
         {
             // Ideally we do not want Dispose method to be exposed as an action. However there are some scenarios where a user
             // might want to expose a method with name "Dispose" (even though they might not be really disposing resources)
@@ -695,7 +697,7 @@ namespace Librame.AspNetCore.UI
                  declaringTypeInfo.GetRuntimeInterfaceMap(typeof(IDisposable)).TargetMethods[0] == baseMethodInfo);
         }
 
-        private bool IsSilentRouteAttribute(IRouteTemplateProvider routeTemplateProvider)
+        private static bool IsSilentRouteAttribute(IRouteTemplateProvider routeTemplateProvider)
         {
             return
                 routeTemplateProvider.Template == null &&

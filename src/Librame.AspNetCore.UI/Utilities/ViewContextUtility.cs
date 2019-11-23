@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.UI
 {
@@ -21,15 +22,16 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// <see cref="ViewContext"/> 实用工具。
     /// </summary>
-    public class ViewContextUtility
+    public static class ViewContextUtility
     {
         /// <summary>
         /// 是否激活视图。
         /// </summary>
         /// <param name="viewContext">给定的 <see cref="ViewContext"/>。</param>
-        /// <param name="navigation">给定的 <see cref="NavigationDescriptor"/>。</param>
+        /// <param name="navigation">给定的 <see cref="AbstractNavigationDescriptor"/>。</param>
         /// <returns>返回布尔值。</returns>
-        public static bool IsActiveView(ViewContext viewContext, NavigationDescriptor navigation)
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+        public static bool IsActiveView(ViewContext viewContext, AbstractNavigationDescriptor navigation)
         {
             viewContext.NotNull(nameof(viewContext));
             navigation.NotNull(nameof(navigation));
@@ -54,9 +56,42 @@ namespace Librame.AspNetCore.UI
         /// 激活视图 CSS 类名或空字符串。
         /// </summary>
         /// <param name="viewContext">给定的 <see cref="ViewContext"/>。</param>
-        /// <param name="navigation">给定的 <see cref="NavigationDescriptor"/>。</param>
+        /// <param name="navigation">给定的 <see cref="AbstractNavigationDescriptor"/>。</param>
         /// <returns>返回字符串或空字符串。</returns>
-        public static string ActiveViewCssClassNameOrEmpty(ViewContext viewContext, NavigationDescriptor navigation)
+        public static string ActiveViewCssClassNameOrEmpty(ViewContext viewContext, AbstractNavigationDescriptor navigation)
             => IsActiveView(viewContext, navigation) ? "active" : string.Empty;
+
+
+        /// <summary>
+        /// 获取主题包登录布局。
+        /// </summary>
+        /// <param name="viewContext">给定的 <see cref="ViewContext"/>。</param>
+        /// <returns>返回字符串。</returns>
+        public static string GetThemepackLoginLayout(this ViewContext viewContext)
+            => viewContext.GetThemepackLayout("Login");
+
+        /// <summary>
+        /// 获取主题包管理布局。
+        /// </summary>
+        /// <param name="viewContext">给定的 <see cref="ViewContext"/>。</param>
+        /// <returns>返回字符串。</returns>
+        public static string GetThemepackManageLayout(this ViewContext viewContext)
+            => viewContext.GetThemepackLayout("Manage");
+
+        /// <summary>
+        /// 获取主题包布局。
+        /// </summary>
+        /// <param name="viewContext">给定的 <see cref="ViewContext"/>。</param>
+        /// <param name="name">指定的名称（可选；通常为 Common、Login、Manage 等）。</param>
+        /// <returns>返回字符串。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "viewContext")]
+        public static string GetThemepackLayout(this ViewContext viewContext, string name = null)
+        {
+            viewContext.NotNull(nameof(viewContext));
+
+            var application = viewContext.HttpContext?.RequestServices?.GetRequiredService<IApplicationContext>();
+            return application.CurrentThemepackInfo?.GetLayout(name);
+        }
+
     }
 }

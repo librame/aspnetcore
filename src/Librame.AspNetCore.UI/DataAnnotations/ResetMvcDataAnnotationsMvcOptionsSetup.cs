@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.UI
 {
@@ -22,7 +23,8 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 重置 MVC 数据注释集合选项安装。
     /// </summary>
-    public class ResetMvcDataAnnotationsMvcOptionsSetup : IConfigureOptions<MvcOptions>
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+    internal class ResetMvcDataAnnotationsMvcOptionsSetup : IConfigureOptions<MvcOptions>
     {
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
         private readonly IValidationAttributeAdapterProvider _validationAttributeAdapterProvider;

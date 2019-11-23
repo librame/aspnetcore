@@ -1,7 +1,7 @@
 ﻿@model AddPhoneNumberViewModel
 @{
-    var localizer = ViewBag.Localizer as IExpressionHtmlLocalizer<AddPhoneNumberViewResource>;
-    ViewData["Title"] = localizer[r => r.Title];
+    var localizer = ViewBag.Localizer as IHtmlLocalizer<AddPhoneNumberViewResource>;
+    ViewData["Title"] = localizer.GetString(r => r.Title);
 }
 
 <!-- AddPhoneNumber -->
@@ -21,7 +21,7 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-default">@localizer[r => r.ButtonText]</button>
+                <button type="submit" class="btn btn-default">@localizer.GetString(r => r.ButtonText)</button>
             </div>
         </form>
     </div>

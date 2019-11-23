@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -73,13 +74,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly ILogger<LoginWith2faPageModel> _logger;
-        private readonly IExpressionLocalizer<ErrorMessageResource> _errorLocalizer;
+        private readonly IStringLocalizer<ErrorMessageResource> _errorLocalizer;
 
 
         public LoginWith2faPageModel(
             SignInManager<TUser> signInManager,
             ILogger<LoginWith2faPageModel> logger,
-            IExpressionLocalizer<ErrorMessageResource> errorLocalizer)
+            IStringLocalizer<ErrorMessageResource> errorLocalizer)
         {
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
@@ -135,7 +136,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             else
             {
                 _logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", userId);
-                ModelState.AddModelError(string.Empty, _errorLocalizer[r => r.InvalidAuthenticatorCode]?.ToString());
+                ModelState.AddModelError(string.Empty, _errorLocalizer.GetString(r => r.InvalidAuthenticatorCode)?.ToString());
                 return Page();
             }
         }

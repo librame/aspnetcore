@@ -10,7 +10,9 @@
 
 #endregion
 
+using Librame.Extensions;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Mvc.ViewEngines
@@ -28,9 +30,13 @@ namespace Microsoft.AspNetCore.Mvc.ViewEngines
         /// <param name="viewName">给定的视图名称。</param>
         /// <param name="renderFactory">给定的渲染工厂方法。</param>
         /// <returns>返回一个异步操作。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static Task RenderThemepackPartialViewAsync(this ICompositeViewEngine engine, ActionContext context, string viewName,
             Func<string, Task> renderFactory)
         {
+            engine.NotNull(nameof(engine));
+            renderFactory.NotNull(nameof(renderFactory));
+
             var result = engine.FindView(context, viewName, isMainPage: false);
             if (result.Success)
             {

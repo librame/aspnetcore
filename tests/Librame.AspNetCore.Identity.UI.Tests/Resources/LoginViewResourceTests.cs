@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using System.Globalization;
 using Xunit;
 
@@ -12,31 +13,31 @@ namespace Librame.AspNetCore.Identity.UI.Tests
         public void ResourceTest()
         {
             var cultureNames = new string[] { "en-US", "zh-CN", "zh-TW" };
-            var localizer = TestServiceProvider.Current.GetRequiredService<IExpressionLocalizer<LoginViewResource>>();
+            var localizer = TestServiceProvider.Current.GetRequiredService<IStringLocalizer<LoginViewResource>>();
 
             foreach (var name in cultureNames)
                 RunTest(localizer, name);
         }
 
-        private void RunTest(IExpressionLocalizer<LoginViewResource> localizer, string cultureName)
+        private void RunTest(IStringLocalizer<LoginViewResource> localizer, string cultureName)
         {
             CultureInfo.CurrentCulture
                 = CultureInfo.CurrentUICulture
                 = new CultureInfo(cultureName);
 
-            var title = localizer[r => r.Title];
+            var title = localizer.GetString(r => r.Title);
             Assert.False(title.ResourceNotFound);
 
-            var descr = localizer[r => r.Descr];
+            var descr = localizer.GetString(r => r.Descr);
             Assert.False(descr.ResourceNotFound);
 
-            var buttonText = localizer[r => r.ButtonText];
+            var buttonText = localizer.GetString(r => r.ButtonText);
             Assert.False(buttonText.ResourceNotFound);
 
-            var forgotPassword = localizer[r => r.ForgotPassword];
+            var forgotPassword = localizer.GetString(r => r.ForgotPassword);
             Assert.False(forgotPassword.ResourceNotFound);
 
-            var registerUser = localizer[r => r.RegisterUser];
+            var registerUser = localizer.GetString(r => r.RegisterUser);
             Assert.False(registerUser.ResourceNotFound);
         }
 

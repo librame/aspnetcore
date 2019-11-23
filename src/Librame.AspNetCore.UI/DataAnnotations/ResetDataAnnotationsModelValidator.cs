@@ -16,6 +16,8 @@ using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 
 namespace Librame.AspNetCore.UI
@@ -25,7 +27,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 重置数据注释模型验证器。
     /// </summary>
-    public class ResetDataAnnotationsModelValidator : IModelValidator
+    internal class ResetDataAnnotationsModelValidator : IModelValidator
     {
         private static readonly object _emptyValidationContextInstance = new object();
         private readonly IStringLocalizer _stringLocalizer;
@@ -65,6 +67,7 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         /// <param name="validationContext">给定的 <see cref="ModelValidationContext"/>。</param>
         /// <returns>返回 <see cref="IEnumerable{ModelValidationResult}"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "validationContext")]
         public IEnumerable<ModelValidationResult> Validate(ModelValidationContext validationContext)
         {
             validationContext.NotNull(nameof(validationContext));
@@ -72,7 +75,7 @@ namespace Librame.AspNetCore.UI
             if (validationContext.ModelMetadata == null)
             {
                 throw new ArgumentException(
-                    string.Format("The '{0}' property of '{1}' must not be null.",
+                    string.Format(CultureInfo.InvariantCulture, "The '{0}' property of '{1}' must not be null.",
                         nameof(validationContext.ModelMetadata),
                         typeof(ModelValidationContext)),
                     nameof(validationContext));
@@ -81,7 +84,7 @@ namespace Librame.AspNetCore.UI
             if (validationContext.MetadataProvider == null)
             {
                 throw new ArgumentException(
-                    string.Format("The '{0}' property of '{1}' must not be null.",
+                    string.Format(CultureInfo.InvariantCulture, "The '{0}' property of '{1}' must not be null.",
                         nameof(validationContext.MetadataProvider),
                         typeof(ModelValidationContext)),
                     nameof(validationContext));

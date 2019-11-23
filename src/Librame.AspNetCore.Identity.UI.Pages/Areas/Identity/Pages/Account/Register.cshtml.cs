@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -37,10 +38,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         /// <summary>
         /// 构造一个 <see cref="RegisterPageModel"/> 实例。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IExpressionHtmlLocalizer{RegisterViewResource}"/>。</param>
+        /// <param name="localizer">给定的 <see cref="IHtmlLocalizer{RegisterViewResource}"/>。</param>
         /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="options">给定的 <see cref="IOptions{IdentityOptions}"/>。</param>
-        protected RegisterPageModel(IExpressionHtmlLocalizer<RegisterViewResource> localizer,
+        protected RegisterPageModel(IHtmlLocalizer<RegisterViewResource> localizer,
             IOptions<IdentityBuilderOptions> builderOptions, IOptions<IdentityOptions> options)
         {
             Localizer = localizer;
@@ -52,7 +53,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         /// <summary>
         /// 本地化资源。
         /// </summary>
-        public IExpressionHtmlLocalizer<RegisterViewResource> Localizer { get; }
+        public IHtmlLocalizer<RegisterViewResource> Localizer { get; }
 
         /// <summary>
         /// 构建器选项。
@@ -110,7 +111,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
             ILogger<LoginPageModel> logger,
             IEmailService emailService,
             IdentityStoreIdentifier storeIdentifier,
-            IExpressionHtmlLocalizer<RegisterViewResource> localizer,
+            IHtmlLocalizer<RegisterViewResource> localizer,
             IOptions<IdentityBuilderOptions> builderOptions,
             IOptions<IdentityOptions> options)
             : base(localizer, builderOptions, options)
@@ -149,8 +150,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
                         protocol: Request.Scheme);
 
                     await _emailService.SendAsync(Input.Email,
-                        Localizer[r => r.ConfirmYourEmail]?.Value,
-                        Localizer[r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value).ConfigureAndWaitAsync();
+                        Localizer.GetString(r => r.ConfirmYourEmail)?.Value,
+                        Localizer.GetString(r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl))?.Value).ConfigureAndWaitAsync();
 
                     await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                     _logger.LogInformation(3, "User created a new account with password.");

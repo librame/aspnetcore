@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -16,7 +17,8 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// A facade service for creating application models.
     /// </summary>
-    internal class ResetApplicationModelFactory
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+    class ResetApplicationModelFactory
     {
         private readonly IApplicationModelProvider[] _applicationModelProviders;
         private readonly IList<IApplicationModelConvention> _conventions;

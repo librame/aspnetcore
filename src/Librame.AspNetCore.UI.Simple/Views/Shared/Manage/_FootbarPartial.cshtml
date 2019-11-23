@@ -9,7 +9,7 @@
             foreach (var nav in sitemap.ManageFootbar)
             {
                 <li class="nav-item">
-                    <a class="nav-link" href="@nav.ToRouteString(Url)" title="@nav.TagTitle" @nav.TagTarget>
+                    <a class="nav-link" href="@nav.ToRouteString(Url)" title="@nav.TagTitle" @nav.TagTargetFormat>
                         @nav.Text
                     </a>
                 </li>

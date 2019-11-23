@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.Extensions.Core
 {
@@ -35,7 +36,7 @@ namespace Librame.Extensions.Core
             HostString newHost = default, PathString newPath = default, QueryString newQuery = default,
             string newAnchor = null)
         {
-            var locator = (UriCombinerCore)uriString;
+            var locator = new UriCombinerCore(uriString.AsAbsoluteUri());
 
             return locator.ChangeParameters(newScheme, newHost, newPath,
                 newQuery, queriesAction: null, newAnchor);
@@ -55,7 +56,7 @@ namespace Librame.Extensions.Core
             Action<ConcurrentDictionary<string, string>> queriesAction, string newScheme = null,
             HostString newHost = default, PathString newPath = default, string newAnchor = null)
         {
-            var locator = (UriCombinerCore)uriString;
+            var locator = new UriCombinerCore(uriString.AsAbsoluteUri());
 
             return locator.ChangeParameters(newScheme, newHost, newPath,
                 newQuery: default, queriesAction, newAnchor);
@@ -76,7 +77,7 @@ namespace Librame.Extensions.Core
             HostString newHost = default, PathString newPath = default, QueryString newQuery = default,
             string newAnchor = null)
         {
-            var locator = (UriCombinerCore)uri;
+            var locator = new UriCombinerCore(uri);
 
             return locator.ChangeParameters(newScheme, newHost, newPath,
                 newQuery, queriesAction: null, newAnchor);
@@ -96,7 +97,7 @@ namespace Librame.Extensions.Core
             Action<ConcurrentDictionary<string, string>> queriesAction, string newScheme = null,
             HostString newHost = default, PathString newPath = default, string newAnchor = null)
         {
-            var locator = (UriCombinerCore)uri;
+            var locator = new UriCombinerCore(uri);
 
             return locator.ChangeParameters(newScheme, newHost, newPath,
                 newQuery: default, queriesAction, newAnchor);
@@ -135,6 +136,7 @@ namespace Librame.Extensions.Core
         /// <param name="locator">给定的 <see cref="UriCombinerCore"/>。</param>
         /// <param name="newHostFactory">给定的新主机工厂方法。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static UriCombinerCore ChangeHost(this UriCombinerCore locator, Func<HostString, HostString> newHostFactory)
         {
             locator.NotNull(nameof(locator));
@@ -151,6 +153,7 @@ namespace Librame.Extensions.Core
         /// <param name="locator">给定的 <see cref="UriCombinerCore"/>。</param>
         /// <param name="newPathFactory">给定的新路径工厂方法。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static UriCombinerCore ChangePath(this UriCombinerCore locator, Func<PathString, PathString> newPathFactory)
         {
             locator.NotNull(nameof(locator));
@@ -167,6 +170,7 @@ namespace Librame.Extensions.Core
         /// <param name="locator">给定的 <see cref="UriCombinerCore"/>。</param>
         /// <param name="newQueryFactory">给定的新查询工厂方法。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static UriCombinerCore ChangeQuery(this UriCombinerCore locator, Func<QueryString, QueryString> newQueryFactory)
         {
             locator.NotNull(nameof(locator));
@@ -184,6 +188,7 @@ namespace Librame.Extensions.Core
         /// <param name="locator">给定的 <see cref="UriCombinerCore"/>。</param>
         /// <param name="newHostFactory">给定的新主机工厂方法。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static UriCombinerCore NewHost(this UriCombinerCore locator, Func<HostString, HostString> newHostFactory)
         {
             locator.NotNull(nameof(locator));
@@ -200,6 +205,7 @@ namespace Librame.Extensions.Core
         /// <param name="locator">给定的 <see cref="UriCombinerCore"/>。</param>
         /// <param name="newPathFactory">给定的新路径工厂方法。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static UriCombinerCore NewPath(this UriCombinerCore locator, Func<PathString, PathString> newPathFactory)
         {
             locator.NotNull(nameof(locator));
@@ -216,6 +222,7 @@ namespace Librame.Extensions.Core
         /// <param name="locator">给定的 <see cref="UriCombinerCore"/>。</param>
         /// <param name="newQueryFactory">给定的新查询工厂方法。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static UriCombinerCore NewQuery(this UriCombinerCore locator, Func<QueryString, QueryString> newQueryFactory)
         {
             locator.NotNull(nameof(locator));

@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// ÷ÿ÷√∑∂ŒßÃÿ–‘  ≈‰∆˜°£
     /// </summary>
-    public class ResetRangeAttributeAdapter : AttributeAdapterBase<RangeAttribute>
+    internal class ResetRangeAttributeAdapter : AttributeAdapterBase<RangeAttribute>
     {
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
         private readonly string _max;

@@ -1,8 +1,8 @@
 ﻿@page
 @model DeletePersonalDataPageModel
-@inject IExpressionHtmlLocalizer<DeletePersonalDataViewResource> Localizer
+@inject IHtmlLocalizer<DeletePersonalDataViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
     ViewData["ActiveView"] = ViewPageNames.PersonalData;
 }
 
@@ -12,7 +12,7 @@
 <div class="alert alert-warning" role="alert">
     <p>
         <span class="glyphicon glyphicon-warning-sign"></span>
-        <strong>@Localizer[r => r.Descr]</strong>
+        <strong>@Localizer.GetString(r => r.Descr)</strong>
     </p>
 </div>
 
@@ -31,7 +31,7 @@
             }
 
             <div class="form-group">
-                <button type="submit" class="btn btn-default">@Localizer[r => r.ButtonText]</button>
+                <button type="submit" class="btn btn-default">@Localizer.GetString(r => r.ButtonText)</button>
             </div>
         </form>
     </div>

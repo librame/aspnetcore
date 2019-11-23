@@ -1,8 +1,8 @@
 ﻿@page
 @model PersonalDataPageModel
-@inject IExpressionHtmlLocalizer<PersonalDataViewResource> Localizer
+@inject IHtmlLocalizer<PersonalDataViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
 }
 
 <!-- PersonalData -->
@@ -10,19 +10,19 @@
 
 <div class="row">
     <div class="col-md-6">
-        <p>@Localizer[r => r.Info]</p>
+        <p>@Localizer.GetString(r => r.Info)</p>
         <p>
-            <strong>@Localizer[r => r.Descr]</strong>
+            <strong>@Localizer.GetString(r => r.Descr)</strong>
         </p>
 
         <form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group">
             <div class="form-group">
-                <button type="submit" class="btn btn-default">@Localizer[r => r.DownloadButtonText]</button>
+                <button type="submit" class="btn btn-default">@Localizer.GetString(r => r.DownloadButtonText)</button>
             </div>
         </form>
 
         <p>
-            <a id="delete" asp-page="DeletePersonalData" class="btn btn-default">@Localizer[r => r.ButtonText]</a>
+            <a id="delete" asp-page="DeletePersonalData" class="btn btn-default">@Localizer.GetString(r => r.ButtonText)</a>
         </p>
     </div>
 </div>

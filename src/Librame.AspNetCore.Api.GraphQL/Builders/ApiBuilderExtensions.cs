@@ -12,13 +12,15 @@
 
 using GraphQL;
 using GraphQL.Http;
-using Microsoft.Extensions.DependencyInjection;
+using Librame.AspNetCore.Api;
+using Librame.Extensions;
+using Librame.Extensions.Core;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Librame.AspNetCore.Api
+namespace Microsoft.Extensions.DependencyInjection
 {
     using Extensions;
-    using Extensions.Core;
 
     /// <summary>
     /// API 构建器静态扩展。
@@ -65,6 +67,7 @@ namespace Librame.AspNetCore.Api
         /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
         /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
         public static IApiBuilder AddApi<TDependencyOptions>(this IExtensionBuilder builder,
             Action<TDependencyOptions> dependencyAction = null,
             Func<IExtensionBuilder, TDependencyOptions, IApiBuilder> builderFactory = null)
@@ -85,13 +88,13 @@ namespace Librame.AspNetCore.Api
 
         private static IApiBuilder AddGraphQL(this IApiBuilder builder)
         {
-            builder.Services.AddSingleton<IDocumentWriter, DocumentWriter>();
-            builder.Services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+            builder.Services.TryAddSingleton<IDocumentWriter, DocumentWriter>();
+            builder.Services.TryAddSingleton<IDocumentExecuter, DocumentExecuter>();
 
-            builder.Services.AddScoped<IGraphApiMutation, GraphApiMutation>();
-            builder.Services.AddScoped<IGraphApiQuery, GraphApiQuery>();
-            builder.Services.AddScoped<IGraphApiSubscription, GraphApiSubscription>();
-            builder.Services.AddScoped<IGraphApiSchema, GraphApiSchema>();
+            builder.Services.TryAddScoped<IGraphApiMutation, GraphApiMutation>();
+            builder.Services.TryAddScoped<IGraphApiQuery, GraphApiQuery>();
+            builder.Services.TryAddScoped<IGraphApiSubscription, GraphApiSubscription>();
+            builder.Services.TryAddScoped<IGraphApiSchema, GraphApiSchema>();
 
             return builder;
         }

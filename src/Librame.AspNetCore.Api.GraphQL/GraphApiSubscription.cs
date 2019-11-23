@@ -11,9 +11,11 @@
 #endregion
 
 using GraphQL.Types;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Api
 {
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     class GraphApiSubscription : ObjectGraphType, IGraphApiSubscription
     {
         public GraphApiSubscription()

@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -56,13 +57,13 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
     {
         private readonly UserManager<TUser> _userManager;
         private readonly ILogger<Disable2faPageModel> _logger;
-        private readonly IExpressionLocalizer<StatusMessageResource> _statusLocalizer;
+        private readonly IStringLocalizer<StatusMessageResource> _statusLocalizer;
 
 
         public Disable2faPageModel(
             UserManager<TUser> userManager,
             ILogger<Disable2faPageModel> logger,
-            IExpressionLocalizer<StatusMessageResource> statusLocalizer)
+            IStringLocalizer<StatusMessageResource> statusLocalizer)
         {
             _userManager = userManager;
             _logger = logger;
@@ -102,7 +103,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account.Manage
 
             _logger.LogInformation("User with ID '{UserId}' has disabled 2fa.", _userManager.GetUserId(User));
 
-            StatusMessage = _statusLocalizer[r => r.DisableTwoFactor]?.ToString();
+            StatusMessage = _statusLocalizer.GetString(r => r.DisableTwoFactor)?.ToString();
 
             return RedirectToPage("./TwoFactorAuthentication");
         }

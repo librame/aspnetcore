@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.UI
 {
@@ -25,7 +26,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 重置数据注释集合模型验证器提供程序。
     /// </summary>
-    public class ResetDataAnnotationsModelValidatorProvider : IMetadataBasedModelValidatorProvider
+    internal class ResetDataAnnotationsModelValidatorProvider : IMetadataBasedModelValidatorProvider
     {
         private readonly IValidationAttributeAdapterProvider _validationAttributeAdapterProvider;
         private readonly IOptions<MvcDataAnnotationsLocalizationOptions> _options;
@@ -109,8 +110,11 @@ namespace Librame.AspNetCore.UI
         /// <param name="modelType">给定的模型类型。</param>
         /// <param name="validatorMetadata">给定的验证器集合元数据。</param>
         /// <returns>返回布尔值。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "validatorMetadata")]
         public bool HasValidators(Type modelType, IList<object> validatorMetadata)
         {
+            validatorMetadata.NotNull(nameof(validatorMetadata));
+
             if (typeof(IValidatableObject).IsAssignableFrom(modelType))
                 return true;
 

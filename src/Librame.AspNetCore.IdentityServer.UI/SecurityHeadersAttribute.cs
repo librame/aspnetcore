@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.IdentityServer.UI
 {
@@ -15,9 +16,10 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// 重写执行结果。
         /// </summary>
         /// <param name="context">给定的 <see cref="ResultExecutingContext"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
         public override void OnResultExecuting(ResultExecutingContext context)
         {
-            if (!(context.Result is ViewResult))
+            if (!(context?.Result is ViewResult))
                 return;
 
             var headers = context.HttpContext.Response.Headers;

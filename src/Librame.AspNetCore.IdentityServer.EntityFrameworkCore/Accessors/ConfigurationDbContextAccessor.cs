@@ -14,11 +14,12 @@ using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer
 {
+    using Extensions.Core;
     using Extensions.Data;
 
     /// <summary>
@@ -68,7 +69,7 @@ namespace Librame.AspNetCore.IdentityServer
         {
             base.OnModelCreating(modelBuilder);
 
-            var storeOptions = ServiceProvider.GetRequiredService<ConfigurationStoreOptions>();
+            var storeOptions = ServiceFactory.GetRequiredService<IOptions<ConfigurationStoreOptions>>().Value;
             modelBuilder.ConfigureClientContext(storeOptions);
             modelBuilder.ConfigureResourcesContext(storeOptions);
         }

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Librame.AspNetCore.UI
 {
+    using Extensions;
+
     /// <summary>
     /// A filter implementation which delegates to the controller for result filter interfaces.
     /// </summary>
@@ -62,7 +64,7 @@ namespace Librame.AspNetCore.UI
             resultFilter.OnResultExecuting(context);
             if (!context.Cancel)
             {
-                resultFilter.OnResultExecuted(await next());
+                resultFilter.OnResultExecuted(await next.Invoke().ConfigureAndResultAsync());
             }
         }
     }

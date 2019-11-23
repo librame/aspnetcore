@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Text.Encodings.Web;
@@ -34,8 +35,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         /// <summary>
         /// 构造一个 <see cref="ForgotPasswordPageModel"/> 实例。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IExpressionHtmlLocalizer{ForgotPasswordViewResource}"/>。</param>
-        protected ForgotPasswordPageModel(IExpressionHtmlLocalizer<ForgotPasswordViewResource> localizer)
+        /// <param name="localizer">给定的 <see cref="IHtmlLocalizer{ForgotPasswordViewResource}"/>。</param>
+        protected ForgotPasswordPageModel(IHtmlLocalizer<ForgotPasswordViewResource> localizer)
         {
             Localizer = localizer;
         }
@@ -44,7 +45,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         /// <summary>
         /// 本地化资源。
         /// </summary>
-        public IExpressionHtmlLocalizer<ForgotPasswordViewResource> Localizer { get; set; }
+        public IHtmlLocalizer<ForgotPasswordViewResource> Localizer { get; set; }
 
         /// <summary>
         /// 输入模型。
@@ -82,7 +83,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         public ForgotPasswordPageModel(
             UserManager<TUser> userManager,
             IEmailService emailSender,
-            IExpressionHtmlLocalizer<ForgotPasswordViewResource> localizer)
+            IHtmlLocalizer<ForgotPasswordViewResource> localizer)
             : base(localizer)
         {
             _userManager = userManager;
@@ -117,8 +118,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
                 await _emailService.SendAsync(
                     Input.Email,
-                    Localizer[r => r.ResetPassword]?.Value,
-                    Localizer[r => r.ResetPasswordFormat, HtmlEncoder.Default.Encode(callbackUrl)]?.Value).ConfigureAndWaitAsync();
+                    Localizer.GetString(r => r.ResetPassword)?.Value,
+                    Localizer.GetString(r => r.ResetPasswordFormat, HtmlEncoder.Default.Encode(callbackUrl))?.Value).ConfigureAndWaitAsync();
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

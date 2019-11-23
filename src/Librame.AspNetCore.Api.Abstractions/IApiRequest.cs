@@ -11,6 +11,7 @@
 #endregion
 
 using Newtonsoft.Json.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Api
 {
@@ -32,6 +33,7 @@ namespace Librame.AspNetCore.Api
         /// <summary>
         /// 查询参数集合。
         /// </summary>
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         JObject Variables { get; set; }
     }
 }

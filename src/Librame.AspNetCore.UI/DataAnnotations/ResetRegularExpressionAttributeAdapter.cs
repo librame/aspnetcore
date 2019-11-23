@@ -23,7 +23,7 @@ namespace Librame.AspNetCore.UI
     /// <summary>
     /// 重置正则表达式特性适配器。
     /// </summary>
-    public class ResetRegularExpressionAttributeAdapter : AttributeAdapterBase<RegularExpressionAttribute>
+    internal class ResetRegularExpressionAttributeAdapter : AttributeAdapterBase<RegularExpressionAttribute>
     {
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
 

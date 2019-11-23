@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using System;
@@ -33,10 +34,10 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         /// <summary>
         /// 构造一个 <see cref="RegisterPageModel"/> 实例。
         /// </summary>
-        /// <param name="registerLocalizer">给定的 <see cref="IExpressionHtmlLocalizer{RegisterViewResource}"/>。</param>
+        /// <param name="registerLocalizer">给定的 <see cref="IHtmlLocalizer{RegisterViewResource}"/>。</param>
         /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="options">给定的 <see cref="IOptions{IdentityOptions}"/>。</param>
-        protected ResetPasswordPageModel(IExpressionHtmlLocalizer<RegisterViewResource> registerLocalizer,
+        protected ResetPasswordPageModel(IHtmlLocalizer<RegisterViewResource> registerLocalizer,
             IOptions<IdentityBuilderOptions> builderOptions, IOptions<IdentityOptions> options)
         {
             RegisterLocalizer = registerLocalizer;
@@ -48,7 +49,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
         /// <summary>
         /// 本地化资源。
         /// </summary>
-        public IExpressionHtmlLocalizer<RegisterViewResource> RegisterLocalizer { get; }
+        public IHtmlLocalizer<RegisterViewResource> RegisterLocalizer { get; }
 
         /// <summary>
         /// 构建器选项。
@@ -91,7 +92,7 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Account
 
         public ResetPasswordPageModel(
             UserManager<TUser> userManager,
-            IExpressionHtmlLocalizer<RegisterViewResource> registerLocalizer,
+            IHtmlLocalizer<RegisterViewResource> registerLocalizer,
             IOptions<IdentityBuilderOptions> builderOptions,
             IOptions<IdentityOptions> options)
             : base(registerLocalizer, builderOptions, options)

@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Librame.Extensions;
 using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
 using System.Net;
 using Xunit;
 
-namespace Librame.Extensions
+namespace Microsoft.AspNetCore.Http
 {
     public class AbstractionHttpRequestExtensionsTests
     {

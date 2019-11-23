@@ -10,14 +10,17 @@
 
 #endregion
 
+using Microsoft.Extensions.Localization;
+using System.Diagnostics.CodeAnalysis;
+
 namespace Librame.AspNetCore.IdentityServer.UI
 {
     using AspNetCore.UI;
-    using Extensions.Core;
 
-    class IdentityServerInterfaceSitemapWithViews : InterfaceSitemapWithViews
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+    internal class IdentityServerInterfaceSitemapWithViews : InterfaceSitemapWithViews
     {
-        public IdentityServerInterfaceSitemapWithViews(IExpressionLocalizer<InterfaceSitemapResource> localizer)
+        public IdentityServerInterfaceSitemapWithViews(IStringLocalizer<InterfaceSitemapResource> localizer)
             : base(localizer, nameof(IdentityServer))
         {
         }

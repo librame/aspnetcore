@@ -11,9 +11,8 @@
 #endregion
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
 
-namespace Librame.AspNetCore.Identity.UI
+namespace Microsoft.AspNetCore.Routing
 {
     /// <summary>
     /// 身份区域路由构建器静态扩展。

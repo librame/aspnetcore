@@ -22,12 +22,6 @@ namespace Librame.AspNetCore.Identity
     public class IdentityBuilderOptions : DataBuilderOptionsBase<IdentityTableNameSchemaOptions>
     {
         /// <summary>
-        /// 默认密码。
-        /// </summary>
-        public string DefaultPassword { get; set; }
-            = "Password!123456";
-
-        /// <summary>
         /// 启用密码规则提示（默认启用）。
         /// </summary>
         public bool PasswordRulePromptEnabled { get; set; }
@@ -42,7 +36,7 @@ namespace Librame.AspNetCore.Identity
 
 
     /// <summary>
-    /// 身份表架构选项。
+    /// 身份表名架构选项。
     /// </summary>
     public class IdentityTableNameSchemaOptions : TableNameSchemaOptions
     {

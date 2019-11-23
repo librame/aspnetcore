@@ -1,21 +1,23 @@
 ﻿@model LoggedOutViewModel
-
-@{ 
+@inject IHtmlLocalizer<LoggedOutViewResource> Localizer
+@{
     // set this so the layout rendering sees an anonymous user
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
     ViewData["signed-out"] = true;
 }
-
+<!-- LoggedOut -->
 <div class="page-header logged-out">
     <h1>
-        Logout
-        <small>You are now logged out</small>
+        @Localizer.GetString(r => r.Title)
+        <small>@Localizer.GetString(r => r.Descr)</small>
     </h1>
 
-    @if (Model.PostLogoutRedirectUri != null)
+    @if (Model.PostLogoutRedirectUri.IsNotEmpty())
     {
+        var redirectUriStart = $"<a class='PostLogoutRedirectUri' href='{Model.PostLogoutRedirectUri}'>";
+
         <div>
-            Click <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">here</a> to return to the
-            <span>@Model.ClientName</span> application.
+            @Localizer.GetString(r => r.PostLogoutRedirectUriFormat, redirectUriStart, "</a>", $"<span>{Model.ClientName}</span>")
         </div>
     }
 
@@ -24,7 +26,6 @@
         <iframe width="0" height="0" class="signout" src="@Model.SignOutIframeUrl"></iframe>
     }
 </div>
-
 @section scripts
 {
     @if (Model.AutomaticRedirectAfterSignOut)

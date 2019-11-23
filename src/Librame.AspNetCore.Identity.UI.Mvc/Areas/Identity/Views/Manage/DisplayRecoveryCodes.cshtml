@@ -1,7 +1,7 @@
 ﻿@model DisplayRecoveryCodesViewModel
-@inject IExpressionHtmlLocalizer<DisplayRecoveryCodesViewResource> Localizer
+@inject IHtmlLocalizer<DisplayRecoveryCodesViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
 }
 
 <!-- DisplayRecoveryCodes -->
@@ -12,7 +12,7 @@
 <div class="row">
     <div class="col-md-6">
         <dl class="dl-horizontal">
-            <dt>@Localizer[r => r.Descr]</dt>
+            <dt>@Localizer.GetString(r => r.Descr)</dt>
             @foreach (var code in Model.Codes)
             {
                 <dd>

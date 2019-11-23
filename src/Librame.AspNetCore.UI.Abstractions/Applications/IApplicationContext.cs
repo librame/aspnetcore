@@ -26,9 +26,9 @@ namespace Librame.AspNetCore.UI
         /// 服务工厂。
         /// </summary>
         /// <value>
-        /// 返回 <see cref="ServiceFactoryDelegate"/>。
+        /// 返回 <see cref="ServiceFactory"/>。
         /// </value>
-        ServiceFactoryDelegate ServiceFactory { get; }
+        ServiceFactory ServiceFactory { get; }
         
 
         /// <summary>
@@ -40,12 +40,12 @@ namespace Librame.AspNetCore.UI
         IApplicationPrincipal Principal { get; }
 
         /// <summary>
-        /// 主机环境。
+        /// Web 主机环境。
         /// </summary>
         /// <value>
-        /// 返回 <see cref="IHostingEnvironment"/>。
+        /// 返回 <see cref="IWebHostEnvironment"/>。
         /// </value>
-        IHostingEnvironment Environment { get; }
+        IWebHostEnvironment Environment { get; }
 
 
         /// <summary>

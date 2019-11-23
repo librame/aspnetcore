@@ -13,6 +13,7 @@
 using Librame.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Microsoft.AspNetCore.Mvc.Razor
@@ -56,6 +57,7 @@ namespace Microsoft.AspNetCore.Mvc.Razor
 
 
         /// <inheritdoc />
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
         public void PopulateValues(ViewLocationExpanderContext context)
         {
             context.NotNull(nameof(context));
@@ -66,6 +68,7 @@ namespace Microsoft.AspNetCore.Mvc.Razor
 
 
         /// <inheritdoc />
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
         public virtual IEnumerable<string> ExpandViewLocations(
             ViewLocationExpanderContext context,
             IEnumerable<string> viewLocations)
@@ -106,11 +109,11 @@ namespace Microsoft.AspNetCore.Mvc.Razor
                     {
                         if (_format == LanguageViewLocationExpanderFormat.SubFolder)
                         {
-                            yield return location.Replace("{0}", temporaryCultureInfo.Name + "/{0}");
+                            yield return location.Replace("{0}", temporaryCultureInfo.Name + "/{0}", StringComparison.InvariantCulture);
                         }
                         else
                         {
-                            yield return location.Replace("{0}", "{0}." + temporaryCultureInfo.Name);
+                            yield return location.Replace("{0}", "{0}." + temporaryCultureInfo.Name, StringComparison.InvariantCulture);
                         }
 
                         temporaryCultureInfo = temporaryCultureInfo.Parent;
@@ -120,11 +123,11 @@ namespace Microsoft.AspNetCore.Mvc.Razor
                 {
                     if (_format == LanguageViewLocationExpanderFormat.SubFolder)
                     {
-                        yield return location.Replace("{0}", cultureInfo.Name + "/{0}");
+                        yield return location.Replace("{0}", cultureInfo.Name + "/{0}", StringComparison.InvariantCulture);
                     }
                     else
                     {
-                        yield return location.Replace("{0}", "{0}." + cultureInfo.Name);
+                        yield return location.Replace("{0}", "{0}." + cultureInfo.Name, StringComparison.InvariantCulture);
                     }
                 }
 

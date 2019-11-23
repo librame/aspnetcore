@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -64,6 +65,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// <param name="returnUrl"></param>
         /// <returns></returns>
         [HttpGet]
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public async Task<IActionResult> Index(string returnUrl)
         {
             var vm = await BuildViewModelAsync(returnUrl).ConfigureAndResultAsync();
@@ -80,8 +82,11 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
         public async Task<IActionResult> Index(ConsentInputModel model)
         {
+            model.NotNull(nameof(model));
+
             var result = await ProcessConsent(model).ConfigureAndResultAsync();
 
             if (result.IsRedirect)
@@ -240,7 +245,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             return vm;
         }
 
-        private ScopeViewModel CreateScopeViewModel(IdentityResource identity, bool check)
+        private static ScopeViewModel CreateScopeViewModel(IdentityResource identity, bool check)
         {
             return new ScopeViewModel
             {
@@ -253,7 +258,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
             };
         }
 
-        private ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
+        private static ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
         {
             return new ScopeViewModel
             {

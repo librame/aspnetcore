@@ -11,9 +11,11 @@
 #endregion
 
 using Newtonsoft.Json.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Api
 {
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     class ApiRequest : IApiRequest
     {
         public string OperationName { get; set; }

@@ -1,8 +1,13 @@
 @model LoginViewModel
+@inject IHtmlLocalizer<LoginViewResource> Localizer
+@inject IHtmlLocalizer<ErrorMessageResource> ErrorLocalizer
+@{
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
+}
 
 <div class="login-page">
     <div class="page-header">
-        <h1>Login</h1>
+        <h1>@Localizer.GetString(r => r.Title)</h1>
     </div>
 
     <partial name="_ValidationSummary" />
@@ -14,7 +19,7 @@
             <div class="col-sm-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Local Login</h3>
+                        <h3 class="panel-title">@Localizer.GetString(r => r.LocalLogin)</h3>
                     </div>
                     <div class="panel-body">
 
@@ -23,25 +28,28 @@
 
                             <fieldset>
                                 <div class="form-group">
-                                    <label asp-for="Username"></label>
-                                    <input class="form-control" placeholder="Username" asp-for="Username" autofocus>
+                                    <label asp-for="Email" class="sr-only"></label>
+                                    <input asp-for="Email" class="form-username form-control" placeholder="@Html.DisplayNameFor(m => m.Email) ..." />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="Password"></label>
-                                    <input type="password" class="form-control" placeholder="Password" asp-for="Password" autocomplete="off">
+                                    <label asp-for="Password" class="sr-only"></label>
+                                    <input asp-for="Password" class="form-password form-control" placeholder="@Html.DisplayNameFor(m => m.Password) ..." />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
                                 @if (Model.AllowRememberLogin)
                                 {
                                     <div class="form-group login-remember">
                                         <label asp-for="RememberLogin">
                                             <input asp-for="RememberLogin">
-                                            <strong>Remember My Login</strong>
+                                            <strong>@Html.DisplayNameFor(m => m.RememberLogin)</strong>
                                         </label>
                                     </div>
                                 }
+
                                 <div class="form-group">
-                                    <button class="btn btn-primary" name="button" value="login">Login</button>
-                                    <button class="btn btn-default" name="button" value="cancel">Cancel</button>
+                                    <button class="btn btn-primary" name="button" value="login">@Localizer.GetString(r => r.ButtonText)</button>
+                                    <button class="btn btn-default" name="button" value="cancel">@Localizer.GetString(r => r.CancelButton)</button>
                                 </div>
                             </fieldset>
                         </form>
@@ -55,7 +63,7 @@
             <div class="col-md-6 col-sm-6 external-providers">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">External Login</h3>
+                        <h3 class="panel-title">@Localizer.GetString(r => r.ExternalLogin)</h3>
                     </div>
                     <div class="panel-body">
                         <ul class="list-inline">
@@ -63,10 +71,10 @@
                             {
                                 <li>
                                     <a class="btn btn-default"
-                                       asp-controller="External"
-                                       asp-action="Challenge"
-                                       asp-route-provider="@provider.AuthenticationScheme"
-                                       asp-route-returnUrl="@Model.ReturnUrl">
+                                        asp-controller="External"
+                                        asp-action="Challenge"
+                                        asp-route-provider="@provider.AuthenticationScheme"
+                                        asp-route-returnUrl="@Model.ReturnUrl">
                                         @provider.DisplayName
                                     </a>
                                 </li>
@@ -80,8 +88,8 @@
         @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
         {
             <div class="alert alert-warning">
-                <strong>Invalid login request</strong>
-                There are no login schemes configured for this client.
+                <strong>@ErrorLocalizer.GetString(r => r.InvalidLoginAttempt)</strong>
+                @Localizer.GetString(r => r.NoLoginSchemesConfigured)
             </div>
         }
     </div>

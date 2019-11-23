@@ -1,11 +1,6 @@
 // Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
@@ -13,16 +8,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Librame.AspNetCore
 {
+    using Extensions;
+
     /// <summary>
     /// Enables automatic setting of the culture for <see cref="HttpRequest"/>s based on information
     /// sent by the client in headers and logic provided by the application.
     /// </summary>
     public class RequestLocalizationMiddleware
     {
-        private static readonly int MaxCultureFallbackDepth = 5;
+        private const int MaxCultureFallbackDepth = 5;
 
         private readonly RequestDelegate _next;
         private readonly RequestLocalizationOptions _options;
@@ -65,7 +67,7 @@ namespace Librame.AspNetCore
             {
                 foreach (var provider in _options.RequestCultureProviders)
                 {
-                    var providerResultCulture = await provider.DetermineProviderCultureResult(context);
+                    var providerResultCulture = await provider.DetermineProviderCultureResult(context).ConfigureAndResultAsync();
                     if (providerResultCulture == null)
                     {
                         continue;
@@ -133,7 +135,7 @@ namespace Librame.AspNetCore
 
             SetCurrentThreadCulture(requestCulture);
 
-            await _next(context);
+            await _next(context).ConfigureAndWaitAsync();
         }
 
         private void EnsureLogger(HttpContext context)

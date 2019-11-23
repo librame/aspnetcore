@@ -1,5 +1,6 @@
 ﻿using Librame.Extensions.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using System.Globalization;
 using Xunit;
 
@@ -11,28 +12,26 @@ namespace Librame.AspNetCore.Identity.Tests
         public void ResourceTest()
         {
             var cultureNames = new string[] { "en-US", "zh-CN", "zh-TW" };
-            var localizer = TestServiceProvider.Current.GetRequiredService<IExpressionLocalizer<IdentityRoleClaimResource>>();
+            var localizer = TestServiceProvider.Current.GetRequiredService<IStringLocalizer<IdentityRoleClaimResource>>();
 
             foreach (var name in cultureNames)
                 RunTest(localizer, name);
         }
 
-        private void RunTest(IExpressionLocalizer<IdentityRoleClaimResource> localizer, string cultureName)
+        private void RunTest(IStringLocalizer<IdentityRoleClaimResource> localizer, string cultureName)
         {
-            CultureInfo.CurrentCulture
-                = CultureInfo.CurrentUICulture
-                = new CultureInfo(cultureName);
+            CultureUtility.Register(new CultureInfo(cultureName));
 
-            var id = localizer[r => r.Id];
+            var id = localizer.GetString(r => r.Id);
             Assert.False(id.ResourceNotFound);
 
-            var roleId = localizer[r => r.RoleId];
+            var roleId = localizer.GetString(r => r.RoleId);
             Assert.False(roleId.ResourceNotFound);
 
-            var claimType = localizer[r => r.ClaimType];
+            var claimType = localizer.GetString(r => r.ClaimType);
             Assert.False(claimType.ResourceNotFound);
 
-            var claimValue = localizer[r => r.ClaimValue];
+            var claimValue = localizer.GetString(r => r.ClaimValue);
             Assert.False(claimValue.ResourceNotFound);
         }
 

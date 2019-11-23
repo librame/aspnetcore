@@ -1,7 +1,7 @@
 ﻿@model UseRecoveryCodeViewModel
-@inject IExpressionHtmlLocalizer<UseRecoveryCodeViewResource> Localizer
+@inject IHtmlLocalizer<UseRecoveryCodeViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
 }
 <!-- UseRecoveryCode -->
 <div class="row">
@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">@Localizer[r => r.ButtonText]</button>
+                    <button type="submit" class="btn">@Localizer.GetString(r => r.ButtonText)</button>
                 </div>
             </form>
         </div>

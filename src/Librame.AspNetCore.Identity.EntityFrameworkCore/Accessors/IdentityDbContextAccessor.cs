@@ -143,7 +143,7 @@ namespace Librame.AspNetCore.Identity
 
             var options = ServiceFactory.GetRequiredService<IOptions<IdentityBuilderOptions>>().Value;
             var coreOptions = ServiceFactory.GetRequiredService<IOptions<IdentityOptions>>().Value;
-            var dataProtector = ServiceProvider.GetService<IPersonalDataProtector>();
+            var dataProtector = InternalServiceProvider.GetService<IPersonalDataProtector>();
 
             modelBuilder.ConfigureIdentityStore<TRole, TRoleClaim, TUserRole,
                 TUser, TUserClaim, TUserLogin, TUserToken, TGenId>(options, coreOptions, dataProtector);

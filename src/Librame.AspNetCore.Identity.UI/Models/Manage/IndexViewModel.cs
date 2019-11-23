@@ -12,7 +12,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Identity.UI
 {
@@ -29,6 +29,7 @@ namespace Librame.AspNetCore.Identity.UI
         /// <summary>
         /// 用户登入信息列表。
         /// </summary>
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public IList<UserLoginInfo> Logins { get; set; }
 
         /// <summary>

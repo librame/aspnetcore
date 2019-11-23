@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
 {
     using Extensions;
     using Extensions.Data;
-    using Extensions.Network;
 
     public class Startup
     {
@@ -64,8 +64,9 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
                     optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetSimpleAssemblyName()));
                 })
-                .AddIdentifier<IdentityStoreIdentifier>()
                 .AddDbDesignTime<SqlServerDesignTimeServices>()
+                .AddIdentifier<IdentityStoreIdentifier>()
+                //.AddInitializer<IdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(options =>
                 {
                     options.Stores.MaxLengthForKeys = 128;
@@ -76,7 +77,7 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
         }
 
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -92,17 +93,13 @@ namespace Librame.AspNetCore.Identity.UI.Mvc.Examples
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseAuthorization();
-            app.UseLibrameCore()
-                .UseIdentity();
-
             app.UseRouting();
-            app.UseEndpoints(routes =>
-            {
-                routes.MapIdentityAreaControllerRoute();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-                routes.MapDefaultControllerRoute();
-            });
+            // 使用身份应用认证
+            app.UseLibrameCore()
+                .UseIdentityEndpointRoute();
         }
     }
 }

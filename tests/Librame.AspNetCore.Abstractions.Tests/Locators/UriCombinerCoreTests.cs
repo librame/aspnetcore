@@ -3,6 +3,7 @@ using Xunit;
 
 namespace Librame.AspNetCore.Tests
 {
+    using Extensions;
     using Extensions.Core;
 
     public class UriCombinerCoreTests
@@ -12,7 +13,7 @@ namespace Librame.AspNetCore.Tests
         {
             var uriString = "https://developer.microsoft.com/en-us/fabric#/get-started";
 
-            var combiner = (UriCombinerCore)uriString;
+            var combiner = new UriCombinerCore(uriString.AsAbsoluteUri());
             Assert.Equal("https", combiner.Scheme);
             Assert.Equal("developer.microsoft.com", combiner.HostString.ToString());
             Assert.Equal("/en-us/fabric", combiner.PathString.ToString());

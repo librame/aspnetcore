@@ -20,6 +20,13 @@ namespace Librame.AspNetCore.UI
     public interface IThemepackInfo : IApplicationInfo
     {
         /// <summary>
+        /// 获取布局。
+        /// </summary>
+        /// <param name="name">指定的名称（可选；通常为 Common、Login、Manage 等）。</param>
+        /// <returns>返回字符串。</returns>
+        string GetLayout(string name = null);
+
+        /// <summary>
         /// 获取静态文件提供程序。
         /// </summary>
         /// <remarks>

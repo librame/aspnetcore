@@ -12,6 +12,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
@@ -28,6 +29,7 @@ namespace Librame.AspNetCore.UI
         /// 构造一个 <see cref="RouteDescriptor"/>。
         /// </summary>
         /// <param name="url">给定的 URL。</param>
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "url")]
         public RouteDescriptor(string url)
         {
             Url = url.NotEmpty(nameof(url));
@@ -75,7 +77,7 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 查询参数。
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; private set; }
 
         /// <summary>
         /// 页面。
@@ -100,6 +102,7 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// URL。
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string Url { get; private set; }
 
 
@@ -117,11 +120,28 @@ namespace Librame.AspNetCore.UI
 
 
         /// <summary>
+        /// 页面名称。
+        /// </summary>
+        public virtual string PageName
+            => IsPage ? Path.GetFileNameWithoutExtension(Page) : string.Empty;
+
+        /// <summary>
         /// 视图名称。
         /// </summary>
         public virtual string ViewName
-            => IsPage ? Path.GetFileNameWithoutExtension(Page) : Action;
+            => IsPage ? PageName : Action;
 
+
+        /// <summary>
+        /// 改变标识。
+        /// </summary>
+        /// <param name="newId">给定的新标识（可选；默认清空标识）。</param>
+        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
+        public RouteDescriptor ChangeId(string newId = null)
+        {
+            Id = newId;
+            return this;
+        }
 
         /// <summary>
         /// 改变页面。
@@ -146,7 +166,7 @@ namespace Librame.AspNetCore.UI
         }
 
         /// <summary>
-        /// 改变动作。
+        /// 改变控制器。
         /// </summary>
         /// <param name="newController">给定的新控制器。</param>
         /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
@@ -167,17 +187,38 @@ namespace Librame.AspNetCore.UI
             return this;
         }
 
-        /// <summary>
-        /// 改变 URL。
-        /// </summary>
-        /// <param name="newUrl">给定的新 URL。</param>
-        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
-        public RouteDescriptor ChangeUrl(string newUrl)
-        {
-            Url = newUrl.NotEmpty(nameof(newUrl));
-            return this;
-        }
 
+        /// <summary>
+        /// 用新标识以及当前其他参数构造一个新实例。
+        /// </summary>
+        /// <param name="newId">给定的新标识（可选；默认清空标识）。</param>
+        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
+        public RouteDescriptor NewId(string newId = null)
+            => new RouteDescriptor(newId, Action, Controller, Page, Area);
+
+        /// <summary>
+        /// 用新页面以及当前其他参数构造一个新实例。
+        /// </summary>
+        /// <param name="newPage">给定的新页面。</param>
+        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
+        public RouteDescriptor NewPage(string newPage)
+            => new RouteDescriptor(Id, Action, Controller, newPage, Area);
+
+        /// <summary>
+        /// 用新动作以及当前其他参数构造一个新实例。
+        /// </summary>
+        /// <param name="newAction">给定的新动作。</param>
+        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
+        public RouteDescriptor NewAction(string newAction)
+            => new RouteDescriptor(Id, newAction, Controller, Page, Area);
+
+        /// <summary>
+        /// 用新控制器以及当前其他参数构造一个新实例。
+        /// </summary>
+        /// <param name="newController">给定的新控制器。</param>
+        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
+        public RouteDescriptor NewController(string newController)
+            => new RouteDescriptor(Id, Action, newController, Page, Area);
 
         /// <summary>
         /// 用新区域以及当前其他参数构造一个新实例。
@@ -194,7 +235,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="route">给定的 <see cref="RouteDescriptor"/>。</param>
         /// <returns>返回布尔值。</returns>
         public bool IsView(RouteDescriptor route)
-            => IsView(route.ViewName);
+            => IsView(route?.ViewName);
 
         /// <summary>
         /// 是指定的视图。
@@ -211,7 +252,7 @@ namespace Librame.AspNetCore.UI
         /// <param name="other">给定的 <see cref="RouteDescriptor"/>。</param>
         /// <returns>返回布尔值。</returns>
         public bool Equals(RouteDescriptor other)
-            => ToString() == other.ToString();
+            => ToString() == other?.ToString();
 
         /// <summary>
         /// 重写是否相等。
@@ -227,7 +268,7 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         /// <returns>返回 32 位整数。</returns>
         public override int GetHashCode()
-            => ToString().GetHashCode();
+            => ToString().GetHashCode(StringComparison.OrdinalIgnoreCase);
 
 
         /// <summary>
@@ -286,6 +327,7 @@ namespace Librame.AspNetCore.UI
         /// </summary>
         /// <param name="urlHelper">给定的 <see cref="IUrlHelper"/>。</param>
         /// <returns>返回字符串。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "urlHelper")]
         public virtual string ToString(IUrlHelper urlHelper)
         {
             urlHelper.NotNull(nameof(urlHelper));
@@ -327,5 +369,34 @@ namespace Librame.AspNetCore.UI
         /// <param name="descriptor">给定的 <see cref="RouteDescriptor"/>。</param>
         public static implicit operator string(RouteDescriptor descriptor)
             => descriptor?.ToString();
+
+
+        /// <summary>
+        /// 通过主页控制器创建路由描述符。
+        /// </summary>
+        /// <param name="action">给定的动作。</param>
+        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
+        public static RouteDescriptor ByHomeController(string action)
+            => ByController(action, "Home");
+
+        /// <summary>
+        /// 通过区域控制器创建路由描述符。
+        /// </summary>
+        /// <param name="action">给定的动作。</param>
+        /// <param name="controller">给定的控制器。</param>
+        /// <param name="area">给定的区域（可选）。</param>
+        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
+        public static RouteDescriptor ByController(string action, string controller, string area = null)
+            => new RouteDescriptor(action, controller, area);
+
+
+        /// <summary>
+        /// 通过页面创建路由描述符。
+        /// </summary>
+        /// <param name="page">给定的页面。</param>
+        /// <param name="area">给定的区域（可选）。</param>
+        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
+        public static RouteDescriptor ByPage(string page, string area = null)
+            => new RouteDescriptor(page, area);
     }
 }

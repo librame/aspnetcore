@@ -1,7 +1,7 @@
 ﻿@model ExternalLoginConfirmationViewModel
-@inject IExpressionHtmlLocalizer<ExternalLoginViewResource> Localizer
+@inject IHtmlLocalizer<ExternalLoginViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
     var providerDisplayName = ViewData["ProviderDisplayName"];
 }
 <!-- ExternalLoginConfirmation -->
@@ -9,8 +9,8 @@
     <div class="col-sm-6 col-sm-offset-3 form-box">
         <div class="form-top">
             <div class="form-top-left">
-                <h3>@Localizer[r => r.Title, providerDisplayName]</h3>
-                <p>@Localizer[r => r.Descr, providerDisplayName]</p>
+                <h3>@Localizer.GetString(r => r.Title, providerDisplayName)</h3>
+                <p>@Localizer.GetString(r => r.Descr, providerDisplayName)</p>
             </div>
             <div class="form-top-right">
                 <i class="fa fa-key"></i>
@@ -23,12 +23,12 @@
 
                 <div class="form-group">
                     <label asp-for="Email" class="sr-only"></label>
-                    <input asp-for="Email" class="form-username form-control" placeholder="@Localizer[r => r.Email] ..." />
+                    <input asp-for="Email" class="form-username form-control" placeholder="@Localizer.GetString(r => r.Email) ..." />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn">@Localizer[r => r.ButtonText]</button>
+                    <button type="submit" class="btn">@Localizer.GetString(r => r.ButtonText)</button>
                 </div>
             </form>
         </div>

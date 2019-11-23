@@ -83,6 +83,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Api.Grap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityServer.UI.Tests", "tests\Librame.AspNetCore.IdentityServer.UI.Tests\Librame.AspNetCore.IdentityServer.UI.Tests.csproj", "{DE7EA136-6B48-46E8-AA8F-8A07D25F62EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.AspNetCore.Authentication.Librame", "src\Microsoft.AspNetCore.Authentication.Librame\Microsoft.AspNetCore.Authentication.Librame.csproj", "{A18F2F2E-34C5-4A35-B960-F02B99367F7C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{4333230B-23E5-42F4-8622-7E1D8F8D9317}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.Models", "shared\Librame.Models\Librame.Models.csproj", "{D55E3BDA-0D44-47BC-9BFC-A6C89B39C4D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -237,6 +243,14 @@ Global
 		{DE7EA136-6B48-46E8-AA8F-8A07D25F62EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE7EA136-6B48-46E8-AA8F-8A07D25F62EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE7EA136-6B48-46E8-AA8F-8A07D25F62EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A18F2F2E-34C5-4A35-B960-F02B99367F7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A18F2F2E-34C5-4A35-B960-F02B99367F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A18F2F2E-34C5-4A35-B960-F02B99367F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A18F2F2E-34C5-4A35-B960-F02B99367F7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D55E3BDA-0D44-47BC-9BFC-A6C89B39C4D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D55E3BDA-0D44-47BC-9BFC-A6C89B39C4D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D55E3BDA-0D44-47BC-9BFC-A6C89B39C4D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D55E3BDA-0D44-47BC-9BFC-A6C89B39C4D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -279,6 +293,8 @@ Global
 		{B6B401BC-61F7-41C8-9CFD-1D42F2CD9C6B} = {64F541DF-34A5-4451-B3F2-AB1A7592B652}
 		{A1B6F234-C007-4190-B587-DAD9CC6B82F3} = {64F541DF-34A5-4451-B3F2-AB1A7592B652}
 		{DE7EA136-6B48-46E8-AA8F-8A07D25F62EC} = {64F541DF-34A5-4451-B3F2-AB1A7592B652}
+		{A18F2F2E-34C5-4A35-B960-F02B99367F7C} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
+		{D55E3BDA-0D44-47BC-9BFC-A6C89B39C4D3} = {4333230B-23E5-42F4-8622-7E1D8F8D9317}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C045FFCB-A85F-4F5E-9830-8F503D71513E}

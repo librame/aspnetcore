@@ -5,10 +5,10 @@ namespace Librame.AspNetCore.Identity.Tests
 {
     using Extensions.Data;
 
-    public class TestStoreHub : StoreHubBase<IdentityDbContextAccessor>
+    public class TestStoreHub : StoreHub<IdentityDbContextAccessor, IdentityStoreInitializer>
     {
-        public TestStoreHub(IAccessor accessor, IStoreInitializer<IdentityDbContextAccessor> initializer)
-            : base(accessor, initializer)
+        public TestStoreHub(IStoreInitializer initializer, IAccessor accessor)
+            : base(initializer, accessor)
         {
         }
 
@@ -26,13 +26,13 @@ namespace Librame.AspNetCore.Identity.Tests
 
         public TestStoreHub UseDefaultDbConnection()
         {
-            Accessor.SwitchTenant(t => t.DefaultConnectionString);
+            Accessor.ChangeDbConnection(t => t.DefaultConnectionString);
             return this;
         }
 
         public TestStoreHub UseWriteDbConnection()
         {
-            Accessor.SwitchTenant(t => t.WritingConnectionString);
+            Accessor.ChangeDbConnection(t => t.WritingConnectionString);
             return this;
         }
     }

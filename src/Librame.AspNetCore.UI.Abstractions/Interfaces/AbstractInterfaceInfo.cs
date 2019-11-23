@@ -22,8 +22,8 @@ namespace Librame.AspNetCore.UI
         /// <summary>
         /// 构造一个 <see cref="AbstractInterfaceInfo"/>。
         /// </summary>
-        /// <param name="serviceFactory">给定的 <see cref="ServiceFactoryDelegate"/>。</param>
-        public AbstractInterfaceInfo(ServiceFactoryDelegate serviceFactory)
+        /// <param name="serviceFactory">给定的 <see cref="ServiceFactory"/>。</param>
+        public AbstractInterfaceInfo(ServiceFactory serviceFactory)
         {
             ApplyServiceFactory(serviceFactory);
         }

@@ -1,8 +1,8 @@
 @page
 @model ShowRecoveryCodesPageModel
-@inject IExpressionHtmlLocalizer<ShowRecoveryCodesViewResource> Localizer
+@inject IHtmlLocalizer<ShowRecoveryCodesViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
     ViewData["ActiveView"] = ViewPageNames.TwoFactorAuthentication;
 }
 
@@ -14,10 +14,10 @@
 <div class="alert alert-warning" role="alert">
     <p>
         <span class="glyphicon glyphicon-warning-sign"></span>
-        <strong>@Localizer[r => r.Descr]</strong>
+        <strong>@Localizer.GetString(r => r.Descr)</strong>
     </p>
     <p>
-        @Localizer[r => r.Info]
+        @Localizer.GetString(r => r.Info)
     </p>
 </div>
 

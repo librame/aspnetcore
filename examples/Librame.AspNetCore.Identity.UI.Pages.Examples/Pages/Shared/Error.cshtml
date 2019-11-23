@@ -1,17 +1,17 @@
 ﻿@page
 @model ErrorPageModel
-@inject IExpressionHtmlLocalizer<ErrorViewResource> Localizer
+@inject IHtmlLocalizer<ErrorViewResource> Localizer
 @{
-    ViewData["Title"] = Localizer[r => r.Title];
+    ViewData["Title"] = Localizer.GetString(r => r.Title);
 }
 
 <h1 class="text-danger">@ViewData["Title"]</h1>
-<h2 class="text-danger">@Localizer[r => r.Descr]</h2>
+<h2 class="text-danger">@Localizer.GetString(r => r.Descr)</h2>
 
 @if (Model.ViewModel.ShowRequestId)
 {
     <p>
-        <strong>@Localizer[r => r.RequestId]: </strong> <code>@Model.ViewModel.RequestId</code>
+        <strong>@Localizer.GetString(r => r.RequestId): </strong> <code>@Model.ViewModel.RequestId</code>
     </p>
 }
 

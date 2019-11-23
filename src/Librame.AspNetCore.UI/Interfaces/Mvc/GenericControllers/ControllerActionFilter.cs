@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.UI
 {
+    using Extensions;
+
     /// <summary>
     /// A filter implementation which delegates to the controller for action filter interfaces.
     /// </summary>
@@ -62,7 +64,7 @@ namespace Librame.AspNetCore.UI
             actionFilter.OnActionExecuting(context);
             if (context.Result == null)
             {
-                actionFilter.OnActionExecuted(await next());
+                actionFilter.OnActionExecuted(await next.Invoke().ConfigureAndResultAsync());
             }
         }
     }

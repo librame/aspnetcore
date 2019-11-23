@@ -7,11 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
 {
+    using AspNetCore.UI;
+    using Extensions;
     using Extensions.Data;
-    using Extensions.Network;
+    using Extensions.Encryption;
     using Identity;
 
     public class Startup
@@ -34,21 +37,14 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
-            .AddIdentityCookies(cookies => { });
-
             var mvcBuilder = services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
             // 默认使用测试项目的写入库
-            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-            var writingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
+            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_default;Integrated Security=True";
+            var writingConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_writing;Integrated Security=True";
 
             services.AddLibrameCore()
                 .AddDataCore(options =>
@@ -59,46 +55,70 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
                 })
                 .AddAccessor<IdentityServerDbContextAccessor>((options, optionsBuilder) =>
                 {
-                    var migrationsAssembly = typeof(IdentityServerDbContextAccessor).Assembly.GetName().Name;
                     optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
+                        sql => sql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetSimpleAssemblyName()));
                 })
-                .AddIdentifier<IdentityStoreIdentifier>()
                 .AddDbDesignTime<SqlServerDesignTimeServices>()
-                .AddIdentityServer<IdentityServerDbContextAccessor,
-                    DefaultIdentityUser<string>>(options =>
+                .AddIdentifier<IdentityServerStoreIdentifier>()
+                .AddIdentity<IdentityServerDbContextAccessor>(options =>
+                {
+                    options.Stores.MaxLengthForKeys = 128;
+                })
+                .AddIdentityServer<DefaultIdentityUser<string>>(dependency =>
+                {
+                    // Use InMemoryStores
+                    //dependency.Builder.Action = options =>
+                    //{
+                    //    options.Authorizations.IdentityResources.AddRange(IdentityServerConfiguration.DefaultIdentityResources);
+                    //    options.Authorizations.ApiResources.Add(IdentityServerConfiguration.DefaultApiResource);
+                    //    options.Authorizations.Clients.Add(IdentityServerConfiguration.DefaultClient);
+                    //};
+
+                    dependency.IdentityServer = server =>
                     {
-                        options.Events.RaiseErrorEvents = true;
-                        options.Events.RaiseInformationEvents = true;
-                        options.Events.RaiseFailureEvents = true;
-                        options.Events.RaiseSuccessEvents = true;
-                    })
+                        // Use Librame.AspNetCore.IdentityServer.UI.Mvc RPL
+                        server.UserInteraction.LoginUrl = RouteDescriptor.ByController("Login", "Account", nameof(IdentityServer));
+                        server.UserInteraction.LogoutUrl = RouteDescriptor.ByController("Logout", "Account", nameof(IdentityServer));
+
+                        server.Events.RaiseErrorEvents = true;
+                        server.Events.RaiseInformationEvents = true;
+                        server.Events.RaiseFailureEvents = true;
+                        server.Events.RaiseSuccessEvents = true;
+                    };
+                })
+                .AddAccessorStores<IdentityServerDbContextAccessor>() //.AddAccessorStores<IdentityServerDbContextAccessor>() //.AddInMemoryStores()
                 .AddIdentityServerUI()
                 .AddIdentityServerInterfaceWithViews(mvcBuilder)
+                .AddEncryption().AddDeveloperGlobalSigningCredentials()
                 .AddNetwork();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+            .AddIdentityCookies();
         }
 
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-            app.UseAuthorization();
-            app.UseLibrameCore()
-                .UseIdentityServer();
+            app.UseCookiePolicy();
 
             app.UseRouting();
-            app.UseEndpoints(routes =>
-            {
-                routes.MapIdentityServerAreaControllerRoute();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseIdentityServer();
 
-                routes.MapDefaultControllerRoute();
-            });
+            app.UseLibrameCore()
+                .UseIdentityServerEndpointRoute();
         }
 
     }

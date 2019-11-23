@@ -10,12 +10,11 @@
 
 #endregion
 
+using Librame.AspNetCore.UI;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Librame.AspNetCore.IdentityServer.UI
 {
-    using AspNetCore.UI;
-
     /// <summary>
     /// 身份服务器 MVC UI 构建器静态扩展。
     /// </summary>
@@ -31,7 +30,8 @@ namespace Librame.AspNetCore.IdentityServer.UI
         {
             builder.AddGenericControllersWithUser();
 
-            builder.AddInterfaceWithViews<IdentityServerInterfaceConfigurationWithViews, IdentityServerInterfaceSitemapWithViews>(mvcBuilder, typeof(IdentityServerMvcUiBuilderExtensions).Assembly);
+            builder.AddInterfaceWithViews<IdentityServerInterfaceConfigurationWithViews, IdentityServerInterfaceSitemapWithViews>(mvcBuilder,
+                typeof(IdentityServerMvcUiBuilderExtensions).Assembly);
 
             return builder;
         }

@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Librame.AspNetCore.Identity
@@ -42,6 +43,7 @@ namespace Librame.AspNetCore.Identity
         /// <param name="options">给定的 <see cref="IdentityBuilderOptions"/>。</param>
         /// <param name="coreOptions">给定的 <see cref="IdentityOptions"/>。</param>
         /// <param name="dataProtector">给定的 <see cref="IPersonalDataProtector"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static void ConfigureIdentityStore<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TGenId>(this ModelBuilder modelBuilder,
             IdentityBuilderOptions options, IdentityOptions coreOptions, IPersonalDataProtector dataProtector)
             where TRole : DefaultIdentityRole<TGenId>
