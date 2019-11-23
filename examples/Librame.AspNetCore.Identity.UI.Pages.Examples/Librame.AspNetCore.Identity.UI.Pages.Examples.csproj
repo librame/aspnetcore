@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Librame.AspNetCore.Identity.UI.Pages\Librame.AspNetCore.Identity.UI.Pages.csproj" />
-    <ProjectReference Include="..\..\src\Librame.AspNetCore.UI.Simple\Librame.AspNetCore.UI.Themepack.Simple.csproj" />
+    <ProjectReference Include="..\..\src\Librame.AspNetCore.UI.Themepack.Simple\Librame.AspNetCore.UI.Themepack.Simple.csproj" />
   </ItemGroup>
 
 </Project>

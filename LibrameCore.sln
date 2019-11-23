@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.UI.Abstr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.UI", "src\Librame.AspNetCore.UI\Librame.AspNetCore.UI.csproj", "{F8E2BB47-8C29-4CD7-90D1-6E2211202FAE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.UI.Themepack.Simple", "src\Librame.AspNetCore.UI.Simple\Librame.AspNetCore.UI.Themepack.Simple.csproj", "{14CD62D2-4CFF-44E9-A5CF-0CDD1AD405B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.UI.Themepack.Simple", "src\Librame.AspNetCore.UI.Themepack.Simple\Librame.AspNetCore.UI.Themepack.Simple.csproj", "{14CD62D2-4CFF-44E9-A5CF-0CDD1AD405B1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Identity.Abstractions", "src\Librame.AspNetCore.Identity.Abstractions\Librame.AspNetCore.Identity.Abstractions.csproj", "{AB135681-2183-4751-90B9-1073CCFF78D2}"
 EndProject

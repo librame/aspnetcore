@@ -13,9 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\shared\Librame.Models\Librame.Models.csproj" />
-    <ProjectReference Include="..\..\src\Librame.AspNetCore.Identity.Abstractions\Librame.AspNetCore.Identity.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Librame.AspNetCore.IdentityServer.UI.Mvc\Librame.AspNetCore.IdentityServer.UI.Mvc.csproj" />
-    <ProjectReference Include="..\..\src\Librame.AspNetCore.UI.Simple\Librame.AspNetCore.UI.Themepack.Simple.csproj" />
+    <ProjectReference Include="..\..\src\Librame.AspNetCore.UI.Themepack.Simple\Librame.AspNetCore.UI.Themepack.Simple.csproj" />
   </ItemGroup>
 
 </Project>
