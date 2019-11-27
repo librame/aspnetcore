@@ -125,6 +125,10 @@ namespace Librame.AspNetCore.IdentityServer.UI
                         return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
                     }
 
+                    // 解决当取消登陆后，使用 model.ReturnUrl 会导致客户端抛出未处理的异常
+                    if (button == "cancel")
+                        return Redirect(context.RedirectUri);
+
                     return Redirect(model.ReturnUrl);
                 }
                 else

@@ -1,6 +1,4 @@
-﻿using IdentityServer4;
-using IdentityServer4.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +10,6 @@ namespace Librame.AspNetCore.IdentityServer.Tests
     using Extensions;
     using Extensions.Data;
     using Extensions.Encryption;
-    using Models;
 
     internal static class TestServiceProvider
     {

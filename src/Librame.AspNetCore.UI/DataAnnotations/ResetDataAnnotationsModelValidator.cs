@@ -103,54 +103,56 @@ namespace Librame.AspNetCore.UI
                 MemberName = memberName
             };
 
+            // 解决视图页在 POST 取消后重新绑定模型会抛出找不到可访问静态属性名的异常
+            if (validationContext.Model.IsNull())
+                return Enumerable.Empty<ModelValidationResult>();
+
             var result = Attribute.GetValidationResult(validationContext.Model, context);
-            if (result != ValidationResult.Success)
+            if (result == ValidationResult.Success)
+                return Enumerable.Empty<ModelValidationResult>();
+
+            string errorMessage;
+
+            if (_stringLocalizer != null &&
+                !string.IsNullOrEmpty(Attribute.ErrorMessage) &&
+                string.IsNullOrEmpty(Attribute.ErrorMessageResourceName) &&
+                Attribute.ErrorMessageResourceType == null)
             {
-                string errorMessage;
-
-                if (_stringLocalizer != null &&
-                    !string.IsNullOrEmpty(Attribute.ErrorMessage) &&
-                    string.IsNullOrEmpty(Attribute.ErrorMessageResourceName) &&
-                    Attribute.ErrorMessageResourceType == null)
-                {
-                    errorMessage = GetErrorMessage(validationContext) ?? result.ErrorMessage;
-                }
-                else
-                {
-                    errorMessage = result.ErrorMessage;
-                }
-
-                var validationResults = new List<ModelValidationResult>();
-                if (result.MemberNames != null)
-                {
-                    foreach (var resultMemberName in result.MemberNames)
-                    {
-                        // ModelValidationResult.MemberName is used by invoking validators (such as ModelValidator) to
-                        // append construct the ModelKey for ModelStateDictionary. When validating at type level we
-                        // want the returned MemberNames if specified (e.g. "person.Address.FirstName"). For property
-                        // validation, the ModelKey can be constructed using the ModelMetadata and we should ignore
-                        // MemberName (we don't want "person.Name.Name"). However the invoking validator does not have
-                        // a way to distinguish between these two cases. Consequently we'll only set MemberName if this
-                        // validation returns a MemberName that is different from the property being validated.
-                        var newMemberName = string.Equals(resultMemberName, memberName, StringComparison.Ordinal) ?
-                            null :
-                            resultMemberName;
-                        var validationResult = new ModelValidationResult(newMemberName, errorMessage);
-
-                        validationResults.Add(validationResult);
-                    }
-                }
-
-                if (validationResults.Count == 0)
-                {
-                    // result.MemberNames was null or empty.
-                    validationResults.Add(new ModelValidationResult(memberName: null, message: errorMessage));
-                }
-
-                return validationResults;
+                errorMessage = GetErrorMessage(validationContext) ?? result.ErrorMessage;
+            }
+            else
+            {
+                errorMessage = result.ErrorMessage;
             }
 
-            return Enumerable.Empty<ModelValidationResult>();
+            var validationResults = new List<ModelValidationResult>();
+            if (result.MemberNames != null)
+            {
+                foreach (var resultMemberName in result.MemberNames)
+                {
+                    // ModelValidationResult.MemberName is used by invoking validators (such as ModelValidator) to
+                    // append construct the ModelKey for ModelStateDictionary. When validating at type level we
+                    // want the returned MemberNames if specified (e.g. "person.Address.FirstName"). For property
+                    // validation, the ModelKey can be constructed using the ModelMetadata and we should ignore
+                    // MemberName (we don't want "person.Name.Name"). However the invoking validator does not have
+                    // a way to distinguish between these two cases. Consequently we'll only set MemberName if this
+                    // validation returns a MemberName that is different from the property being validated.
+                    var newMemberName = string.Equals(resultMemberName, memberName, StringComparison.Ordinal) ?
+                        null :
+                        resultMemberName;
+                    var validationResult = new ModelValidationResult(newMemberName, errorMessage);
+
+                    validationResults.Add(validationResult);
+                }
+            }
+
+            if (validationResults.Count == 0)
+            {
+                // result.MemberNames was null or empty.
+                validationResults.Add(new ModelValidationResult(memberName: null, message: errorMessage));
+            }
+
+            return validationResults;
         }
 
         private string GetErrorMessage(ModelValidationContextBase validationContext)

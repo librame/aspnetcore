@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.0.1771.301</Version>
+    <Version>7.1.1775.301</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.Extensions.Data.Abstractions on ASP.NET Core extension package.</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.Extensions.Data.Abstractions on ASP.NET Core extension package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.0.1771.301</AssemblyVersion>
-    <FileVersion>7.0.1911.231</FileVersion>
+    <AssemblyVersion>7.1.1775.301</AssemblyVersion>
+    <FileVersion>7.1.1911.271</FileVersion>
     <RootNamespace>Librame.Extensions.Data</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
@@ -38,7 +38,7 @@
     
   <ItemGroup>
     <PackageReference Include="Librame.Extensions.Data.Abstractions" Version="7.1.937.211" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7">
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
