@@ -1,3 +1,5 @@
+using Librame.Extensions.Core;
+using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -8,38 +10,40 @@ namespace Librame.AspNetCore.IdentityServer.Tests
         [Fact]
         public void AllTest()
         {
-            using (var stores = TestServiceProvider.Current.GetRequiredService<TestStoreHub>())
-            {
-                var roles = stores.GetRoles();
-                Assert.Empty(roles);
+            var stores = TestServiceProvider.Current.GetRequiredService<TestStoreHub>();
 
-                roles = stores.UseWriteDbConnection().GetRoles();
-                Assert.NotEmpty(roles);
+            var dependencies = stores.ServiceFactory.GetService<MigrationsScaffolderDependencies>();
+            Assert.NotNull(dependencies);
 
-                var users = stores.UseDefaultDbConnection().GetUsers();
-                Assert.Empty(users);
+            var roles = stores.GetRoles();
+            Assert.Empty(roles);
 
-                users = stores.UseWriteDbConnection().GetUsers();
-                Assert.NotEmpty(users);
+            roles = stores.UseWriteDbConnection().GetRoles();
+            Assert.NotEmpty(roles);
 
-                var apiResources = stores.UseDefaultDbConnection().GetApiResources();
-                Assert.Empty(apiResources);
+            var users = stores.UseDefaultDbConnection().GetUsers();
+            Assert.Empty(users);
 
-                apiResources = stores.UseWriteDbConnection().GetApiResources();
-                Assert.NotEmpty(apiResources);
+            users = stores.UseWriteDbConnection().GetUsers();
+            Assert.NotEmpty(users);
 
-                var clients = stores.UseDefaultDbConnection().GetClients();
-                Assert.Empty(clients);
+            var apiResources = stores.UseDefaultDbConnection().GetApiResources();
+            Assert.Empty(apiResources);
 
-                clients = stores.UseWriteDbConnection().GetClients();
-                Assert.NotEmpty(clients);
+            apiResources = stores.UseWriteDbConnection().GetApiResources();
+            Assert.NotEmpty(apiResources);
 
-                var identities = stores.UseDefaultDbConnection().GetIdentityResources();
-                Assert.Empty(identities);
+            var clients = stores.UseDefaultDbConnection().GetClients();
+            Assert.Empty(clients);
 
-                identities = stores.UseWriteDbConnection().GetIdentityResources();
-                Assert.NotEmpty(identities);
-            }
+            clients = stores.UseWriteDbConnection().GetClients();
+            Assert.NotEmpty(clients);
+
+            var identities = stores.UseDefaultDbConnection().GetIdentityResources();
+            Assert.Empty(identities);
+
+            identities = stores.UseWriteDbConnection().GetIdentityResources();
+            Assert.NotEmpty(identities);
         }
 
     }

@@ -11,23 +11,22 @@ namespace Librame.AspNetCore.Identity.Tests
         [Fact]
         public void AllTest()
         {
-            using (var stores = TestServiceProvider.Current.GetRequiredService<TestStoreHub>())
-            {
-                var dependencies = stores.ServiceFactory.GetService<MigrationsScaffolderDependencies>();
-                Assert.NotNull(dependencies);
+            var stores = TestServiceProvider.Current.GetRequiredService<TestStoreHub>();
 
-                var roles = stores.GetRoles();
-                Assert.Empty(roles);
+            var dependencies = stores.ServiceFactory.GetService<MigrationsScaffolderDependencies>();
+            Assert.NotNull(dependencies);
 
-                roles = stores.UseWriteDbConnection().GetRoles();
-                Assert.NotEmpty(roles);
+            var roles = stores.GetRoles();
+            Assert.Empty(roles);
 
-                var users = stores.UseDefaultDbConnection().GetUsers();
-                Assert.Empty(users);
+            roles = stores.UseWriteDbConnection().GetRoles();
+            Assert.NotEmpty(roles);
 
-                users = stores.UseWriteDbConnection().GetUsers();
-                Assert.NotEmpty(users);
-            }
+            var users = stores.UseDefaultDbConnection().GetUsers();
+            Assert.Empty(users);
+
+            users = stores.UseWriteDbConnection().GetUsers();
+            Assert.NotEmpty(users);
         }
 
     }
