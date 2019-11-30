@@ -23,7 +23,7 @@ namespace Librame.AspNetCore.IdentityServer
     public class IdentityServerStoreIdentifier : IdentityStoreIdentifier
     {
         /// <summary>
-        /// 构造一个 <see cref="IdentityStoreIdentifier"/>。
+        /// 构造一个 <see cref="IdentityServerStoreIdentifier"/>。
         /// </summary>
         /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>

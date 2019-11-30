@@ -7,6 +7,7 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -24,6 +25,8 @@ namespace Librame.AspNetCore.IdentityServer.UI
     /// </summary>
     [SecurityHeaders]
     [Authorize]
+    [Area(IdentityServerAreaRouteBuilderExtensions.AreaName)]
+    [Route(IdentityServerAreaRouteBuilderExtensions.Template)]
     public class ConsentController : Controller
     {
         [InjectionService]
@@ -65,7 +68,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// <param name="returnUrl"></param>
         /// <returns></returns>
         [HttpGet]
-        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
         public async Task<IActionResult> Index(string returnUrl)
         {
             var vm = await BuildViewModelAsync(returnUrl).ConfigureAndResultAsync();

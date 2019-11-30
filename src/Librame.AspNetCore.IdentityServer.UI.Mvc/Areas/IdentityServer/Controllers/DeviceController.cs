@@ -8,6 +8,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -25,6 +26,8 @@ namespace Librame.AspNetCore.IdentityServer.UI
     /// </summary>
     [Authorize]
     [SecurityHeaders]
+    [Area(IdentityServerAreaRouteBuilderExtensions.AreaName)]
+    [Route(IdentityServerAreaRouteBuilderExtensions.Template)]
     public class DeviceController : Controller
     {
         [InjectionService]

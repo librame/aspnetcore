@@ -34,7 +34,6 @@ namespace Librame.AspNetCore.IdentityServer
         public IdentityServerDbContextAccessor(DbContextOptions options)
             : base(options)
         {
-            Migrate();
         }
 
 

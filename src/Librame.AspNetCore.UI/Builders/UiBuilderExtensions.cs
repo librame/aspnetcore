@@ -70,6 +70,10 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<IExtensionBuilder, TDependencyOptions, IUiBuilder> builderFactory = null)
             where TDependencyOptions : UiBuilderDependencyOptions, new()
         {
+            // 如果已经添加过 UI 扩展，则直接返回，防止出现重复配置的情况
+            if (builder.TryGetParentBuilder(out IUiBuilder parentUiBuilder))
+                return parentUiBuilder;
+
             // Add Dependencies
             var dependency = dependencyAction.ConfigureDependency();
             builder.Services.AddAllOptionsConfigurators(dependency);

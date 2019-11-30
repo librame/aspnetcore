@@ -11,11 +11,13 @@
 #endregion
 
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Identity
 {
     using Extensions.Core;
 
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     class DefaultPasswordService : AbstractService, IDefaultPasswordService
     {
         public DefaultPasswordService(ILoggerFactory loggerFactory)

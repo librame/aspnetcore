@@ -22,6 +22,11 @@ namespace Librame.AspNetCore.UI
     public interface IUiBuilder : IExtensionBuilder
     {
         /// <summary>
+        /// 已支持泛型控制器。
+        /// </summary>
+        bool SupportedGenericController { get; }
+
+        /// <summary>
         /// 用户类型。
         /// </summary>
         Type UserType { get; }

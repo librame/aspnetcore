@@ -35,6 +35,9 @@ namespace Librame.AspNetCore.UI
         {
             builder.NotNull(nameof(builder));
 
+            if (builder.SupportedGenericController)
+                return builder;
+
             var replaceAssembly = typeof(ApplicationPartManager).Assembly;
 
             var defaultApplicationModelProviderType = replaceAssembly
@@ -48,6 +51,9 @@ namespace Librame.AspNetCore.UI
                 .GetType("Microsoft.AspNetCore.Mvc.ApplicationModels.ControllerActionDescriptorProvider");
             builder.Services.TryReplace(typeof(IActionDescriptorProvider), controllerActionDescriptorProviderType,
                 typeof(ResetControllerActionDescriptorProvider));
+
+            if (builder is UiBuilder uiBuilder)
+                uiBuilder.SupportedGenericController = true;
 
             return builder;
         }

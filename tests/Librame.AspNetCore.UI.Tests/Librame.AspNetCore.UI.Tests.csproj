@@ -15,9 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Librame.AspNetCore.Identity.UI\Librame.AspNetCore.Identity.UI.csproj" />
-    <ProjectReference Include="..\..\src\Librame.AspNetCore.IdentityServer.UI\Librame.AspNetCore.IdentityServer.UI.csproj" />
-    <ProjectReference Include="..\..\src\Librame.AspNetCore.UI.Simple\Librame.AspNetCore.UI.Themepack.Simple.csproj" />
+    <ProjectReference Include="..\..\src\Librame.AspNetCore.UI.Themepack.Simple\Librame.AspNetCore.UI.Themepack.Simple.csproj" />
     <ProjectReference Include="..\..\src\Librame.AspNetCore.UI\Librame.AspNetCore.UI.csproj" />
   </ItemGroup>
 

@@ -10,15 +10,19 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 
-namespace Microsoft.AspNetCore.Routing
+namespace Microsoft.AspNetCore.Builder
 {
     /// <summary>
     /// 身份区域路由构建器静态扩展。
     /// </summary>
     public static class IdentityAreaRouteBuilderExtensions
     {
+        internal const string AreaName = nameof(Identity);
+        internal const string Template = "Identity/{controller}/{action}/{id?}";
+
+
         /// <summary>
         /// 映射身份区域路由。
         /// </summary>
@@ -27,25 +31,25 @@ namespace Microsoft.AspNetCore.Routing
         public static IRouteBuilder MapIdentityAreaRoute(this IRouteBuilder builder)
         {
             return builder.MapAreaRoute(
-                name: "Identity",
-                areaName: "Identity",
-                template: "Identity/{controller}/{action}/{id?}",
+                name: AreaName,
+                areaName: AreaName,
+                template: Template,
                 defaults: new { controller = "Manage", action = "Index" }
             );
         }
 
 
         /// <summary>
-        /// 映射身份区域控制器路由。
+        /// 映射身份区域路由。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IEndpointRouteBuilder"/>。</param>
         /// <returns>返回 <see cref="ControllerActionEndpointConventionBuilder"/>。</returns>
-        public static ControllerActionEndpointConventionBuilder MapIdentityAreaControllerRoute(this IEndpointRouteBuilder builder)
+        public static ControllerActionEndpointConventionBuilder MapIdentityAreaRoute(this IEndpointRouteBuilder builder)
         {
             return builder.MapAreaControllerRoute(
-                name: "Identity",
-                areaName: "Identity",
-                pattern: "Identity/{controller}/{action}/{id?}",
+                name: AreaName,
+                areaName: AreaName,
+                pattern: Template,
                 defaults: new { controller = "Manage", action = "Index" }
             );
         }

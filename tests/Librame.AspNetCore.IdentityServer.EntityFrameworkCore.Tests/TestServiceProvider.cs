@@ -6,10 +6,10 @@ using System;
 
 namespace Librame.AspNetCore.IdentityServer.Tests
 {
-    using AspNetCore.Identity;
     using Extensions;
     using Extensions.Data;
     using Extensions.Encryption;
+    using Identity;
 
     internal static class TestServiceProvider
     {

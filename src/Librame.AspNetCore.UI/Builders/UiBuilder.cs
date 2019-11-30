@@ -27,6 +27,8 @@ namespace Librame.AspNetCore.UI
         }
 
 
+        public bool SupportedGenericController { get; internal set; }
+
         public Type UserType { get; private set; }
 
 

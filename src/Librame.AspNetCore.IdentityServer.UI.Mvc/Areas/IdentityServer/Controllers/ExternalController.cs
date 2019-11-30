@@ -6,6 +6,7 @@ using IdentityServer4.Events;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,8 @@ namespace Librame.AspNetCore.IdentityServer.UI
     [SecurityHeaders]
     [AllowAnonymous]
     [GenericApplicationModel(typeof(ExternalController<>))]
+    [Area(IdentityServerAreaRouteBuilderExtensions.AreaName)]
+    [Route(IdentityServerAreaRouteBuilderExtensions.Template)]
     public class ExternalController<TUser> : Controller
         where TUser : IdentityUser<string>, new()
     {
@@ -71,7 +74,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// initiate roundtrip to external authentication provider
         /// </summary>
         [HttpGet]
-        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
         public async Task<IActionResult> Challenge(string provider, string returnUrl)
         {
             if (returnUrl.IsEmpty())

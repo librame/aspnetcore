@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.1.1776.301</Version>
+    <Version>7.1.1778.301</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.Api.Abstractions on GraphQL extension implementation.</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.AspNetCore.Api.Abstractions on GraphQL extension implementation.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.1.1776.301</AssemblyVersion>
-    <FileVersion>7.1.1911.281</FileVersion>
+    <AssemblyVersion>7.1.1778.301</AssemblyVersion>
+    <FileVersion>7.1.1911.301</FileVersion>
     <RootNamespace>Librame.AspNetCore.Api</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>

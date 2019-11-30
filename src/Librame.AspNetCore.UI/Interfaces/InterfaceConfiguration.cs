@@ -100,7 +100,7 @@ namespace Librame.AspNetCore.UI
         {
             options = options ?? new RazorViewEngineOptions();
 
-            var expander = options.ViewLocationExpanders?.First(p => p is LanguageViewLocationExpander);
+            var expander = options.ViewLocationExpanders?.FirstOrDefault(p => p is LanguageViewLocationExpander);
             if (expander != null)
                 options.ViewLocationExpanders.Remove(expander);
 

@@ -16,10 +16,14 @@ namespace Librame.AspNetCore.IdentityServer.Tests
 
 
         public IList<DefaultIdentityRole<string>> GetRoles()
-            => Accessor.Roles.ToList();
+        {
+            return Accessor.Roles.ToList();
+        }
 
         public IPageable<DefaultIdentityUser<string>> GetUsers()
-            => Accessor.Users.AsPagingByIndex(ordered => ordered.OrderBy(k => k.Id), 1, 10);
+        {
+            return Accessor.Users.AsPagingByIndex(ordered => ordered.OrderBy(k => k.Id), 1, 10);
+        }
 
 
         public IList<ApiResource> GetApiResources()

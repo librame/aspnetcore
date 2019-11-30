@@ -5,16 +5,16 @@ using System.Linq;
 
 namespace Librame.AspNetCore.IdentityServer.Tests
 {
-    using AspNetCore.Identity;
     using Extensions.Data;
     using Models;
+    using Identity;
 
     public class TestStoreInitializer : IdentityServerStoreInitializer
     {
         public TestStoreInitializer(SignInManager<DefaultIdentityUser<string>> signInManager,
             RoleManager<DefaultIdentityRole<string>> roleMananger,
             IUserStore<DefaultIdentityUser<string>> userStore,
-            IStoreIdentifier identifier, ILoggerFactory loggerFactory)
+            IdentityServerStoreIdentifier identifier, ILoggerFactory loggerFactory)
             : base(signInManager, roleMananger, userStore, identifier, loggerFactory)
         {
         }

@@ -16,6 +16,7 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
     using Extensions.Data;
     using Extensions.Encryption;
     using Identity;
+    using Identity.UI;
 
     public class Startup
     {
@@ -64,6 +65,8 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
                 {
                     options.Stores.MaxLengthForKeys = 128;
                 })
+                .AddIdentityUI()
+                .AddIdentityInterfaceWithViews(mvcBuilder)
                 .AddIdentityServer<DefaultIdentityUser<string>>(dependency =>
                 {
                     // Use InMemoryStores
@@ -118,7 +121,11 @@ namespace Librame.AspNetCore.IdentityServer.UI.Mvc.Examples
             app.UseIdentityServer();
 
             app.UseLibrameCore()
-                .UseIdentityServerEndpointRoute();
+                .UseControllerEndpoints(routes =>
+                {
+                    routes.MapIdentityServerAreaControllerRoute();
+                    routes.MapIdentityAreaRoute();
+                });
         }
 
     }

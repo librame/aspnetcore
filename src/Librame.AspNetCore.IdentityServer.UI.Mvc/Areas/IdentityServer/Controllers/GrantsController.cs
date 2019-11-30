@@ -6,6 +6,7 @@ using IdentityServer4.Extensions;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace Librame.AspNetCore.IdentityServer.UI
     /// </summary>
     [SecurityHeaders]
     [Authorize]
+    [Area(IdentityServerAreaRouteBuilderExtensions.AreaName)]
+    [Route(IdentityServerAreaRouteBuilderExtensions.Template)]
     public class GrantsController : Controller
     {
         [InjectionService]

@@ -15,6 +15,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
             var dependencies = stores.ServiceFactory.GetService<MigrationsScaffolderDependencies>();
             Assert.NotNull(dependencies);
 
+            // Identity
             var roles = stores.GetRoles();
             Assert.Empty(roles);
 
@@ -27,6 +28,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
             users = stores.UseWriteDbConnection().GetUsers();
             Assert.NotEmpty(users);
 
+            // IdentityServer
             var apiResources = stores.UseDefaultDbConnection().GetApiResources();
             Assert.Empty(apiResources);
 

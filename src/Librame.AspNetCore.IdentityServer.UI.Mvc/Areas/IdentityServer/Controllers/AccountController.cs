@@ -9,6 +9,7 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,8 @@ namespace Librame.AspNetCore.IdentityServer.UI
     [SecurityHeaders]
     [AllowAnonymous]
     [GenericApplicationModel(typeof(AccountController<>))]
+    [Area(IdentityServerAreaRouteBuilderExtensions.AreaName)]
+    [Route(IdentityServerAreaRouteBuilderExtensions.Template)]
     public class AccountController<TUser> : Controller
         where TUser : IdentityUser<string>, new()
     {
@@ -75,7 +78,7 @@ namespace Librame.AspNetCore.IdentityServer.UI
         /// Entry point into the login workflow
         /// </summary>
         [HttpGet]
-        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
         public async Task<IActionResult> Login(string returnUrl)
         {
             // build a model so we know what to show on the login page

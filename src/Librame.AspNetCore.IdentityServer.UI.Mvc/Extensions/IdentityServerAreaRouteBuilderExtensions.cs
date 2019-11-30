@@ -10,15 +10,19 @@
 
 #endregion
 
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 
-namespace Microsoft.AspNetCore.Routing
+namespace Microsoft.AspNetCore.Builder
 {
     /// <summary>
     /// 身份服务器区域路由构建器静态扩展。
     /// </summary>
     public static class IdentityServerAreaRouteBuilderExtensions
     {
+        internal const string AreaName = nameof(Librame.AspNetCore.IdentityServer);
+        internal const string Template = "IdentityServer/{controller}/{action}/{id?}";
+
+
         /// <summary>
         /// 映射身份服务器区域路由。
         /// </summary>
@@ -27,9 +31,9 @@ namespace Microsoft.AspNetCore.Routing
         public static IRouteBuilder MapIdentityServerAreaRoute(this IRouteBuilder builder)
         {
             return builder.MapAreaRoute(
-                name: "IdentityServer",
-                areaName: "IdentityServer",
-                template: "IdentityServer/{controller}/{action}/{id?}"
+                name: AreaName,
+                areaName: AreaName,
+                template: Template
             );
         }
 
@@ -42,9 +46,9 @@ namespace Microsoft.AspNetCore.Routing
         public static ControllerActionEndpointConventionBuilder MapIdentityServerAreaControllerRoute(this IEndpointRouteBuilder builder)
         {
             return builder.MapAreaControllerRoute(
-                name: "IdentityServer",
-                areaName: "IdentityServer",
-                pattern: "IdentityServer/{controller}/{action}/{id?}"
+                name: AreaName,
+                areaName: AreaName,
+                pattern: Template
             );
         }
 

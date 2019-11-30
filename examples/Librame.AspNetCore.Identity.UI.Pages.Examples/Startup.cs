@@ -99,9 +99,8 @@ namespace Librame.AspNetCore.Identity.UI.Pages.Examples
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // 使用身份应用认证
             app.UseLibrameCore()
-                .UseIdentityEndpointRoute();
+                .UsePagesEndpoints();
         }
 
     }

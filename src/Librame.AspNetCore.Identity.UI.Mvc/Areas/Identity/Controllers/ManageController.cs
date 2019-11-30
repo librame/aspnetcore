@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
@@ -32,6 +33,8 @@ namespace Librame.AspNetCore.Identity.UI.Controllers
     /// </summary>
     [Authorize]
     [GenericApplicationModel]
+    [Area(IdentityAreaRouteBuilderExtensions.AreaName)]
+    [Route(IdentityAreaRouteBuilderExtensions.Template)]
     public class ManageController<TUser> : ApplicationController
         where TUser : class, IId<string>
     {
