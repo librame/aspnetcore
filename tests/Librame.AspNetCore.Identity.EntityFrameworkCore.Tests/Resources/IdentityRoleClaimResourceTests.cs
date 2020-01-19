@@ -1,11 +1,13 @@
-﻿using Librame.Extensions.Core;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
 using Xunit;
 
 namespace Librame.AspNetCore.Identity.Tests
 {
+    using Extensions.Core.Utilities;
+    using Resources;
+
     public class IdentityRoleClaimResourceTests
     {
         [Fact]

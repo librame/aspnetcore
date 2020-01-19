@@ -10,9 +10,9 @@
 
 #endregion
 
-namespace Librame.AspNetCore.Api
+namespace Librame.AspNetCore.Api.Builders
 {
-    using Extensions.Core;
+    using Extensions.Core.Builders;
 
     /// <summary>
     /// API 构建器选项。

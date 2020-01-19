@@ -10,9 +10,9 @@
 
 #endregion
 
-namespace Librame.AspNetCore.IdentityServer
+namespace Librame.AspNetCore.IdentityServer.Accessors
 {
-    using Identity;
+    using Identity.Accessors;
 
     /// <summary>
     /// 身份服务器数据库上下文访问器接口。

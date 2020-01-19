@@ -12,9 +12,11 @@
 
 using Microsoft.AspNetCore.Builder;
 
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Localizers
 {
-    static class LocalizerApplicationBuilderDecoratorExtensions
+    using Applications;
+
+    internal static class LocalizerApplicationBuilderDecoratorExtensions
     {
         public static IApplicationBuilderDecorator UseLocalization(this IApplicationBuilderDecorator decorator)
         {

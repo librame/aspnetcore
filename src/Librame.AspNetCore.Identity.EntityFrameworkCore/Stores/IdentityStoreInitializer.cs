@@ -19,11 +19,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Stores
 {
+    using Accessors;
     using Extensions;
-    using Extensions.Core;
-    using Extensions.Data;
+    using Extensions.Core.Identifiers;
+    using Extensions.Core.Services;
+    using Extensions.Data.Stores;
+    using Services;
 
     /// <summary>
     /// 身份存储初始化器。
@@ -166,7 +169,7 @@ namespace Librame.AspNetCore.Identity
                     user.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
                     user.CreatedBy = _defaultCreatedBy;
 
-                    var identifier = new RandomNumberAlgorithmIdentifier(20, Base32AlgorithmConverter.Default);
+                    var identifier = RandomNumberAlgorithmIdentifier.New(20);
                     user.SecurityStamp = identifier;
                     user.EmailConfirmed = true;
 

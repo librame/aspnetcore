@@ -10,7 +10,8 @@
 
 #endregion
 
-using Librame.AspNetCore;
+using Librame.AspNetCore.Applications;
+using Librame.AspNetCore.Localizers;
 using Librame.Extensions;
 using System;
 using System.Diagnostics.CodeAnalysis;

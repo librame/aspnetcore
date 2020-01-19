@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Version>7.1.1778.301</Version>
+    <Authors>Librame Pang</Authors>
+    <Company>librame.net</Company>
+    <Description>Based Librame.AspNetCore.Identity.Abstractions with the Web extension package.</Description>
+    <Copyright>Copyright © 2012-2019</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
+    <PackageIcon>LibrameCore.png</PackageIcon>
+    <RepositoryUrl>https://github.com/librame</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Web,Identity,AspNet,Librame,NETStandard</PackageTags>
+    <PackageReleaseNotes>Based Librame.AspNetCore.Identity.Abstractions with the Web extension package.</PackageReleaseNotes>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>7.1.1778.301</AssemblyVersion>
+    <FileVersion>7.1.1911.301</FileVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DocumentationFile>..\..\bin\netcoreapp3.1\Librame.AspNetCore.Identity.Web.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DocumentationFile>..\..\bin\netcoreapp3.1\Librame.AspNetCore.Identity.Web.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="7.2.982.211" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Librame.AspNetCore.Identity.Abstractions\Librame.AspNetCore.Identity.Abstractions.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore.Web\Librame.AspNetCore.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LibrameCore.png" Pack="true" Visible="false" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

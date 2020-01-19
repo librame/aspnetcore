@@ -13,16 +13,16 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace Librame.AspNetCore.IdentityServer
+namespace Librame.AspNetCore.IdentityServer.Builders
 {
     using Extensions;
-    using Extensions.Core;
+    using Extensions.Core.Builders;
 
-    class IdentityServerBuilderDecorator : AbstractExtensionBuilderDecorator<IIdentityServerBuilder>, IIdentityServerBuilderDecorator
+    internal class IdentityServerBuilderDecorator : AbstractExtensionBuilderDecorator<IIdentityServerBuilder>, IIdentityServerBuilderDecorator
     {
-        public IdentityServerBuilderDecorator(Type userType, IIdentityServerBuilder rawBuilder, IExtensionBuilder builder,
-            IdentityServerBuilderDependencyOptions dependencyOptions)
-            : base(rawBuilder, builder, dependencyOptions)
+        public IdentityServerBuilderDecorator(Type userType, IIdentityServerBuilder sourceBuilder, IExtensionBuilder parentBuilder,
+            IdentityServerBuilderDependency dependency)
+            : base(sourceBuilder, parentBuilder, dependency)
         {
             UserType = userType.NotNull(nameof(userType));
 

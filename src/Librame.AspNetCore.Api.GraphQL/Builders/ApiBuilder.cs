@@ -12,14 +12,14 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Librame.AspNetCore.Api
+namespace Librame.AspNetCore.Api.Builders
 {
-    using Extensions.Core;
+    using Extensions.Core.Builders;
 
-    class ApiBuilder : AbstractExtensionBuilder, IApiBuilder
+    internal class ApiBuilder : AbstractExtensionBuilder, IApiBuilder
     {
-        public ApiBuilder(IExtensionBuilder builder, ApiBuilderDependencyOptions dependencyOptions)
-            : base(builder, dependencyOptions)
+        public ApiBuilder(IExtensionBuilder parentBuilder, ApiBuilderDependency dependency)
+            : base(parentBuilder, dependency)
         {
             Services.AddSingleton<IApiBuilder>(this);
         }

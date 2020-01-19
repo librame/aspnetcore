@@ -13,9 +13,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace Librame.AspNetCore.IdentityServer
+namespace Librame.AspNetCore.IdentityServer.Builders
 {
-    using Extensions.Core;
+    using Extensions.Core.Builders;
 
     /// <summary>
     /// <see cref="IIdentityServerBuilder"/> 装饰器接口。

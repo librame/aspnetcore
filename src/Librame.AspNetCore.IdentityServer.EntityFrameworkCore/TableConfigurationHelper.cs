@@ -14,7 +14,7 @@ using IdentityServer4.EntityFramework.Options;
 
 namespace Librame.AspNetCore.IdentityServer
 {
-    using Extensions.Data;
+    using Extensions.Data.Schemas;
 
     /// <summary>
     /// 表配置助手。

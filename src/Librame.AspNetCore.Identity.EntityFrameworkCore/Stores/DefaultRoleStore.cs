@@ -16,10 +16,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Claims;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Stores
 {
     using Extensions;
-    using Extensions.Core;
+    using Extensions.Core.Services;
 
     /// <summary>
     /// 默认角色存储。
@@ -59,7 +59,7 @@ namespace Librame.AspNetCore.Identity
         {
             var roleClaim = base.CreateRoleClaim(role, claim);
             roleClaim.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
-            roleClaim.CreatedBy = GetType().GetSimpleFullName();
+            roleClaim.CreatedBy = GetType().GetDisplayNameWithNamespace();
 
             return roleClaim;
         }

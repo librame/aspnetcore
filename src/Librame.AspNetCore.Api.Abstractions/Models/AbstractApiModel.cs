@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Librame.AspNetCore.Api
+namespace Librame.AspNetCore.Api.Models
 {
     /// <summary>
     /// 抽象 API 模型。

@@ -11,8 +11,9 @@
 #endregion
 
 using Librame.Extensions;
-using Librame.Extensions.Core;
-using Librame.Extensions.Data;
+using Librame.Extensions.Core.Builders;
+using Librame.Extensions.Data.Builders;
+using Librame.Extensions.Data.Services;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -25,19 +26,19 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// 添加 Data for ASP.NET Core。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="builderAction">给定的选项配置动作。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureOptions">给定的配置选项动作方法。</param>
         /// <param name="builderFactory">给定创建数据构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
-        public static IDataBuilder AddDataCore(this IExtensionBuilder builder,
-            Action<DataBuilderOptions> builderAction,
-            Func<IExtensionBuilder, DataBuilderDependencyOptions, IDataBuilder> builderFactory = null)
+        public static IDataBuilder AddDataCore(this IExtensionBuilder parentBuilder,
+            Action<DataBuilderOptions> configureOptions,
+            Func<IExtensionBuilder, DataBuilderDependency, IDataBuilder> builderFactory = null)
         {
-            builderAction.NotNull(nameof(builderAction));
+            configureOptions.NotNull(nameof(configureOptions));
 
-            return builder.AddDataCore(dependency =>
+            return parentBuilder.AddDataCore(dependency =>
             {
-                dependency.Builder.Action = builderAction;
+                dependency.Builder.ConfigureOptions = configureOptions;
             },
             builderFactory);
         }
@@ -45,29 +46,29 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// 添加 Data for ASP.NET Core。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建数据构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
-        public static IDataBuilder AddDataCore(this IExtensionBuilder builder,
-            Action<DataBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, DataBuilderDependencyOptions, IDataBuilder> builderFactory = null)
-            => builder.AddDataCore<DataBuilderDependencyOptions>(dependencyAction, builderFactory);
+        public static IDataBuilder AddDataCore(this IExtensionBuilder parentBuilder,
+            Action<DataBuilderDependency> configureDependency = null,
+            Func<IExtensionBuilder, DataBuilderDependency, IDataBuilder> builderFactory = null)
+            => parentBuilder.AddDataCore<DataBuilderDependency>(configureDependency, builderFactory);
 
         /// <summary>
         /// 添加 Data for ASP.NET Core。
         /// </summary>
-        /// <typeparam name="TDependencyOptions">指定的依赖类型。</typeparam>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <typeparam name="TDependency">指定的依赖类型。</typeparam>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建数据构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IDataBuilder"/>。</returns>
-        public static IDataBuilder AddDataCore<TDependencyOptions>(this IExtensionBuilder builder,
-            Action<TDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, TDependencyOptions, IDataBuilder> builderFactory = null)
-            where TDependencyOptions : DataBuilderDependencyOptions, new()
+        public static IDataBuilder AddDataCore<TDependency>(this IExtensionBuilder parentBuilder,
+            Action<TDependency> configureDependency = null,
+            Func<IExtensionBuilder, TDependency, IDataBuilder> builderFactory = null)
+            where TDependency : DataBuilderDependency, new()
         {
-            return builder.AddData(dependencyAction, builderFactory)
+            return parentBuilder.AddData(configureDependency, builderFactory)
                 .AddServices();
         }
 

@@ -1,0 +1,40 @@
+@model IApplicationContext
+@{
+    var nav = Model.CurrentProject.Navigation;
+}
+@if (Model.Principal.IsSignedIn(Context))
+{
+    if (nav.Logout.Route.IsMvc)
+    {
+        <form asp-controller="@nav.Logout.Route.Controller" asp-action="@nav.Logout.Route.Action" asp-area="@nav.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="@nav.Manage.ToRouteString(Url)" title="@nav.Manage.Text">Hello @Model.Principal.GetSignedUserName(Context)!</a>
+                </li>
+                <li>
+                    <button type="submit" class="btn btn-link navbar-btn navbar-link">@nav.Logout.Text</button>
+                </li>
+            </ul>
+        </form>
+    }
+    else
+    {
+        <form asp-page="@nav.Logout.Route.Page" asp-area="@nav.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="@nav.Manage.Route" title="@nav.Manage.Text">Hello @Model.Principal.GetSignedUserName(Context)!</a>
+                </li>
+                <li>
+                    <button type="submit" class="btn btn-link navbar-btn navbar-link">@nav.Logout.Text</button>
+                </li>
+            </ul>
+        </form>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="@nav.Register.Route">@nav.Register.Text</a></li>
+        <li><a href="@nav.Login.Route">@nav.Login.Text</a></li>
+    </ul>
+}

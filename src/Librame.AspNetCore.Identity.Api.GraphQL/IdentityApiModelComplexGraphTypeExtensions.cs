@@ -14,7 +14,9 @@ using GraphQL.Types;
 
 namespace Librame.AspNetCore.Identity.Api
 {
-    static class IdentityApiModelComplexGraphTypeExtensions
+    using Models;
+
+    internal static class IdentityApiModelComplexGraphTypeExtensions
     {
         public static ComplexGraphType<TModel> AddLoginApiModelFields<TModel>(this ComplexGraphType<TModel> graphType)
             where TModel : LoginApiModel

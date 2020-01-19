@@ -12,9 +12,11 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Librame.Extensions.Data
+namespace Librame.Extensions.Data.Services
 {
-    static class ServiceDataBuilderExtensions
+    using Builders;
+
+    internal static class ServiceDataBuilderExtensions
     {
         public static IDataBuilder AddServices(this IDataBuilder builder)
         {

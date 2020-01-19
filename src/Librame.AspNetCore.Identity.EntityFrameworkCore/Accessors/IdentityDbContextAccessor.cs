@@ -17,10 +17,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Accessors
 {
-    using Extensions.Core;
-    using Extensions.Data;
+    using Builders;
+    using Extensions.Core.Services;
+    using Extensions.Data.Accessors;
+    using Stores;
 
     /// <summary>
     /// 身份数据库上下文访问器。
@@ -142,11 +144,11 @@ namespace Librame.AspNetCore.Identity
             base.OnModelCreating(modelBuilder);
 
             var options = ServiceFactory.GetRequiredService<IOptions<IdentityBuilderOptions>>().Value;
-            var coreOptions = ServiceFactory.GetRequiredService<IOptions<IdentityOptions>>().Value;
+            var sourceOptions = ServiceFactory.GetRequiredService<IOptions<IdentityOptions>>().Value;
             var dataProtector = InternalServiceProvider.GetService<IPersonalDataProtector>();
 
             modelBuilder.ConfigureIdentityStore<TRole, TRoleClaim, TUserRole,
-                TUser, TUserClaim, TUserLogin, TUserToken, TGenId>(options, coreOptions, dataProtector);
+                TUser, TUserClaim, TUserLogin, TUserToken, TGenId>(options, sourceOptions, dataProtector);
         }
 
     }

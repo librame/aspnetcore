@@ -12,9 +12,9 @@
 
 using Microsoft.AspNetCore.Identity;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Builders
 {
-    using Extensions.Core;
+    using Extensions.Core.Builders;
 
     /// <summary>
     /// <see cref="IdentityBuilder"/> 装饰器接口。

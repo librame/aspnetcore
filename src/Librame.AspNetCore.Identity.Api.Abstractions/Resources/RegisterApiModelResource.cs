@@ -10,9 +10,9 @@
 
 #endregion
 
-namespace Librame.AspNetCore.Identity.Api
+namespace Librame.AspNetCore.Identity.Api.Resources
 {
-    using Extensions.Core;
+    using Extensions.Core.Resources;
 
     /// <summary>
     /// 注册 API 模型资源。

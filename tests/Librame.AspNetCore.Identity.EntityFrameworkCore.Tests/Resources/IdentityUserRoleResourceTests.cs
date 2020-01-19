@@ -1,11 +1,13 @@
-﻿using Librame.Extensions.Core;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
 using Xunit;
 
 namespace Librame.AspNetCore.Identity.Tests
 {
+    using Extensions.Core.Utilities;
+    using Resources;
+
     public class IdentityUserRoleResourceTests
     {
         [Fact]
@@ -20,9 +22,7 @@ namespace Librame.AspNetCore.Identity.Tests
 
         private void RunTest(IStringLocalizer<IdentityUserRoleResource> localizer, string cultureName)
         {
-            CultureInfo.CurrentCulture
-                = CultureInfo.CurrentUICulture
-                = new CultureInfo(cultureName);
+            CultureUtility.Register(new CultureInfo(cultureName));
 
             var userId = localizer.GetString(r => r.UserId);
             Assert.False(userId.ResourceNotFound);

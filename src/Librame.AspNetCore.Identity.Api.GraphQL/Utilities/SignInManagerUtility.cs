@@ -16,7 +16,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Librame.AspNetCore.Identity.Api
+namespace Librame.AspNetCore.Identity.Api.Utilities
 {
     using Extensions;
 

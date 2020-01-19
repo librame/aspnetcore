@@ -17,12 +17,14 @@ using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Api
 {
+    using Accessors;
     using AspNetCore.Api;
     using Extensions;
-    using Extensions.Data;
+    using Extensions.Data.Stores;
+    using StoreTypes;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    class IdentityGraphApiQuery<TAccessor> : ObjectGraphType, IGraphApiQuery
+    internal class IdentityGraphApiQuery<TAccessor> : ObjectGraphType, IGraphApiQuery
         where TAccessor : DbContext, IIdentityDbContextAccessor
     {
         private readonly IStoreHub<TAccessor> _stores;

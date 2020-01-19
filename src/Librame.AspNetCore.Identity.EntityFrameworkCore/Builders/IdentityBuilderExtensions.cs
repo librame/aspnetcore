@@ -11,8 +11,11 @@
 #endregion
 
 using Librame.AspNetCore.Identity;
+using Librame.AspNetCore.Identity.Accessors;
+using Librame.AspNetCore.Identity.Builders;
+using Librame.AspNetCore.Identity.Stores;
 using Librame.Extensions;
-using Librame.Extensions.Core;
+using Librame.Extensions.Core.Builders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,20 +32,18 @@ namespace Microsoft.Extensions.DependencyInjection
         /// 添加身份扩展。
         /// </summary>
         /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="identityAction">给定的身份选项配置动作。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureIdentity">给定的配置身份选项动作方法。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderDecorator"/>。</returns>
-        public static IIdentityBuilderDecorator AddIdentity<TAccessor>(this IExtensionBuilder builder,
-            Action<IdentityOptions> identityAction,
-            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependencyOptions, IIdentityBuilderDecorator> builderFactory = null)
+        public static IIdentityBuilderDecorator AddIdentity<TAccessor>(this IExtensionBuilder parentBuilder,
+            Action<IdentityOptions> configureIdentity,
+            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependency, IIdentityBuilderDecorator> builderFactory = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor
-        {
-            return builder.AddIdentity<TAccessor,
+            => parentBuilder.AddIdentity<TAccessor,
                 DefaultIdentityUser<string>,
                 DefaultIdentityRole<string>,
-                string>(identityAction, builderFactory);
-        }
+                string>(configureIdentity, builderFactory);
 
         /// <summary>
         /// 添加身份扩展。
@@ -51,19 +52,18 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
         /// <typeparam name="TRole">指定的角色类型。</typeparam>
         /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="identityAction">给定的身份选项配置动作。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureIdentity">给定的配置身份选项动作方法。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderDecorator"/>。</returns>
-        public static IIdentityBuilderDecorator AddIdentity<TAccessor, TUser, TRole, TGenId>(this IExtensionBuilder builder,
-            Action<IdentityOptions> identityAction,
-            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependencyOptions, IIdentityBuilderDecorator> builderFactory = null)
+        public static IIdentityBuilderDecorator AddIdentity<TAccessor, TUser, TRole, TGenId>(this IExtensionBuilder parentBuilder,
+            Action<IdentityOptions> configureIdentity,
+            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependency, IIdentityBuilderDecorator> builderFactory = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TUser, TGenId>
             where TUser : class
             where TRole : class
             where TGenId : IEquatable<TGenId>
-        {
-            return builder.AddIdentity<TAccessor,
+            => parentBuilder.AddIdentity<TAccessor,
                 TRole,
                 DefaultIdentityRoleClaim<TGenId>,
                 DefaultIdentityUserRole<TGenId>,
@@ -72,30 +72,27 @@ namespace Microsoft.Extensions.DependencyInjection
                 DefaultIdentityUserLogin<TGenId>,
                 DefaultIdentityUserToken<TGenId>>(dependency =>
                 {
-                    dependency.Identity.Action = identityAction;
+                    dependency.Identity.ConfigureOptions = configureIdentity;
                 },
                 builderFactory);
-        }
 
 
         /// <summary>
         /// 添加身份扩展。
         /// </summary>
         /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureDependency">给定的依赖选项配置动作（可选）。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderDecorator"/>。</returns>
-        public static IIdentityBuilderDecorator AddIdentity<TAccessor>(this IExtensionBuilder builder,
-            Action<IdentityBuilderDependencyOptions> dependencyAction = null,
-            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependencyOptions, IIdentityBuilderDecorator> builderFactory = null)
+        public static IIdentityBuilderDecorator AddIdentity<TAccessor>(this IExtensionBuilder parentBuilder,
+            Action<IdentityBuilderDependency> configureDependency = null,
+            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependency, IIdentityBuilderDecorator> builderFactory = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor
-        {
-            return builder.AddIdentity<TAccessor,
+            => parentBuilder.AddIdentity<TAccessor,
                 DefaultIdentityUser<string>,
                 DefaultIdentityRole<string>,
-                string>(dependencyAction, builderFactory);
-        }
+                string>(configureDependency, builderFactory);
 
         /// <summary>
         /// 添加身份扩展。
@@ -104,27 +101,25 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
         /// <typeparam name="TRole">指定的角色类型。</typeparam>
         /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureDependency">给定的依赖选项配置动作（可选）。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderDecorator"/>。</returns>
-        public static IIdentityBuilderDecorator AddIdentity<TAccessor, TUser, TRole, TGenId>(this IExtensionBuilder builder,
-            Action<IdentityBuilderDependencyOptions> dependencyAction = null,
-            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependencyOptions, IIdentityBuilderDecorator> builderFactory = null)
+        public static IIdentityBuilderDecorator AddIdentity<TAccessor, TUser, TRole, TGenId>(this IExtensionBuilder parentBuilder,
+            Action<IdentityBuilderDependency> configureDependency = null,
+            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependency, IIdentityBuilderDecorator> builderFactory = null)
             where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TUser, TGenId>
             where TUser : class
             where TRole : class
             where TGenId : IEquatable<TGenId>
-        {
-            return builder.AddIdentity<TAccessor,
+            => parentBuilder.AddIdentity<TAccessor,
                 TRole,
                 DefaultIdentityRoleClaim<TGenId>,
                 DefaultIdentityUserRole<TGenId>,
                 TUser,
                 DefaultIdentityUserClaim<TGenId>,
                 DefaultIdentityUserLogin<TGenId>,
-                DefaultIdentityUserToken<TGenId>>(dependencyAction, builderFactory);
-        }
+                DefaultIdentityUserToken<TGenId>>(configureDependency, builderFactory);
 
         /// <summary>
         /// 添加身份扩展。
@@ -137,14 +132,52 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TUserClaim">指定的用户声明类型。</typeparam>
         /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
         /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderDecorator"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
-        public static IIdentityBuilderDecorator AddIdentity<TAccessor, TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>(this IExtensionBuilder builder,
-            Action<IdentityBuilderDependencyOptions> dependencyAction = null,
-            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependencyOptions, IIdentityBuilderDecorator> builderFactory = null)
+        public static IIdentityBuilderDecorator AddIdentity<TAccessor, TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>(
+            this IExtensionBuilder parentBuilder, Action<IdentityBuilderDependency> configureDependency = null,
+            Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependency, IIdentityBuilderDecorator> builderFactory = null)
+            where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>
+            where TRole : class
+            where TRoleClaim : class
+            where TUserRole : class
+            where TUser : class
+            where TUserClaim : class
+            where TUserLogin : class
+            where TUserToken : class
+            => parentBuilder.AddIdentity<IdentityBuilderDependency,
+                TAccessor,
+                TRole,
+                TRoleClaim,
+                TUserRole,
+                TUser,
+                TUserClaim,
+                TUserLogin,
+                TUserToken>(configureDependency, builderFactory);
+
+        /// <summary>
+        /// 添加身份扩展。
+        /// </summary>
+        /// <typeparam name="TDependency">指定的依赖类型。</typeparam>
+        /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
+        /// <typeparam name="TRole">指定的角色类型。</typeparam>
+        /// <typeparam name="TRoleClaim">指定的角色声明类型。</typeparam>
+        /// <typeparam name="TUserRole">指定的用户角色类型。</typeparam>
+        /// <typeparam name="TUser">指定的用户类型。</typeparam>
+        /// <typeparam name="TUserClaim">指定的用户声明类型。</typeparam>
+        /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
+        /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
+        /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
+        /// <returns>返回 <see cref="IIdentityBuilderDecorator"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "parentBuilder")]
+        public static IIdentityBuilderDecorator AddIdentity<TDependency, TAccessor, TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>(
+            this IExtensionBuilder parentBuilder, Action<TDependency> configureDependency = null,
+            Func<IdentityBuilder, IExtensionBuilder, TDependency, IIdentityBuilderDecorator> builderFactory = null)
+            where TDependency : IdentityBuilderDependency, new()
             where TAccessor : DbContext, IIdentityDbContextAccessor<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken>
             where TRole : class
             where TRoleClaim : class
@@ -154,15 +187,14 @@ namespace Microsoft.Extensions.DependencyInjection
             where TUserLogin : class
             where TUserToken : class
         {
-            builder.NotNull(nameof(builder));
-
-            // Add Dependencies
-            var dependency = dependencyAction.ConfigureDependency();
-            builder.Services.AddAllOptionsConfigurators(dependency);
+            parentBuilder.NotNull(nameof(parentBuilder));
 
             // Configure Dependencies
-            var source = builder.Services
-                .AddIdentityCore<TUser>(dependency.Identity.Action)
+            var dependency = configureDependency.ConfigureDependency(parentBuilder);
+
+            // Add Dependencies
+            var sourceBuilder = parentBuilder.Services
+                .AddIdentityCore<TUser>(dependency.Identity.ConfigureOptions)
                 .AddRoles<TRole>()
                 .AddEntityFrameworkStores<TAccessor>()
                 .AddSignInManager()
@@ -170,14 +202,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddRoleStore<DefaultRoleStore<TAccessor>>()
                 .AddUserStore<DefaultUserStore<TAccessor>>();
 
-            source.Services.TryReplace<IdentityErrorDescriber, LocalizationIdentityErrorDescriber>();
+            sourceBuilder.Services.TryReplace<IdentityErrorDescriber, LocalizationIdentityErrorDescriber>();
 
             // Create Decorator
             var decorator = builderFactory.NotNullOrDefault(() =>
             {
-                return (s, b, d) => new IdentityBuilderDecorator(s, b, d);
+                return (s, p, d) => new IdentityBuilderDecorator(s, p, d);
             })
-            .Invoke(source, builder, dependency);
+            .Invoke(sourceBuilder, parentBuilder, dependency);
 
             // Configure Decorator
             return decorator

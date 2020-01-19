@@ -14,10 +14,8 @@ using Microsoft.Extensions.Localization;
 using System;
 using System.Reflection;
 
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Applications
 {
-    using Extensions.Core;
-
     /// <summary>
     /// 应用信息接口。
     /// </summary>
@@ -27,6 +25,11 @@ namespace Librame.AspNetCore
         /// 名称。
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// 显示名称。
+        /// </summary>
+        string DisplayName { get; }
 
         /// <summary>
         /// 作者集合。
@@ -78,18 +81,5 @@ namespace Librame.AspNetCore
         /// 本地化定位器。
         /// </summary>
         IStringLocalizer Localizer { get; }
-
-        /// <summary>
-        /// 服务工厂。
-        /// </summary>
-        ServiceFactory ServiceFactory { get; }
-
-
-        /// <summary>
-        /// 应用服务工厂。
-        /// </summary>
-        /// <param name="serviceFactory">给定的服务工厂。</param>
-        /// <returns>返回 <see cref="IApplicationInfo"/>。</returns>
-        IApplicationInfo ApplyServiceFactory(ServiceFactory serviceFactory);
     }
 }

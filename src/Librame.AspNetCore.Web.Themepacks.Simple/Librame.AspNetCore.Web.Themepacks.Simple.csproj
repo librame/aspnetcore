@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Version>7.1.1778.301</Version>
+    <Authors>Librame Pang</Authors>
+    <Company>librame.net</Company>
+    <Description>The Simple for Librame.AspNetCore.Web themepack.</Description>
+    <Copyright>Copyright © 2012-2019</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
+    <PackageIcon>LibrameCore.png</PackageIcon>
+    <RepositoryUrl>https://github.com/librame</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Librame,AspNetCore,Web,Simple</PackageTags>
+    <PackageReleaseNotes>The Simple for Librame.AspNetCore.Web themepack.</PackageReleaseNotes>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>7.1.1778.301</AssemblyVersion>
+    <FileVersion>7.1.1911.301</FileVersion>
+    <RootNamespace>Librame.AspNetCore.Web.Themepacks.Simple</RootNamespace>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DocumentationFile>..\..\bin\netcoreapp3.1\Librame.AspNetCore.Web.Themepacks.Simple.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DocumentationFile>..\..\bin\netcoreapp3.1\Librame.AspNetCore.Web.Themepacks.Simple.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LibrameCore.png" Pack="true" Visible="false" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot/**/*" />
+    <EmbeddedResource Remove="wwwroot/**/LICENSE*" />
+    <None Remove="wwwroot/**/LICENSE*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Librame.AspNetCore.Web\Librame.AspNetCore.Web.csproj" />
+  </ItemGroup>
+
+</Project>

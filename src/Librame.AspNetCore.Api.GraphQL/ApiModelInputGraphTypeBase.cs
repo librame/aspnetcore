@@ -15,6 +15,7 @@ using GraphQL.Types;
 namespace Librame.AspNetCore.Api
 {
     using Extensions;
+    using Models;
 
     /// <summary>
     /// API 模型输入图形类型基类。

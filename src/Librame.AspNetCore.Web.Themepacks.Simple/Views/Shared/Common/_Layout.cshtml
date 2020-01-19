@@ -1,0 +1,84 @@
+﻿@inject IApplicationContext Application
+@{
+    var nav = Application.SetCurrentProject(ViewContext).Navigation;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @Application.CurrentProject.Info.DisplayName (@Application.CurrentThemepackInfo.DisplayName)</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <environment include="Development">
+        <link rel="stylesheet" href="~/common/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/common/css/site.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/common/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/common/css/site.min.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="/" class="navbar-brand">@Application.CurrentProject.Info.DisplayName (@Application.CurrentThemepackInfo.DisplayName)</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="@nav.Index.ToRouteString(Url)">@nav.Index.Text</a></li>
+                    @if (nav.CommonLayout.Header.IsNotEmpty())
+                    {
+                        foreach (var descr in nav.CommonLayout.Header)
+                        {
+                            <li><a href="@descr.ToRouteString(Url)">@descr.Text</a></li>
+                        }
+                    }
+                </ul>
+
+                @await Html.PartialAsync("Common/_LoginPartial", Application).ConfigureAndResultAsync()
+
+                @await Html.PartialAsync("Common/_LocalizationPartial", Application).ConfigureAndResultAsync()
+            </div>
+        </div>
+    </nav>
+
+    <partial name="Common/_CookieConsentPartial" model="Application" />
+
+    <div class="container body-content">
+        @RenderBody()
+        
+        <hr />
+        <footer>
+            @Html.Raw(Application.Copyright.GetHtmlCode())
+        </footer>
+    </div>
+
+    <environment include="Development">
+        <script src="~/common/lib/jquery/dist/jquery.js"></script>
+        <script src="~/common/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/common/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/common/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/common/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/common/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

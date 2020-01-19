@@ -1,0 +1,29 @@
+﻿@model IApplicationContext
+@{
+    var nav = Model.CurrentProject.Navigation;
+}
+<ul class="nav">
+    @if (nav.ManageLayout.Sidebar.IsNotEmpty())
+    {
+        foreach (var descr in nav.ManageLayout.Sidebar)
+        {
+            if (descr.VisibilityFactory.Invoke(this, descr))
+            {
+                <li class="nav-item @descr.ActiveCssClassNameFactory.Invoke(this, descr)">
+                    <a id="@descr.TagId" href="@descr.ToRouteString(Url)" title="@descr.TagTitle">
+                        <i class="@descr.Icon"></i>
+                        <p>@descr.Text</p>
+                    </a>
+                </li>
+            }
+        }
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" href="#" title="暂无菜单">
+                暂无菜单
+            </a>
+        </li>
+    }
+</ul>

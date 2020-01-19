@@ -12,9 +12,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Librame.AspNetCore.Identity.Api
+namespace Librame.AspNetCore.Identity.Api.Models
 {
-    using AspNetCore.Api;
+    using AspNetCore.Api.Models;
 
     /// <summary>
     /// 注册 API 模型。

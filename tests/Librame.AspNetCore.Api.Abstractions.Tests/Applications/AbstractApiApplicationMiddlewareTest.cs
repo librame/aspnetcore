@@ -4,6 +4,8 @@ using Xunit;
 
 namespace Librame.AspNetCore.Api.Tests
 {
+    using Applications;
+
     public class AbstractApiApplicationMiddlewareTest
     {
         class TestApiApplicationMiddleware : AbstractApiApplicationMiddleware

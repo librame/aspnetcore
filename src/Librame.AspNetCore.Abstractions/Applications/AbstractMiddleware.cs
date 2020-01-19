@@ -15,7 +15,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Applications
 {
     using Extensions;
 

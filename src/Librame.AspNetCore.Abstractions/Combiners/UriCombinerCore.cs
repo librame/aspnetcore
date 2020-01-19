@@ -13,7 +13,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 
-namespace Librame.Extensions.Core
+namespace Librame.Extensions.Core.Combiners
 {
     /// <summary>
     /// <see cref="UriCombiner"/> for ASP.NET Core。

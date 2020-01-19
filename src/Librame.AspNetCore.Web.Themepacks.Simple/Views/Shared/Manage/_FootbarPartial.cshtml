@@ -1,0 +1,30 @@
+﻿@model IApplicationContext
+@{
+    var nav = Model.CurrentProject.Navigation;
+}
+<nav class="pull-left">
+    <ul class="nav">
+        @if (nav.ManageLayout.Footbar.IsNotEmpty())
+        {
+            foreach (var descr in nav.ManageLayout.Footbar)
+            {
+                <li class="nav-item">
+                    <a class="nav-link" href="@descr.ToRouteString(Url)" title="@descr.TagTitle" @descr.TagTargetFormat>
+                        @descr.Text
+                    </a>
+                </li>
+            }
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link" href="#" title="暂无菜单">
+                    暂无菜单
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+<div class="copyright ml-auto">
+    @Html.Raw(Model.Copyright.GetHtmlCode(displayMiniInfo: true))
+</div>

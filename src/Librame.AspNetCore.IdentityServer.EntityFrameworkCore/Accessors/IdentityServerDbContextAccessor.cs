@@ -17,10 +17,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Librame.AspNetCore.IdentityServer
+namespace Librame.AspNetCore.IdentityServer.Accessors
 {
-    using Extensions.Core;
-    using Identity;
+    using Extensions.Core.Services;
+    using Identity.Accessors;
 
     /// <summary>
     /// 身份服务器数据库上下文访问器。

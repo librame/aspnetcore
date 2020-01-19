@@ -13,15 +13,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Builders
 {
-    using Extensions.Core;
+    using Extensions.Core.Builders;
 
-    class IdentityBuilderDecorator : AbstractExtensionBuilderDecorator<IdentityBuilder>, IIdentityBuilderDecorator
+    internal class IdentityBuilderDecorator : AbstractExtensionBuilderDecorator<IdentityBuilder>, IIdentityBuilderDecorator
     {
-        public IdentityBuilderDecorator(IdentityBuilder source, IExtensionBuilder builder,
-            IdentityBuilderDependencyOptions dependencyOptions)
-            : base(source, builder, dependencyOptions)
+        public IdentityBuilderDecorator(IdentityBuilder sourceBuilder, IExtensionBuilder parentBuilder, IdentityBuilderDependency dependency)
+            : base(sourceBuilder, parentBuilder, dependency)
         {
             Services.AddSingleton<IIdentityBuilderDecorator>(this);
         }

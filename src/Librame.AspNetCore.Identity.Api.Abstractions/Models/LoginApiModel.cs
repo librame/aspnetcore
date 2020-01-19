@@ -10,9 +10,9 @@
 
 #endregion
 
-namespace Librame.AspNetCore.Identity.Api
+namespace Librame.AspNetCore.Identity.Api.Models
 {
-    using AspNetCore.Api;
+    using AspNetCore.Api.Models;
 
     /// <summary>
     /// 登入 API 模型。

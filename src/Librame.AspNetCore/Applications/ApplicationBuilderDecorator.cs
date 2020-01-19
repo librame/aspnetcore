@@ -12,11 +12,11 @@
 
 using Microsoft.AspNetCore.Builder;
 
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Applications
 {
-    using Extensions.Core;
+    using Extensions.Core.Decorators;
 
-    class ApplicationBuilderDecorator : AbstractDecorator<IApplicationBuilder>, IApplicationBuilderDecorator
+    internal class ApplicationBuilderDecorator : AbstractDecorator<IApplicationBuilder>, IApplicationBuilderDecorator
     {
         public ApplicationBuilderDecorator(IApplicationBuilder source)
             : base(source)

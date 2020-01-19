@@ -10,9 +10,9 @@
 
 #endregion
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Resources
 {
-    using Extensions.Core;
+    using Extensions.Core.Resources;
 
     /// <summary>
     /// 身份用户角色资源。

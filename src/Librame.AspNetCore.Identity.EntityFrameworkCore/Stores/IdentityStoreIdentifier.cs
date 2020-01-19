@@ -14,10 +14,10 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Stores
 {
-    using Extensions.Core;
-    using Extensions.Data;
+    using Extensions.Core.Services;
+    using Extensions.Data.Stores;
 
     /// <summary>
     /// 身份存储标识符。

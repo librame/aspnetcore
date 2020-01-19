@@ -11,7 +11,7 @@
 #endregion
 
 using Librame.Extensions;
-using Librame.Extensions.Core;
+using Librame.Extensions.Core.Utilities;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;

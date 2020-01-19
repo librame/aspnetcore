@@ -12,11 +12,13 @@
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Builders
 {
-    static class ServiceIdentityBuilderDecoratorExtensions
+    using Services;
+
+    internal static class ServiceIdentityBuilderDecoratorExtensions
     {
-        internal static IIdentityBuilderDecorator AddServices(this IIdentityBuilderDecorator decorator)
+        public static IIdentityBuilderDecorator AddServices(this IIdentityBuilderDecorator decorator)
         {
             decorator.Services.TryAddScoped<IDefaultPasswordService, DefaultPasswordService>();
 

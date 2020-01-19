@@ -14,24 +14,42 @@ using Microsoft.Extensions.Localization;
 using System;
 using System.Reflection;
 
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Applications
 {
     using Extensions;
-    using Extensions.Core;
 
     /// <summary>
     /// 抽象应用信息。
     /// </summary>
     public abstract class AbstractApplicationInfo : IApplicationInfo
     {
-        private readonly AppDomainSetup _appDomainSetup
-            = AppDomain.CurrentDomain.SetupInformation;
+        /// <summary>
+        /// Librame 项目库 URL。
+        /// </summary>
+        public const string LibrameRepositoryUrl
+            = "https://github.com/librame/LibrameCore";
+
+
+        /// <summary>
+        /// 构造一个 <see cref="AbstractApplicationInfo"/>。
+        /// </summary>
+        protected AbstractApplicationInfo()
+        {
+            var setup = AppDomain.CurrentDomain.SetupInformation;
+            Framework = setup.TargetFrameworkName;
+        }
 
 
         /// <summary>
         /// 名称。
         /// </summary>
         public abstract string Name { get; }
+
+        /// <summary>
+        /// 显示名称。
+        /// </summary>
+        public string DisplayName
+            => Localizer.GetString(nameof(DisplayName));
 
         /// <summary>
         /// 作者集合。
@@ -43,7 +61,7 @@ namespace Librame.AspNetCore
         /// 联系。
         /// </summary>
         public virtual string Contact
-            => "https://github.com/librame/LibrameCore";
+            => LibrameRepositoryUrl;
 
         /// <summary>
         /// 公司。
@@ -60,8 +78,7 @@ namespace Librame.AspNetCore
         /// <summary>
         /// 框架。
         /// </summary>
-        public virtual string Framework
-            => _appDomainSetup.TargetFrameworkName;
+        public virtual string Framework { get; }
 
         /// <summary>
         /// 版本。
@@ -92,23 +109,6 @@ namespace Librame.AspNetCore
         /// 本地化定位器。
         /// </summary>
         public abstract IStringLocalizer Localizer { get; }
-
-        /// <summary>
-        /// 服务工厂。
-        /// </summary>
-        public ServiceFactory ServiceFactory { get; private set; }
-
-
-        /// <summary>
-        /// 应用服务工厂。
-        /// </summary>
-        /// <param name="serviceFactory">给定的 <see cref="Extensions.Core.ServiceFactory"/>。</param>
-        /// <returns>返回 <see cref="IApplicationInfo"/>。</returns>
-        public virtual IApplicationInfo ApplyServiceFactory(ServiceFactory serviceFactory)
-        {
-            ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
-            return this;
-        }
 
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Librame.AspNetCore
         /// </summary>
         /// <returns>返回字符串。</returns>
         public override string ToString()
-            => Localizer.GetString(nameof(Name));
+            => $"{Name}:{DisplayName}";
 
 
         /// <summary>
@@ -166,8 +166,8 @@ namespace Librame.AspNetCore
         /// <summary>
         /// 隐式转换为字符串形式。
         /// </summary>
-        /// <param name="identifier">给定的 <see cref="AbstractApplicationInfo"/>。</param>
-        public static implicit operator string(AbstractApplicationInfo identifier)
-            => identifier?.ToString();
+        /// <param name="applicationInfo">给定的 <see cref="AbstractApplicationInfo"/>。</param>
+        public static implicit operator string(AbstractApplicationInfo applicationInfo)
+            => applicationInfo?.ToString();
     }
 }

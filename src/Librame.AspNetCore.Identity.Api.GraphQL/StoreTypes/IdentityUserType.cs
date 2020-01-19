@@ -12,8 +12,10 @@
 
 using GraphQL.Types;
 
-namespace Librame.AspNetCore.Identity.Api
+namespace Librame.AspNetCore.Identity.Api.StoreTypes
 {
+    using Stores;
+
     /// <summary>
     /// 身份用户类型。
     /// </summary>

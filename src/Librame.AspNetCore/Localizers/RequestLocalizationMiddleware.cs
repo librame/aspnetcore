@@ -10,11 +10,12 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Localizers
 {
     using Extensions;
 
@@ -22,13 +23,15 @@ namespace Librame.AspNetCore
     /// Enables automatic setting of the culture for <see cref="HttpRequest"/>s based on information
     /// sent by the client in headers and logic provided by the application.
     /// </summary>
-    public class RequestLocalizationMiddleware
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+    internal sealed class RequestLocalizationMiddleware
     {
         private const int MaxCultureFallbackDepth = 5;
 
         private readonly RequestDelegate _next;
         private readonly RequestLocalizationOptions _options;
         private ILogger _logger;
+
 
         /// <summary>
         /// Creates a new <see cref="RequestLocalizationMiddleware"/>.
@@ -46,6 +49,7 @@ namespace Librame.AspNetCore
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _options = options.Value;
         }
+
 
         /// <summary>
         /// Invokes the logic of the middleware.
@@ -135,7 +139,7 @@ namespace Librame.AspNetCore
 
             SetCurrentThreadCulture(requestCulture);
 
-            await _next(context).ConfigureAndWaitAsync();
+            await _next.Invoke(context).ConfigureAndWaitAsync();
         }
 
         private void EnsureLogger(HttpContext context)

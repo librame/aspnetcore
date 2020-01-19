@@ -5,9 +5,11 @@ using System.Linq;
 
 namespace Librame.AspNetCore.IdentityServer.Tests
 {
-    using Extensions.Data;
+    using Accessors;
+    using Extensions.Data.Stores;
+    using Identity.Stores;
     using Models;
-    using Identity;
+    using Stores;
 
     public class TestStoreInitializer : IdentityServerStoreInitializer
     {

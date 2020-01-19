@@ -10,9 +10,10 @@
 
 #endregion
 
-namespace Librame.AspNetCore.Identity.Api
+namespace Librame.AspNetCore.Identity.Api.ModelTypes
 {
     using AspNetCore.Api;
+    using Models;
 
     /// <summary>
     /// 登入输入类型。

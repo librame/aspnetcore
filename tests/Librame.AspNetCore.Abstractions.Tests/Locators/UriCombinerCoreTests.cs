@@ -4,7 +4,7 @@ using Xunit;
 namespace Librame.AspNetCore.Tests
 {
     using Extensions;
-    using Extensions.Core;
+    using Extensions.Core.Combiners;
 
     public class UriCombinerCoreTests
     {

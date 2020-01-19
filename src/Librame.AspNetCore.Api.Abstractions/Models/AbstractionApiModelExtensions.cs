@@ -17,6 +17,7 @@ using System.Linq;
 namespace Librame.AspNetCore.Api
 {
     using Extensions;
+    using Models;
 
     /// <summary>
     /// 抽象 API 模型静态扩展。

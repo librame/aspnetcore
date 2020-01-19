@@ -18,10 +18,11 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Accessors
 {
     using Extensions;
-    using Extensions.Data;
+    using Builders;
+    using Stores;
 
     /// <summary>
     /// 身份访问器模型构建器静态扩展。
@@ -41,11 +42,11 @@ namespace Librame.AspNetCore.Identity
         /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
         /// <param name="options">给定的 <see cref="IdentityBuilderOptions"/>。</param>
-        /// <param name="coreOptions">给定的 <see cref="IdentityOptions"/>。</param>
+        /// <param name="sourceOptions">给定的 <see cref="IdentityOptions"/>。</param>
         /// <param name="dataProtector">给定的 <see cref="IPersonalDataProtector"/>。</param>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static void ConfigureIdentityStore<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TGenId>(this ModelBuilder modelBuilder,
-            IdentityBuilderOptions options, IdentityOptions coreOptions, IPersonalDataProtector dataProtector)
+            IdentityBuilderOptions options, IdentityOptions sourceOptions, IPersonalDataProtector dataProtector)
             where TRole : DefaultIdentityRole<TGenId>
             where TRoleClaim : DefaultIdentityRoleClaim<TGenId>
             where TUserRole : DefaultIdentityUserRole<TGenId>
@@ -56,8 +57,8 @@ namespace Librame.AspNetCore.Identity
             where TGenId : IEquatable<TGenId>
         {
             var mapRelationship = options.Stores?.MapRelationship ?? true;
-            var maxKeyLength = coreOptions.Stores?.MaxLengthForKeys ?? 0;
-            var encryptPersonalData = coreOptions.Stores?.ProtectPersonalData ?? false;
+            var maxKeyLength = sourceOptions.Stores?.MaxLengthForKeys ?? 0;
+            var encryptPersonalData = sourceOptions.Stores?.ProtectPersonalData ?? false;
             var trimTableNamePrefix = "Default";
 
             PersonalDataConverter converter = null;

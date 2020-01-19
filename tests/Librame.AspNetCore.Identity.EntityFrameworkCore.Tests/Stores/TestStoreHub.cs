@@ -3,7 +3,11 @@ using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Tests
 {
-    using Extensions.Data;
+    using Accessors;
+    using Extensions.Data.Accessors;
+    using Extensions.Data.Collections;
+    using Extensions.Data.Stores;
+    using Stores;
 
     public class TestStoreHub : StoreHub<IdentityDbContextAccessor, IdentityStoreInitializer>
     {

@@ -12,8 +12,10 @@
 
 using Microsoft.AspNetCore.Http;
 
-namespace Librame.AspNetCore.Api
+namespace Librame.AspNetCore.Api.Applications
 {
+    using AspNetCore.Applications;
+
     /// <summary>
     /// 抽象 API 应用中间件。
     /// </summary>

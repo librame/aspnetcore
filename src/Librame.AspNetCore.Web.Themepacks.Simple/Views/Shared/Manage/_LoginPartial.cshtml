@@ -1,0 +1,52 @@
+﻿@model IApplicationContext
+
+@if (Model.Principal.IsSignedIn(Context))
+{
+    var nav = Model.CurrentProject.Navigation;
+    var userName = Model.Principal.GetSignedUserName(Context);
+    var email = Model.Principal.GetSignedUserEmail(Context);
+    var portrait = Model.Principal.GetSignedUserPortrait(Context);
+
+    <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+        <li class="nav-item dropdown">
+            <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+                <img src="@portrait" alt="@userName" width="36" class="img-circle"><span>@userName</span>
+            </a>
+
+            <ul class="dropdown-menu dropdown-user">
+                <li>
+                    <div class="user-box">
+                        <div class="u-img"><img src="@portrait" alt="@userName"></div>
+                        <div class="u-text">
+                            <h4>@userName</h4>
+                            <p class="text-muted">@email</p>
+                        </div>
+                    </div>
+                </li>
+
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="@nav.Manage.ToRouteString(Url)">
+                    <i class="ti-user"></i> @nav.Manage.Text
+                </a>
+
+                <div class="dropdown-divider"></div>
+                @if (nav.Logout.Route.IsMvc)
+                {
+                    <form asp-controller="@nav.Logout.Route.Controller" asp-action="@nav.Logout.Route.Action" asp-area="@nav.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-power-off"></i> <button type="submit" class="btn btn-link navbar-btn navbar-link" style="padding:0;">@nav.Logout.Text</button>
+                        </a>
+                    </form>
+                }
+                else
+                {
+                    <form asp-page="@nav.Logout.Route.Page" asp-area="@nav.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-power-off"></i> <button type="submit" class="btn btn-link navbar-btn navbar-link" style="padding:0;">@nav.Logout.Text</button>
+                        </a>
+                    </form>
+                }
+            </ul>
+        </li>
+    </ul>
+}

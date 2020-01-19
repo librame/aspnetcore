@@ -13,12 +13,12 @@
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Services
 {
-    using Extensions.Core;
+    using Extensions.Core.Services;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    class DefaultPasswordService : AbstractService, IDefaultPasswordService
+    internal class DefaultPasswordService : AbstractService, IDefaultPasswordService
     {
         public DefaultPasswordService(ILoggerFactory loggerFactory)
             : base(loggerFactory)

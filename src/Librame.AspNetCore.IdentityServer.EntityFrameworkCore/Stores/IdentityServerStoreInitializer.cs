@@ -13,9 +13,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace Librame.AspNetCore.IdentityServer
+namespace Librame.AspNetCore.IdentityServer.Stores
 {
-    using Identity;
+    using Identity.Stores;
 
     /// <summary>
     /// 身份服务器存储初始化器。

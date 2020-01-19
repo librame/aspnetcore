@@ -13,8 +13,9 @@
 using GraphQL;
 using GraphQL.Http;
 using Librame.AspNetCore.Api;
+using Librame.AspNetCore.Api.Builders;
 using Librame.Extensions;
-using Librame.Extensions.Core;
+using Librame.Extensions.Core.Builders;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -30,19 +31,19 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// 添加 API 扩展。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="builderAction">给定的选项配置动作。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureOptions">给定的配置选项动作方法。</param>
         /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
-        public static IApiBuilder AddApi(this IExtensionBuilder builder,
-            Action<ApiBuilderOptions> builderAction,
-            Func<IExtensionBuilder, ApiBuilderDependencyOptions, IApiBuilder> builderFactory = null)
+        public static IApiBuilder AddApi(this IExtensionBuilder parentBuilder,
+            Action<ApiBuilderOptions> configureOptions,
+            Func<IExtensionBuilder, ApiBuilderDependency, IApiBuilder> builderFactory = null)
         {
-            builderAction.NotNull(nameof(builderAction));
+            configureOptions.NotNull(nameof(configureOptions));
 
-            return builder.AddApi(dependency =>
+            return parentBuilder.AddApi(dependency =>
             {
-                dependency.Builder.Action = builderAction;
+                dependency.Builder.ConfigureOptions = configureOptions;
             },
             builderFactory);
         }
@@ -50,36 +51,37 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// 添加 API 扩展。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
-        public static IApiBuilder AddApi(this IExtensionBuilder builder,
-            Action<ApiBuilderDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, ApiBuilderDependencyOptions, IApiBuilder> builderFactory = null)
-            => builder.AddApi<ApiBuilderDependencyOptions>(dependencyAction, builderFactory);
+        public static IApiBuilder AddApi(this IExtensionBuilder parentBuilder,
+            Action<ApiBuilderDependency> configureDependency = null,
+            Func<IExtensionBuilder, ApiBuilderDependency, IApiBuilder> builderFactory = null)
+            => parentBuilder.AddApi<ApiBuilderDependency>(configureDependency, builderFactory);
 
         /// <summary>
         /// 添加 API 扩展。
         /// </summary>
-        /// <typeparam name="TDependencyOptions">指定的依赖类型。</typeparam>
-        /// <param name="builder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <typeparam name="TDependency">指定的依赖类型。</typeparam>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
-        public static IApiBuilder AddApi<TDependencyOptions>(this IExtensionBuilder builder,
-            Action<TDependencyOptions> dependencyAction = null,
-            Func<IExtensionBuilder, TDependencyOptions, IApiBuilder> builderFactory = null)
-            where TDependencyOptions : ApiBuilderDependencyOptions, new()
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "parentBuilder")]
+        public static IApiBuilder AddApi<TDependency>(this IExtensionBuilder parentBuilder,
+            Action<TDependency> configureDependency = null,
+            Func<IExtensionBuilder, TDependency, IApiBuilder> builderFactory = null)
+            where TDependency : ApiBuilderDependency, new()
         {
-            // Add Dependencies
-            var dependency = dependencyAction.ConfigureDependency();
-            builder.Services.AddAllOptionsConfigurators(dependency);
+            parentBuilder.NotNull(nameof(parentBuilder));
+
+            // Configure Dependency
+            var dependency = configureDependency.ConfigureDependency(parentBuilder);
 
             // Create Builder
             var apiBuilder = builderFactory.NotNullOrDefault(()
-                => (b, d) => new ApiBuilder(b, d)).Invoke(builder, dependency);
+                => (b, d) => new ApiBuilder(b, d)).Invoke(parentBuilder, dependency);
 
             // Configure Builder
             return apiBuilder

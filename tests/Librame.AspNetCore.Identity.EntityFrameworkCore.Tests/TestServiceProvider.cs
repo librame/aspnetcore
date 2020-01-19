@@ -6,8 +6,10 @@ using System;
 
 namespace Librame.AspNetCore.Identity.Tests
 {
+    using Accessors;
     using Extensions;
-    using Extensions.Data;
+    using Extensions.Data.Builders;
+    using Stores;
 
     internal static class TestServiceProvider
     {
@@ -35,7 +37,7 @@ namespace Librame.AspNetCore.Identity.Tests
                     .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                     {
                         optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
-                            sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetSimpleAssemblyName()));
+                            sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
                     })
                     .AddDbDesignTime<SqlServerDesignTimeServices>()
                     .AddIdentifier<IdentityStoreIdentifier>()

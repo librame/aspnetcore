@@ -13,9 +13,10 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Accessors
 {
-    using Extensions.Data;
+    using Extensions.Data.Accessors;
+    using Stores;
 
     /// <summary>
     /// 身份数据库上下文访问器接口。

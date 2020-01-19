@@ -21,12 +21,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Librame.AspNetCore.Api
+namespace Librame.AspNetCore.Api.Applications
 {
     using Extensions;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    class ApiApplicationMiddleware : AbstractApiApplicationMiddleware
+    internal class ApiApplicationMiddleware : AbstractApiApplicationMiddleware
     {
         public ApiApplicationMiddleware(RequestDelegate next)
             : base(next)
@@ -36,7 +36,7 @@ namespace Librame.AspNetCore.Api
 
         protected override async Task InvokeCore(HttpContext context)
         {
-            string body;
+            var body = string.Empty;
             using (var sr = new StreamReader(context.Request.Body))
             {
                 body = await sr.ReadToEndAsync().ConfigureAndResultAsync();

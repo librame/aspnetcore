@@ -4,8 +4,12 @@ using System.Linq;
 
 namespace Librame.AspNetCore.IdentityServer.Tests
 {
-    using Extensions.Data;
-    using Identity;
+    using Accessors;
+    using Extensions.Data.Accessors;
+    using Extensions.Data.Collections;
+    using Extensions.Data.Stores;
+    using Identity.Stores;
+    using Stores;
 
     public class TestStoreHub : StoreHub<IdentityServerDbContextAccessor, IdentityServerStoreInitializer>
     {

@@ -1,11 +1,11 @@
-using Librame.Extensions.Core;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Librame.AspNetCore.Identity.Tests
 {
+    using Extensions.Core.Services;
+
     public class TestStoreHubTests
     {
         [Fact]

@@ -12,9 +12,9 @@
 
 using IdentityServer4.EntityFramework.Interfaces;
 
-namespace Librame.AspNetCore.IdentityServer
+namespace Librame.AspNetCore.IdentityServer.Accessors
 {
-    using Extensions.Data;
+    using Extensions.Data.Accessors;
 
     /// <summary>
     /// 持久化授予数据库上下文访问器接口。

@@ -12,9 +12,9 @@
 
 using Microsoft.AspNetCore.Builder;
 
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Applications
 {
-    using Extensions.Core;
+    using Extensions.Core.Decorators;
 
     /// <summary>
     /// <see cref="IApplicationBuilder"/> 装饰器接口。

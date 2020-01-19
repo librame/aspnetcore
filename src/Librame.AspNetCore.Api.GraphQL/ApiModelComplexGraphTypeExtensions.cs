@@ -14,7 +14,9 @@ using GraphQL.Types;
 
 namespace Librame.AspNetCore.Api
 {
-    static class ApiModelComplexGraphTypeExtensions
+    using Models;
+
+    internal static class ApiModelComplexGraphTypeExtensions
     {
         public static ComplexGraphType<TModel> AddApiModelBaseFields<TModel>(this ComplexGraphType<TModel> graphType)
             where TModel : AbstractApiModel

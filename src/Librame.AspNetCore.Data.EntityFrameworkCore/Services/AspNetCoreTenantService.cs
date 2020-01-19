@@ -23,12 +23,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Librame.Extensions.Data
+namespace Librame.Extensions.Data.Services
 {
-    using Core;
+    using Accessors;
+    using Builders;
+    using Stores;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    class AspNetCoreTenantService<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId>
+    internal class AspNetCoreTenantService<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId>
         : TenantService<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId>
         where TAudit : DataAudit<TGenId>
         where TAuditProperty : DataAuditProperty<TIncremId, TGenId>

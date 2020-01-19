@@ -16,10 +16,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Claims;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Stores
 {
     using Extensions;
-    using Extensions.Core;
+    using Extensions.Core.Services;
 
     /// <summary>
     /// 默认用户存储。
@@ -60,7 +60,7 @@ namespace Librame.AspNetCore.Identity
         {
             var userClaim = base.CreateUserClaim(user, claim);
             userClaim.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
-            userClaim.CreatedBy = GetType().GetSimpleFullName();
+            userClaim.CreatedBy = GetType().GetDisplayNameWithNamespace();
 
             return userClaim;
         }
@@ -75,7 +75,7 @@ namespace Librame.AspNetCore.Identity
         {
             var userLogin = base.CreateUserLogin(user, login);
             userLogin.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
-            userLogin.CreatedBy = GetType().GetSimpleFullName();
+            userLogin.CreatedBy = GetType().GetDisplayNameWithNamespace();
 
             return userLogin;
         }
@@ -90,7 +90,7 @@ namespace Librame.AspNetCore.Identity
         {
             var userRole = base.CreateUserRole(user, role);
             userRole.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
-            userRole.CreatedBy = GetType().GetSimpleFullName();
+            userRole.CreatedBy = GetType().GetDisplayNameWithNamespace();
 
             return userRole;
         }
@@ -107,7 +107,7 @@ namespace Librame.AspNetCore.Identity
         {
             var userToken = base.CreateUserToken(user, loginProvider, name, value);
             userToken.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
-            userToken.CreatedBy = GetType().GetSimpleFullName();
+            userToken.CreatedBy = GetType().GetDisplayNameWithNamespace();
 
             return userToken;
         }

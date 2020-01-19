@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Localizers
 {
     static class RequestCultureProviderLoggerExtensions
     {

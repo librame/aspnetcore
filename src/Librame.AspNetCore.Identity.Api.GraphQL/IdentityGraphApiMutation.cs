@@ -24,12 +24,18 @@ namespace Librame.AspNetCore.Identity.Api
 {
     using AspNetCore.Api;
     using Extensions;
-    using Extensions.Core;
-    using Extensions.Data;
-    using Extensions.Network;
+    using Extensions.Core.Combiners;
+    using Extensions.Core.Services;
+    using Extensions.Data.Stores;
+    using Extensions.Network.Services;
+    using Models;
+    using ModelTypes;
+    using Resources;
+    using Stores;
+    using Utilities;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    class IdentityGraphApiMutation<TUser> : ObjectGraphType, IGraphApiMutation
+    internal class IdentityGraphApiMutation<TUser> : ObjectGraphType, IGraphApiMutation
         where TUser : class, IId<string>
     {
         [InjectionService]

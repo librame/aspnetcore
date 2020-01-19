@@ -13,7 +13,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace Librame.AspNetCore
+namespace Librame.AspNetCore.Applications
 {
     /// <summary>
     /// 应用中间件接口。

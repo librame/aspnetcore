@@ -15,9 +15,10 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Stores
 {
-    using Extensions.Data;
+    using Extensions.Data.Resources;
+    using Extensions.Data.Stores;
 
     /// <summary>
     /// 默认身份角色声明。

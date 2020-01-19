@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -27,12 +27,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\netcoreapp3.0\Librame.AspNetCore.Identity.Abstractions.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\netcoreapp3.1\Librame.AspNetCore.Identity.Abstractions.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\netcoreapp3.0\Librame.AspNetCore.Identity.Abstractions.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\netcoreapp3.1\Librame.AspNetCore.Identity.Abstractions.xml</DocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

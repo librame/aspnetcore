@@ -10,9 +10,9 @@
 
 #endregion
 
-namespace Librame.AspNetCore.Identity
+namespace Librame.AspNetCore.Identity.Services
 {
-    using Extensions.Core;
+    using Extensions.Core.Services;
 
     /// <summary>
     /// 默认密码服务接口。

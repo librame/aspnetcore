@@ -12,10 +12,10 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Librame.AspNetCore.IdentityServer
+namespace Librame.AspNetCore.IdentityServer.Stores
 {
-    using Extensions.Core;
-    using Identity;
+    using Extensions.Core.Services;
+    using Identity.Stores;
 
     /// <summary>
     /// 身份服务器存储标识符。
