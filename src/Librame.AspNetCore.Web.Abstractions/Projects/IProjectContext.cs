@@ -39,7 +39,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// <summary>
         /// 当前项目。
         /// </summary>
-        (IProjectInfo Info, IProjectNavigation Navigation) Current { get; }
+        (IProjectInfo Info, IProjectNavigation Navigation) Current { get; set; }
 
 
         /// <summary>
@@ -48,5 +48,20 @@ namespace Librame.AspNetCore.Web.Projects
         /// <param name="area">给定的区域（请确保项目信息名称与给定的区域保持一致）。</param>
         /// <returns>返回包含 <see cref="IProjectInfo"/> 与 <see cref="IProjectNavigation"/> 的元组。</returns>
         (IProjectInfo Info, IProjectNavigation Navigation) SetCurrent(string area);
+
+
+        /// <summary>
+        /// 查找指定名称的项目信息。
+        /// </summary>
+        /// <param name="name">给定的项目名称。</param>
+        /// <returns>返回 <see cref="IProjectInfo"/>。</returns>
+        IProjectInfo FindInfo(string name);
+
+        /// <summary>
+        /// 查找指定区域的项目导航。
+        /// </summary>
+        /// <param name="area">给定的区域。</param>
+        /// <returns>返回 <see cref="IProjectNavigation"/>。</returns>
+        IProjectNavigation FindNavigation(string area);
     }
 }

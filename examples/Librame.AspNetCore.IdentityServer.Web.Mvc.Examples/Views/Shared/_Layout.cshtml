@@ -1,7 +1,8 @@
 ﻿@using IdentityServer4.Extensions
 @inject IApplicationContext Application
 @{
-    var logout = Application.SetCurrentProject(ViewContext).Navigation.Logout;
+    // 使用 IdentityServer PCL 注销
+    var logout = Application.Project.FindNavigation("IdentityServer")?.Logout;
     
     string name = null;
     if (!true.Equals(ViewData["signed-out"]))
@@ -45,7 +46,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a asp-action="@logout.Route.Action" asp-controller="@logout.Route.Controller" asp-area="@logout.Route.Area">@logout.Text</a></li>
+                            <li><a asp-action="@logout?.Route?.Action" asp-controller="@logout?.Route?.Controller" asp-area="@logout?.Route?.Area">@logout?.Text</a></li>
                         </ul>
                     </li>
                 </ul>

@@ -42,5 +42,21 @@ namespace Librame.AspNetCore.Web.Themepacks
         /// 当前主题包信息。
         /// </summary>
         IThemepackInfo CurrentInfo { get; set; }
+
+
+        /// <summary>
+        /// 设置当前主题包信息。
+        /// </summary>
+        /// <param name="name">给定的主题包名称。</param>
+        /// <returns>返回 <see cref="IThemepackInfo"/>。</returns>
+        IThemepackInfo SetCurrentInfo(string name);
+
+
+        /// <summary>
+        /// 查找指定名称的主题包信息。
+        /// </summary>
+        /// <param name="name">给定的主题包名称。</param>
+        /// <returns>返回 <see cref="IThemepackInfo"/>。</returns>
+        IThemepackInfo FindInfo(string name);
     }
 }

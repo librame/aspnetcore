@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.3.1840.210</Version>
+    <Version>7.4.1.0</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.Abstractions on IdentityServer application package.</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions on IdentityServer application package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.3.1840.210</AssemblyVersion>
-    <FileVersion>7.3.2001.131</FileVersion>
+    <AssemblyVersion>7.4.1.0</AssemblyVersion>
+    <FileVersion>7.4.1873.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore.IdentityServer</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
@@ -37,13 +37,13 @@
   </PropertyGroup>
     
   <ItemGroup>
-    <PackageReference Include="IdentityServer4" Version="3.1.0" />
-    <PackageReference Include="Librame.Extensions.Encryption.Abstractions" Version="7.3.1021.210" />
+    <PackageReference Include="IdentityServer4" Version="3.1.2" />
+    <PackageReference Include="Librame.Extensions.Encryption.Abstractions" Version="7.4.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.2" />
   </ItemGroup>
     
   <ItemGroup>

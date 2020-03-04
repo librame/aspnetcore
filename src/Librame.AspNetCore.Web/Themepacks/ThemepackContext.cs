@@ -58,5 +58,22 @@ namespace Librame.AspNetCore.Web.Themepacks
             }
         }
 
+
+        public IThemepackInfo SetCurrentInfo(string name)
+        {
+            _currentInfo = FindInfo(name);
+            return _currentInfo;
+        }
+
+
+        public IThemepackInfo FindInfo(string name)
+        {
+            // 项目信息键名支持 default
+            if (name.IsNotEmpty() && Infos.TryGetValue(name, out IThemepackInfo info))
+                return info;
+
+            return Infos.Values.First();
+        }
+
     }
 }

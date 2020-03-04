@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -43,7 +42,7 @@ namespace Librame.AspNetCore.Web.Projects
         {
             var builderOptions = ServiceFactory.GetRequiredService<IOptions<WebBuilderOptions>>().Value;
             var infos = ApplicationHelper.GetApplicationInfos(builderOptions.SearchApplicationAssemblyPatterns,
-                type => type.EnsureCreate<IProjectInfo>(ServiceFactory)); // 此创建方法要求类型可公共访问
+                type => type.EnsureCreate<IProjectInfo>(ServiceFactory)); // 此创建方法要求项目信息实现类型可公共构造
 
             // Add default AreaInfo
             infos.Add(RouteDescriptor.DefaultRouteName, new DefaultProjectInfo(ServiceFactory));
@@ -67,44 +66,39 @@ namespace Librame.AspNetCore.Web.Projects
 
                 return _current;
             }
+            set
+            {
+                value.Info.NotNull(nameof(value.Info));
+                value.Navigation.NotNull(nameof(value.Navigation));
+
+                _current = value;
+            }
         }
 
 
         public (IProjectInfo Info, IProjectNavigation Navigation) SetCurrent(string area)
         {
-            area = FormatArea(area);
-            if (area.IsNotNull() && _current.Navigation.IsNotNull()
-                && !_current.Navigation.Area.Equals(area, StringComparison.OrdinalIgnoreCase))
-            {
-                _current = (FindInfo(area), FindNavigation(area));
-            }
-
+            _current = (FindInfo(area), FindNavigation(area));
             return _current;
         }
 
-        private IProjectInfo FindInfo(string name)
+
+        public IProjectInfo FindInfo(string name)
         {
+            // 项目信息键名支持 default
             if (name.IsNotEmpty() && Infos.TryGetValue(name, out IProjectInfo info))
                 return info;
             
             return Infos[RouteDescriptor.DefaultRouteName];
         }
 
-        private IProjectNavigation FindNavigation(string area)
+        public IProjectNavigation FindNavigation(string area)
         {
-            area = FormatArea(area);
+            // 项目导航键名不支持 default
+            if (area == RouteDescriptor.DefaultRouteName)
+                area = null; // 默认项目导航的区域必须为空
+
             return Navigations.First(nav => nav.Area == area);
-        }
-
-        private static string FormatArea(string area)
-        {
-            if ((area.IsNotNull() && area.Length == 0)
-                || RouteDescriptor.DefaultRouteName.Equals(area, StringComparison.OrdinalIgnoreCase))
-            {
-                return null; // 将 string.Empty/default 转换为 null
-            }
-
-            return area;
         }
 
     }

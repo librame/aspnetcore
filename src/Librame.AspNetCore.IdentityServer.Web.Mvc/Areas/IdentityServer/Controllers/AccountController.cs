@@ -191,7 +191,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
             return View(vm);
         }
 
-        
+
         /// <summary>
         /// Show logout page
         /// </summary>
