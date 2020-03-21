@@ -20,9 +20,9 @@ using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Accessors
 {
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Stores;
     using Extensions;
-    using Builders;
-    using Stores;
 
     /// <summary>
     /// 身份访问器模型构建器静态扩展。

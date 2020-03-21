@@ -25,10 +25,10 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account
 {
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
     using AspNetCore.Web;
     using Extensions;
-    using Models;
-    using Resources;
 
     /// <summary>
     /// 登入页面模型。

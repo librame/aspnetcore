@@ -19,11 +19,11 @@ using System.Text;
 
 namespace Librame.AspNetCore.Web.Services
 {
+    using AspNetCore.Web.Projects;
+    using AspNetCore.Web.Resources;
+    using AspNetCore.Web.Themepacks;
     using Extensions;
     using Extensions.Core.Services;
-    using Projects;
-    using Resources;
-    using Themepacks;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class CopyrightService : AbstractService, ICopyrightService
@@ -53,10 +53,10 @@ namespace Librame.AspNetCore.Web.Services
         public string GetHtmlCode(bool displayMiniInfo = false)
         {
             var sb = new StringBuilder();
-            sb.Append($"{GetCopyrightYearPart()} {FormatNuGetLink(LibrameCoreArchitecture, LibrameCore, _localizer.GetString(r => r.SearchInNuget))} {GetPoweredByPart()}; {GetCulturePart()}");
+            sb.Append($"{GetCopyrightYearPart()} {FormatNuGetLink(LibrameCoreArchitecture, LibrameCore, _localizer.GetString(r => r.SearchInNuget))}; {GetPoweredByPart()}");
 
             if (!displayMiniInfo)
-                sb.AppendLine($"<br />{GetApplicationPart()} / {GetThemepackPart()}");
+                sb.AppendLine($"<br />{GetApplicationPart()} / {GetThemepackPart()}; {GetCulturePart()}");
 
             return sb.ToString();
         }
@@ -86,13 +86,13 @@ namespace Librame.AspNetCore.Web.Services
         private string GetApplicationPart()
         {
             var info = _project.Current.Info;
-            return $"{_localizer.GetString(r => r.Application)}: {FormatNuGetLink(info.AssemblyName.Name, info.Name, _localizer.GetString(r => r.SearchInNuget))} {info.Version} [{info.Authors}]";
+            return $"{_localizer.GetString(r => r.Application)}: {FormatNuGetLink(info.AssemblyName.Name, info.DisplayName, _localizer.GetString(r => r.SearchInNuget))} {info.Version}";
         }
 
         private string GetThemepackPart()
         {
             var info = _themepack.CurrentInfo;
-            return $"{_localizer.GetString(r => r.Themepack)}: {FormatNuGetLink(info.AssemblyName.Name, info.Name, _localizer.GetString(r => r.SearchInNuget))} {info.Version} [{info.Authors}]";
+            return $"{_localizer.GetString(r => r.Themepack)}: {FormatNuGetLink(info.AssemblyName.Name, info.DisplayName, _localizer.GetString(r => r.SearchInNuget))} {info.Version}";
         }
 
 

@@ -19,10 +19,10 @@ using System;
 
 namespace Librame.AspNetCore.Identity.Accessors
 {
-    using Builders;
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Stores;
     using Extensions.Core.Services;
     using Extensions.Data.Accessors;
-    using Stores;
 
     /// <summary>
     /// 身份数据库上下文访问器。

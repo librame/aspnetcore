@@ -21,8 +21,8 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 {
+    using AspNetCore.IdentityServer.Builders;
     using AspNetCore.Web;
-    using Builders;
     using Extensions;
     using Extensions.Core.Services;
 

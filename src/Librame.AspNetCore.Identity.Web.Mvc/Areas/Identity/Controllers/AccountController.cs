@@ -18,25 +18,26 @@ using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Controllers
 {
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Stores;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
     using AspNetCore.Web;
     using AspNetCore.Web.Applications;
-    using AspNetCore.Web.Utilities;
-    using Builders;
     using Extensions;
     using Extensions.Core.Services;
     using Extensions.Data.Stores;
     using Extensions.Network.Services;
-    using Models;
-    using Resources;
-    using Stores;
 
     /// <summary>
     /// ÓÃ»§¿ØÖÆÆ÷¡£
@@ -80,6 +81,9 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
 
         [InjectionService]
         private SignInManager<TUser> _signInManager = null;
+
+        [InjectionService]
+        private IClockService _clockService = null;
 
         private readonly UserManager<TUser> _userManager = null;
 
@@ -134,6 +138,12 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
             model.NotNull(nameof(model));
 
             ViewData["ReturnUrl"] = returnUrl;
+            ViewData["ExternalSchemes"] = _signInManager.GetExternalAuthenticationSchemesAsync().Result;
+
+            ViewBag.BuilderOptions = _builderOptions.Value;
+            ViewBag.Options = _options.Value;
+            ViewBag.Localizer = _registerLocalizer;
+
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
@@ -200,14 +210,17 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
+
+            ViewBag.BuilderOptions = _builderOptions.Value;
+            ViewBag.Options = _options.Value;
+            ViewBag.Localizer = _registerLocalizer;
+
             if (ModelState.IsValid)
             {
-                var user = typeof(TUser).EnsureCreate<TUser>();
+                var user = CreateUser();
                 user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore,
-                    model.Email, model.Password, user).ConfigureAndResultAsync();
-
+                var result = await CreateUserByEmail(_clockService, user, model.Email, model.Password).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
@@ -344,12 +357,10 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
                     return View("ExternalLoginFailure");
                 }
 
-                var user = typeof(TUser).EnsureCreate<TUser>();
+                var user = CreateUser();
                 user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore,
-                    model.Email, password: null, user: user).ConfigureAndResultAsync();
-
+                var result = await CreateUserByEmail(_clockService, user, model.Email).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info).ConfigureAndResultAsync();
@@ -482,6 +493,10 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
+            ViewBag.BuilderOptions = _builderOptions.Value;
+            ViewBag.Options = _options.Value;
+            ViewBag.RegisterLocalizer = _registerLocalizer;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -550,6 +565,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
         public async Task<IActionResult> SendCode(SendCodeViewModel model)
         {
+            ViewBag.Localizer = _sendCodeLocalizer;
+
             if (!ModelState.IsValid)
             {
                 return View();
@@ -761,6 +778,41 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        private async Task<IdentityResult> CreateUserByEmail(IClockService clock, TUser user, string email, string password = null,
+            CancellationToken cancellationToken = default)
+        {
+            await _userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+
+            if (!_userManager.SupportsUserEmail)
+                throw new NotSupportedException("The identity builder requires a user store with email support.");
+
+            var emailStore = (IUserEmailStore<TUser>)_userStore;
+            await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+
+            // Populate Creation
+            await EntityPopulator.PopulateCreationAsync<AccountController<TUser>>(clock, user, cancellationToken: cancellationToken)
+                .ConfigureAndWaitAsync();
+
+            if (password.IsNotEmpty())
+                return await _userManager.CreateAsync(user, password).ConfigureAndResultAsync();
+
+            return await _userManager.CreateAsync(user).ConfigureAndResultAsync();
+        }
+
+        private TUser CreateUser()
+        {
+            try
+            {
+                return typeof(TUser).EnsureCreate<TUser>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(TUser)}'. " +
+                    $"Ensure that '{nameof(TUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register view in ~/Areas/Identity/Views/Account/Register.cshtml");
             }
         }
 

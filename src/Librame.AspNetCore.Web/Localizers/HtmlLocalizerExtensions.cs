@@ -34,7 +34,10 @@ namespace Microsoft.AspNetCore.Mvc.Localization
         public static LocalizedHtmlString GetString<TResource, TProperty>(this IHtmlLocalizer<TResource> localizer,
             Expression<Func<TResource, TProperty>> propertyExpression)
             where TResource : class
-            => localizer[propertyExpression.AsPropertyName()];
+        {
+            localizer.NotNull(nameof(localizer));
+            return localizer[propertyExpression.AsPropertyName()];
+        }
 
         /// <summary>
         /// 获取字符串。
@@ -49,6 +52,10 @@ namespace Microsoft.AspNetCore.Mvc.Localization
         public static LocalizedHtmlString GetString<TResource, TProperty>(this IHtmlLocalizer<TResource> localizer,
             Expression<Func<TResource, TProperty>> propertyExpression, params object[] arguments)
             where TResource : class
-            => localizer[propertyExpression.AsPropertyName(), arguments];
+        {
+            localizer.NotNull(nameof(localizer));
+            return localizer[propertyExpression.AsPropertyName(), arguments];
+        }
+
     }
 }

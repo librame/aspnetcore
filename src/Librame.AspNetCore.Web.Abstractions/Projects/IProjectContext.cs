@@ -37,6 +37,11 @@ namespace Librame.AspNetCore.Web.Projects
         IReadOnlyDictionary<string, IProjectInfo> Infos { get; }
 
         /// <summary>
+        /// 登陆栏项目（根据配置的登陆栏项目名称查找对应的项目，如果不存在则使用当前项目）。
+        /// </summary>
+        (IProjectInfo Info, IProjectNavigation Navigation) Loginbar { get; }
+
+        /// <summary>
         /// 当前项目。
         /// </summary>
         (IProjectInfo Info, IProjectNavigation Navigation) Current { get; set; }

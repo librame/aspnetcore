@@ -26,15 +26,6 @@ namespace Librame.AspNetCore.Web.Routings
     public class RouteDescriptor : IEquatable<RouteDescriptor>
     {
         /// <summary>
-        /// 默认路由名称。
-        /// </summary>
-        /// <remarks>
-        /// 参考 ControllerEndpointRouteBuilderExtensions.MapDefaultControllerRoute()。
-        /// </remarks>
-        public const string DefaultRouteName = "default";
-
-
-        /// <summary>
         /// 构造一个 <see cref="RouteDescriptor"/>。
         /// </summary>
         /// <param name="url">给定的 URL。</param>
@@ -68,7 +59,7 @@ namespace Librame.AspNetCore.Web.Routings
         /// <summary>
         /// 构造一个 <see cref="RouteDescriptor"/>。
         /// </summary>
-        /// <param name="id">给定的查询参数。</param>
+        /// <param name="id">给定的标识。</param>
         /// <param name="action">给定的动作。</param>
         /// <param name="controller">给定的控制器。</param>
         /// <param name="page">给定的页面路径。</param>
@@ -84,7 +75,7 @@ namespace Librame.AspNetCore.Web.Routings
 
 
         /// <summary>
-        /// 查询参数。
+        /// 标识。
         /// </summary>
         public string Id { get; private set; }
 
@@ -107,6 +98,11 @@ namespace Librame.AspNetCore.Web.Routings
         /// 区域。
         /// </summary>
         public string Area { get; private set; }
+
+        /// <summary>
+        /// 查询字符串。
+        /// </summary>
+        public string QueryString { get; private set; }
 
         /// <summary>
         /// URL。
@@ -139,6 +135,32 @@ namespace Librame.AspNetCore.Web.Routings
         /// </summary>
         public virtual string ViewName
             => IsPage ? PageName : Action;
+
+
+        /// <summary>
+        /// 附加返回 URL。
+        /// </summary>
+        /// <param name="returnUrl">给定的返回 URL。</param>
+        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        public RouteDescriptor AppendReturnUrl(string returnUrl)
+        {
+            if (returnUrl.IsNotEmpty())
+                return AppendQueryString($"ReturnUrl={returnUrl}");
+
+            return this;
+        }
+
+        /// <summary>
+        /// 附加查询参数。
+        /// </summary>
+        /// <param name="queryString">给定的查询参数（可选；默认清空查询参数）。</param>
+        /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
+        public RouteDescriptor AppendQueryString(string queryString = null)
+        {
+            QueryString = queryString;
+            return this;
+        }
 
 
         /// <summary>
@@ -281,11 +303,16 @@ namespace Librame.AspNetCore.Web.Routings
 
 
         /// <summary>
-        /// 转换为字符串（按照默认路由模式）。
+        /// 转换为字符串。
         /// </summary>
         /// <returns>返回字符串。</returns>
         public override string ToString()
-            => ToDefaultRouteString();
+        {
+            if (Url.IsNotEmpty())
+                return Url;
+
+            return ToDefaultRouteString();
+        }
 
         /// <summary>
         /// 转换为默认路由字符串。
@@ -314,6 +341,9 @@ namespace Librame.AspNetCore.Web.Routings
             if (Id.IsNotEmpty())
                 sb.Append($"/{Id}");
 
+            if (QueryString.IsNotEmpty())
+                sb.Append($"?{QueryString}");
+
             return sb.ToString();
         }
 
@@ -321,11 +351,14 @@ namespace Librame.AspNetCore.Web.Routings
         /// 转换为字符串。
         /// </summary>
         /// <param name="urlHelper">给定的 <see cref="IUrlHelper"/>。</param>
-        /// <param name="routeName">给定的路由名称（可选；默认为 <see cref="DefaultRouteName"/>）。</param>
+        /// <param name="routeName">给定的路由名称（可选）。</param>
         /// <returns>返回字符串。</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "urlHelper")]
-        public virtual string ToRouteString(IUrlHelper urlHelper, string routeName = DefaultRouteName)
+        public virtual string ToRouteString(IUrlHelper urlHelper, string routeName = null)
         {
+            if (Url.IsNotEmpty())
+                return Url;
+
             urlHelper.NotNull(nameof(urlHelper));
 
             if (IsPage)
@@ -344,11 +377,22 @@ namespace Librame.AspNetCore.Web.Routings
             }
             else
             {
-                return urlHelper.Link(routeName, new
+                if (routeName.IsNotEmpty())
+                {
+                    // 此方法的默认区域链接格式为：/Controller/Action?area=Area
+                    return urlHelper.Link(routeName, new
+                    {
+                        area = Area,
+                        controller = Controller,
+                        action = Action,
+                        id = Id
+                    });
+                }
+
+                // 此方法的区域链接格式为：/Area/Controller/Action
+                return urlHelper.ActionLink(Action, Controller, new
                 {
                     area = Area,
-                    controller = Controller,
-                    action = Action,
                     id = Id
                 });
             }

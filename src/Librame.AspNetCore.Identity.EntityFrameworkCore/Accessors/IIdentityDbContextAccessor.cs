@@ -15,8 +15,8 @@ using System;
 
 namespace Librame.AspNetCore.Identity.Accessors
 {
+    using AspNetCore.Identity.Stores;
     using Extensions.Data.Accessors;
-    using Stores;
 
     /// <summary>
     /// 身份数据库上下文访问器接口。

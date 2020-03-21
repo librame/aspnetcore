@@ -252,9 +252,9 @@ namespace Librame.AspNetCore.Web.Routings
         /// 转换为路由链接。
         /// </summary>
         /// <param name="urlHelper">给定的 <see cref="IUrlHelper"/>。</param>
-        /// <param name="routeName">给定的路由名称（可选；默认为 <see cref="RouteDescriptor.DefaultRouteName"/>）。</param>
+        /// <param name="routeName">给定的路由名称（可选）。</param>
         /// <returns>返回字符串。</returns>
-        public virtual string ToRouteString(IUrlHelper urlHelper, string routeName = RouteDescriptor.DefaultRouteName)
+        public virtual string ToRouteString(IUrlHelper urlHelper, string routeName = null)
             => Route.ToRouteString(urlHelper, routeName);
 
 

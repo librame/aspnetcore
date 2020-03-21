@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 {
+    using AspNetCore.IdentityServer.Web.Models;
     using Extensions;
     using Extensions.Core.Services;
-    using Models;
 
     /// <summary>
     /// This sample controller allows a user to revoke grants given to clients

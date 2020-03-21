@@ -19,17 +19,18 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account
 {
+    using AspNetCore.Identity.Stores;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
     using AspNetCore.Web;
-    using AspNetCore.Web.Utilities;
     using Extensions;
+    using Extensions.Core.Services;
     using Extensions.Data.Stores;
-    using Models;
-    using Resources;
-    using Stores;
 
     /// <summary>
     /// 外部登入确认页面模型。
@@ -108,6 +109,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
         private readonly ILogger<ExternalLoginPageModel> _logger;
+        private readonly IClockService _clockService;
         private readonly IStringLocalizer<ErrorMessageResource> _errorLocalizer;
         private readonly IdentityStoreIdentifier _storeIdentifier;
 
@@ -116,15 +118,18 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
             ILogger<ExternalLoginPageModel> logger,
+            IClockService clockService,
             IStringLocalizer<ErrorMessageResource> errorLocalizer,
             IdentityStoreIdentifier storeIdentifier)
         {
-            _signInManager = signInManager;
+            _signInManager = signInManager.NotNull(nameof(signInManager));
+            _userStore = userStore.NotNull(nameof(userStore));
+            _logger = logger.NotNull(nameof(logger));
+            _clockService = clockService.NotNull(nameof(clockService));
+            _errorLocalizer = errorLocalizer.NotNull(nameof(errorLocalizer));
+            _storeIdentifier = storeIdentifier.NotNull(nameof(storeIdentifier));
+
             _userManager = signInManager.UserManager;
-            _userStore = userStore;
-            _logger = logger;
-            _errorLocalizer = errorLocalizer;
-            _storeIdentifier = storeIdentifier;
         }
 
 
@@ -189,6 +194,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         public override async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
+
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAndResultAsync();
             if (info == null)
@@ -202,7 +208,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
                 var user = CreateUser();
                 user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore, Input.Email, password: null, user).ConfigureAndResultAsync();
+                var result = await CreateUserByEmail(_clockService, user, Input.Email).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info).ConfigureAndResultAsync();
@@ -225,6 +231,27 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             return Page();
         }
 
+        private async Task<IdentityResult> CreateUserByEmail(IClockService clock, TUser user, string email, string password = null,
+            CancellationToken cancellationToken = default)
+        {
+            await _userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+
+            if (!_userManager.SupportsUserEmail)
+                throw new NotSupportedException("The identity builder requires a user store with email support.");
+
+            var emailStore = (IUserEmailStore<TUser>)_userStore;
+            await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+
+            // Populate Creation
+            await EntityPopulator.PopulateCreationAsync<RegisterPageModel>(clock, user, cancellationToken: cancellationToken)
+                .ConfigureAndWaitAsync();
+
+            if (password.IsNotEmpty())
+                return await _userManager.CreateAsync(user, password).ConfigureAndResultAsync();
+
+            return await _userManager.CreateAsync(user).ConfigureAndResultAsync();
+        }
+
         private TUser CreateUser()
         {
             try
@@ -235,7 +262,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             {
                 throw new InvalidOperationException($"Can't create an instance of '{nameof(TUser)}'. " +
                     $"Ensure that '{nameof(TUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the external login page in ~/Areas/Identity/Pages/Account/ExternalLogin.cshtml");
+                    $"override the register page in ~/Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 

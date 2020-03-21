@@ -21,11 +21,11 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 {
+    using AspNetCore.IdentityServer.Builders;
+    using AspNetCore.IdentityServer.Web.Models;
     using AspNetCore.Web;
-    using Builders;
     using Extensions;
     using Extensions.Core.Services;
-    using Models;
 
     /// <summary>
     /// This sample controller implements a typical login/logout/provision workflow for local and external accounts.
@@ -268,7 +268,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
                     {
                         new ExternalProvider { AuthenticationScheme = context.IdP }
                     }
-                }; 
+                };
             }
 
             var schemes = await _schemeProvider.GetAllSchemesAsync().ConfigureAndResultAsync();

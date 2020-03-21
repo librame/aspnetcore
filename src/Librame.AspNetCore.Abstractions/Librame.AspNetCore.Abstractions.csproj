@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.4.1.0</Version>
+    <Version>7.4.1.13</Version>
     <Authors>Librame Pang</Authors>
     <Company>Librame.net</Company>
     <Description>Based Librame.Extensions.Core.Abstractions on ASP.NET Core extension package.</Description>
@@ -19,10 +19,12 @@
     <PackageReleaseNotes>Based Librame.Extensions.Core.Abstractions on ASP.NET Core extension package.</PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.4.1.0</AssemblyVersion>
-    <FileVersion>7.4.1873.15117</FileVersion>
+    <AssemblyVersion>7.4.1.13</AssemblyVersion>
+    <FileVersion>7.4.1891.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -41,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Core.Abstractions" Version="7.4.1" />
+    <PackageReference Include="Librame.Extensions.Core.Abstractions" Version="7.4.1.12" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -17,10 +17,10 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 {
-    using Builders;
+    using AspNetCore.IdentityServer.Builders;
+    using AspNetCore.IdentityServer.Web.Models;
     using Extensions;
     using Extensions.Core.Services;
-    using Models;
 
     /// <summary>
     /// This controller processes the consent UI
@@ -93,7 +93,6 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
             model.NotNull(nameof(model));
 
             var result = await ProcessConsent(model).ConfigureAndResultAsync();
-
             if (result.IsRedirect)
             {
                 if (await _clientStore.IsPkceClientAsync(result.ClientId).ConfigureAndResultAsync())

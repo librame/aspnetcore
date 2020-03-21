@@ -23,8 +23,8 @@ namespace Librame.AspNetCore.Identity.Stores
 {
     using Accessors;
     using Extensions;
-    using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
+    using Extensions.Core.Utilities;
     using Extensions.Data.Stores;
     using Services;
 
@@ -169,8 +169,7 @@ namespace Librame.AspNetCore.Identity.Stores
                     user.CreatedTime = Clock.GetOffsetNowAsync(DateTimeOffset.UtcNow, true).ConfigureAndResult();
                     user.CreatedBy = _defaultCreatedBy;
 
-                    var identifier = RandomNumberAlgorithmIdentifier.New(20);
-                    user.SecurityStamp = identifier;
+                    user.SecurityStamp = RandomUtility.GenerateNumber(20).AsHexString();
                     user.EmailConfirmed = true;
 
                     var defaultPassword = defaultPasswordService.GetDefaultPassword(user);

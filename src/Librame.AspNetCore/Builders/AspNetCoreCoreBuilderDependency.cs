@@ -36,15 +36,27 @@ namespace Librame.AspNetCore.Builders
 
 
         /// <summary>
+        /// 构造一个 <see cref="AspNetCoreCoreBuilderDependency"/>。
+        /// </summary>
+        public AspNetCoreCoreBuilderDependency()
+            : base()
+        {
+            RequestLocalization = new OptionsDependency<RequestLocalizationOptions>();
+
+            RequestLocalization.Options.SupportedCultures = DefaultCultureInfos;
+            RequestLocalization.Options.SupportedUICultures = DefaultCultureInfos;
+
+            // Add RouteData
+            RequestLocalization.Options.RequestCultureProviders.Insert(0, new RouteDataRequestCultureProvider
+            {
+                Options = RequestLocalization.Options
+            });
+        }
+
+
+        /// <summary>
         /// 请求本地化选项依赖。
         /// </summary>
-        public OptionsDependency<RequestLocalizationOptions> RequestLocalization { get; set; }
-            = new OptionsDependency<RequestLocalizationOptions>(options =>
-            {
-                options.SupportedCultures = DefaultCultureInfos;
-                options.SupportedUICultures = DefaultCultureInfos;
-                // Add RouteData
-                options.RequestCultureProviders.Insert(0, new RouteDataRequestCultureProvider { Options = options });
-            });
+        public OptionsDependency<RequestLocalizationOptions> RequestLocalization { get; }
     }
 }

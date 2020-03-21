@@ -51,6 +51,14 @@
                     </li>
                 </ul>
             }
+            else
+            {
+                var register = Application.Project.FindNavigation("Identity")?.Register;
+
+                <ul class="nav navbar-nav">
+                    <li><a href="@register.Route.AppendQueryString(Context.Request.Query["ReturnUrl"])">@register.Text</a></li>
+                </ul>
+            }
         </div>
     </div>
 

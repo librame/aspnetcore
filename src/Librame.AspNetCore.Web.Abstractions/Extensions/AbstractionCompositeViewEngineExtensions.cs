@@ -13,7 +13,6 @@
 using Librame.Extensions;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Mvc.ViewEngines
 {
@@ -23,24 +22,25 @@ namespace Microsoft.AspNetCore.Mvc.ViewEngines
     public static class AbstractionCompositeViewEngineExtensions
     {
         /// <summary>
-        /// 异步渲染主题包部分视图。
+        /// 异步需要主题包视图。
         /// </summary>
+        /// <typeparam name="TResult">指定的结果类型。</typeparam>
         /// <param name="engine">给定的 <see cref="ICompositeViewEngine"/>。</param>
         /// <param name="context">给定的 <see cref="ActionContext"/>。</param>
         /// <param name="viewName">给定的视图名称。</param>
-        /// <param name="renderFactory">给定的渲染工厂方法。</param>
-        /// <returns>返回一个异步操作。</returns>
+        /// <param name="processFactory">给定的视图处理工厂方法。</param>
+        /// <returns>返回 <typeparamref name="TResult"/>。</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public static Task RenderThemepackPartialViewAsync(this ICompositeViewEngine engine, ActionContext context, string viewName,
-            Func<string, Task> renderFactory)
+        public static TResult RequiredThemepackViewAsync<TResult>(this ICompositeViewEngine engine, ActionContext context,
+            string viewName, Func<string, TResult> processFactory)
         {
             engine.NotNull(nameof(engine));
-            renderFactory.NotNull(nameof(renderFactory));
+            processFactory.NotNull(nameof(processFactory));
 
             var result = engine.FindView(context, viewName, isMainPage: false);
             if (result.Success)
             {
-                return renderFactory.Invoke(viewName); // html.RenderPartialAsync(viewName, model)
+                return processFactory.Invoke(viewName); // ex: html.RenderPartialAsync(viewName, model)
             }
             else
             {

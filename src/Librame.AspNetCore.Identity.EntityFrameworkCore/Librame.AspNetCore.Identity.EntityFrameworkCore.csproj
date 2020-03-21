@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.4.1.0</Version>
+    <Version>7.4.1.13</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.Identity.Abstractions on EntityFrameworkCore application implementation.</Description>
@@ -19,10 +19,12 @@
     <PackageReleaseNotes>Based Librame.AspNetCore.Identity.Abstractions on EntityFrameworkCore application implementation.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.4.1.0</AssemblyVersion>
-    <FileVersion>7.4.1873.15117</FileVersion>
+    <AssemblyVersion>7.4.1.13</AssemblyVersion>
+    <FileVersion>7.4.1891.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore.Identity</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

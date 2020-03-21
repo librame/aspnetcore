@@ -23,16 +23,16 @@ using System.Text.Encodings.Web;
 namespace Librame.AspNetCore.Identity.Api
 {
     using AspNetCore.Api;
+    using AspNetCore.Identity.Api.Models;
+    using AspNetCore.Identity.Api.ModelTypes;
+    using AspNetCore.Identity.Api.Resources;
+    using AspNetCore.Identity.Stores;
+    using AspNetCore.Identity.Api.Utilities;
     using Extensions;
     using Extensions.Core.Combiners;
     using Extensions.Core.Services;
     using Extensions.Data.Stores;
     using Extensions.Network.Services;
-    using Models;
-    using ModelTypes;
-    using Resources;
-    using Stores;
-    using Utilities;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class IdentityGraphApiMutation<TUser> : ObjectGraphType, IGraphApiMutation

@@ -29,9 +29,20 @@ namespace Librame.AspNetCore.Web.Themepacks
     /// </summary>
     public abstract class AbstractThemepackInfo : AbstractApplicationInfo, IThemepackInfo
     {
-        internal const string CommonLayoutKey = "Common";
-        internal const string LoginLayoutKey = "Login";
-        internal const string ManageLayoutKey = "Manage";
+        /// <summary>
+        /// 公共布局键。
+        /// </summary>
+        public const string CommonLayoutKey = "Common";
+
+        /// <summary>
+        /// 登入布局键。
+        /// </summary>
+        public const string LoginLayoutKey = "Login";
+
+        /// <summary>
+        /// 管理布局键。
+        /// </summary>
+        public const string ManageLayoutKey = "Manage";
 
         private const string _searchLayoutPathPattern
             = @"/Views/Shared/(\w+)/_Layout.cshtml";

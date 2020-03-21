@@ -47,10 +47,9 @@ namespace Librame.AspNetCore.Web.Applications
         /// 获取区域导航路径。
         /// </summary>
         /// <param name="navigationFactory">指定定位导航的工厂方法。</param>
-        /// <param name="routeName">给定的路由名称（可选；默认为 <see cref="RouteDescriptor.DefaultRouteName"/>）。</param>
+        /// <param name="routeName">给定的路由名称（可选）。</param>
         /// <returns>返回字符串。</returns>
-        public string GetAreaNavigationPath(Func<IProjectNavigation, NavigationDescriptor> navigationFactory,
-            string routeName = RouteDescriptor.DefaultRouteName)
+        public string GetAreaNavigationPath(Func<IProjectNavigation, NavigationDescriptor> navigationFactory, string routeName = null)
             => navigationFactory?.Invoke(Application.CurrentProject.Navigation)?.ToRouteString(Url, routeName);
 
 

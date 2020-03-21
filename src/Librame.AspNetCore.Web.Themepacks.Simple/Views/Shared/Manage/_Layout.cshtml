@@ -1,7 +1,9 @@
 ﻿@inject IApplicationContext Application
+@inject IOptions<WebBuilderOptions> Options
 @inject ICompositeViewEngine Engine
 @{
     Application.SetCurrentProject(ViewContext);
+    var theme = Options.Value.Themepack;
 }
 <!DOCTYPE html>
 <html>
@@ -40,26 +42,26 @@
                 <button class="topbar-toggler more"><i class="la la-ellipsis-v"></i></button>
             </div>
 
-            <nav class="navbar navbar-header navbar-expand-lg">
-                <div class="container-fluid">
-                    <!-- Login Info -->
-                    @{
-                        await Engine.RenderThemepackPartialViewAsync(ViewContext, "Manage/_LoginPartial",
-                            viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
-                    }
-                </div>
-            </nav>
+            @if (theme.ManageLoginVisibility)
+            {
+                <nav class="navbar navbar-header navbar-expand-lg">
+                    <div class="container-fluid">
+                        @await Engine.RequiredThemepackViewAsync(ViewContext, "Manage/_LoginPartial",
+                           viewName => Html.PartialAsync(viewName, Application)).ConfigureAndResultAsync()
+                    </div>
+                </nav>
+            }
         </div>
 
-        <div class="sidebar">
-            <div class="scrollbar-inner sidebar-wrapper">
-                <!-- Sidebar -->
-                @{
-                    await Engine.RenderThemepackPartialViewAsync(ViewContext, "Manage/_SidebarPartial",
-                        viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
-                }
+        @if (theme.ManageSidebarVisibility)
+        {
+            <div class="sidebar">
+                <div class="scrollbar-inner sidebar-wrapper">
+                    @await Engine.RequiredThemepackViewAsync(ViewContext, "Manage/_SidebarPartial",
+                       viewName => Html.PartialAsync(viewName, Application)).ConfigureAndResultAsync()
+                </div>
             </div>
-        </div>
+        }
 
         <div class="main-panel">
             <div class="content">
@@ -68,15 +70,15 @@
                 </div>
             </div>
 
-            <footer class="footer">
-                <div class="container-fluid">
-                    <!-- Footbar -->
-                    @{
-                        await Engine.RenderThemepackPartialViewAsync(ViewContext, "Manage/_FootbarPartial",
-                            viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
-                    }
-                </div>
-            </footer>
+            @if (theme.ManageFooterVisibility)
+            {
+                <footer class="footer">
+                    <div class="container-fluid">
+                        @await Engine.RequiredThemepackViewAsync(ViewContext, "Manage/_FooterPartial",
+                            viewName => Html.PartialAsync(viewName, Application)).ConfigureAndResultAsync()
+                    </div>
+                </footer>
+            }
         </div>
     </div>
 

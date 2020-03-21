@@ -11,12 +11,12 @@ using Microsoft.Extensions.Hosting;
 
 namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
 {
-    using Accessors;
+    using AspNetCore.Identity.Accessors;
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Stores;
     using AspNetCore.Web.Builders;
-    using Builders;
     using Extensions;
     using Extensions.Data.Builders;
-    using Stores;
 
     public class Startup
     {
@@ -52,16 +52,11 @@ namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
-            // 默认使用测试项目的写入库
-            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-            var writingConnectionString = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
-
             services.AddLibrameCore()
-                .AddDataCore(options =>
+                .AddDataCore(dependency =>
                 {
-                    options.DefaultTenant.DefaultConnectionString = writingConnectionString;
-                    options.DefaultTenant.WritingConnectionString = writingConnectionString;
-                    options.DefaultTenant.WritingSeparation = false;
+                    // Use SQL Server
+                    dependency.BindDefaultTenant(Configuration.GetSection(nameof(dependency.Options.DefaultTenant)));
                 })
                 .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
                 {
@@ -69,20 +64,14 @@ namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
                         sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
                 })
                 .AddDbDesignTime<SqlServerDesignTimeServices>()
-                .AddIdentifier<IdentityStoreIdentifier>()
+                .AddStoreIdentifier<IdentityStoreIdentifier>()
                 //.AddInitializer<IdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
-                    dependency.Builder.ConfigureOptions = builder =>
-                    {
-                        // Use Librame.AspNetCore.Identity.Web.Mvc RPL
-                        builder.LoginCallbackPath = new PathString("/Idenity/Manage/Index");
-                    };
+                    // Use Librame.AspNetCore.Identity.Web.Mvc RPL
+                    dependency.Options.LoginCallbackPath = new PathString("/Idenity/Manage/Index");
 
-                    dependency.Identity.ConfigureOptions = identity =>
-                    {
-                        identity.Stores.MaxLengthForKeys = 128;
-                    };
+                    dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })
                 .AddIdentityWeb()
                 .AddIdentityProjectController(mvcBuilder)

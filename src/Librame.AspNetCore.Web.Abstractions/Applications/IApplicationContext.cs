@@ -14,10 +14,10 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace Librame.AspNetCore.Web.Applications
 {
+    using AspNetCore.Web.Projects;
+    using AspNetCore.Web.Services;
+    using AspNetCore.Web.Themepacks;
     using Extensions.Core.Services;
-    using Projects;
-    using Services;
-    using Themepacks;
 
     /// <summary>
     /// 应用上下文接口。
@@ -57,14 +57,6 @@ namespace Librame.AspNetCore.Web.Applications
         IWebHostEnvironment Environment { get; }
 
         /// <summary>
-        /// 服务工厂。
-        /// </summary>
-        /// <value>
-        /// 返回 <see cref="ServiceFactory"/>。
-        /// </value>
-        ServiceFactory ServiceFactory { get; }
-
-        /// <summary>
         /// 版权声明服务。
         /// </summary>
         /// <value>
@@ -72,11 +64,24 @@ namespace Librame.AspNetCore.Web.Applications
         /// </value>
         ICopyrightService Copyright { get; }
 
+        /// <summary>
+        /// 服务工厂。
+        /// </summary>
+        /// <value>
+        /// 返回 <see cref="ServiceFactory"/>。
+        /// </value>
+        ServiceFactory ServiceFactory { get; }
+
 
         /// <summary>
         /// 当前主题包信息。
         /// </summary>
         IThemepackInfo CurrentThemepackInfo { get; set; }
+
+        /// <summary>
+        /// 登陆栏项目。
+        /// </summary>
+        (IProjectInfo Info, IProjectNavigation Navigation) LoginbarProject { get; }
 
         /// <summary>
         /// 当前项目。

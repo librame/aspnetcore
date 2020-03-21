@@ -13,7 +13,6 @@
 using Librame.AspNetCore.Builders;
 using Librame.Extensions;
 using Librame.Extensions.Core.Builders;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -25,26 +24,6 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class AspNetCoreCoreBuilderServiceCollectionExtensions
     {
-        /// <summary>
-        /// 添加 Librame for ASP.NET Core。
-        /// </summary>
-        /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
-        /// <param name="configureRequestLocalization">给定的配置请求本地化选项动作方法。</param>
-        /// <param name="builderFactory">给定创建核心构建器的工厂方法（可选）。</param>
-        /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
-        public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
-            Action<RequestLocalizationOptions> configureRequestLocalization,
-            Func<IServiceCollection, AspNetCoreCoreBuilderDependency, ICoreBuilder> builderFactory = null)
-        {
-            configureRequestLocalization.NotNull(nameof(configureRequestLocalization));
-
-            return services.AddLibrameCore(dependency =>
-            {
-                dependency.RequestLocalization.ConfigureOptions = configureRequestLocalization;
-            },
-            builderFactory);
-        }
-
         /// <summary>
         /// 添加 Librame for ASP.NET Core。
         /// </summary>
@@ -61,26 +40,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddLibrameCore(dependency =>
             {
                 dependency.ConfigureLoggingBuilder = configureLoggingBuilder;
-            },
-            builderFactory);
-        }
-
-        /// <summary>
-        /// 添加 Librame for ASP.NET Core。
-        /// </summary>
-        /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
-        /// <param name="configureOptions">给定的配置选项动作方法。</param>
-        /// <param name="builderFactory">给定创建核心构建器的工厂方法（可选）。</param>
-        /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
-        public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
-            Action<CoreBuilderOptions> configureOptions,
-            Func<IServiceCollection, AspNetCoreCoreBuilderDependency, ICoreBuilder> builderFactory = null)
-        {
-            configureOptions.NotNull(nameof(configureOptions));
-
-            return services.AddLibrameCore(dependency =>
-            {
-                dependency.Builder.ConfigureOptions = configureOptions;
             },
             builderFactory);
         }

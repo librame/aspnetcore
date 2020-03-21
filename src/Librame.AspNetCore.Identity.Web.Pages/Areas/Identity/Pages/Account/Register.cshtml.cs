@@ -20,19 +20,20 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Encodings.Web;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account
 {
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Stores;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
     using AspNetCore.Web;
-    using AspNetCore.Web.Utilities;
-    using Builders;
     using Extensions;
+    using Extensions.Core.Services;
     using Extensions.Data.Stores;
     using Extensions.Network.Services;
-    using Models;
-    using Resources;
-    using Stores;
 
     /// <summary>
     /// ×¢²áÒ³ÃæÄ£ÐÍ¡£
@@ -111,6 +112,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
         private readonly ILogger<LoginPageModel> _logger;
+        private readonly IClockService _clockService;
         private readonly IEmailService _emailService;
         private readonly IdentityStoreIdentifier _storeIdentifier;
 
@@ -119,6 +121,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
             ILogger<LoginPageModel> logger,
+            IClockService clockService,
             IEmailService emailService,
             IdentityStoreIdentifier storeIdentifier,
             IHtmlLocalizer<RegisterViewResource> localizer,
@@ -126,12 +129,14 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             IOptions<IdentityOptions> options)
             : base(localizer, builderOptions, options)
         {
-            _signInManager = signInManager;
+            _signInManager = signInManager.NotNull(nameof(signInManager));
+            _userStore = userStore.NotNull(nameof(userStore));
+            _logger = logger.NotNull(nameof(logger));
+            _clockService = clockService.NotNull(nameof(clockService));
+            _emailService = emailService.NotNull(nameof(emailService));
+            _storeIdentifier = storeIdentifier.NotNull(nameof(storeIdentifier));
+
             _userManager = signInManager.UserManager;
-            _userStore = userStore;
-            _logger = logger;
-            _emailService = emailService;
-            _storeIdentifier = storeIdentifier;
         }
 
 
@@ -148,7 +153,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
                 var user = CreateUser();
                 user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore, Input.Email, Input.Password, user).ConfigureAndResultAsync();
+                var result = await CreateUserByEmail(_clockService, user, Input.Email, Input.Password).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
@@ -177,6 +182,27 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        private async Task<IdentityResult> CreateUserByEmail(IClockService clock, TUser user, string email, string password = null,
+            CancellationToken cancellationToken = default)
+        {
+            await _userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+
+            if (!_userManager.SupportsUserEmail)
+                throw new NotSupportedException("The identity builder requires a user store with email support.");
+
+            var emailStore = (IUserEmailStore<TUser>)_userStore;
+            await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+
+            // Populate Creation
+            await EntityPopulator.PopulateCreationAsync<RegisterPageModel>(clock, user, cancellationToken: cancellationToken)
+                .ConfigureAndWaitAsync();
+
+            if (password.IsNotEmpty())
+                return await _userManager.CreateAsync(user, password).ConfigureAndResultAsync();
+
+            return await _userManager.CreateAsync(user).ConfigureAndResultAsync();
         }
 
         private TUser CreateUser()

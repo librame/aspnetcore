@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 {
+    using AspNetCore.IdentityServer.Web.Models;
     using Extensions;
-    using Models;
 
     /// <summary>
     /// Õï¶Ï¿ØÖÆÆ÷¡£

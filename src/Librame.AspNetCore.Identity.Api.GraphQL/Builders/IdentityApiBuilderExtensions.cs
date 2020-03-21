@@ -32,23 +32,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
         /// <param name="parentBuilder">给定的 <see cref="IExtensionBuilder"/>。</param>
-        /// <param name="configureOptions">给定的配置选项动作方法（可选）。</param>
-        /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
-        /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
-        public static IApiBuilder AddIdentityApi<TAccessor, TUser>(this IExtensionBuilder parentBuilder,
-            Action<ApiBuilderOptions> configureOptions = null,
-            Func<IExtensionBuilder, ApiBuilderDependency, IApiBuilder> builderFactory = null)
-            where TAccessor : DbContext, IIdentityDbContextAccessor
-            where TUser : class, IId<string>
-            => parentBuilder.AddApi(configureOptions, builderFactory)
-                .AddIdentityApiCore<TAccessor, TUser>();
-
-        /// <summary>
-        /// 添加 Identity API 扩展。
-        /// </summary>
-        /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
-        /// <typeparam name="TUser">指定的用户类型。</typeparam>
-        /// <param name="parentBuilder">给定的 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>

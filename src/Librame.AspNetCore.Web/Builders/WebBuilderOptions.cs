@@ -14,6 +14,7 @@ using System.Collections.Generic;
 
 namespace Librame.AspNetCore.Web.Builders
 {
+    using AspNetCore.Web.Themepacks;
     using Extensions.Core.Builders;
 
     /// <summary>
@@ -33,6 +34,12 @@ namespace Librame.AspNetCore.Web.Builders
         public string HasExternalAuthenticationSchemesKey { get; set; }
             = $"{typeof(WebBuilderOptions).Namespace}.HasExternalLogins";
 
+        /// <summary>
+        /// 登陆栏项目名称。
+        /// </summary>
+        public string LoginbarProjectName { get; set; }
+            = "Identity";
+
 
         /// <summary>
         /// 查找应用程序集模式列表。
@@ -42,5 +49,12 @@ namespace Librame.AspNetCore.Web.Builders
             {
                 $@"^{nameof(Librame)}.{nameof(AspNetCore)}.(\w+).{nameof(Web)}$"
             };
+
+
+        /// <summary>
+        /// 主题包。
+        /// </summary>
+        public ThemepackOptions Themepack { get; }
+            = new ThemepackOptions();
     }
 }

@@ -14,12 +14,14 @@ using Microsoft.Extensions.Localization;
 
 namespace Librame.AspNetCore.Web.Projects
 {
+    using AspNetCore.Web.Resources;
     using Extensions.Core.Services;
-    using Resources;
-    using Routings;
 
     internal class DefaultProjectInfo : AbstractProjectInfo
     {
+        public const string DefaultProjectName = "default";
+
+
         public DefaultProjectInfo(ServiceFactory serviceFactory)
             : base(serviceFactory)
         {
@@ -27,7 +29,7 @@ namespace Librame.AspNetCore.Web.Projects
 
 
         public override string Name
-            => RouteDescriptor.DefaultRouteName;
+            => DefaultProjectName;
 
         public override IStringLocalizer Localizer
             => ServiceFactory.GetRequiredService<IStringLocalizer<DefaultProjectInfoResource>>();

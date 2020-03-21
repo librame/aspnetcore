@@ -23,15 +23,15 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Controllers
 {
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
     using AspNetCore.Web;
     using AspNetCore.Web.Applications;
-    using Builders;
     using Extensions;
     using Extensions.Core.Services;
     using Extensions.Data.Stores;
     using Extensions.Network.Services;
-    using Models;
-    using Resources;
 
     /// <summary>
     /// ¹ÜÀí¿ØÖÆÆ÷¡£
@@ -173,6 +173,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         {
             model.NotNull(nameof(model));
 
+            ViewBag.Localizer = _addPhoneNumberLocalizer;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -291,6 +293,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         {
             model.NotNull(nameof(model));
 
+            ViewBag.Localizer = _verifyPhoneNumberLocalizer;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -359,6 +363,10 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         {
             model.NotNull(nameof(model));
 
+            ViewBag.BuilderOptions = _builderOptions.Value;
+            ViewBag.Options = _options.Value;
+            ViewBag.RegisterLocalizer = _registerLocalizer;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -405,6 +413,10 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
         {
             model.NotNull(nameof(model));
+
+            ViewBag.BuilderOptions = _builderOptions.Value;
+            ViewBag.Options = _options.Value;
+            ViewBag.RegisterLocalizer = _registerLocalizer;
 
             if (!ModelState.IsValid)
             {

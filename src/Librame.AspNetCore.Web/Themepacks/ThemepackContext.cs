@@ -16,23 +16,20 @@ using System.Linq;
 
 namespace Librame.AspNetCore.Web.Themepacks
 {
-    using Builders;
+    using AspNetCore.Web.Builders;
     using Extensions;
     using Extensions.Core.Services;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class ThemepackContext : IThemepackContext
     {
-        private IThemepackInfo _currentInfo;
+        private IThemepackInfo _currentInfo = null;
 
 
-        public ThemepackContext(ServiceFactory serviceFactory)
+        public ThemepackContext(ServiceFactory serviceFactory, IWebBuilder builder)
         {
             ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
-
-            Builder = serviceFactory.GetRequiredService<IWebBuilder>();
-
-            Infos = Builder.ThemepackInfos;
+            Builder = builder.NotNull(nameof(builder));
         }
 
 
@@ -40,7 +37,8 @@ namespace Librame.AspNetCore.Web.Themepacks
 
         public IWebBuilder Builder { get; }
 
-        public IReadOnlyDictionary<string, IThemepackInfo> Infos { get; }
+        public IReadOnlyDictionary<string, IThemepackInfo> Infos
+            => Builder.ThemepackInfos;
 
 
         public IThemepackInfo CurrentInfo

@@ -1,6 +1,9 @@
 ﻿@inject IApplicationContext Application
+@inject IOptions<WebBuilderOptions> Options
+@inject ICompositeViewEngine Engine
 @{
     var nav = Application.SetCurrentProject(ViewContext).Navigation;
+    var theme = Options.Value.Themepack;
 }
 <!DOCTYPE html>
 <html>
@@ -29,33 +32,47 @@
                 <a href="/" class="navbar-brand">@Application.CurrentProject.Info.DisplayName (@Application.CurrentThemepackInfo.DisplayName)</a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="@nav.Index.ToRouteString(Url)">@nav.Index.Text</a></li>
-                    @if (nav.CommonLayout.Header.IsNotEmpty())
-                    {
-                        foreach (var descr in nav.CommonLayout.Header)
+                @if (theme.CommonHeaderNavigationVisibility && nav.CommonLayout.Header.IsNotEmpty())
+                {
+                    <ul class="nav navbar-nav">
+                        @*<li><a href="@nav.Index.ToRouteString(Url)">@nav.Index.Text</a></li>*@
+
+                        @foreach (var descr in nav.CommonLayout.Header)
                         {
                             <li><a href="@descr.ToRouteString(Url)">@descr.Text</a></li>
                         }
-                    }
-                </ul>
+                    </ul>
+                }
 
-                @await Html.PartialAsync("Common/_LoginPartial", Application).ConfigureAndResultAsync()
+                @if (theme.CommonLocalizationVisibility)
+                {
+                    await Engine.RequiredThemepackViewAsync(ViewContext, "Common/_LocalizationPartial",
+                        viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
+                }
 
-                @await Html.PartialAsync("Common/_LocalizationPartial", Application).ConfigureAndResultAsync()
+                @if (theme.CommonLoginVisibility)
+                {
+                    await Engine.RequiredThemepackViewAsync(ViewContext, "Common/_LoginPartial",
+                        viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
+                }
             </div>
         </div>
     </nav>
 
-    <partial name="Common/_CookieConsentPartial" model="Application" />
+    @if (theme.CommonCookieConsentVisibility)
+    {
+        await Engine.RequiredThemepackViewAsync(ViewContext, "Common/_CookieConsentPartial",
+            viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
+    }
 
     <div class="container body-content">
         @RenderBody()
-        
-        <hr />
-        <footer>
-            @Html.Raw(Application.Copyright.GetHtmlCode())
-        </footer>
+
+        @if (theme.CommonFooterVisibility)
+        {
+            await Engine.RequiredThemepackViewAsync(ViewContext, "Common/_FooterPartial",
+                viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
+        }
     </div>
 
     <environment include="Development">

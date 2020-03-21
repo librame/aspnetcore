@@ -21,7 +21,7 @@ namespace Librame.AspNetCore.Web.Projects
     internal class DefaultProjectNavigation : AbstractProjectNavigation
     {
         public DefaultProjectNavigation(IStringLocalizer<ProjectNavigationResource> localizer)
-            : base(localizer) // 默认项目导航的区域必须为空
+            : base(localizer, area: null) // 默认项目导航的区域必须为空
         {
         }
 

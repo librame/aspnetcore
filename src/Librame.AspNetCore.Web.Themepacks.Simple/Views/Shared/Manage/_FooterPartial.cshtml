@@ -2,11 +2,12 @@
 @{
     var nav = Model.CurrentProject.Navigation;
 }
-<nav class="pull-left">
-    <ul class="nav">
-        @if (nav.ManageLayout.Footbar.IsNotEmpty())
-        {
-            foreach (var descr in nav.ManageLayout.Footbar)
+
+@if (nav.ManageLayout.Footer.IsNotEmpty())
+{
+    <nav class="pull-left">
+        <ul class="nav">
+            @foreach (var descr in nav.ManageLayout.Footer)
             {
                 <li class="nav-item">
                     <a class="nav-link" href="@descr.ToRouteString(Url)" title="@descr.TagTitle" @descr.TagTargetFormat>
@@ -14,17 +15,10 @@
                     </a>
                 </li>
             }
-        }
-        else
-        {
-            <li class="nav-item">
-                <a class="nav-link" href="#" title="暂无菜单">
-                    暂无菜单
-                </a>
-            </li>
-        }
-    </ul>
-</nav>
+        </ul>
+    </nav>
+}
+
 <div class="copyright ml-auto">
     @Html.Raw(Model.Copyright.GetHtmlCode(displayMiniInfo: true))
 </div>

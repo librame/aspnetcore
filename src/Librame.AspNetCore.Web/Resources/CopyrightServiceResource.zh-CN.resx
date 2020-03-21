@@ -130,7 +130,7 @@
     <value>跳转到 microsoft.com</value>
   </data>
   <data name="PoweredBy" xml:space="preserve">
-    <value>技术支持 {0} 系统 {1}</value>
+    <value>支持: {0} 系统: {1}</value>
   </data>
   <data name="SearchInNuget" xml:space="preserve">
     <value>在 nuget.org 查找</value>

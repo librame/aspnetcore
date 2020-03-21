@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using Pomelo.EntityFrameworkCore.MySql.Design.Internal;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 
 namespace Librame.AspNetCore.IdentityServer.Tests
 {
-    using Accessors;
     using Extensions;
     using Extensions.Data.Builders;
     using Extensions.Encryption.Builders;
-    using Identity.Stores;
-    using Stores;
+    using AspNetCore.Identity.Stores;
+    using AspNetCore.IdentityServer.Accessors;
+    using AspNetCore.IdentityServer.Stores;
 
     internal static class TestServiceProvider
     {
@@ -30,25 +31,39 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                 .AddIdentityCookies(cookies => { });
 
                 services.AddLibrameCore()
-                    .AddDataCore(options =>
+                    .AddDataCore(dependency =>
                     {
-                        // Use Identity Database
-                        options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_default;Integrated Security=True";
-                        options.DefaultTenant.WritingConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_writing;Integrated Security=True";
-                        options.DefaultTenant.WritingSeparation = true;
+                        // Use SQL Server
+                        //options.Options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_default;Integrated Security=True";
+                        //options.Options.DefaultTenant.WritingConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_writing;Integrated Security=True";
+
+                        // Use MySQL
+                        dependency.Options.DefaultTenant.DefaultConnectionString = MySqlConnectionStringHelper.Validate("Server=localhost;Database=librame_identityserver_default;User=root;Password=123456;");
+                        dependency.Options.DefaultTenant.WritingConnectionString = MySqlConnectionStringHelper.Validate("Server=localhost;Database=librame_identityserver_writing;User=root;Password=123456;");
+
+                        dependency.Options.DefaultTenant.WritingSeparation = true;
                     })
+                    //.AddAccessor<IdentityServerDbContextAccessor>((options, optionsBuilder) =>
+                    //{
+                    //    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
+                    //        sql => sql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName()));
+                    //})
+                    //.AddDbDesignTime<SqlServerDesignTimeServices>()
                     .AddAccessor<IdentityServerDbContextAccessor>((options, optionsBuilder) =>
                     {
-                        optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
-                            sql => sql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName()));
+                        optionsBuilder.UseMySql(options.DefaultTenant.DefaultConnectionString, mySql =>
+                        {
+                            mySql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName());
+                            mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
+                        });
                     })
-                    .AddDbDesignTime<SqlServerDesignTimeServices>()
-                    .AddIdentifier<IdentityServerStoreIdentifier>()
-                    .AddInitializer<TestStoreInitializer>()
+                    .AddDbDesignTime<MySqlDesignTimeServices>()
+                    .AddStoreIdentifier<IdentityServerStoreIdentifier>()
+                    .AddStoreInitializer<TestStoreInitializer>()
                     .AddStoreHub<TestStoreHub>()
                     .AddIdentity<IdentityServerDbContextAccessor>(options =>
                     {
-                        options.Stores.MaxLengthForKeys = 128;
+                        options.Identity.Options.Stores.MaxLengthForKeys = 128;
                     })
                     .AddIdentityServer<DefaultIdentityUser<string>>(dependency =>
                     {

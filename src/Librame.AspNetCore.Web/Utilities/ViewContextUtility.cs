@@ -21,6 +21,7 @@ namespace Librame.AspNetCore.Web.Utilities
     using Builders;
     using Extensions;
     using Routings;
+    using Themepacks;
 
     /// <summary>
     /// <see cref="ViewContext"/> 实用工具。
@@ -71,7 +72,7 @@ namespace Librame.AspNetCore.Web.Utilities
         /// <param name="viewContext">给定的 <see cref="ViewContext"/>。</param>
         /// <returns>返回字符串。</returns>
         public static string GetThemepackLoginLayout(this ViewContext viewContext)
-            => viewContext.GetThemepackLayout("Login");
+            => viewContext.GetThemepackLayout(AbstractThemepackInfo.LoginLayoutKey);
 
         /// <summary>
         /// 获取主题包管理布局。
@@ -79,7 +80,7 @@ namespace Librame.AspNetCore.Web.Utilities
         /// <param name="viewContext">给定的 <see cref="ViewContext"/>。</param>
         /// <returns>返回字符串。</returns>
         public static string GetThemepackManageLayout(this ViewContext viewContext)
-            => viewContext.GetThemepackLayout("Manage");
+            => viewContext.GetThemepackLayout(AbstractThemepackInfo.ManageLayoutKey);
 
         /// <summary>
         /// 获取主题包布局。
@@ -93,7 +94,7 @@ namespace Librame.AspNetCore.Web.Utilities
             viewContext.NotNull(nameof(viewContext));
 
             var application = viewContext.HttpContext?.RequestServices?.GetRequiredService<IApplicationContext>();
-            return application.CurrentThemepackInfo.Layouts[name];
+            return application.CurrentThemepackInfo.Layouts[name.NotEmptyOrDefault(AbstractThemepackInfo.CommonLayoutKey)];
         }
 
     }

@@ -4,23 +4,25 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pomelo.EntityFrameworkCore.MySql.Design.Internal;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using System;
 
 namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
 {
-    using Accessors;
     using AspNetCore.Web.Builders;
     using AspNetCore.Web.Routings;
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Stores;
+    using AspNetCore.IdentityServer.Accessors;
+    using AspNetCore.IdentityServer.Builders;
+    using AspNetCore.IdentityServer.Stores;
     using Extensions;
     using Extensions.Data.Builders;
     using Extensions.Encryption.Builders;
-    using Identity.Builders;
-    using Identity.Stores;
-    using IdentityServer.Builders;
-    using Stores;
 
     public class Startup
     {
@@ -47,29 +49,33 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
-            // 默认使用测试项目的写入库
-            //var defaultConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_default;Integrated Security=True";
-            var writingConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_writing;Integrated Security=True";
-
             services.AddLibrameCore()
-                .AddDataCore(options =>
+                .AddDataCore(dependency =>
                 {
-                    options.DefaultTenant.DefaultConnectionString = writingConnectionString;
-                    options.DefaultTenant.WritingConnectionString = writingConnectionString;
-                    options.DefaultTenant.WritingSeparation = false;
+                    // Use MySQL
+                    dependency.BindDefaultTenant(Configuration.GetSection(nameof(dependency.Options.DefaultTenant)),
+                        MySqlConnectionStringHelper.Validate);
                 })
                 .AddAccessor<IdentityServerDbContextAccessor>((options, optionsBuilder) =>
                 {
-                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
-                        sql => sql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName()));
+                    optionsBuilder.UseMySql(options.DefaultTenant.DefaultConnectionString, mySql =>
+                    {
+                        mySql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName());
+                        mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
+                    });
                 })
-                .AddDbDesignTime<SqlServerDesignTimeServices>()
-                .AddIdentifier<IdentityServerStoreIdentifier>()
-                .AddIdentity<IdentityServerDbContextAccessor>(options =>
+                .AddDbDesignTime<MySqlDesignTimeServices>()
+                .AddStoreIdentifier<IdentityServerStoreIdentifier>()
+                // 启用 Identity 模块注册功能
+                .AddStoreIdentifier<IdentityStoreIdentifier>(sp => sp.GetRequiredService<IdentityServerStoreIdentifier>())
+                .AddIdentity<IdentityServerDbContextAccessor>(dependency =>
                 {
-                    options.Stores.MaxLengthForKeys = 128;
+                    dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })
-                .AddIdentityWeb()
+                .AddIdentityWeb(dependency =>
+                {
+                    dependency.Options.Themepack.CommonHeaderNavigationVisibility = false;
+                })
                 .AddIdentityProjectController(mvcBuilder)
                 .AddIdentityServer<DefaultIdentityUser<string>>(dependency =>
                 {
@@ -93,7 +99,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                         server.Events.RaiseSuccessEvents = true;
                     };
                 })
-                .AddAccessorStores<IdentityServerDbContextAccessor>() //.AddAccessorStores<IdentityServerDbContextAccessor>() //.AddInMemoryStores()
+                .AddAccessorStores<IdentityServerDbContextAccessor>() //.AddInMemoryStores()
                 .AddIdentityServerWeb()
                 .AddIdentityServerProjectController(mvcBuilder)
                 .AddEncryption().AddDeveloperGlobalSigningCredentials()

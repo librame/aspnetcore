@@ -16,10 +16,10 @@ using System.Collections.Concurrent;
 namespace Librame.AspNetCore.Web.Projects
 {
     using AspNetCore.Applications;
+    using AspNetCore.Web.Resources;
+    using AspNetCore.Web.Routings;
+    using AspNetCore.Web.Themepacks;
     using Extensions;
-    using Resources;
-    using Routings;
-    using Themepacks;
 
     /// <summary>
     /// 抽象项目导航。
@@ -60,9 +60,9 @@ namespace Librame.AspNetCore.Web.Projects
             Licenses = Localizer.AsNavigation(new RouteDescriptor($"{AbstractApplicationInfo.LibrameRepositoryUrl}/blob/master/LICENSE.txt"),
                 p => p.Licenses, optional => optional.ChangeTagTarget("_blank"));
 
-            ManageLayout.Footbar.Add(Repository);
-            ManageLayout.Footbar.Add(Issues);
-            ManageLayout.Footbar.Add(Licenses);
+            ManageLayout.Footer.Add(Repository);
+            ManageLayout.Footer.Add(Issues);
+            ManageLayout.Footer.Add(Licenses);
         }
 
 

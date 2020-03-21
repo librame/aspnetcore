@@ -24,7 +24,7 @@ namespace Librame.AspNetCore.Web.Themepacks
     {
         private readonly Lazy<List<NavigationDescriptor>> _header;
         private readonly Lazy<List<NavigationDescriptor>> _sidebar;
-        private readonly Lazy<List<NavigationDescriptor>> _footbar;
+        private readonly Lazy<List<NavigationDescriptor>> _footer;
         private readonly Lazy<List<NavigationDescriptor>> _other;
 
 
@@ -33,16 +33,16 @@ namespace Librame.AspNetCore.Web.Themepacks
         /// </summary>
         /// <param name="header">给定的顶栏 <see cref="List{NavigationDescriptor}"/>（可选）。</param>
         /// <param name="sidebar">给定的侧边栏 <see cref="List{NavigationDescriptor}"/>（可选）。</param>
-        /// <param name="footbar">给定的底栏 <see cref="List{NavigationDescriptor}"/>（可选）。</param>
+        /// <param name="footer">给定的底栏 <see cref="List{NavigationDescriptor}"/>（可选）。</param>
         /// <param name="other">给定的其他 <see cref="List{NavigationDescriptor}"/>（可选）。</param>
         public LayoutNavigationDescriptor(List<NavigationDescriptor> header = null,
             List<NavigationDescriptor> sidebar = null,
-            List<NavigationDescriptor> footbar = null,
+            List<NavigationDescriptor> footer = null,
             List<NavigationDescriptor> other = null)
         {
             _header = new Lazy<List<NavigationDescriptor>>(() => header ?? new List<NavigationDescriptor>());
             _sidebar = new Lazy<List<NavigationDescriptor>>(() => sidebar ?? new List<NavigationDescriptor>());
-            _footbar = new Lazy<List<NavigationDescriptor>>(() => footbar ?? new List<NavigationDescriptor>());
+            _footer = new Lazy<List<NavigationDescriptor>>(() => footer ?? new List<NavigationDescriptor>());
             _other = new Lazy<List<NavigationDescriptor>>(() => other ?? new List<NavigationDescriptor>());
         }
 
@@ -62,8 +62,8 @@ namespace Librame.AspNetCore.Web.Themepacks
         /// <summary>
         /// 底栏导航列表。
         /// </summary>
-        public List<NavigationDescriptor> Footbar
-            => _footbar.Value;
+        public List<NavigationDescriptor> Footer
+            => _footer.Value;
 
         /// <summary>
         /// 其他导航列表。

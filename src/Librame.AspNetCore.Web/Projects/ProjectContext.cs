@@ -18,34 +18,35 @@ using System.Linq;
 namespace Librame.AspNetCore.Web.Projects
 {
     using AspNetCore.Applications;
-    using Builders;
+    using AspNetCore.Web.Builders;
     using Extensions;
     using Extensions.Core.Services;
-    using Routings;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class ProjectContext : IProjectContext
     {
+        private readonly WebBuilderOptions _options = null;
+
         private (IProjectInfo Info, IProjectNavigation Navigation) _current;
 
 
-        public ProjectContext(ServiceFactory serviceFactory)
+        public ProjectContext(ServiceFactory serviceFactory, IEnumerable<IProjectNavigation> navigations,
+            IOptions<WebBuilderOptions> options)
         {
             ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
-            Navigations = serviceFactory.GetRequiredService<IEnumerable<IProjectNavigation>>();
-
-            Infos = LoadInfos();
+            Navigations = navigations.NotNull(nameof(navigations));
+            _options = options.NotNull(nameof(options)).Value;
         }
 
 
         private Dictionary<string, IProjectInfo> LoadInfos()
         {
-            var builderOptions = ServiceFactory.GetRequiredService<IOptions<WebBuilderOptions>>().Value;
-            var infos = ApplicationHelper.GetApplicationInfos(builderOptions.SearchApplicationAssemblyPatterns,
+            var infos = ApplicationHelper.GetApplicationInfos(_options.SearchApplicationAssemblyPatterns,
                 type => type.EnsureCreate<IProjectInfo>(ServiceFactory)); // 此创建方法要求项目信息实现类型可公共构造
 
             // Add default AreaInfo
-            infos.Add(RouteDescriptor.DefaultRouteName, new DefaultProjectInfo(ServiceFactory));
+            var defaultInfo = new DefaultProjectInfo(ServiceFactory);
+            infos.Add(defaultInfo.Name, defaultInfo);
 
             return infos;
         }
@@ -55,7 +56,28 @@ namespace Librame.AspNetCore.Web.Projects
 
         public IEnumerable<IProjectNavigation> Navigations { get; }
 
-        public IReadOnlyDictionary<string, IProjectInfo> Infos { get; }
+        public IReadOnlyDictionary<string, IProjectInfo> Infos
+            => LoadInfos();
+
+        public (IProjectInfo Info, IProjectNavigation Navigation) Loginbar
+        {
+            get
+            {
+                IProjectInfo info = null;
+                IProjectNavigation nav = null;
+
+                if (_options.LoginbarProjectName.IsNotEmpty())
+                {
+                    info = FindInfo(_options.LoginbarProjectName);
+                    nav = FindNavigation(_options.LoginbarProjectName);
+                }
+
+                if (info.IsNull() || nav.IsNull())
+                    return Current;
+                
+                return (info, nav);
+            }
+        }
 
         public (IProjectInfo Info, IProjectNavigation Navigation) Current
         {
@@ -89,13 +111,13 @@ namespace Librame.AspNetCore.Web.Projects
             if (name.IsNotEmpty() && Infos.TryGetValue(name, out IProjectInfo info))
                 return info;
             
-            return Infos[RouteDescriptor.DefaultRouteName];
+            return Infos[DefaultProjectInfo.DefaultProjectName];
         }
 
         public IProjectNavigation FindNavigation(string area)
         {
             // 项目导航键名不支持 default
-            if (area == RouteDescriptor.DefaultRouteName)
+            if (area == DefaultProjectInfo.DefaultProjectName)
                 area = null; // 默认项目导航的区域必须为空
 
             return Navigations.First(nav => nav.Area == area);

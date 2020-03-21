@@ -1,13 +1,12 @@
 @using Microsoft.AspNetCore.Builder
 @using Microsoft.Extensions.Options
 @using System.Globalization
+@inject IOptions<RequestLocalizationOptions> Options
 @model IApplicationContext
-@{
-    var options = Model.ServiceFactory.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
-}
-@if (options.SupportedCultures.IsNotEmpty())
+
+@if (Options.Value.SupportedCultures.IsNotEmpty())
 {
-    var otherCultures = options.SupportedCultures.Except(CultureInfo.CurrentCulture.YieldEnumerable()).ToList();
+    var otherCultures = Options.Value.SupportedCultures.Except(CultureInfo.CurrentCulture.YieldEnumerable()).ToList();
 
     <ul class="nav navbar-nav navbar-right">
         <li class="nav-item dropdown">

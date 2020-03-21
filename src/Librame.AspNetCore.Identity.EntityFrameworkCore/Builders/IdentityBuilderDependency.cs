@@ -35,6 +35,6 @@ namespace Librame.AspNetCore.Identity.Builders
         /// 身份选项依赖。
         /// </summary>
         public OptionsDependency<IdentityOptions> Identity { get; set; }
-            = new OptionsDependency<IdentityOptions>(autoConfigureOptions: false);
+            = new OptionsDependency<IdentityOptions>();
     }
 }

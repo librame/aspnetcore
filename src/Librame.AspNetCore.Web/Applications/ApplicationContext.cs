@@ -15,23 +15,24 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Web.Applications
 {
+    using AspNetCore.Web.Projects;
+    using AspNetCore.Web.Services;
+    using AspNetCore.Web.Themepacks;
     using Extensions;
     using Extensions.Core.Services;
-    using Projects;
-    using Services;
-    using Themepacks;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class ApplicationContext : IApplicationContext
     {
         public ApplicationContext(IApplicationPrincipal principal,
             IProjectContext project, IThemepackContext themepack,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment, ICopyrightService copyright)
         {
             Principal = principal.NotNull(nameof(principal));
             Project = project.NotNull(nameof(project));
             Themepack = themepack.NotNull(nameof(themepack));
             Environment = environment.NotNull(nameof(environment));
+            Copyright = copyright.NotNull(nameof(copyright));
         }
 
 
@@ -43,11 +44,10 @@ namespace Librame.AspNetCore.Web.Applications
 
         public IWebHostEnvironment Environment { get; }
 
+        public ICopyrightService Copyright { get; }
+
         public ServiceFactory ServiceFactory
             => Project.ServiceFactory;
-
-        public ICopyrightService Copyright
-            => ServiceFactory.GetRequiredService<ICopyrightService>();
 
 
         public IThemepackInfo CurrentThemepackInfo
@@ -55,6 +55,9 @@ namespace Librame.AspNetCore.Web.Applications
             get => Themepack.CurrentInfo;
             set => Themepack.CurrentInfo = value;
         }
+
+        public (IProjectInfo Info, IProjectNavigation Navigation) LoginbarProject
+            => Project.Loginbar;
 
         public (IProjectInfo Info, IProjectNavigation Navigation) CurrentProject
             => Project.Current;
