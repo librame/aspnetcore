@@ -74,7 +74,7 @@ namespace Librame.AspNetCore.Web.Services
                 frameworkVersion = $"{FormatFrameworkVersion(projInfo.Framework)} / {FormatFrameworkVersion(themeInfo.Framework)}";
 
             var frameworkLink = FormatFrameworkLink(frameworkVersion, _localizer.GetString(r => r.GotoMicrosoft));
-            return _localizer.GetString(r => r.PoweredBy, frameworkLink, RuntimeInformation.OSDescription);
+            return _localizer.GetString(r => r.PoweredBy, frameworkLink, FormatOSVersion());
         }
 
         private string GetCopyrightYearPart()
@@ -126,6 +126,20 @@ namespace Librame.AspNetCore.Web.Services
                 return $".NET Standard {version}";
 
             return $"{pair.Key} {version}";
+        }
+
+        private static string FormatOSVersion()
+        {
+            var descr = RuntimeInformation.OSDescription;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                descr = descr.TrimStart("Microsoft ");
+
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                descr = descr.SplitPair('-').Key;
+
+            descr += $" {RuntimeInformation.ProcessArchitecture}";
+            return descr;
         }
 
     }

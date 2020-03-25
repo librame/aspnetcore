@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.4.1.13</Version>
+    <Version>7.4.1.14</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.Extensions.Data.Abstractions on ASP.NET Core extension package.</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.Extensions.Data.Abstractions on ASP.NET Core extension package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.4.1.13</AssemblyVersion>
-    <FileVersion>7.4.1891.15117</FileVersion>
+    <AssemblyVersion>7.4.1.14</AssemblyVersion>
+    <FileVersion>7.4.1894.15117</FileVersion>
     <RootNamespace>Librame.Extensions.Data</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
