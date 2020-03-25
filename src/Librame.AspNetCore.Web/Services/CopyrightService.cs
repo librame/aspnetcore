@@ -97,7 +97,7 @@ namespace Librame.AspNetCore.Web.Services
 
 
         private static string FormatNuGetLink(string packageName, string displayName, string title)
-            => $"<a href='https://www.nuget.org/packages?q={packageName}' title='{title}' target='_blank'>{displayName ?? packageName}</a>";
+            => $"<a href='https://www.nuget.org/packages?q={packageName}' title='{title}'>{displayName ?? packageName}</a>";
 
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "framework")]
         private static string FormatFrameworkLink(string frameworkVersion, string title)
@@ -105,12 +105,12 @@ namespace Librame.AspNetCore.Web.Services
             frameworkVersion.NotEmpty(nameof(frameworkVersion));
             
             if (frameworkVersion.Contains("Standard", StringComparison.OrdinalIgnoreCase))
-                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/standard/net-standard' title='{title}' target='_blank'>{frameworkVersion}</a>";
+                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/standard/net-standard' title='{title}'>{frameworkVersion}</a>";
 
             if (frameworkVersion.Contains("Core", StringComparison.OrdinalIgnoreCase))
-                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/core/' title='{title}' target='_blank'>{frameworkVersion}</a>";
+                return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/core/' title='{title}'>{frameworkVersion}</a>";
 
-            return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/framework/' title='{title}' target='_blank'>{frameworkVersion}</a>";
+            return $"<a href='https://docs.microsoft.com/zh-cn/dotnet/framework/' title='{title}'>{frameworkVersion}</a>";
         }
 
         private static string FormatFrameworkVersion(string framework)
@@ -138,7 +138,7 @@ namespace Librame.AspNetCore.Web.Services
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 descr = descr.SplitPair('-').Key;
 
-            descr += $" {RuntimeInformation.ProcessArchitecture}";
+            descr += $" / P-{RuntimeInformation.ProcessArchitecture}";
             return descr;
         }
 
