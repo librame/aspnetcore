@@ -7,12 +7,13 @@ using System;
 
 namespace Librame.AspNetCore.IdentityServer.Tests
 {
-    using Extensions;
-    using Extensions.Data.Builders;
-    using Extensions.Encryption.Builders;
     using AspNetCore.Identity.Stores;
     using AspNetCore.IdentityServer.Accessors;
     using AspNetCore.IdentityServer.Stores;
+    using Extensions;
+    using Extensions.Core.Identifiers;
+    using Extensions.Data.Builders;
+    using Extensions.Encryption.Builders;
 
     internal static class TestServiceProvider
     {
@@ -33,39 +34,33 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                 services.AddLibrameCore()
                     .AddDataCore(dependency =>
                     {
-                        // Use SQL Server
-                        //options.Options.DefaultTenant.DefaultConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_default;Integrated Security=True";
-                        //options.Options.DefaultTenant.WritingConnectionString = "Data Source=.;Initial Catalog=librame_identityserver_writing;Integrated Security=True";
+                        dependency.Options.IdentifierGenerator = CombIdentifierGenerator.MySQL;
 
                         // Use MySQL
-                        dependency.Options.DefaultTenant.DefaultConnectionString = MySqlConnectionStringHelper.Validate("Server=localhost;Database=librame_identityserver_default;User=root;Password=123456;");
-                        dependency.Options.DefaultTenant.WritingConnectionString = MySqlConnectionStringHelper.Validate("Server=localhost;Database=librame_identityserver_writing;User=root;Password=123456;");
-
+                        dependency.Options.DefaultTenant.EncryptedConnectionStrings = true;
+                        dependency.Options.DefaultTenant.DefaultConnectionString
+                            = MySqlConnectionStringHelper.Validate("1MtE5ZRWRqRYtm0vkqyTB4xi8E5iB5OnxJFpTfyJpV1YB9r1kQz5QO2wE8nfXDoK6vY/A5fXpJ7M5FtggIfUia31KymmnapwOusOcWiSu5yiZZfUF2iwyTxkGIkWlmY3");
+                        dependency.Options.DefaultTenant.WritingConnectionString
+                            = MySqlConnectionStringHelper.Validate("1MtE5ZRWRqRYtm0vkqyTB4xi8E5iB5OnxJFpTfyJpV1YB9r1kQz5QO2wE8nfXDoKZDv7B8bfMirykRdf+FGsdq31KymmnapwOusOcWiSu5yiZZfUF2iwyTxkGIkWlmY3");
                         dependency.Options.DefaultTenant.WritingSeparation = true;
                     })
-                    //.AddAccessor<IdentityServerDbContextAccessor>((options, optionsBuilder) =>
-                    //{
-                    //    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
-                    //        sql => sql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName()));
-                    //})
-                    //.AddDbDesignTime<SqlServerDesignTimeServices>()
-                    .AddAccessor<IdentityServerDbContextAccessor>((options, optionsBuilder) =>
+                    .AddAccessor<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
                     {
-                        optionsBuilder.UseMySql(options.DefaultTenant.DefaultConnectionString, mySql =>
+                        optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
                         {
                             mySql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName());
                             mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
                         });
                     })
-                    .AddDbDesignTime<MySqlDesignTimeServices>()
-                    .AddStoreIdentifier<IdentityServerStoreIdentifier>()
-                    .AddStoreInitializer<TestStoreInitializer>()
+                    .AddDatabaseDesignTime<MySqlDesignTimeServices>()
+                    .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentifierGenerator>()
+                    .AddStoreInitializer<TestGuidIdentityServerStoreInitializer>()
                     .AddStoreHub<TestStoreHub>()
                     .AddIdentity<IdentityServerDbContextAccessor>(options =>
                     {
                         options.Identity.Options.Stores.MaxLengthForKeys = 128;
                     })
-                    .AddIdentityServer<DefaultIdentityUser<string>>(dependency =>
+                    .AddIdentityServer<DefaultIdentityUser<Guid>>(dependency =>
                     {
                         dependency.IdentityServer = options =>
                         {

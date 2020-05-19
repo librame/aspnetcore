@@ -48,7 +48,7 @@ namespace Librame.AspNetCore.Web.DataAnnotations
         /// 添加验证。
         /// </summary>
         /// <param name="context">给定的 <see cref="ClientModelValidationContext"/>。</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public override void AddValidation(ClientModelValidationContext context)
         {
             context.NotNull(nameof(context));
@@ -64,7 +64,7 @@ namespace Librame.AspNetCore.Web.DataAnnotations
         /// </summary>
         /// <param name="validationContext">给定的 <see cref="ModelValidationContextBase"/>。</param>
         /// <returns>返回字符串。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "validationContext")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
             validationContext.NotNull(nameof(validationContext));

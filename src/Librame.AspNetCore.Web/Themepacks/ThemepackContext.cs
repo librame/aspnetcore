@@ -38,7 +38,7 @@ namespace Librame.AspNetCore.Web.Themepacks
         public IWebBuilder Builder { get; }
 
         public IReadOnlyDictionary<string, IThemepackInfo> Infos
-            => Builder.ThemepackInfos;
+            => ThemepackHelper.ThemepackInfos;
 
 
         public IThemepackInfo CurrentInfo

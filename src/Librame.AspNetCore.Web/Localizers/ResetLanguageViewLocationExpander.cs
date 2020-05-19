@@ -57,7 +57,7 @@ namespace Microsoft.AspNetCore.Mvc.Razor
 
 
         /// <inheritdoc />
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public void PopulateValues(ViewLocationExpanderContext context)
         {
             context.NotNull(nameof(context));
@@ -68,7 +68,7 @@ namespace Microsoft.AspNetCore.Mvc.Razor
 
 
         /// <inheritdoc />
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public virtual IEnumerable<string> ExpandViewLocations(
             ViewLocationExpanderContext context,
             IEnumerable<string> viewLocations)

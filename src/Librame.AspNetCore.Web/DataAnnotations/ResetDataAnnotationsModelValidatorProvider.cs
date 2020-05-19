@@ -110,7 +110,7 @@ namespace Librame.AspNetCore.Web.DataAnnotations
         /// <param name="modelType">给定的模型类型。</param>
         /// <param name="validatorMetadata">给定的验证器集合元数据。</param>
         /// <returns>返回布尔值。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "validatorMetadata")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public bool HasValidators(Type modelType, IList<object> validatorMetadata)
         {
             validatorMetadata.NotNull(nameof(validatorMetadata));

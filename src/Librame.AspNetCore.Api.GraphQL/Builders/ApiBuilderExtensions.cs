@@ -16,6 +16,7 @@ using Librame.AspNetCore.Api;
 using Librame.AspNetCore.Api.Builders;
 using Librame.Extensions;
 using Librame.Extensions.Core.Builders;
+using Librame.Extensions.Core.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -48,25 +49,32 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "parentBuilder")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IApiBuilder AddApi<TDependency>(this IExtensionBuilder parentBuilder,
             Action<TDependency> configureDependency = null,
             Func<IExtensionBuilder, TDependency, IApiBuilder> builderFactory = null)
-            where TDependency : ApiBuilderDependency, new()
+            where TDependency : ApiBuilderDependency
         {
-            parentBuilder.NotNull(nameof(parentBuilder));
+            // 如果已经添加过 API 扩展，则直接返回，防止出现重复配置的情况
+            if (parentBuilder.TryGetParentBuilder(out IApiBuilder apiBuilder))
+                return new ApiBuilderAdapter(parentBuilder, apiBuilder);
 
-            // Configure Dependency
-            var dependency = configureDependency.ConfigureDependency(parentBuilder);
+            // Clear Options Cache
+            ConsistencyOptionsCache.TryRemove<ApiBuilderOptions>();
+
+            // Add Builder Dependency
+            var dependency = parentBuilder.AddBuilderDependency(out var dependencyType, configureDependency);
+            parentBuilder.Services.TryAddReferenceBuilderDependency<ApiBuilderDependency>(dependency, dependencyType);
 
             // Create Builder
-            var apiBuilder = builderFactory.NotNullOrDefault(()
+            apiBuilder = builderFactory.NotNullOrDefault(()
                 => (b, d) => new ApiBuilder(b, d)).Invoke(parentBuilder, dependency);
 
             // Configure Builder
             return apiBuilder
                 .AddGraphQL();
         }
+
 
         private static IApiBuilder AddGraphQL(this IApiBuilder builder)
         {

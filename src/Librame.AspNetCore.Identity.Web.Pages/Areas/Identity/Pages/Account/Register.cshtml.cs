@@ -20,7 +20,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Encodings.Web;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account
@@ -31,8 +30,8 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
     using AspNetCore.Identity.Web.Resources;
     using AspNetCore.Web;
     using Extensions;
+    using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
-    using Extensions.Data.Stores;
     using Extensions.Network.Services;
 
     /// <summary>
@@ -89,7 +88,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         /// 获取方法。
         /// </summary>
         /// <param name="returnUrl">给定的返回 URL。</param>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public virtual void OnGet(string returnUrl = null)
             => throw new NotImplementedException();
 
@@ -98,7 +97,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         /// </summary>
         /// <param name="returnUrl">给定的返回 URL。</param>
         /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public virtual Task<IActionResult> OnPostAsync(string returnUrl = null)
             => throw new NotImplementedException();
     }
@@ -106,7 +105,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class RegisterPageModel<TUser> : RegisterPageModel
-        where TUser : class, IId<string>
+        where TUser : class, IIdentifier
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
@@ -114,7 +113,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         private readonly ILogger<LoginPageModel> _logger;
         private readonly IClockService _clockService;
         private readonly IEmailService _emailService;
-        private readonly IdentityStoreIdentifier _storeIdentifier;
+        private readonly IIdentityStoreIdentifierGenerator _identifierGenerator;
 
 
         public RegisterPageModel(
@@ -123,7 +122,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             ILogger<LoginPageModel> logger,
             IClockService clockService,
             IEmailService emailService,
-            IdentityStoreIdentifier storeIdentifier,
+            ServiceFactory serviceFactory,
             IHtmlLocalizer<RegisterViewResource> localizer,
             IOptions<IdentityBuilderOptions> builderOptions,
             IOptions<IdentityOptions> options)
@@ -134,8 +133,8 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             _logger = logger.NotNull(nameof(logger));
             _clockService = clockService.NotNull(nameof(clockService));
             _emailService = emailService.NotNull(nameof(emailService));
-            _storeIdentifier = storeIdentifier.NotNull(nameof(storeIdentifier));
 
+            _identifierGenerator = serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser>();
             _userManager = signInManager.UserManager;
         }
 
@@ -151,9 +150,13 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-                user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await CreateUserByEmail(_clockService, user, Input.Email, Input.Password).ConfigureAndResultAsync();
+                var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
+                await user.SetIdAsync(userId).ConfigureAndWaitAsync();
+
+                var result = await _userManager.CreateUserByEmail<RegisterPageModel<TUser>, TUser>(_userStore,
+                    _clockService, user, Input.Email, Input.Password).ConfigureAndResultAsync();
+
                 if (result.Succeeded)
                 {
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
@@ -161,7 +164,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { userId = user.Id, code },
+                        values: new { userId = userId.ToString(), code },
                         protocol: Request.Scheme);
 
                     await _emailService.SendAsync(Input.Email,
@@ -184,28 +187,28 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             return Page();
         }
 
-        private async Task<IdentityResult> CreateUserByEmail(IClockService clock, TUser user, string email, string password = null,
-            CancellationToken cancellationToken = default)
-        {
-            await _userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+        //private async Task<IdentityResult> CreateUserByEmail(IClockService clock, TUser user, string email, string password = null,
+        //    CancellationToken cancellationToken = default)
+        //{
+        //    await _userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
 
-            if (!_userManager.SupportsUserEmail)
-                throw new NotSupportedException("The identity builder requires a user store with email support.");
+        //    if (!_userManager.SupportsUserEmail)
+        //        throw new NotSupportedException("The identity builder requires a user store with email support.");
 
-            var emailStore = (IUserEmailStore<TUser>)_userStore;
-            await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+        //    var emailStore = (IUserEmailStore<TUser>)_userStore;
+        //    await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
 
-            // Populate Creation
-            await EntityPopulator.PopulateCreationAsync<RegisterPageModel>(clock, user, cancellationToken: cancellationToken)
-                .ConfigureAndWaitAsync();
+        //    // Populate Creation
+        //    await EntityPopulator.PopulateCreationAsync<RegisterPageModel>(clock, user, cancellationToken: cancellationToken)
+        //        .ConfigureAndWaitAsync();
 
-            if (password.IsNotEmpty())
-                return await _userManager.CreateAsync(user, password).ConfigureAndResultAsync();
+        //    if (password.IsNotEmpty())
+        //        return await _userManager.CreateAsync(user, password).ConfigureAndResultAsync();
 
-            return await _userManager.CreateAsync(user).ConfigureAndResultAsync();
-        }
+        //    return await _userManager.CreateAsync(user).ConfigureAndResultAsync();
+        //}
 
-        private TUser CreateUser()
+        private static TUser CreateUser()
         {
             try
             {

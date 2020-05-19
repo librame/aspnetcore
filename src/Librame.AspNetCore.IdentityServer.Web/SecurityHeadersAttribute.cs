@@ -16,7 +16,7 @@ namespace Librame.AspNetCore.IdentityServer.Web
         /// 重写执行结果。
         /// </summary>
         /// <param name="context">给定的 <see cref="ResultExecutingContext"/>。</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "context")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public override void OnResultExecuting(ResultExecutingContext context)
         {
             if (!(context?.Result is ViewResult))

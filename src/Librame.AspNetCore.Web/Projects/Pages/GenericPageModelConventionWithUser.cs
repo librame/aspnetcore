@@ -41,7 +41,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// 应用约定。
         /// </summary>
         /// <param name="model">给定的 <see cref="PageApplicationModel"/>。</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public void Apply(PageApplicationModel model)
         {
             if (model.ModelType.TryGetCustomAttribute(out GenericApplicationModelAttribute attribute))

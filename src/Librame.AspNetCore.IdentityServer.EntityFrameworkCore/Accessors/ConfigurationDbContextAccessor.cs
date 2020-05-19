@@ -15,17 +15,22 @@ using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Accessors
 {
-    using Extensions.Core.Services;
     using Extensions.Data.Accessors;
 
     /// <summary>
     /// 配置数据库上下文访问器。
     /// </summary>
-    public class ConfigurationDbContextAccessor : DbContextAccessor, IConfigurationDbContextAccessor
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class ConfigurationDbContextAccessor<TGenId, TIncremId>
+        : DbContextAccessor<TGenId, TIncremId>, IConfigurationDbContextAccessor
+        where TGenId : IEquatable<TGenId>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 构造一个配置数据库上下文访问器实例。
@@ -69,7 +74,7 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
         {
             base.OnModelCreating(modelBuilder);
 
-            var storeOptions = ServiceFactory.GetRequiredService<IOptions<ConfigurationStoreOptions>>().Value;
+            var storeOptions = GetService<IOptions<ConfigurationStoreOptions>>().Value;
             modelBuilder.ConfigureClientContext(storeOptions);
             modelBuilder.ConfigureResourcesContext(storeOptions);
         }

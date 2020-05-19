@@ -143,7 +143,6 @@ namespace Librame.Extensions.Core.Combiners
             newHostFactory.NotNull(nameof(newHostFactory));
 
             var newHost = newHostFactory.Invoke(locator.HostString);
-
             return locator.ChangeHost(newHost);
         }
 
@@ -160,7 +159,6 @@ namespace Librame.Extensions.Core.Combiners
             newPathFactory.NotNull(nameof(newPathFactory));
 
             var newPath = newPathFactory.Invoke(locator.PathString);
-
             return locator.ChangePath(newPath);
         }
 
@@ -177,7 +175,6 @@ namespace Librame.Extensions.Core.Combiners
             newQueryFactory.NotNull(nameof(newQueryFactory));
 
             var newQuery = newQueryFactory.Invoke(locator.QueryString);
-
             return locator.ChangeQuery(newQuery);
         }
 
@@ -189,14 +186,13 @@ namespace Librame.Extensions.Core.Combiners
         /// <param name="newHostFactory">给定的新主机工厂方法。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public static UriCombinerCore NewHost(this UriCombinerCore locator, Func<HostString, HostString> newHostFactory)
+        public static UriCombinerCore WithHost(this UriCombinerCore locator, Func<HostString, HostString> newHostFactory)
         {
             locator.NotNull(nameof(locator));
             newHostFactory.NotNull(nameof(newHostFactory));
 
             var newHost = newHostFactory.Invoke(locator.HostString);
-
-            return locator.NewHost(newHost);
+            return locator.WithHost(newHost);
         }
 
         /// <summary>
@@ -206,14 +202,13 @@ namespace Librame.Extensions.Core.Combiners
         /// <param name="newPathFactory">给定的新路径工厂方法。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public static UriCombinerCore NewPath(this UriCombinerCore locator, Func<PathString, PathString> newPathFactory)
+        public static UriCombinerCore WithPath(this UriCombinerCore locator, Func<PathString, PathString> newPathFactory)
         {
             locator.NotNull(nameof(locator));
             newPathFactory.NotNull(nameof(newPathFactory));
 
             var newPath = newPathFactory.Invoke(locator.PathString);
-
-            return locator.NewPath(newPath);
+            return locator.WithPath(newPath);
         }
 
         /// <summary>
@@ -223,14 +218,13 @@ namespace Librame.Extensions.Core.Combiners
         /// <param name="newQueryFactory">给定的新查询工厂方法。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public static UriCombinerCore NewQuery(this UriCombinerCore locator, Func<QueryString, QueryString> newQueryFactory)
+        public static UriCombinerCore WithQuery(this UriCombinerCore locator, Func<QueryString, QueryString> newQueryFactory)
         {
             locator.NotNull(nameof(locator));
             newQueryFactory.NotNull(nameof(newQueryFactory));
 
             var newQuery = newQueryFactory.Invoke(locator.QueryString);
-
-            return locator.NewQuery(newQuery);
+            return locator.WithQuery(newQuery);
         }
 
     }

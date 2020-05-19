@@ -28,7 +28,7 @@ namespace Librame.AspNetCore.Web.Routings
         /// </summary>
         /// <param name="routeValues">给定的 <see cref="IDictionary{String, String}"/>。</param>
         /// <returns>返回路由信息。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "routeValues")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static RouteDescriptor AsRouteDescriptor(this IDictionary<string, string> routeValues)
         {
             routeValues.NotNull(nameof(routeValues));
@@ -56,7 +56,7 @@ namespace Librame.AspNetCore.Web.Routings
         /// </summary>
         /// <param name="routeData">给定的 <see cref="RouteData"/>。</param>
         /// <returns>返回路由信息。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "routeData")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static RouteDescriptor AsRouteDescriptor(this RouteData routeData)
         {
             routeData.NotNull(nameof(routeData));

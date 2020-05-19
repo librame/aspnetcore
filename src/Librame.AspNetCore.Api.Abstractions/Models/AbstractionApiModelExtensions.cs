@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.Api
         /// <param name="model">给定的 <typeparamref name="TModel"/>。</param>
         /// <param name="logger">给定的 <see cref="ILogger"/>。</param>
         /// <returns>返回 <typeparamref name="TModel"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static TModel Log<TModel>(this TModel model, ILogger logger)
             where TModel : AbstractApiModel
         {

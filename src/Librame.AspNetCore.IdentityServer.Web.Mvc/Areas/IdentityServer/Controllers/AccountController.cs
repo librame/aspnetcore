@@ -22,9 +22,11 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 {
     using AspNetCore.IdentityServer.Builders;
+    using AspNetCore.IdentityServer.Options;
     using AspNetCore.IdentityServer.Web.Models;
     using AspNetCore.Web;
     using Extensions;
+    using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
 
     /// <summary>
@@ -38,7 +40,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
     [Area(IdentityServerRouteBuilderExtensions.AreaName)]
     [Route(IdentityServerRouteBuilderExtensions.Template)]
     public class AccountController<TUser> : Controller
-        where TUser : IdentityUser<string>, new()
+        where TUser : class, IIdentifier
     {
         [InjectionService]
         private SignInManager<TUser> _signInManager = null;
@@ -80,7 +82,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         /// Entry point into the login workflow
         /// </summary>
         [HttpGet]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> Login(string returnUrl)
         {
             // build a model so we know what to show on the login page
@@ -104,7 +106,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> Login(LoginInputModel model, string button)
         {
             model.NotNull(nameof(model));
@@ -151,7 +153,11 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByEmailAsync(model.Email).ConfigureAndResultAsync();
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.Id, user.UserName)).ConfigureAndWaitAsync();
+                    var userId = (await user.GetIdAsync().ConfigureAndResultAsync())?.ToString();
+                    var userName = await _userManager.GetUserNameAsync(user).ConfigureAndResultAsync();
+
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(model.Email, userId, userName))
+                        .ConfigureAndWaitAsync();
 
                     if (context != null)
                     {
@@ -216,7 +222,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> Logout(LogoutInputModel model)
         {
             model.NotNull(nameof(model));

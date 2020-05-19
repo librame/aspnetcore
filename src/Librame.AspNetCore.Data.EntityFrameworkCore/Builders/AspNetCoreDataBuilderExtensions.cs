@@ -45,7 +45,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IDataBuilder AddDataCore<TDependency>(this IExtensionBuilder parentBuilder,
             Action<TDependency> configureDependency = null,
             Func<IExtensionBuilder, TDependency, IDataBuilder> builderFactory = null)
-            where TDependency : DataBuilderDependency, new()
+            where TDependency : DataBuilderDependency
         {
             return parentBuilder.AddData(configureDependency, builderFactory)
                 .AddServices();

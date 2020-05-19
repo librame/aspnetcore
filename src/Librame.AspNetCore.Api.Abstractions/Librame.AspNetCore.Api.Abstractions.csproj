@@ -2,25 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <ApplicationIcon>..\..\LibrameCore.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\Librame.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.4.1.14</Version>
+    <Version>7.4.2.1</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.Abstractions on API extension package.</Description>
-    <Copyright>Copyright © 2012-2019</Copyright>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <Copyright>Copyright © 2012-2020</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
-    <PackageIcon>LibrameCore.png</PackageIcon>
+    <PackageIcon>Librame.png</PackageIcon>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Librame,AspNetCore,Api,Abstractions</PackageTags>
+    <PackageTags>librame,aspnetcore,api,abstractions</PackageTags>
     <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions on API extension package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\LibrameCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.4.1.14</AssemblyVersion>
-    <FileVersion>7.4.1894.15117</FileVersion>
+    <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>7.4.2.1</AssemblyVersion>
+    <FileVersion>7.4.1949.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore.Api</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
@@ -39,7 +39,7 @@
   </PropertyGroup>
     
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -51,7 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\LibrameCore.png" Pack="true" Visible="false" PackagePath="\" />
+    <None Include="..\..\Librame.png" Pack="true" Visible="false" PackagePath="\" />
   </ItemGroup>
 
 </Project>

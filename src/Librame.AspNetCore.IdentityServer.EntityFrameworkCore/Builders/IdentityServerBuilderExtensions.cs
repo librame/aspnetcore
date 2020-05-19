@@ -14,10 +14,12 @@ using IdentityServer4.Configuration;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
+using Librame.AspNetCore.Identity.Stores;
 using Librame.AspNetCore.IdentityServer.Accessors;
 using Librame.AspNetCore.IdentityServer.Builders;
 using Librame.Extensions;
 using Librame.Extensions.Core.Builders;
+using Librame.Extensions.Core.Options;
 using Librame.Extensions.Encryption.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -37,6 +39,18 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// 添加身份服务器扩展。
         /// </summary>
+        /// <param name="parentBuilder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureIdentityServer">给定的配置身份服务器选项动作方法。</param>
+        /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
+        /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
+        public static IIdentityServerBuilderDecorator AddIdentityServer(this IExtensionBuilder parentBuilder,
+            Action<IdentityServerOptions> configureIdentityServer,
+            Func<IIdentityServerBuilder, IExtensionBuilder, IdentityServerBuilderDependency, IIdentityServerBuilderDecorator> builderFactory = null)
+            => parentBuilder.AddIdentityServer<DefaultIdentityUser<Guid>>(configureIdentityServer, builderFactory);
+
+        /// <summary>
+        /// 添加身份服务器扩展。
+        /// </summary>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
         /// <param name="parentBuilder">给定的 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="configureIdentityServer">给定的配置身份服务器选项动作方法。</param>
@@ -53,6 +67,19 @@ namespace Microsoft.Extensions.DependencyInjection
             },
             builderFactory);
         }
+
+
+        /// <summary>
+        /// 添加身份服务器扩展。
+        /// </summary>
+        /// <param name="parentBuilder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
+        /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
+        /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
+        public static IIdentityServerBuilderDecorator AddIdentityServer(this IExtensionBuilder parentBuilder,
+            Action<IdentityServerBuilderDependency> configureDependency = null,
+            Func<IIdentityServerBuilder, IExtensionBuilder, IdentityServerBuilderDependency, IIdentityServerBuilderDecorator> builderFactory = null)
+            => parentBuilder.AddIdentityServer<DefaultIdentityUser<Guid>>(configureDependency, builderFactory);
 
         /// <summary>
         /// 添加身份服务器扩展。
@@ -77,17 +104,19 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "parentBuilder")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IIdentityServerBuilderDecorator AddIdentityServer<TDependency, TUser>(this IExtensionBuilder parentBuilder,
             Action<TDependency> configureDependency = null,
             Func<IIdentityServerBuilder, IExtensionBuilder, TDependency, IIdentityServerBuilderDecorator> builderFactory = null)
-            where TDependency : IdentityServerBuilderDependency, new()
+            where TDependency : IdentityServerBuilderDependency
             where TUser : class
         {
-            parentBuilder.NotNull(nameof(parentBuilder));
+            // Clear Options Cache
+            ConsistencyOptionsCache.TryRemove<IdentityServerBuilderOptions>();
 
-            // Configure Dependencies
-            var dependency = configureDependency.ConfigureDependency(parentBuilder);
+            // Add Builder Dependency
+            var dependency = parentBuilder.AddBuilderDependency(out var dependencyType, configureDependency);
+            parentBuilder.Services.TryAddReferenceBuilderDependency<IdentityServerBuilderDependency>(dependency, dependencyType);
 
             // Add Dependencies
             var sourceBuilder = parentBuilder.Services
@@ -184,7 +213,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TPersistedGrantAccessor">指定的持久化授予访问器类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IIdentityServerBuilderDecorator"/>。</param>
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IIdentityServerBuilderDecorator AddAccessorStores<TConfigurationAccessor, TPersistedGrantAccessor>(this IIdentityServerBuilderDecorator builder)
             where TConfigurationAccessor : DbContext, IConfigurationDbContextAccessor
             where TPersistedGrantAccessor : DbContext, IPersistedGrantDbContextAccessor
@@ -207,7 +236,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">给定的 <see cref="IIdentityServerBuilderDecorator"/>。</param>
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IIdentityServerBuilderDecorator AddInMemoryStores(this IIdentityServerBuilderDecorator builder)
         {
             builder.NotNull(nameof(builder));

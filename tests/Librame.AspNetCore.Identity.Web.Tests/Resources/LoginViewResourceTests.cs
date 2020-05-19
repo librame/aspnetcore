@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.Identity.Web.Tests
 
         private void RunTest(IStringLocalizer<LoginViewResource> localizer, string cultureName)
         {
-            CultureUtility.Register(new CultureInfo(cultureName));
+            CultureInfoUtility.Register(new CultureInfo(cultureName));
 
             var title = localizer.GetString(r => r.Title);
             Assert.False(title.ResourceNotFound);

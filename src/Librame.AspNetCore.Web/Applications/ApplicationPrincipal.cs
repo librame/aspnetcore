@@ -18,16 +18,22 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Web.Applications
 {
-    using Builders;
+    using AspNetCore.Web.Builders;
+    using AspNetCore.Web.Services;
     using Extensions;
     using Extensions.Core.Services;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class ApplicationPrincipal : IApplicationPrincipal
     {
-        public ApplicationPrincipal(IWebBuilder webBuilder)
+        private readonly IUserPortraitService _userPortrait;
+
+
+        public ApplicationPrincipal(IWebBuilder webBuilder,
+            IUserPortraitService userPortrait)
         {
             Builder = webBuilder.NotNull(nameof(webBuilder));
+            _userPortrait = userPortrait.NotNull(nameof(userPortrait));
         }
 
 
@@ -78,7 +84,10 @@ namespace Librame.AspNetCore.Web.Applications
         }
 
         public string GetSignedUserPortrait(HttpContext context)
-            => "/manage/img/profile.jpg";
+        {
+            var user = GetSignedUser(context, out _);
+            return _userPortrait.GetPortraitPathAsync(user).Result;
+        }
 
         public IList<string> GetSignedUserRoles(HttpContext context)
         {

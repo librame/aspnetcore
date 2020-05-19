@@ -34,7 +34,7 @@ namespace Librame.AspNetCore.Web.Localizers
         /// 构造一个字典字符串定位器。
         /// </summary>
         /// <param name="factory">给定的 <see cref="IDictionaryHtmlLocalizerFactory"/>。</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "factory")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public DictionaryHtmlLocalizer(IDictionaryHtmlLocalizerFactory factory)
         {
             factory.NotNull(nameof(factory));

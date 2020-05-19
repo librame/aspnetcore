@@ -36,7 +36,7 @@ namespace System.Security.Claims
         /// <param name="identity">给定的 <see cref="ClaimsIdentity"/>。</param>
         /// <param name="matchName">给定断定名称的声明工厂方法（可选）。</param>
         /// <returns>返回字符串。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "identity")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static string EnsureAuthenticatedName(this ClaimsIdentity identity, Predicate<Claim> matchName = null)
         {
             identity.NotNull(nameof(identity));

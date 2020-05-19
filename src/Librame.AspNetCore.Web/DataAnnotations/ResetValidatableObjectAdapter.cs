@@ -59,7 +59,7 @@ namespace Librame.AspNetCore.Web.DataAnnotations
             return ConvertResults(validatable.Validate(validationContext));
         }
 
-        private IEnumerable<ModelValidationResult> ConvertResults(IEnumerable<ValidationResult> results)
+        private static IEnumerable<ModelValidationResult> ConvertResults(IEnumerable<ValidationResult> results)
         {
             foreach (var result in results)
             {

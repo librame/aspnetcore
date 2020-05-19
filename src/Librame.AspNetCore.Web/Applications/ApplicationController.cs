@@ -74,7 +74,7 @@ namespace Librame.AspNetCore.Web.Applications
         /// <param name="returnUrl">给定的返回 URL。</param>
         /// <param name="defaultPath">给定的默认路径（可选）。</param>
         /// <returns>返回 <see cref="IActionResult"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public IActionResult RedirectToLocalUrlOrDefaultPath(string returnUrl, string defaultPath = null)
         {
             if (returnUrl.IsEmpty() && defaultPath.IsNotEmpty())

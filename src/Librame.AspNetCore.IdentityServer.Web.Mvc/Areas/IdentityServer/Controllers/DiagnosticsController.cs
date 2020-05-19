@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +14,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 {
     using AspNetCore.IdentityServer.Web.Models;
     using Extensions;
+    using Extensions.Core.Builders;
 
     /// <summary>
     /// Õï¶Ï¿ØÖÆÆ÷¡£
@@ -34,8 +37,10 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
                 return NotFound();
             }
 
-            var model = new DiagnosticsViewModel(await HttpContext.AuthenticateAsync().ConfigureAndResultAsync());
-            return View(model);
+            var result = await HttpContext.AuthenticateAsync().ConfigureAndResultAsync();
+            var coreOptions = HttpContext.RequestServices.GetService<IOptions<CoreBuilderOptions>>().Value;
+            
+            return View(new DiagnosticsViewModel(result, coreOptions));
         }
 
     }

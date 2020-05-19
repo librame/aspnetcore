@@ -61,7 +61,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="displayName">给定的方案显示名称。</param>
         /// <param name="configureOptions">给定的配置选项。</param>
         /// <returns>返回 <see cref="AuthenticationBuilder"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static AuthenticationBuilder AddResetOpenIdConnect(this AuthenticationBuilder builder, string authenticationScheme, string displayName, Action<OpenIdConnectOptions> configureOptions)
         {
             builder.NotNull(nameof(builder));

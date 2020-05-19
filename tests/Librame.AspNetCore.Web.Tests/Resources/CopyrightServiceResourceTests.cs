@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.Web.Tests
 
         private void RunTest(IStringLocalizer<CopyrightServiceResource> localizer, string cultureName)
         {
-            CultureUtility.Register(new CultureInfo(cultureName));
+            CultureInfoUtility.Register(new CultureInfo(cultureName));
 
             var copyright = localizer.GetString(r => r.Copyright);
             Assert.False(copyright.ResourceNotFound);

@@ -574,7 +574,7 @@ namespace Microsoft.AspNetCore.Authentication.Librame
         /// <param name="nonce">the nonce that we are looking for.</param>
         /// <returns>echos 'nonce' if a cookie is found that matches, null otherwise.</returns>
         /// <remarks>Examine <see cref="IRequestCookieCollection.Keys"/> of <see cref="HttpRequest.Cookies"/> that start with the prefix: 'OpenIdConnectAuthenticationDefaults.Nonce'.
-        /// <see cref="M:ISecureDataFormat{TData}.Unprotect"/> of <see cref="OpenIdConnectOptions.StringDataFormat"/> is used to obtain the actual 'nonce'. If the nonce is found, then <see cref="M:IResponseCookies.Delete"/> of <see cref="HttpResponse.Cookies"/> is called.</remarks>
+        /// <see cref="ISecureDataFormat{TData}.Unprotect(string)"/> of <see cref="OpenIdConnectOptions.StringDataFormat"/> is used to obtain the actual 'nonce'. If the nonce is found, then <see cref="M:IResponseCookies.Delete"/> of <see cref="HttpResponse.Cookies"/> is called.</remarks>
         private string ReadNonceCookie(string nonce)
         {
             if (nonce == null)

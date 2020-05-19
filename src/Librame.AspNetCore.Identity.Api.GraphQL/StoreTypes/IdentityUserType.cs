@@ -11,6 +11,7 @@
 #endregion
 
 using GraphQL.Types;
+using System;
 
 namespace Librame.AspNetCore.Identity.Api.StoreTypes
 {
@@ -19,17 +20,18 @@ namespace Librame.AspNetCore.Identity.Api.StoreTypes
     /// <summary>
     /// 身份用户类型。
     /// </summary>
-    public class IdentityUserType : ObjectGraphType<DefaultIdentityUser<string>>
+    /// <typeparam name="TUser">指定的用户类型。</typeparam>
+    public class IdentityUserType<TUser> : ObjectGraphType<TUser>
+        where TUser : class
     {
         /// <summary>
-        /// 构造一个 <see cref="IdentityUserType"/> 实例。
+        /// 构造一个 <see cref="IdentityUserType{TUser}"/> 实例。
         /// </summary>
         public IdentityUserType()
         {
-            // 支持三选一查询
-            Field(f => f.NormalizedUserName, nullable: true);
-            Field(f => f.Email, nullable: true);
-            Field(f => f.PhoneNumber, nullable: true);
+            // 为保障隐私，仅支持用户名查询
+            Field(f => nameof(DefaultIdentityUser<Guid>.UserName), nullable: true);
         }
+
     }
 }

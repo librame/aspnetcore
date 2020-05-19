@@ -1,5 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Librame.AspNetCore.Identity.Accessors;
+using Librame.AspNetCore.Identity.Stores;
+using Librame.Extensions;
+using Librame.Extensions.Data.Builders;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,9 +34,31 @@ namespace Librame.AspNetCore.IdentityServer.Api
                     options.RequireHttpsMetadata = true;
                     options.Audience = "Api";
                 });
+
+            services.AddLibrameCore()
+                .AddDataCore(dependency =>
+                {
+                    // Use SQL Server
+                    dependency.BindDefaultTenant();
+                })
+                .AddAccessor<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
+                {
+                    optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
+                        sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
+                })
+                .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
+                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
+                .AddStoreInitializer<GuidIdentityStoreInitializer>()
+                .AddIdentity<IdentityDbContextAccessor>(dependency =>
+                {
+                    // Use Librame.AspNetCore.Identity.Web.Mvc RPL
+                    dependency.Options.LoginCallbackPath = new PathString("/Identity/Manage/Index");
+
+                    dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
+                })
+                .AddIdentityApi();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -53,6 +82,10 @@ namespace Librame.AspNetCore.IdentityServer.Api
             {
                 routes.MapControllers();
             });
+
+            // api/graphql
+            app.UseLibrameCore()
+                .UseApi();
         }
 
     }

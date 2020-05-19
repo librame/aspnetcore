@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Applications
@@ -26,9 +27,9 @@ namespace Librame.AspNetCore.Applications
         PathString RestrictRequestPath { get; }
 
         /// <summary>
-        /// 限定的请求方法。
+        /// 限定的请求方法列表（如：get、post...等）。
         /// </summary>
-        string RestrictRequestMethod { get; }
+        IReadOnlyList<string> RestrictRequestMethods { get; }
 
 
         /// <summary>

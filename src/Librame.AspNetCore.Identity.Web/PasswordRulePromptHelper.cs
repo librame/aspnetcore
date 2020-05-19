@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.Identity.Web
         /// <param name="options">给定的 <see cref="IdentityOptions"/>。</param>
         /// <param name="localizer">给定的 <see cref="IHtmlLocalizer{RegisterViewResource}"/>。</param>
         /// <returns>返回字符串。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "options")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static string GetHtmlContent(IdentityOptions options, IHtmlLocalizer<RegisterViewResource> localizer)
         {
             var prompts = new StringBuilder();

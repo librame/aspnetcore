@@ -21,6 +21,7 @@ namespace Librame.AspNetCore.Web.Builders
         internal static IWebBuilder AddServices(this IWebBuilder builder)
         {
             builder.Services.TryAddSingleton<ICopyrightService, CopyrightService>();
+            builder.Services.TryAddSingleton<IUserPortraitService, UserPortraitService>();
 
             return builder;
         }

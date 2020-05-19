@@ -11,10 +11,13 @@
 #endregion
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Librame.AspNetCore.Web.Builders
 {
-    using Identity.Web.Projects;
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Web.Projects;
+    using Extensions.Core.Builders;
 
     /// <summary>
     /// 带页面的身份 Web 构建器静态扩展。
@@ -28,7 +31,13 @@ namespace Librame.AspNetCore.Web.Builders
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
         public static IWebBuilder AddIdentityProjectPage(this IWebBuilder builder, IMvcBuilder mvcBuilder)
-            => builder.AddProjectPage<IdentityProjectConfiguration, IdentityProjectNavigation>(mvcBuilder,
+        {
+            if (!builder.ContainsParentBuilder<IIdentityBuilderDecorator>())
+                throw new InvalidOperationException("The identity web requires register AddIdentity(...).");
+
+            return builder.AddProjectPage<IdentityProjectConfiguration, IdentityProjectNavigation>(mvcBuilder,
                 typeof(IdentityWebBuilderWithPageExtensions).Assembly);
+        }
+
     }
 }

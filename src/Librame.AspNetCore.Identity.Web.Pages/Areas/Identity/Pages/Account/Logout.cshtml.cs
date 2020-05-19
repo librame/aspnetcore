@@ -45,7 +45,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         /// </summary>
         /// <param name="returnUrl">给定的返回 URL。</param>
         /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public virtual Task<IActionResult> OnPost(string returnUrl = null)
             => throw new NotImplementedException();
     }

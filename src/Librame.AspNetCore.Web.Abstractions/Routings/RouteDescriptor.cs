@@ -29,7 +29,7 @@ namespace Librame.AspNetCore.Web.Routings
         /// 构造一个 <see cref="RouteDescriptor"/>。
         /// </summary>
         /// <param name="url">给定的 URL。</param>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "url")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public RouteDescriptor(string url)
         {
             Url = url.NotEmpty(nameof(url));
@@ -142,7 +142,7 @@ namespace Librame.AspNetCore.Web.Routings
         /// </summary>
         /// <param name="returnUrl">给定的返回 URL。</param>
         /// <returns>返回 <see cref="RouteDescriptor"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public RouteDescriptor AppendReturnUrl(string returnUrl)
         {
             if (returnUrl.IsNotEmpty())
@@ -353,7 +353,7 @@ namespace Librame.AspNetCore.Web.Routings
         /// <param name="urlHelper">给定的 <see cref="IUrlHelper"/>。</param>
         /// <param name="routeName">给定的路由名称（可选）。</param>
         /// <returns>返回字符串。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "urlHelper")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public virtual string ToRouteString(IUrlHelper urlHelper, string routeName = null)
         {
             if (Url.IsNotEmpty())

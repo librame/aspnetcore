@@ -15,17 +15,22 @@ using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Accessors
 {
-    using Extensions.Core.Services;
     using Extensions.Data.Accessors;
 
     /// <summary>
     /// 持久化授予数据库上下文访问器。
     /// </summary>
-    public class PersistedGrantDbContextAccessor : DbContextAccessor, IPersistedGrantDbContextAccessor
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    public class PersistedGrantDbContextAccessor<TGenId, TIncremId>
+        : DbContextAccessor<TGenId, TIncremId>, IPersistedGrantDbContextAccessor
+        where TGenId : IEquatable<TGenId>
+        where TIncremId : IEquatable<TIncremId>
     {
         /// <summary>
         /// 构造一个持久化授予数据库上下文访问器实例。
@@ -64,7 +69,7 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
         {
             base.OnModelCreating(modelBuilder);
 
-            var storeOptions = ServiceFactory.GetRequiredService<IOptions<OperationalStoreOptions>>().Value;
+            var storeOptions = GetService<IOptions<OperationalStoreOptions>>().Value;
             modelBuilder.ConfigurePersistedGrantContext(storeOptions);
         }
 

@@ -22,8 +22,10 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 {
     using AspNetCore.IdentityServer.Builders;
+    using AspNetCore.IdentityServer.Options;
     using AspNetCore.Web;
     using Extensions;
+    using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
 
     /// <summary>
@@ -36,7 +38,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
     [Area(IdentityServerRouteBuilderExtensions.AreaName)]
     [Route(IdentityServerRouteBuilderExtensions.Template)]
     public class ExternalController<TUser> : Controller
-        where TUser : IdentityUser<string>, new()
+        where TUser : class, IIdentifier
     {
         [InjectionService]
         private SignInManager<TUser> _signInManager = null;
@@ -75,7 +77,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         /// initiate roundtrip to external authentication provider
         /// </summary>
         [HttpGet]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> Challenge(string provider, string returnUrl)
         {
             if (returnUrl.IsEmpty())
@@ -147,9 +149,11 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
             // it doesn't expose an API to issue additional claims from the login workflow
             var principal = await _signInManager.CreateUserPrincipalAsync(user).ConfigureAndResultAsync();
             additionalLocalClaims.AddRange(principal.Claims);
-            var name = principal.FindFirst(JwtClaimTypes.Name)?.Value ?? user.Id;
-            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id, name)).ConfigureAndWaitAsync();
-            await HttpContext.SignInAsync(user.Id, name, provider, localSignInProps, additionalLocalClaims.ToArray()).ConfigureAndWaitAsync();
+
+            var userId = (await user.GetIdAsync().ConfigureAndResultAsync())?.ToString();
+            var name = principal.FindFirst(JwtClaimTypes.Name)?.Value ?? userId;
+            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, userId, name)).ConfigureAndWaitAsync();
+            await HttpContext.SignInAsync(userId, name, provider, localSignInProps, additionalLocalClaims.ToArray()).ConfigureAndWaitAsync();
 
             // delete temporary cookie used during external authentication
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAndWaitAsync();
@@ -277,10 +281,9 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
                 filtered.Add(new Claim(JwtClaimTypes.Email, email));
             }
 
-            var user = new TUser
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
+            var user = typeof(TUser).EnsureCreate<TUser>();
+            await _userManager.SetUserNameAsync(user, Guid.NewGuid().ToString()).ConfigureAndResultAsync();
+            
             var identityResult = await _userManager.CreateAsync(user).ConfigureAndResultAsync();
             if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
 
@@ -297,7 +300,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         }
 
 
-        private void ProcessLoginCallbackForOidc(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
+        private static void ProcessLoginCallbackForOidc(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
         {
             // if the external system sent a session id claim, copy it over
             // so we can use it for single sign-out
@@ -315,11 +318,13 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
             }
         }
 
-        private void ProcessLoginCallbackForWsFed(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
+        [SuppressMessage("Style", "IDE0060:删除未使用的参数")]
+        private static void ProcessLoginCallbackForWsFed(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
         {
         }
 
-        private void ProcessLoginCallbackForSaml2p(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
+        [SuppressMessage("Style", "IDE0060:删除未使用的参数")]
+        private static void ProcessLoginCallbackForSaml2p(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
         {
         }
 

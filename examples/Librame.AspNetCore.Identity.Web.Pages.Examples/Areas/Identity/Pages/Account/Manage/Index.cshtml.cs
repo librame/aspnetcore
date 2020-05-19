@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Examples
 {
+    using AspNetCore.Identity.Stores;
+    using AspNetCore.Identity.Web.Resources;
     using Extensions;
     using Extensions.Core.Services;
     using Extensions.Network.Services;
-    using Resources;
-    using Stores;
 
     /// <summary>
     /// Ê×Ò³Ä£ÐÍ¡£
@@ -33,9 +33,9 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
         private IStringLocalizer<StatusMessageResource> _statusLocalizer = null;
 
         [InjectionService]
-        private SignInManager<DefaultIdentityUser<string>> _signInManager = null;
+        private SignInManager<DefaultIdentityUser<Guid>> _signInManager = null;
 
-        private readonly UserManager<DefaultIdentityUser<string>> _userManager = null;
+        private readonly UserManager<DefaultIdentityUser<Guid>> _userManager = null;
 
 
         /// <summary>

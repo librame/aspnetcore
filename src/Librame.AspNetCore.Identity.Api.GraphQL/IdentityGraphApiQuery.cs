@@ -11,75 +11,128 @@
 #endregion
 
 using GraphQL.Types;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Api
 {
     using AspNetCore.Api;
-    using AspNetCore.Identity.Accessors;
     using AspNetCore.Identity.Api.StoreTypes;
     using Extensions;
+    using Extensions.Data.Collections;
     using Extensions.Data.Stores;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    internal class IdentityGraphApiQuery<TAccessor> : ObjectGraphType, IGraphApiQuery
-        where TAccessor : DbContext, IIdentityDbContextAccessor
+    internal class IdentityGraphApiQuery<TRole, TUser> : ObjectGraphType, IGraphApiQuery
+        where TRole : class, ICreatedTimeTicks
+        where TUser : class, ICreatedTimeTicks
     {
-        private readonly IStoreHub<TAccessor> _stores;
+        private readonly RoleManager<TRole> _roleManager;
+        private readonly UserManager<TUser> _userManager;
 
 
-        public IdentityGraphApiQuery(IStoreHub<TAccessor> stores)
+        public IdentityGraphApiQuery(RoleManager<TRole> roleManager,
+            UserManager<TUser> userManager)
         {
-            _stores = stores.NotNull(nameof(stores));
+            _roleManager = roleManager.NotNull(nameof(roleManager));
+            _userManager = userManager.NotNull(nameof(userManager));
 
             Name = nameof(ISchema.Query);
 
-            AddIdentityUserTypeFields();
+            AddRoleTypeFields();
+            AddUserTypeFields();
         }
 
 
-        private void AddIdentityUserTypeFields()
+        private void AddRoleTypeFields()
         {
-            var prefixName = "user";
+            if (IdentityApiSettings.Preference.SupportsQueryRoles)
+            {
+                // roles(index:1,size:10)
+                Field<IdentityRoleType<TRole>>
+                (
+                    name: "roles",
+                    arguments: new QueryArguments(
+                        new QueryArgument<IntGraphType> { Name = "index" },
+                        new QueryArgument<IntGraphType> { Name = "size" }
+                    ),
+                    resolve: context =>
+                    {
+                        var index = context.GetArgument<int?>("index");
+                        var size = context.GetArgument<int?>("size");
 
-            Field<IdentityUserType>
+                        if (index.HasValue && size.HasValue)
+                        {
+                            return _roleManager.Roles.AsPagingByIndex(ordered =>
+                            {
+                                return ordered.OrderBy(k => k.CreatedTimeTicks);
+                            },
+                            index.Value, size.Value);
+                        }
+
+                        return _roleManager.Roles.ToList();
+                    }
+                );
+            }
+            
+            // role(name:"")
+            Field<IdentityRoleType<TRole>>
             (
-                name: $"{prefixName}Name",
+                name: "role",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "name" }
                 ),
                 resolve: context =>
                 {
                     var name = context.GetArgument<string>("name");
-                    return _stores.Accessor.Users.FirstOrDefault(p => p.NormalizedUserName == name);
+                    return _roleManager.FindByNameAsync(name).ConfigureAndResult();
                 }
             );
+        }
 
-            Field<IdentityUserType>
+        private void AddUserTypeFields()
+        {
+            if (IdentityApiSettings.Preference.SupportsQueryUsers)
+            {
+                // users(index:1,size:10)
+                Field<IdentityUserType<TUser>>
+                (
+                    name: "users",
+                    arguments: new QueryArguments(
+                        new QueryArgument<IntGraphType> { Name = "index" },
+                        new QueryArgument<IntGraphType> { Name = "size" }
+                    ),
+                    resolve: context =>
+                    {
+                        var index = context.GetArgument<int?>("index");
+                        var size = context.GetArgument<int?>("size");
+
+                        if (index.HasValue && size.HasValue)
+                        {
+                            return _userManager.Users.AsPagingByIndex(ordered =>
+                            {
+                                return ordered.OrderBy(k => k.CreatedTimeTicks);
+                            },
+                            index.Value, size.Value);
+                        }
+
+                        return _userManager.Users.ToList();
+                    }
+                );
+            }
+
+            // user(name:"")
+            Field<IdentityUserType<TUser>>
             (
-                name: $"{prefixName}Email",
+                name: "user",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "email" }
+                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "name" }
                 ),
                 resolve: context =>
                 {
-                    var email = context.GetArgument<string>("email");
-                    return _stores.Accessor.Users.FirstOrDefault(p => p.NormalizedEmail == email);
-                }
-            );
-
-            Field<IdentityUserType>
-            (
-                name: $"{prefixName}Phone",
-                arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "phone" }
-                ),
-                resolve: context =>
-                {
-                    var phone = context.GetArgument<string>("phone");
-                    return _stores.Accessor.Users.FirstOrDefault(p => p.PhoneNumber == phone);
+                    var name = context.GetArgument<string>("name");
+                    return _userManager.FindByNameAsync(name).ConfigureAndResult();
                 }
             );
         }

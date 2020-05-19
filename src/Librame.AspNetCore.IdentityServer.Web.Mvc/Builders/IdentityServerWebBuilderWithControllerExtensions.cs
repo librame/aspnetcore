@@ -11,11 +11,14 @@
 #endregion
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Librame.AspNetCore.Web.Builders
 {
-    using IdentityServer.Web.Projects;
-    using Projects;
+    using AspNetCore.IdentityServer.Builders;
+    using AspNetCore.IdentityServer.Web.Projects;
+    using AspNetCore.Web.Projects;
+    using Extensions.Core.Builders;
 
     /// <summary>
     /// 带控制器的身份服务器 Web 构建器静态扩展。
@@ -30,6 +33,9 @@ namespace Librame.AspNetCore.Web.Builders
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
         public static IWebBuilder AddIdentityServerProjectController(this IWebBuilder builder, IMvcBuilder mvcBuilder)
         {
+            if (!builder.ContainsParentBuilder<IIdentityServerBuilderDecorator>())
+                throw new InvalidOperationException("The identityserver web requires register AddIdentityServer(...).");
+
             builder.AddGenericControllersWithUser();
 
             builder.AddProjectController<IdentityServerProjectConfiguration, IdentityServerProjectNavigation>(mvcBuilder,

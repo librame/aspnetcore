@@ -27,8 +27,9 @@ namespace Librame.AspNetCore.IdentityServer.Builders
         /// <summary>
         /// 构造一个 <see cref="IdentityServerBuilderDependency"/>。
         /// </summary>
-        public IdentityServerBuilderDependency()
-            : base(nameof(IdentityServerBuilderDependency))
+        /// <param name="parentDependency">给定的父级 <see cref="IExtensionBuilderDependency"/>（可选）。</param>
+        public IdentityServerBuilderDependency(IExtensionBuilderDependency parentDependency = null)
+            : base(nameof(IdentityServerBuilderDependency), parentDependency)
         {
         }
 

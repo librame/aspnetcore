@@ -170,7 +170,7 @@ namespace Librame.AspNetCore.Web.Routings
         /// </summary>
         /// <param name="optionalAction">给定的 <see cref="INavigationDescriptorOptional"/> 动作。</param>
         /// <returns>返回 <see cref="AbstractNavigationDescriptor"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "optionalAction")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         internal AbstractNavigationDescriptor ChangeOptional(Action<INavigationDescriptorOptional> optionalAction)
         {
             optionalAction.NotNull(nameof(optionalAction));

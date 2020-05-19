@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.Web.Tests
 
         private void RunTest(IStringLocalizer<ProjectNavigationResource> localizer, string cultureName)
         {
-            CultureUtility.Register(new CultureInfo(cultureName));
+            CultureInfoUtility.Register(new CultureInfo(cultureName));
 
             var index = localizer.GetString(r => r.Index);
             Assert.False(index.ResourceNotFound);

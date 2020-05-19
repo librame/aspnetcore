@@ -58,20 +58,20 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                 .AddDataCore(dependency =>
                 {
                     // Use SQL Server
-                    dependency.BindDefaultTenant(Configuration.GetSection(nameof(dependency.Options.DefaultTenant)));
+                    dependency.BindDefaultTenant();
                 })
-                .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
+                .AddAccessor<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
                 {
-                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
+                    optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
                 })
-                .AddDbDesignTime<SqlServerDesignTimeServices>()
-                .AddStoreIdentifier<IdentityStoreIdentifier>()
-                //.AddInitializer<IdentityStoreInitializer>()
+                .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
+                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
+                //.AddStoreInitializer<GuidIdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
                     // Use Librame.AspNetCore.Identity.Web.Mvc RPL
-                    dependency.Options.LoginCallbackPath = new PathString("/Idenity/Manage/Index");
+                    dependency.Options.LoginCallbackPath = new PathString("/Identity/Manage/Index");
 
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })

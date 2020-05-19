@@ -59,7 +59,7 @@ namespace Microsoft.AspNetCore.Http
         /// </example>
         /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
         /// <returns>返回字符串。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "request")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         [SuppressMessage("Microsoft.Design", "CA1055:UriReturnValuesShouldNotBeStrings")]
         public static string AsAbsoluteUrl(this HttpRequest request)
         {
@@ -83,7 +83,7 @@ namespace Microsoft.AspNetCore.Http
         /// </example>
         /// <param name="request">给定的 HTTP 请求。</param>
         /// <returns>返回字符串。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "request")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         [SuppressMessage("Microsoft.Design", "CA1055:UriReturnValuesShouldNotBeStrings")]
         public static string AsRootUrl(this HttpRequest request)
         {
@@ -125,8 +125,8 @@ namespace Microsoft.AspNetCore.Http
         public static async Task<IPAddress> GetIPv4Async(this HttpRequest request,
             string addressKey = null)
         {
-            var tuple = await request.GetIPAddressTupleAsync(addressKey).ConfigureAndResultAsync();
-            return tuple.IPv4;
+            (IPAddress v4, _) = await request.GetIPv4AndIPv6AddressAsync(addressKey).ConfigureAndResultAsync();
+            return v4;
         }
 
         /// <summary>
@@ -138,8 +138,8 @@ namespace Microsoft.AspNetCore.Http
         public static async Task<IPAddress> GetIPv6Async(this HttpRequest request,
             string addressKey = null)
         {
-            var tuple = await request.GetIPAddressTupleAsync(addressKey).ConfigureAndResultAsync();
-            return tuple.IPv6;
+            (_, IPAddress v6) = await request.GetIPv4AndIPv6AddressAsync(addressKey).ConfigureAndResultAsync();
+            return v6;
         }
 
         /// <summary>
@@ -148,9 +148,9 @@ namespace Microsoft.AspNetCore.Http
         /// <param name="request">给定的 <see cref="HttpRequest"/>。</param>
         /// <param name="addressKey">给定的 IP 地址键（可选）。</param>
         /// <returns>返回一个包含 <see cref="Tuple{IPAddress, IPAddress}"/> 的元组。</returns>
-        public static Task<(IPAddress IPv4, IPAddress IPv6)> GetIPAddressTupleAsync(this HttpRequest request,
+        public static Task<(IPAddress v4, IPAddress v6)> GetIPv4AndIPv6AddressAsync(this HttpRequest request,
             string addressKey = null)
-            => request.NotNull(nameof(request)).Headers.GetIPAddressTupleAsync(addressKey);
+            => request.NotNull(nameof(request)).Headers.GetIPv4AndIPv6AddressAsync(addressKey);
 
 
         /// <summary>
@@ -162,8 +162,8 @@ namespace Microsoft.AspNetCore.Http
         public static async Task<IPAddress> GetIPv4Async(this IHeaderDictionary headers,
             string ipAddressKey = null)
         {
-            var tuple = await headers.GetIPAddressTupleAsync(ipAddressKey).ConfigureAndResultAsync();
-            return tuple.IPv4;
+            (IPAddress v4, _) = await headers.GetIPv4AndIPv6AddressAsync(ipAddressKey).ConfigureAndResultAsync();
+            return v4;
         }
 
         /// <summary>
@@ -175,8 +175,8 @@ namespace Microsoft.AspNetCore.Http
         public static async Task<IPAddress> GetIPv6Async(this IHeaderDictionary headers,
             string addressKey = null)
         {
-            var tuple = await headers.GetIPAddressTupleAsync(addressKey).ConfigureAndResultAsync();
-            return tuple.IPv6;
+            (_, IPAddress v6) = await headers.GetIPv4AndIPv6AddressAsync(addressKey).ConfigureAndResultAsync();
+            return v6;
         }
 
         /// <summary>
@@ -184,8 +184,8 @@ namespace Microsoft.AspNetCore.Http
         /// </summary>
         /// <param name="headers">给定的 <see cref="IHeaderDictionary"/>。</param>
         /// <param name="addressKey">给定的 IP 地址键（可选）。</param>
-        /// <returns>返回一个包含 <see cref="Tuple{IPAddress, IPAddress}"/> 的元组。</returns>
-        public static async Task<(IPAddress IPv4, IPAddress IPv6)> GetIPAddressTupleAsync(this IHeaderDictionary headers,
+        /// <returns>返回一个包含 IPv4 和 IPv6 的元组。</returns>
+        public static async Task<(IPAddress v4, IPAddress v6)> GetIPv4AndIPv6AddressAsync(this IHeaderDictionary headers,
             string addressKey = null)
         {
             if (addressKey.IsEmpty())
@@ -215,7 +215,7 @@ namespace Microsoft.AspNetCore.Http
 
             var host = new HostString(address);
             if (host.IsLocalIPAddress())
-                return await DnsUtility.GetLocalIPAddressTupleAsync().ConfigureAndResultAsync();
+                return await IPAddressUtility.GetLocalIPv4AndIPv6AddressAsync().ConfigureAndResultAsync();
 
             if (IPAddress.TryParse(host.Host, out IPAddress current))
             {

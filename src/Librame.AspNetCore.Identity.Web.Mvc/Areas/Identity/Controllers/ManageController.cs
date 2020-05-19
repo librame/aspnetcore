@@ -30,7 +30,6 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
     using AspNetCore.Web.Applications;
     using Extensions;
     using Extensions.Core.Services;
-    using Extensions.Data.Stores;
     using Extensions.Network.Services;
 
     /// <summary>
@@ -41,7 +40,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
     [Area(IdentityRouteBuilderExtensions.AreaName)]
     [Route(IdentityRouteBuilderExtensions.Template)]
     public class ManageController<TUser> : ApplicationController
-        where TUser : class, IId<string>
+        where TUser : class
     {
         [InjectionService]
         private ILogger<ManageController<TUser>> _logger = null;
@@ -130,7 +129,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "account")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel account)
         {
             account.NotNull(nameof(account));
@@ -168,7 +167,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
         {
             model.NotNull(nameof(model));
@@ -288,7 +287,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
         {
             model.NotNull(nameof(model));
@@ -358,7 +357,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             model.NotNull(nameof(model));
@@ -409,7 +408,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
         {
             model.NotNull(nameof(model));

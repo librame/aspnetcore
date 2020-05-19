@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.Localization;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Librame.AspNetCore.Web.DataAnnotations
@@ -38,6 +39,7 @@ namespace Librame.AspNetCore.Web.DataAnnotations
         /// <param name="attribute">给定的 <see cref="FileExtensionsAttribute"/>。</param>
         /// <param name="stringLocalizer">给定的 <see cref="IStringLocalizer"/>。</param>
         /// <param name="stringLocalizerFactory">给定的 <see cref="IStringLocalizerFactory"/>。</param>
+        [SuppressMessage("Globalization", "CA1308:将字符串规范化为大写")]
         public ResetFileExtensionsAttributeAdapter(FileExtensionsAttribute attribute, IStringLocalizer stringLocalizer,
             IStringLocalizerFactory stringLocalizerFactory)
             : base(attribute, stringLocalizer)

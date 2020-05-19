@@ -89,7 +89,7 @@ namespace Microsoft.Extensions.Localization
         /// <param name="navigation">给定的 <typeparamref name="TNavigation"/>。</param>
         /// <param name="optionalAction">给定的 <see cref="INavigationDescriptorOptional"/> 动作。</param>
         /// <returns>返回 <typeparamref name="TNavigation"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "navigation")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static TNavigation ChangeOptional<TNavigation>(this TNavigation navigation,
             Action<INavigationDescriptorOptional> optionalAction)
             where TNavigation : AbstractNavigationDescriptor
@@ -108,7 +108,7 @@ namespace Microsoft.Extensions.Localization
         /// <param name="navigation">给定的 <typeparamref name="TNavigation"/>。</param>
         /// <param name="newLocalizer">给定的新 <see cref="IStringLocalizer"/>。</param>
         /// <returns>返回 <typeparamref name="TNavigation"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "navigation")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static TNavigation ChangeLocalizer<TNavigation>(this TNavigation navigation,
             IStringLocalizer newLocalizer)
             where TNavigation : AbstractNavigationDescriptor
@@ -126,7 +126,7 @@ namespace Microsoft.Extensions.Localization
         /// <param name="navigation">给定的 <typeparamref name="TNavigation"/>。</param>
         /// <param name="newLocalizerName">给定的新本地化定位器名称。</param>
         /// <returns>返回 <typeparamref name="TNavigation"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "navigation")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static TNavigation ChangeLocalizerName<TNavigation>(this TNavigation navigation,
             string newLocalizerName)
             where TNavigation : AbstractNavigationDescriptor
@@ -145,7 +145,7 @@ namespace Microsoft.Extensions.Localization
         /// <param name="navigation">给定的 <typeparamref name="TNavigation"/>。</param>
         /// <param name="newText">给定的新文本。</param>
         /// <returns>返回 <typeparamref name="TNavigation"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "navigation")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static TNavigation ChangeText<TNavigation>(this TNavigation navigation,
             string newText)
             where TNavigation : AbstractNavigationDescriptor

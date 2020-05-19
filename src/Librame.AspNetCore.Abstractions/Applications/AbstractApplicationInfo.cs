@@ -24,10 +24,10 @@ namespace Librame.AspNetCore.Applications
     public abstract class AbstractApplicationInfo : IApplicationInfo
     {
         /// <summary>
-        /// Librame 项目库 URL。
+        /// AspNetCore 项目库 URL。
         /// </summary>
-        public const string LibrameRepositoryUrl
-            = "https://github.com/librame/LibrameCore";
+        public const string AspNetCoreRepositoryUrl
+            = "https://github.com/librame/aspnetcore";
 
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Librame.AspNetCore.Applications
         /// 联系。
         /// </summary>
         public virtual string Contact
-            => LibrameRepositoryUrl;
+            => AspNetCoreRepositoryUrl;
 
         /// <summary>
         /// 公司。

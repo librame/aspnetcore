@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.Identity.Web.Tests
 
         private void RunTest(IStringLocalizer<ErrorMessageResource> localizer, string cultureName)
         {
-            CultureUtility.Register(new CultureInfo(cultureName));
+            CultureInfoUtility.Register(new CultureInfo(cultureName));
 
             var password = localizer.GetString(r => r.Password);
             Assert.False(password.ResourceNotFound);

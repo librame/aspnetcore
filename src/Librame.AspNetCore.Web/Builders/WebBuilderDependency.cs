@@ -22,8 +22,9 @@ namespace Librame.AspNetCore.Web.Builders
         /// <summary>
         /// 构造一个 <see cref="WebBuilderDependency"/>。
         /// </summary>
-        public WebBuilderDependency()
-            : base(nameof(WebBuilderDependency))
+        /// <param name="parentDependency">给定的父级 <see cref="IExtensionBuilderDependency"/>（可选）。</param>
+        public WebBuilderDependency(IExtensionBuilderDependency parentDependency = null)
+            : base(nameof(WebBuilderDependency), parentDependency)
         {
         }
 

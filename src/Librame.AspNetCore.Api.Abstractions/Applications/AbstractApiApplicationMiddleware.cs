@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace Librame.AspNetCore.Api.Applications
 {
@@ -38,9 +39,9 @@ namespace Librame.AspNetCore.Api.Applications
             => "/api/graphql";
 
         /// <summary>
-        /// 限定的请求方法。
+        /// 限定的请求方法列表（默认仅支持 POST）。
         /// </summary>
-        public override string RestrictRequestMethod
-            => "POST";
+        public override IReadOnlyList<string> RestrictRequestMethods
+            => new List<string> { "POST" };
     }
 }

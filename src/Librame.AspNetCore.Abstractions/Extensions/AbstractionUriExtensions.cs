@@ -28,7 +28,7 @@ namespace Microsoft.AspNetCore.Http
         /// <param name="uriString">给定的路径或 URL 字符串。</param>
         /// <param name="host">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "uriString")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public static bool SameHost(this string uriString, HostString host)
             => uriString.SameHost(host.ToString());
 
@@ -38,7 +38,7 @@ namespace Microsoft.AspNetCore.Http
         /// </summary>
         /// <param name="uriString">给定的 URI 字符串。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "uriString")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public static HostString GetHostString(this string uriString)
             => uriString.GetHostString(out _);
 
@@ -48,7 +48,7 @@ namespace Microsoft.AspNetCore.Http
         /// <param name="uriString">给定的 URI 字符串。</param>
         /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "uriString")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public static HostString GetHostString(this string uriString, out Uri result)
             => uriString.IsAbsoluteUri(out result) ? new HostString(result.Authority) : default;
 
@@ -58,7 +58,7 @@ namespace Microsoft.AspNetCore.Http
         /// </summary>
         /// <param name="pathOrUri">给定的路径或 URI。</param>
         /// <returns>返回 <see cref="PathString"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "pathOrUri")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public static PathString GetPathString(this string pathOrUri)
             => pathOrUri.GetPathString(out _);
 
@@ -68,8 +68,8 @@ namespace Microsoft.AspNetCore.Http
         /// <param name="pathOrUri">给定的路径或 URI。</param>
         /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
         /// <returns>返回 <see cref="PathString"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "pathOrUri")]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "pathOrUri")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static PathString GetPathString(this string pathOrUri, out Uri result)
         {
             PathString path;
@@ -95,7 +95,7 @@ namespace Microsoft.AspNetCore.Http
         /// </summary>
         /// <param name="uriString">给定的 URI 字符串。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "uriString")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public static QueryString GetQueryString(this string uriString)
             => uriString.GetQueryString(out _);
 
@@ -105,7 +105,7 @@ namespace Microsoft.AspNetCore.Http
         /// <param name="uriString">给定的 URI 字符串。</param>
         /// <param name="result">输出可能存在的 <see cref="Uri"/>。</param>
         /// <returns>返回 <see cref="HostString"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "uriString")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public static QueryString GetQueryString(this string uriString, out Uri result)
             => uriString.IsAbsoluteUri(out result) ? new QueryString(result.Query) : default;
 
@@ -134,7 +134,8 @@ namespace Microsoft.AspNetCore.Http
         /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
         /// <returns>返回布尔值。</returns>
         public static bool IsLocalIPAddress(this HostString hostString)
-            => hostString.Host.IsLocalIPAddress();
+            => hostString.IsIPAddress(out var result)
+            && (result.IsIPv4Loopback() || result.IsIPv6Loopback());
 
 
         /// <summary>

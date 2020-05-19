@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -41,8 +42,8 @@ namespace Librame.AspNetCore.Web.Services
 
 
         public CopyrightService(IStringLocalizer<CopyrightServiceResource> localizer,
-            IProjectContext project, IThemepackContext themepack)
-            : base()
+            IProjectContext project, IThemepackContext themepack, ILoggerFactory loggerFactory)
+            : base(loggerFactory)
         {
             _localizer = localizer.NotNull(nameof(localizer));
             _project = project.NotNull(nameof(project));
@@ -53,10 +54,10 @@ namespace Librame.AspNetCore.Web.Services
         public string GetHtmlCode(bool displayMiniInfo = false)
         {
             var sb = new StringBuilder();
-            sb.Append($"{GetCopyrightYearPart()} {FormatNuGetLink(LibrameCoreArchitecture, LibrameCore, _localizer.GetString(r => r.SearchInNuget))}; {GetPoweredByPart()}");
+            sb.Append($"{GetCopyrightYearPart()} {FormatNuGetLink(LibrameCoreArchitecture, LibrameCore, _localizer.GetString(r => r.SearchInNuget))} {GetPoweredByPart()}");
 
             if (!displayMiniInfo)
-                sb.AppendLine($"<br />{GetApplicationPart()} / {GetThemepackPart()}; {GetCulturePart()}");
+                sb.AppendLine($"<br />{GetApplicationPart()} / {GetThemepackPart()} {GetCulturePart()}");
 
             return sb.ToString();
         }
@@ -99,7 +100,7 @@ namespace Librame.AspNetCore.Web.Services
         private static string FormatNuGetLink(string packageName, string displayName, string title)
             => $"<a href='https://www.nuget.org/packages?q={packageName}' title='{title}'>{displayName ?? packageName}</a>";
 
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "framework")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         private static string FormatFrameworkLink(string frameworkVersion, string title)
         {
             frameworkVersion.NotEmpty(nameof(frameworkVersion));
@@ -138,7 +139,9 @@ namespace Librame.AspNetCore.Web.Services
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 descr = descr.SplitPair('-').Key;
 
-            descr += $" / P-{RuntimeInformation.ProcessArchitecture}";
+            var arch = RuntimeInformation.ProcessArchitecture.AsEnumName();
+            descr += $" / {char.ToLowerInvariant(arch[0]) + arch.Substring(1)}";
+
             return descr;
         }
 

@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.Web.Utilities
         /// </summary>
         /// <param name="viewContext">给定的 <see cref="ViewContext"/>。</param>
         /// <returns>返回布尔值。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "viewContext")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static bool GetHasExternalLogins(ViewContext viewContext)
         {
             viewContext.NotNull(nameof(viewContext));
@@ -49,7 +49,7 @@ namespace Librame.AspNetCore.Web.Utilities
         /// <param name="viewData">给定的 <see cref="ViewDataDictionary"/>。</param>
         /// <param name="key">给定的键名。</param>
         /// <returns>返回布尔值。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "viewData")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static bool GetHasExternalLogins(ViewDataDictionary viewData, string key)
         {
             viewData.NotNull(nameof(viewData));

@@ -44,7 +44,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="startPage">给定的起始页面。</param>
         /// <param name="route">给定要与页面关联的路由（可选）。</param>
         /// <returns>返回 <see cref="RazorPagesOptions"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "options")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static RazorPagesOptions UsePagesRoute(this RazorPagesOptions options, string startPage, string route = null)
         {
             options.NotNull(nameof(options));

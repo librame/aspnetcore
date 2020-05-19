@@ -63,7 +63,7 @@ namespace Librame.AspNetCore.Web.Projects
             Sitemap = Index.NewRoutePage($"{BaseHomePath}/Sitemap");
 
             // Area: Account
-            Login = Index.NewRoutePage($"{BaseHomePath}/Login", Area);
+            Login = Index.NewRoutePage($"{BaseAccountPath}/Login", Area);
             Logout = Login.NewRoutePage($"{BaseAccountPath}/Logout");
             Register = Login.NewRoutePage($"{BaseAccountPath}/Register");
 

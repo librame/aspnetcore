@@ -27,7 +27,7 @@ namespace Microsoft.AspNetCore.Builder
         /// </summary>
         /// <param name="decorator">给定的 <see cref="IApplicationBuilderDecorator"/>。</param>
         /// <returns>返回 <see cref="IApplicationBuilderDecorator"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "decorator")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IApplicationBuilderDecorator UseApi(this IApplicationBuilderDecorator decorator)
         {
             decorator.NotNull(nameof(decorator));

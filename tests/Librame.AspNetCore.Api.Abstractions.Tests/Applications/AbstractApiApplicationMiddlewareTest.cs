@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Librame.AspNetCore.Api.Tests
@@ -28,7 +28,7 @@ namespace Librame.AspNetCore.Api.Tests
         {
             var middleware = new TestApiApplicationMiddleware(context => Task.CompletedTask);
             Assert.Equal("/api/graphql", middleware.RestrictRequestPath);
-            Assert.Equal("POST", middleware.RestrictRequestMethod);
+            Assert.NotEmpty(middleware.RestrictRequestMethods);
         }
 
     }

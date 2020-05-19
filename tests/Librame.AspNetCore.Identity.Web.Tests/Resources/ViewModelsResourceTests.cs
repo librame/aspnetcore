@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.Identity.Web.Tests
 
         private void RunTest(IStringLocalizer<UserViewModelResource> localizer, string cultureName)
         {
-            CultureUtility.Register(new CultureInfo(cultureName));
+            CultureInfoUtility.Register(new CultureInfo(cultureName));
 
             var email = localizer.GetString(r => r.Email);
             Assert.False(email.ResourceNotFound);

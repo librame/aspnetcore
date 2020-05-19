@@ -14,11 +14,12 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Web.Projects
 {
-    using Builders;
+    using AspNetCore.Web.Builders;
     using Extensions;
 
     /// <summary>
@@ -31,7 +32,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// </summary>
         /// <param name="builder">给定的 <see cref="IWebBuilder"/>。</param>
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IWebBuilder AddGenericControllers(this IWebBuilder builder)
         {
             builder.NotNull(nameof(builder));
@@ -53,8 +54,7 @@ namespace Librame.AspNetCore.Web.Projects
             builder.Services.TryReplace(typeof(IActionDescriptorProvider), controllerActionDescriptorProviderType,
                 typeof(ResetControllerActionDescriptorProvider));
 
-            if (builder is WebBuilder uiBuilder)
-                uiBuilder.SupportedGenericController = true;
+            builder.EnableSupportedGenericController();
 
             return builder;
         }
@@ -64,7 +64,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// </summary>
         /// <param name="builder">给定的 <see cref="IWebBuilder"/>。</param>
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IWebBuilder AddGenericControllersWithUser(this IWebBuilder builder)
         {
             builder.AddGenericControllers();

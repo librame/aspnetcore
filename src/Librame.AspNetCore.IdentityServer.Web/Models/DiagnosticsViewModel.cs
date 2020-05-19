@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Authentication;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
 namespace Librame.AspNetCore.IdentityServer.Web.Models
 {
     using Extensions;
+    using Extensions.Core.Builders;
 
     /// <summary>
     /// 诊断视图模型。
@@ -21,18 +21,18 @@ namespace Librame.AspNetCore.IdentityServer.Web.Models
         /// 构造一个 <see cref="DiagnosticsViewModel"/>。
         /// </summary>
         /// <param name="result">给定的 <see cref="Microsoft.AspNetCore.Authentication.AuthenticateResult"/>。</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "result")]
-        public DiagnosticsViewModel(AuthenticateResult result)
+        /// <param name="coreOptions">给定的 <see cref="CoreBuilderOptions"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+        public DiagnosticsViewModel(AuthenticateResult result, CoreBuilderOptions coreOptions)
         {
             AuthenticateResult = result.NotNull(nameof(result));
 
             if (result.Properties.Items.ContainsKey("client_list"))
             {
                 var encoded = result.Properties.Items["client_list"];
-                var bytes = Base64Url.Decode(encoded);
-                var value = Encoding.UTF8.GetString(bytes);
+                var buffer = Base64Url.Decode(encoded);
 
-                Clients = JsonConvert.DeserializeObject<string[]>(value);
+                Clients = JsonConvert.DeserializeObject<string[]>(buffer.AsEncodingString(coreOptions.Encoding));
             }
         }
 

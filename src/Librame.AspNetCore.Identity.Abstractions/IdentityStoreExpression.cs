@@ -15,8 +15,8 @@ using System.Linq.Expressions;
 
 namespace Librame.AspNetCore.Identity
 {
+    using AspNetCore.Identity.Stores;
     using Extensions;
-    using Stores;
 
     /// <summary>
     /// 存储表达式。
@@ -35,7 +35,7 @@ namespace Librame.AspNetCore.Identity
             where TGenId : IEquatable<TGenId>
         {
             normalizedName.NotEmpty(nameof(normalizedName));
-
+            
             return p => p.NormalizedName == normalizedName;
         }
 

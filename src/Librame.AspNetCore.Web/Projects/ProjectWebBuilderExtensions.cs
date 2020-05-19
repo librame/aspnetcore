@@ -12,6 +12,7 @@
 
 using Librame.AspNetCore.Web.Builders;
 using Librame.AspNetCore.Web.Projects;
+using Librame.AspNetCore.Web.Themepacks;
 using Librame.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using System.Diagnostics.CodeAnalysis;
@@ -44,7 +45,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TNavigation">指定的导航类型。</typeparam>
         /// <param name="builder">给定的 <see cref="IWebBuilder"/>。</param>
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IWebBuilder AddProjectCore<TConfiguration, TNavigation>(this IWebBuilder builder)
             where TConfiguration : ProjectConfigurationBase
             where TNavigation : class, IProjectNavigation
@@ -66,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
         /// <param name="razorAssembly">给定包含页面集合的 <see cref="Assembly"/>。</param>
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IWebBuilder AddProjectController<TConfiguration, TNavigation>(this IWebBuilder builder, IMvcBuilder mvcBuilder, Assembly razorAssembly)
             where TConfiguration : ProjectConfigurationBase
             where TNavigation : ProjectNavigationWithController
@@ -76,7 +77,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!builder.Services.TryGet<IProjectNavigation, ProjectNavigationWithController>(out _))
                 builder.Services.AddSingleton<IProjectNavigation, ProjectNavigationWithController>();
 
-            var assemblies = builder.ThemepackInfos.Values.Select(info => info.Assembly)
+            var assemblies = ThemepackHelper.ThemepackInfos.Values.Select(info => info.Assembly)
                 .Append(razorAssembly)
                 .ToArray();
 
@@ -94,7 +95,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="mvcBuilder">给定的 <see cref="IMvcBuilder"/>。</param>
         /// <param name="razorAssembly">给定包含页面集合的 <see cref="Assembly"/>。</param>
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "builder")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IWebBuilder AddProjectPage<TConfiguration, TNavigation>(this IWebBuilder builder, IMvcBuilder mvcBuilder, Assembly razorAssembly)
             where TConfiguration : ProjectConfigurationBaseWithRazorPages
             where TNavigation : ProjectNavigationWithPage
@@ -104,10 +105,10 @@ namespace Microsoft.Extensions.DependencyInjection
             if (!builder.Services.TryGet<IProjectNavigation, ProjectNavigationWithPage>(out _))
                 builder.Services.AddSingleton<IProjectNavigation, ProjectNavigationWithPage>();
 
-            var assemblies = builder.ThemepackInfos.Values.Select(info => info.Assembly)
+            var assemblies = ThemepackHelper.ThemepackInfos.Values.Select(info => info.Assembly)
                 .Append(razorAssembly)
                 .ToArray();
-
+            
             AddRazorRelatedParts(mvcBuilder, assemblies);
 
             return builder;

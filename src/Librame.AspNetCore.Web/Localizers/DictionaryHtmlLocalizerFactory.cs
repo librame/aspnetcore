@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.Web.Localizers
         /// 构造一个 <see cref="HtmlLocalizerFactory"/>。
         /// </summary>
         /// <param name="localizerFactory">给定的 <see cref="IDictionaryStringLocalizerFactory"/>。</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "localizerFactory")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public DictionaryHtmlLocalizerFactory(IDictionaryStringLocalizerFactory localizerFactory)
         {
             _factory = localizerFactory.NotNull(nameof(localizerFactory));

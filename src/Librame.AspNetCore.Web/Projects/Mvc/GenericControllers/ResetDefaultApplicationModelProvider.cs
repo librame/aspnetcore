@@ -112,7 +112,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// </summary>
         /// <param name="typeInfo">The <see cref="TypeInfo"/>.</param>
         /// <returns>A <see cref="ControllerModel"/> for the given <see cref="TypeInfo"/>.</returns>
-        internal ControllerModel CreateControllerModel(TypeInfo typeInfo)
+        internal static ControllerModel CreateControllerModel(TypeInfo typeInfo)
         {
             if (typeInfo == null)
             {

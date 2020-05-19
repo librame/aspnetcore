@@ -43,7 +43,7 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="decorator">给定的 <see cref="IApplicationBuilderDecorator"/>。</param>
         /// <param name="configureAreaRoutes">给定的 <see cref="IEndpointRouteBuilder"/> 配置区域路由集合动作（可选）。</param>
         /// <returns>返回 <see cref="IApplicationBuilderDecorator"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "decorator")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IApplicationBuilderDecorator UseControllerEndpoints(this IApplicationBuilderDecorator decorator,
             Action<IEndpointRouteBuilder> configureAreaRoutes = null)
         {
@@ -66,7 +66,7 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="decorator">给定的 <see cref="IApplicationBuilderDecorator"/>。</param>
         /// <param name="configureAreaRoutes">给定的 <see cref="IEndpointRouteBuilder"/> 配置区域路由集合动作（可选）。</param>
         /// <returns>返回 <see cref="IApplicationBuilderDecorator"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "decorator")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IApplicationBuilderDecorator UsePagesEndpoints(this IApplicationBuilderDecorator decorator,
             Action<IEndpointRouteBuilder> configureAreaRoutes = null)
         {

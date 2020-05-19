@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Accessors
 {
-    using Extensions.Core.Services;
     using Identity.Accessors;
 
     /// <summary>
@@ -79,12 +78,13 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
         {
             base.OnModelCreating(modelBuilder);
 
-            var configOptions = ServiceFactory.GetRequiredService<IOptions<ConfigurationStoreOptions>>().Value;
+            var configOptions = GetService<IOptions<ConfigurationStoreOptions>>().Value;
             modelBuilder.ConfigureClientContext(configOptions);
             modelBuilder.ConfigureResourcesContext(configOptions);
 
-            var operatOptions = ServiceFactory.GetRequiredService<IOptions<OperationalStoreOptions>>().Value;
+            var operatOptions = GetService<IOptions<OperationalStoreOptions>>().Value;
             modelBuilder.ConfigurePersistedGrantContext(operatOptions);
         }
+
     }
 }

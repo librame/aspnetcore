@@ -27,25 +27,27 @@ namespace Librame.AspNetCore.Identity.Api
     using AspNetCore.Identity.Api.ModelTypes;
     using AspNetCore.Identity.Api.Resources;
     using AspNetCore.Identity.Stores;
-    using AspNetCore.Identity.Api.Utilities;
     using Extensions;
     using Extensions.Core.Combiners;
+    using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
-    using Extensions.Data.Stores;
     using Extensions.Network.Services;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class IdentityGraphApiMutation<TUser> : ObjectGraphType, IGraphApiMutation
-        where TUser : class, IId<string>
+        where TUser : class, IIdentifier
     {
         [InjectionService]
         private ILogger<IdentityGraphApiMutation<TUser>> _logger = null;
 
         [InjectionService]
-        private IdentityStoreIdentifier _identifier = null;
+        private IClockService _clock = null;
 
         [InjectionService]
         private IEmailService _emailService = null;
+
+        [InjectionService]
+        private ServiceFactory _serviceFactory = null;
 
         [InjectionService]
         private IStringLocalizer<RegisterApiModelResource> _localizer = null;
@@ -56,13 +58,16 @@ namespace Librame.AspNetCore.Identity.Api
         [InjectionService]
         private SignInManager<TUser> _signInManager = null;
 
-        private readonly UserManager<TUser> _userManager = null;
+
+        private readonly IIdentityStoreIdentifierGenerator _identifierGenerator = null;
+        private readonly UserManager<TUser> _userManager;
 
 
         public IdentityGraphApiMutation(IInjectionService injectionService)
         {
             injectionService.Inject(this);
 
+            _identifierGenerator = _serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser>();
             _userManager = _signInManager.UserManager;
 
             Name = nameof(ISchema.Mutation);
@@ -126,15 +131,16 @@ namespace Librame.AspNetCore.Identity.Api
                     var model = context.GetArgument<RegisterApiModel>("user");
 
                     var user = typeof(TUser).EnsureCreate<TUser>();
-                    user.Id = await _identifier.GetUserIdAsync().ConfigureAndResultAsync();
+                    var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
+                    await user.SetIdAsync(userId).ConfigureAndWaitAsync();
 
-                    var result = await SignInManagerUtility.CreateUserByEmail(_userManager, _userStore,
-                        model.Email, model.Password, user).ConfigureAndResultAsync();
+                    var result = await _userManager.CreateUserByEmail<IdentityGraphApiMutation<TUser>, TUser>(_userStore,
+                        _clock, user, model.Email, model.Password).ConfigureAndResultAsync();
 
                     if (result.Succeeded)
                     {
                         model.Message = "User created a new account with password.";
-                        model.UserId = user.Id;
+                        model.UserId = userId.ToString();
 
                         // 确认邮件
                         string code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();

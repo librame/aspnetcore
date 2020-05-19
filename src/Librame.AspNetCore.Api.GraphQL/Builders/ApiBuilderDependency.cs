@@ -22,8 +22,9 @@ namespace Librame.AspNetCore.Api.Builders
         /// <summary>
         /// 构造一个 <see cref="ApiBuilderDependency"/>。
         /// </summary>
-        public ApiBuilderDependency()
-            : base(nameof(ApiBuilderDependency))
+        /// <param name="parentDependency">给定的父级 <see cref="IExtensionBuilderDependency"/>（可选）。</param>
+        public ApiBuilderDependency(IExtensionBuilderDependency parentDependency = null)
+            : base(nameof(ApiBuilderDependency), parentDependency)
         {
         }
 

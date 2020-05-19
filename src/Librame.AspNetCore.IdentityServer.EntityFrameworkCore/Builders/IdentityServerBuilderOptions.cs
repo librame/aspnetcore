@@ -10,15 +10,28 @@
 
 #endregion
 
+using System;
+
 namespace Librame.AspNetCore.IdentityServer.Builders
 {
+    using AspNetCore.IdentityServer.Options;
     using Extensions.Data.Builders;
+    using Extensions.Data.Stores;
 
     /// <summary>
     /// 身份服务器构建器选项。
     /// </summary>
     public class IdentityServerBuilderOptions : DataBuilderOptionsBase
     {
+        /// <summary>
+        /// 构造一个 <see cref="IdentityServerBuilderOptions"/>。
+        /// </summary>
+        public IdentityServerBuilderOptions()
+            : base(new DataTenant<Guid>())
+        {
+        }
+
+
         /// <summary>
         /// 帐户。
         /// </summary>

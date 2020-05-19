@@ -12,17 +12,16 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Accessors
 {
     using AspNetCore.Identity.Builders;
     using AspNetCore.Identity.Stores;
     using Extensions;
+    using Extensions.Data;
 
     /// <summary>
     /// 身份访问器模型构建器静态扩展。
@@ -30,7 +29,7 @@ namespace Librame.AspNetCore.Identity.Accessors
     public static class IdentityAccessorModelBuilderExtensions
     {
         /// <summary>
-        /// 配置身份存储。
+        /// 配置身份存储集合。
         /// </summary>
         /// <typeparam name="TRole">指定的角色类型。</typeparam>
         /// <typeparam name="TRoleClaim">指定的角色声明类型。</typeparam>
@@ -40,33 +39,49 @@ namespace Librame.AspNetCore.Identity.Accessors
         /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
         /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
         /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+        /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
-        /// <param name="options">给定的 <see cref="IdentityBuilderOptions"/>。</param>
-        /// <param name="sourceOptions">给定的 <see cref="IdentityOptions"/>。</param>
-        /// <param name="dataProtector">给定的 <see cref="IPersonalDataProtector"/>。</param>
+        /// <param name="accessor">给定的数据库上下文访问器。</param>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public static void ConfigureIdentityStore<TRole, TRoleClaim, TUserRole, TUser, TUserClaim, TUserLogin, TUserToken, TGenId>(this ModelBuilder modelBuilder,
-            IdentityBuilderOptions options, IdentityOptions sourceOptions, IPersonalDataProtector dataProtector)
+        public static void ConfigureIdentityStores<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId>
+            (this ModelBuilder modelBuilder, IdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId> accessor)
             where TRole : DefaultIdentityRole<TGenId>
             where TRoleClaim : DefaultIdentityRoleClaim<TGenId>
-            where TUserRole : DefaultIdentityUserRole<TGenId>
             where TUser : DefaultIdentityUser<TGenId>
             where TUserClaim : DefaultIdentityUserClaim<TGenId>
             where TUserLogin : DefaultIdentityUserLogin<TGenId>
+            where TUserRole : DefaultIdentityUserRole<TGenId>
             where TUserToken : DefaultIdentityUserToken<TGenId>
             where TGenId : IEquatable<TGenId>
+            where TIncremId : IEquatable<TIncremId>
         {
-            var mapRelationship = options.Stores?.MapRelationship ?? true;
-            var maxKeyLength = sourceOptions.Stores?.MaxLengthForKeys ?? 0;
+            modelBuilder.NotNull(nameof(modelBuilder));
+            accessor.NotNull(nameof(accessor));
+
+            var options = accessor.GetService<IOptions<IdentityBuilderOptions>>().Value;
+            var sourceOptions = accessor.GetService<IOptions<IdentityOptions>>().Value;
+            
             var encryptPersonalData = sourceOptions.Stores?.ProtectPersonalData ?? false;
-            var trimTableNamePrefix = "Default";
+            var maxKeyLength = sourceOptions.Stores?.MaxLengthForKeys ?? 0;
+            var mapRelationship = options.Stores?.MapRelationship ?? true;
+            var useIdentityPrefix = options.Tables.UseIdentityPrefix;
 
             PersonalDataConverter converter = null;
+            if (encryptPersonalData)
+            {
+                var dataProtector = accessor.GetService<IPersonalDataProtector>();
+                converter = new PersonalDataConverter(dataProtector);
+            }
 
             modelBuilder.Entity<TRole>(b =>
             {
-                b.ToTable(descr => descr.ChangeBodyName(names => names.TrimStart(trimTableNamePrefix)),
-                    options.Tables.RoleFactory);
+                b.ToTable(table =>
+                {
+                    if (useIdentityPrefix)
+                        table.InsertIdentityPrefix();
+
+                    table.Configure(options.Tables.Role);
+                });
 
                 b.HasKey(k => k.Id);
 
@@ -90,8 +105,13 @@ namespace Librame.AspNetCore.Identity.Accessors
 
             modelBuilder.Entity<TRoleClaim>(b =>
             {
-                b.ToTable(descr => descr.ChangeBodyName(names => names.TrimStart(trimTableNamePrefix)),
-                    options.Tables.RoleClaimFactory);
+                b.ToTable(table =>
+                {
+                    if (useIdentityPrefix)
+                        table.InsertIdentityPrefix();
+
+                    table.Configure(options.Tables.RoleClaim);
+                });
 
                 b.HasKey(k => k.Id);
 
@@ -103,8 +123,13 @@ namespace Librame.AspNetCore.Identity.Accessors
 
             modelBuilder.Entity<TUserRole>(b =>
             {
-                b.ToTable(descr => descr.ChangeBodyName(names => names.TrimStart(trimTableNamePrefix)),
-                    options.Tables.UserRoleFactory);
+                b.ToTable(table =>
+                {
+                    if (useIdentityPrefix)
+                        table.InsertIdentityPrefix();
+
+                    table.Configure(options.Tables.UserRole);
+                });
 
                 b.HasKey(k => new { k.UserId, k.RoleId });
 
@@ -116,8 +141,13 @@ namespace Librame.AspNetCore.Identity.Accessors
 
             modelBuilder.Entity<TUser>(b =>
             {
-                b.ToTable(descr => descr.ChangeBodyName(names => names.TrimStart(trimTableNamePrefix)),
-                    options.Tables.UserFactory);
+                b.ToTable(table =>
+                {
+                    if (useIdentityPrefix)
+                        table.InsertIdentityPrefix();
+
+                    table.Configure(options.Tables.User);
+                });
 
                 b.HasKey(k => k.Id);
 
@@ -145,16 +175,19 @@ namespace Librame.AspNetCore.Identity.Accessors
 
                 if (encryptPersonalData)
                 {
-                    converter = new PersonalDataConverter(dataProtector);
-
-                    b.ConfigureEncryptPersonalData(converter);
+                    b.ConfigurePersonalData(converter);
                 }
             });
 
             modelBuilder.Entity<TUserClaim>(b =>
             {
-                b.ToTable(descr => descr.ChangeBodyName(names => names.TrimStart(trimTableNamePrefix)),
-                    options.Tables.UserClaimFactory);
+                b.ToTable(table =>
+                {
+                    if (useIdentityPrefix)
+                        table.InsertIdentityPrefix();
+
+                    table.Configure(options.Tables.UserClaim);
+                });
 
                 b.HasKey(k => k.Id);
 
@@ -162,12 +195,22 @@ namespace Librame.AspNetCore.Identity.Accessors
                 {
                     b.Property(p => p.CreatedBy).HasMaxLength(maxKeyLength);
                 }
+
+                if (encryptPersonalData)
+                {
+                    b.ConfigurePersonalData(converter);
+                }
             });
 
             modelBuilder.Entity<TUserLogin>(b =>
             {
-                b.ToTable(descr => descr.ChangeBodyName(names => names.TrimStart(trimTableNamePrefix)),
-                    options.Tables.UserLoginFactory);
+                b.ToTable(table =>
+                {
+                    if (useIdentityPrefix)
+                        table.InsertIdentityPrefix();
+
+                    table.Configure(options.Tables.UserLogin);
+                });
 
                 b.HasKey(k => new { k.LoginProvider, k.ProviderKey });
 
@@ -181,8 +224,13 @@ namespace Librame.AspNetCore.Identity.Accessors
 
             modelBuilder.Entity<TUserToken>(b =>
             {
-                b.ToTable(descr => descr.ChangeBodyName(names => names.TrimStart(trimTableNamePrefix)),
-                    options.Tables.UserTokenFactory);
+                b.ToTable(table =>
+                {
+                    if (useIdentityPrefix)
+                        table.InsertIdentityPrefix();
+
+                    table.Configure(options.Tables.UserToken);
+                });
 
                 b.HasKey(k => new { k.UserId, k.LoginProvider, k.Name });
 
@@ -195,30 +243,9 @@ namespace Librame.AspNetCore.Identity.Accessors
 
                 if (encryptPersonalData)
                 {
-                    b.ConfigureEncryptPersonalData(converter);
+                    b.ConfigurePersonalData(converter);
                 }
             });
-        }
-
-        private static void ConfigureEncryptPersonalData<TEntity>(this EntityTypeBuilder<TEntity> builder, ValueConverter converter)
-            where TEntity : class
-        {
-            builder.ConfigureEncryptPersonalData<TEntity, ProtectedPersonalDataAttribute>(converter);
-        }
-
-        private static void ConfigureEncryptPersonalData<TEntity, TAttribute>(this EntityTypeBuilder<TEntity> builder, ValueConverter converter)
-            where TEntity : class
-            where TAttribute : PersonalDataAttribute
-        {
-            var tokenProps = typeof(TEntity).GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(TAttribute)));
-
-            foreach (var p in tokenProps)
-            {
-                if (p.PropertyType != typeof(string))
-                    throw new InvalidOperationException($"[{nameof(TAttribute).TrimEnd(nameof(Attribute))}] only works strings by default.");
-
-                builder.Property(typeof(string), p.Name).HasConversion(converter);
-            }
         }
 
     }

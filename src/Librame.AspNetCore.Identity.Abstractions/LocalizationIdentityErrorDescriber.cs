@@ -15,8 +15,8 @@ using Microsoft.Extensions.Localization;
 
 namespace Librame.AspNetCore.Identity
 {
+    using AspNetCore.Identity.Resources;
     using Extensions;
-    using Resources;
 
     /// <summary>
     /// 本地化身份错误描述器。

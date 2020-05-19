@@ -41,7 +41,7 @@ namespace Librame.AspNetCore.Web.Tests
         /// </summary>
         /// <param name="localizationOptions">给定的 <see cref="IOptions{LocalizationOptions}"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "loggerFactory")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public TestCoreResourceManagerStringLocalizerFactory(IOptions<LocalizationOptions> localizationOptions,
             ILoggerFactory loggerFactory)
         {

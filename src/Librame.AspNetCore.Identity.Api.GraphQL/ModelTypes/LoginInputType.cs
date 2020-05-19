@@ -13,7 +13,7 @@
 namespace Librame.AspNetCore.Identity.Api.ModelTypes
 {
     using AspNetCore.Api;
-    using Models;
+    using AspNetCore.Identity.Api.Models;
 
     /// <summary>
     /// 登入输入类型。

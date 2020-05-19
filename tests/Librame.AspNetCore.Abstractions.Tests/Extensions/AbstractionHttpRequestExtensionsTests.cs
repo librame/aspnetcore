@@ -25,11 +25,11 @@ namespace Microsoft.AspNetCore.Http
             dict.Add("X-Original-For", IPAddress.Loopback.ToString() + "," + IPAddress.IPv6Loopback.ToString());
 
             var headers = new HeaderDictionary(dict);
-            var tuple = await headers.GetIPAddressTupleAsync().ConfigureAndResultAsync();
-            Assert.NotNull(tuple.IPv4);
-            Assert.NotNull(tuple.IPv6);
-            Assert.False(tuple.IPv4.IsNullOrNone());
-            Assert.False(tuple.IPv6.IsNullOrNone());
+            (IPAddress v4, IPAddress v6) = await headers.GetIPv4AndIPv6AddressAsync().ConfigureAndResultAsync();
+            Assert.NotNull(v4);
+            Assert.NotNull(v6);
+            Assert.False(v4.IsNullOrNone());
+            Assert.False(v6.IsNullOrNone());
         }
 
     }

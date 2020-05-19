@@ -296,3 +296,5 @@ __pycache__/
 *.dll
 *.dat
 logs/
+_configs/
+_reports/

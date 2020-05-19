@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -12,9 +11,6 @@ namespace Librame.AspNetCore.IdentityServer.Tests
         public void AllTest()
         {
             var stores = TestServiceProvider.Current.GetRequiredService<TestStoreHub>();
-
-            var dependencies = stores.ServiceFactory.GetService<MigrationsScaffolderDependencies>();
-            Assert.NotNull(dependencies);
 
             // Identity
             var roles = stores.GetRoles();

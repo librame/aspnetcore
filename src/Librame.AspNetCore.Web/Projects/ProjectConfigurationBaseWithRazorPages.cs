@@ -53,7 +53,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// 配置页面约束。
         /// </summary>
         /// <param name="conventions">给定的 <see cref="PageConventionCollection"/>。</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "conventions")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         protected virtual void ConfigurePageConventions(PageConventionCollection conventions)
         {
             conventions.NotNull(nameof(conventions));

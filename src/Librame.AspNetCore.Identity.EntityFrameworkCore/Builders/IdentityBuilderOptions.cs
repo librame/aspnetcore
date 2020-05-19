@@ -15,14 +15,24 @@ using System;
 
 namespace Librame.AspNetCore.Identity.Builders
 {
+    using AspNetCore.Identity.Options;
     using Extensions.Data.Builders;
-    using Schemas;
+    using Extensions.Data.Stores;
 
     /// <summary>
     /// 身份构建器选项。
     /// </summary>
-    public class IdentityBuilderOptions : DataBuilderOptionsBase<IdentityTableNameSchemaOptions>
+    public class IdentityBuilderOptions : DataBuilderOptionsBase<IdentityTableOptions>
     {
+        /// <summary>
+        /// 构造一个 <see cref="DataBuilderOptions"/>。
+        /// </summary>
+        public IdentityBuilderOptions()
+            : base(new DataTenant<Guid>())
+        {
+        }
+
+
         /// <summary>
         /// 启用密码规则提示（默认启用）。
         /// </summary>

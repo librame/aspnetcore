@@ -50,7 +50,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// </summary>
         /// <param name="parts">给定的 <see cref="IEnumerable{ApplicationPart}"/>。</param>
         /// <param name="feature">给定的 <see cref="ControllerFeature"/>。</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "feature")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
             foreach (var part in parts.OfType<IApplicationPartTypeProvider>())
@@ -75,7 +75,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// </summary>
         /// <param name="typeInfo">The <see cref="TypeInfo"/> candidate.</param>
         /// <returns><code>true</code> if the type is a controller; otherwise <code>false</code>.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "typeInfo")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         protected virtual bool IsController(TypeInfo typeInfo)
         {
             if (!typeInfo.IsClass)

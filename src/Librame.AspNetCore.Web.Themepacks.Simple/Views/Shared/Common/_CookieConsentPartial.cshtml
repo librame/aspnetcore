@@ -3,11 +3,12 @@
 @{
     var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
     var showBanner = !consentFeature?.CanTrack ?? false;
-    var cookieString = consentFeature?.CreateConsentCookie();
-    var nav = Model.CurrentProject.Navigation;
 }
 @if (showBanner)
 {
+    var cookieString = consentFeature?.CreateConsentCookie();
+    var nav = Model.CurrentProject.Navigation;
+
     <nav id="cookieConsent" class="navbar navbar-default navbar-fixed-top" role="alert">
         <div class="container">
             <div class="navbar-header">

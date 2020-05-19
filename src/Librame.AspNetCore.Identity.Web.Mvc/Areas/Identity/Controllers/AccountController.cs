@@ -23,7 +23,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Controllers
@@ -35,8 +34,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
     using AspNetCore.Web;
     using AspNetCore.Web.Applications;
     using Extensions;
+    using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
-    using Extensions.Data.Stores;
     using Extensions.Network.Services;
 
     /// <summary>
@@ -47,7 +46,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
     [Area(IdentityRouteBuilderExtensions.AreaName)]
     [Route(IdentityRouteBuilderExtensions.Template)]
     public class AccountController<TUser> : ApplicationController
-        where TUser : class, IId<string>
+        where TUser : class, IIdentifier
     {
         [InjectionService]
         private ILogger<AccountController<TUser>> _logger = null;
@@ -74,7 +73,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         private IHtmlLocalizer<SendCodeViewResource> _sendCodeLocalizer = null;
 
         [InjectionService]
-        private IdentityStoreIdentifier _storeIdentifier = null;
+        private ServiceFactory _serviceFactory = null;
 
         [InjectionService]
         private IUserStore<TUser> _userStore = null;
@@ -83,8 +82,10 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         private SignInManager<TUser> _signInManager = null;
 
         [InjectionService]
-        private IClockService _clockService = null;
+        private IClockService _clock = null;
 
+
+        private readonly IIdentityStoreIdentifierGenerator _identifierGenerator = null;
         private readonly UserManager<TUser> _userManager = null;
 
 
@@ -98,6 +99,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         {
             injectionService.NotNull(nameof(injectionService)).Inject(this);
 
+            _identifierGenerator = _serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser>();
             _userManager = _signInManager.UserManager;
         }
 
@@ -109,7 +111,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public IActionResult Login(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -131,8 +133,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             model.NotNull(nameof(model));
@@ -184,7 +186,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public IActionResult Register(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -205,8 +207,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -218,9 +220,13 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-                user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await CreateUserByEmail(_clockService, user, model.Email, model.Password).ConfigureAndResultAsync();
+                var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
+                await user.SetIdAsync(userId).ConfigureAndWaitAsync();
+
+                var result = await _userManager.CreateUserByEmail<AccountController<TUser>, TUser>(_userStore,
+                    _clock, user, model.Email, model.Password).ConfigureAndResultAsync();
+
                 if (result.Succeeded)
                 {
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
@@ -228,7 +234,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
 
                     var callbackUrl = Url.Action("ConfirmEmail", "Account",
-                        new { userId = user.Id, code },
+                        new { userId = userId.ToString(), code },
                         protocol: HttpContext.Request.Scheme);
 
                     await _emailService.SendAsync(model.Email,
@@ -254,7 +260,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> LogOff(string returnUrl = null)
         {
             await _signInManager.SignOutAsync().ConfigureAndWaitAsync();
@@ -272,7 +278,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
             // Request a redirect to the external login provider.
@@ -289,7 +295,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
             if (remoteError != null)
@@ -344,8 +350,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
         {
             if (ModelState.IsValid)
@@ -358,9 +364,13 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
                 }
 
                 var user = CreateUser();
-                user.Id = await _storeIdentifier.GetUserIdAsync().ConfigureAndResultAsync();
 
-                var result = await CreateUserByEmail(_clockService, user, model.Email).ConfigureAndResultAsync();
+                var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
+                await user.SetIdAsync(userId).ConfigureAndWaitAsync();
+
+                var result = await _userManager.CreateUserByEmail<AccountController<TUser>, TUser>(_userStore,
+                    _clock, user, model.Email).ConfigureAndResultAsync();
+
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info).ConfigureAndResultAsync();
@@ -426,7 +436,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
@@ -490,7 +500,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             ViewBag.BuilderOptions = _builderOptions.Value;
@@ -537,7 +547,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<ActionResult> SendCode(string returnUrl = null, bool rememberMe = false)
         {
             ViewBag.Localizer = _sendCodeLocalizer;
@@ -562,7 +572,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> SendCode(SendCodeViewModel model)
         {
             ViewBag.Localizer = _sendCodeLocalizer;
@@ -613,7 +623,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> VerifyCode(string provider, bool rememberMe, string returnUrl = null)
         {
             // Require that the user has already logged in via username/password or external login
@@ -633,7 +643,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> VerifyCode(VerifyCodeViewModel model)
         {
             if (!ModelState.IsValid)
@@ -672,7 +682,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> VerifyAuthenticatorCode(bool rememberMe, string returnUrl = null)
         {
             // Require that the user has already logged in via username/password or external login
@@ -692,7 +702,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> VerifyAuthenticatorCode(VerifyAuthenticatorCodeViewModel model)
         {
             if (!ModelState.IsValid)
@@ -730,7 +740,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> UseRecoveryCode(string returnUrl = null)
         {
             // Require that the user has already logged in via username/password or external login
@@ -750,7 +760,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> UseRecoveryCode(UseRecoveryCodeViewModel model)
         {
             if (!ModelState.IsValid)
@@ -781,28 +791,28 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
             }
         }
 
-        private async Task<IdentityResult> CreateUserByEmail(IClockService clock, TUser user, string email, string password = null,
-            CancellationToken cancellationToken = default)
-        {
-            await _userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+        //private async Task<IdentityResult> CreateUserByEmail(IClockService clock, TUser user, string email, string password = null,
+        //    CancellationToken cancellationToken = default)
+        //{
+        //    await _userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
 
-            if (!_userManager.SupportsUserEmail)
-                throw new NotSupportedException("The identity builder requires a user store with email support.");
+        //    if (!_userManager.SupportsUserEmail)
+        //        throw new NotSupportedException("The identity builder requires a user store with email support.");
 
-            var emailStore = (IUserEmailStore<TUser>)_userStore;
-            await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+        //    var emailStore = (IUserEmailStore<TUser>)_userStore;
+        //    await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
 
-            // Populate Creation
-            await EntityPopulator.PopulateCreationAsync<AccountController<TUser>>(clock, user, cancellationToken: cancellationToken)
-                .ConfigureAndWaitAsync();
+        //    // Populate Creation
+        //    await EntityPopulator.PopulateCreationAsync<AccountController<TUser>>(clock, user, cancellationToken: cancellationToken)
+        //        .ConfigureAndWaitAsync();
 
-            if (password.IsNotEmpty())
-                return await _userManager.CreateAsync(user, password).ConfigureAndResultAsync();
+        //    if (password.IsNotEmpty())
+        //        return await _userManager.CreateAsync(user, password).ConfigureAndResultAsync();
 
-            return await _userManager.CreateAsync(user).ConfigureAndResultAsync();
-        }
+        //    return await _userManager.CreateAsync(user).ConfigureAndResultAsync();
+        //}
 
-        private TUser CreateUser()
+        private static TUser CreateUser()
         {
             try
             {

@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 {
     using AspNetCore.IdentityServer.Builders;
+    using AspNetCore.IdentityServer.Options;
     using AspNetCore.IdentityServer.Web.Models;
     using Extensions;
     using Extensions.Core.Services;
@@ -70,7 +71,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         /// <param name="returnUrl"></param>
         /// <returns></returns>
         [HttpGet]
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> Index(string returnUrl)
         {
             var vm = await BuildViewModelAsync(returnUrl).ConfigureAndResultAsync();
@@ -87,7 +88,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "model")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> Index(ConsentInputModel model)
         {
             model.NotNull(nameof(model));
@@ -199,7 +200,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
                     var resources = await _resourceStore.FindEnabledResourcesByScopeAsync(request.ScopesRequested).ConfigureAndResultAsync();
                     if (resources != null && (resources.IdentityResources.Any() || resources.ApiResources.Any()))
                     {
-                        return CreateConsentViewModel(model, returnUrl, request, client, resources);
+                        return CreateConsentViewModel(model, returnUrl, client, resources);
                     }
                     else
                     {
@@ -221,7 +222,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 
         private ConsentViewModel CreateConsentViewModel(
             ConsentInputModel model, string returnUrl,
-            AuthorizationRequest request,
+            //AuthorizationRequest request,
             Client client, IdentityServer4.Models.Resources resources)
         {
             var vm = new ConsentViewModel

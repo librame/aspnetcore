@@ -141,7 +141,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// 添加静态文件提供程序集合。
         /// </summary>
         /// <param name="fileProviders">给定的当前 <see cref="IList{IFileProvider}"/>。</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "fileProviders")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         protected virtual void AddStaticFileProviders(List<IFileProvider> fileProviders)
         {
             fileProviders.NotNull(nameof(fileProviders));

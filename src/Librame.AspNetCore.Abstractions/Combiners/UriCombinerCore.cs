@@ -69,63 +69,72 @@ namespace Librame.Extensions.Core.Combiners
         /// <summary>
         /// 改变主机。
         /// </summary>
-        /// <param name="newHost">给定可能包含端口号的新主机。</param>
+        /// <param name="newHostString">给定的新 <see cref="Microsoft.AspNetCore.Http.HostString"/>。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
-        public UriCombinerCore ChangeHost(HostString newHost)
+        public UriCombinerCore ChangeHost(HostString newHostString)
         {
-            ChangeHost(newHost.ToString());
-            HostString = newHost;
+            ChangeHost(newHostString.ToString());
+            HostString = newHostString;
             return this;
         }
 
         /// <summary>
         /// 改变路径。
         /// </summary>
-        /// <param name="newPath">给定以 / 开始的新路径。</param>
+        /// <param name="newPathString">给定的新 <see cref="Microsoft.AspNetCore.Http.PathString"/>。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
-        public UriCombinerCore ChangePath(PathString newPath)
+        public UriCombinerCore ChangePath(PathString newPathString)
         {
-            base.ChangePath(newPath);
-            PathString = newPath;
+            base.ChangePath(newPathString.ToString());
+            PathString = newPathString;
             return this;
         }
 
         /// <summary>
         /// 改变查询。
         /// </summary>
-        /// <param name="newQuery">给定以 ? 开始的新查询。</param>
+        /// <param name="newQueryString">给定的新 <see cref="Microsoft.AspNetCore.Http.QueryString"/>。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
-        public UriCombinerCore ChangeQuery(QueryString newQuery)
+        public UriCombinerCore ChangeQuery(QueryString newQueryString)
         {
-            ChangeQuery(newQuery.ToString());
-            QueryString = newQuery;
+            ChangeQuery(newQueryString.ToString());
+            QueryString = newQueryString;
             return this;
         }
 
 
         /// <summary>
-        /// 使用指定的新主机新建一个 <see cref="UriCombinerCore"/> 实例。
+        /// 使用指定的新主机新建一个 <see cref="UriCombinerCore"/>。
         /// </summary>
-        /// <param name="newHost">给定可能包含端口号的新主机。</param>
+        /// <param name="newHostString">给定的新 <see cref="Microsoft.AspNetCore.Http.HostString"/>。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
-        public virtual UriCombinerCore NewHost(HostString newHost)
-            => new UriCombinerCore(Scheme, newHost, PathString, QueryString, Anchor);
+        public UriCombinerCore WithHost(HostString newHostString)
+            => new UriCombinerCore(Scheme, newHostString, PathString, QueryString, Anchor);
 
         /// <summary>
-        /// 使用指定的新路径新建一个 <see cref="UriCombinerCore"/> 实例。
+        /// 使用指定的新路径新建一个 <see cref="UriCombinerCore"/>。
         /// </summary>
-        /// <param name="newPath">给定以 / 开始的新路径。</param>
+        /// <param name="newPathString">给定的新 <see cref="Microsoft.AspNetCore.Http.PathString"/>。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
-        public virtual UriCombinerCore NewPath(PathString newPath)
-            => new UriCombinerCore(Scheme, HostString, newPath, QueryString, Anchor);
+        public UriCombinerCore WithPath(PathString newPathString)
+            => new UriCombinerCore(Scheme, HostString, newPathString, QueryString, Anchor);
 
         /// <summary>
-        /// 使用指定的新查询新建一个 <see cref="UriCombinerCore"/> 实例。
+        /// 使用指定的新查询新建一个 <see cref="UriCombinerCore"/>。
         /// </summary>
-        /// <param name="newQuery">给定以 ? 开始的新查询。</param>
+        /// <param name="newQueryString">给定的新 <see cref="Microsoft.AspNetCore.Http.QueryString"/>。</param>
         /// <returns>返回 <see cref="UriCombinerCore"/>。</returns>
-        public virtual UriCombinerCore NewQuery(QueryString newQuery)
-            => new UriCombinerCore(Scheme, HostString, PathString, newQuery, Anchor);
+        public UriCombinerCore WithQuery(QueryString newQueryString)
+            => new UriCombinerCore(Scheme, HostString, PathString, newQueryString, Anchor);
+
+
+        /// <summary>
+        /// 是指定主机（忽略大小写）。
+        /// </summary>
+        /// <param name="hostString">给定的 <see cref="HostString"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public bool IsHost(HostString hostString)
+            => IsHost(hostString.ToString());
 
 
         /// <summary>
@@ -135,19 +144,5 @@ namespace Librame.Extensions.Core.Combiners
         /// <returns>返回布尔值。</returns>
         public virtual bool Equals(UriCombinerCore other)
             => base.Equals(other);
-
-
-        /// <summary>
-        /// 组合 URI。
-        /// </summary>
-        /// <param name="scheme">给定的协议。</param>
-        /// <param name="host">给定的主机。</param>
-        /// <param name="path">给定的路径（可选）。</param>
-        /// <param name="query">给定的查询（可选）。</param>
-        /// <param name="anchor">给定以 # 开始的锚点（可选）。</param>
-        /// <returns>返回 <see cref="Uri"/>。</returns>
-        public static Uri CombineUri(string scheme, HostString host,
-            PathString path = default, QueryString query = default, string anchor = null)
-            => CombineUri(scheme, host.ToString(), path, query.ToString(), anchor);
     }
 }

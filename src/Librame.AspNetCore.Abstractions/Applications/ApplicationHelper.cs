@@ -65,7 +65,7 @@ namespace Librame.AspNetCore.Applications
         /// <param name="searchPatterns">给定的查找模式集合。</param>
         /// <param name="allAssemblies">给定的所有程序集（可选；默认使用 <see cref="AssemblyUtility.CurrentAssembliesWithoutSystem"/>）。</param>
         /// <returns>返回 <see cref="List{Assembly}"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "searchPatterns")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static List<Assembly> SearchAssemblies(IEnumerable<string> searchPatterns, IEnumerable<Assembly> allAssemblies = null)
         {
             searchPatterns.NotEmpty(nameof(searchPatterns));

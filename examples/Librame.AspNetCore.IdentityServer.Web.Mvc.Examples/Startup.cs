@@ -16,11 +16,11 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
     using AspNetCore.Web.Builders;
     using AspNetCore.Web.Routings;
     using AspNetCore.Identity.Builders;
-    using AspNetCore.Identity.Stores;
     using AspNetCore.IdentityServer.Accessors;
     using AspNetCore.IdentityServer.Builders;
     using AspNetCore.IdentityServer.Stores;
     using Extensions;
+    using Extensions.Core.Identifiers;
     using Extensions.Data.Builders;
     using Extensions.Encryption.Builders;
 
@@ -31,9 +31,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
             Configuration = configuration;
         }
 
-
         public IConfiguration Configuration { get; }
-
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -52,22 +50,21 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
             services.AddLibrameCore()
                 .AddDataCore(dependency =>
                 {
+                    dependency.Options.IdentifierGenerator = CombIdentifierGenerator.MySQL;
+
                     // Use MySQL
-                    dependency.BindDefaultTenant(Configuration.GetSection(nameof(dependency.Options.DefaultTenant)),
-                        MySqlConnectionStringHelper.Validate);
+                    dependency.BindDefaultTenant(MySqlConnectionStringHelper.Validate);
                 })
-                .AddAccessor<IdentityServerDbContextAccessor>((options, optionsBuilder) =>
+                .AddAccessor<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
                 {
-                    optionsBuilder.UseMySql(options.DefaultTenant.DefaultConnectionString, mySql =>
+                    optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
                     {
                         mySql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName());
                         mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
                     });
                 })
-                .AddDbDesignTime<MySqlDesignTimeServices>()
-                .AddStoreIdentifier<IdentityServerStoreIdentifier>()
-                // 启用 Identity 模块注册功能
-                .AddStoreIdentifier<IdentityStoreIdentifier>(sp => sp.GetRequiredService<IdentityServerStoreIdentifier>())
+                .AddDatabaseDesignTime<MySqlDesignTimeServices>()
+                .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentifierGenerator>()
                 .AddIdentity<IdentityServerDbContextAccessor>(dependency =>
                 {
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
@@ -77,7 +74,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                     dependency.Options.Themepack.CommonHeaderNavigationVisibility = false;
                 })
                 .AddIdentityProjectController(mvcBuilder)
-                .AddIdentityServer<DefaultIdentityUser<string>>(dependency =>
+                .AddIdentityServer(dependency =>
                 {
                     // Use InMemoryStores
                     //dependency.Builder.Action = options =>
@@ -112,7 +109,6 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
             })
             .AddIdentityCookies();
         }
-
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

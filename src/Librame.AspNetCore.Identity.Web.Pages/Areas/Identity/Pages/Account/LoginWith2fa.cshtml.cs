@@ -58,7 +58,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         /// <param name="rememberMe">是否记住我。</param>
         /// <param name="returnUrl">给定的返回 URL。</param>
         /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public virtual Task<IActionResult> OnGetAsync(bool rememberMe, string returnUrl = null)
             => throw new NotImplementedException();
 
@@ -68,7 +68,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         /// <param name="rememberMe">是否记住我。</param>
         /// <param name="returnUrl">给定的返回 URL。</param>
         /// <returns>返回一个包含 <see cref="IActionResult"/> 的异步操作。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "returnUrl")]
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public virtual Task<IActionResult> OnPostAsync(bool rememberMe, string returnUrl = null)
             => throw new NotImplementedException();
     }

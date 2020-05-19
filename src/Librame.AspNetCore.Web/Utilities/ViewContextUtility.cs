@@ -88,7 +88,7 @@ namespace Librame.AspNetCore.Web.Utilities
         /// <param name="viewContext">给定的 <see cref="ViewContext"/>。</param>
         /// <param name="name">指定的名称（可选；通常为 Common、Login、Manage 等）。</param>
         /// <returns>返回字符串。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", MessageId = "viewContext")]
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static string GetThemepackLayout(this ViewContext viewContext, string name = null)
         {
             viewContext.NotNull(nameof(viewContext));

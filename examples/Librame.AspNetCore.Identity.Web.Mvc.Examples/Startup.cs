@@ -25,9 +25,7 @@ namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
             Configuration = configuration;
         }
 
-
         public IConfiguration Configuration { get; }
-
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -56,20 +54,20 @@ namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
                 .AddDataCore(dependency =>
                 {
                     // Use SQL Server
-                    dependency.BindDefaultTenant(Configuration.GetSection(nameof(dependency.Options.DefaultTenant)));
+                    dependency.BindDefaultTenant();
                 })
-                .AddAccessor<IdentityDbContextAccessor>((options, optionsBuilder) =>
+                .AddAccessor<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
                 {
-                    optionsBuilder.UseSqlServer(options.DefaultTenant.DefaultConnectionString,
+                    optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
                 })
-                .AddDbDesignTime<SqlServerDesignTimeServices>()
-                .AddStoreIdentifier<IdentityStoreIdentifier>()
-                //.AddInitializer<IdentityStoreInitializer>()
+                .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
+                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
+                .AddStoreInitializer<GuidIdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
                     // Use Librame.AspNetCore.Identity.Web.Mvc RPL
-                    dependency.Options.LoginCallbackPath = new PathString("/Idenity/Manage/Index");
+                    dependency.Options.LoginCallbackPath = new PathString("/Identity/Manage/Index");
 
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })
@@ -77,7 +75,6 @@ namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
                 .AddIdentityProjectController(mvcBuilder)
                 .AddNetwork();
         }
-
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -102,5 +99,6 @@ namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
             app.UseLibrameCore()
                 .UseControllerEndpoints(routes => routes.MapIdentityAreaControllerRoute());
         }
+
     }
 }

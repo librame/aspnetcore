@@ -23,11 +23,12 @@ namespace Librame.AspNetCore.Tests
             Assert.Equal("www.microsoft.com", combiner.ChangeHost(new HostString("www.microsoft.com")).HostString.ToString());
             Assert.Equal("/zh-cn/fabric", combiner.ChangePath(new PathString("/zh-cn/fabric")).PathString.ToString());
 
-            Assert.NotEqual(combiner, combiner.NewHost(new HostString("developer.microsoft.com")));
-            Assert.NotEqual(combiner, combiner.NewPath(new PathString("/en-us/fabric")));
+            Assert.NotEqual(combiner, combiner.WithHost(new HostString("developer.microsoft.com")));
+            Assert.NotEqual(combiner, combiner.WithPath(new PathString("/en-us/fabric")));
 
             Assert.Equal("?query=testQuery", combiner.ChangeQuery(new QueryString("?query=testQuery")).QueryString.ToString());
             Assert.NotEmpty(combiner.Queries);
         }
+
     }
 }

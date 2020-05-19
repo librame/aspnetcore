@@ -51,13 +51,13 @@ namespace Librame.AspNetCore.Web.Projects
 
         private void AddLibrameFootbar()
         {
-            Repository = Localizer.AsNavigation(new RouteDescriptor(AbstractApplicationInfo.LibrameRepositoryUrl),
+            Repository = Localizer.AsNavigation(new RouteDescriptor(AbstractApplicationInfo.AspNetCoreRepositoryUrl),
                 p => p.Repository, optional => optional.ChangeTagTarget("_blank"));
 
-            Issues = Localizer.AsNavigation(new RouteDescriptor($"{AbstractApplicationInfo.LibrameRepositoryUrl}/issues"),
+            Issues = Localizer.AsNavigation(new RouteDescriptor($"{AbstractApplicationInfo.AspNetCoreRepositoryUrl}/issues"),
                 p => p.Issues, optional => optional.ChangeTagTarget("_blank"));
 
-            Licenses = Localizer.AsNavigation(new RouteDescriptor($"{AbstractApplicationInfo.LibrameRepositoryUrl}/blob/master/LICENSE.txt"),
+            Licenses = Localizer.AsNavigation(new RouteDescriptor($"{AbstractApplicationInfo.AspNetCoreRepositoryUrl}/blob/master/LICENSE"),
                 p => p.Licenses, optional => optional.ChangeTagTarget("_blank"));
 
             ManageLayout.Footer.Add(Repository);

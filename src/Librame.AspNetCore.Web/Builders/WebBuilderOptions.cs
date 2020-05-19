@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace Librame.AspNetCore.Web.Builders
 {
-    using AspNetCore.Web.Themepacks;
+    using AspNetCore.Web.Options;
     using Extensions.Core.Builders;
 
     /// <summary>
@@ -27,6 +27,12 @@ namespace Librame.AspNetCore.Web.Builders
         /// </summary>
         public string ActiveViewKey { get; set; }
             = "ActiveView";
+
+        /// <summary>
+        /// 默认用户头像路径。
+        /// </summary>
+        public string DefaultUserPortraitPath { get; set; }
+            = "/manage/img/profile.jpg";
 
         /// <summary>
         /// 有外部认证方案的键名。
