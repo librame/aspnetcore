@@ -13,6 +13,7 @@
 using Librame.AspNetCore.Builders;
 using Librame.Extensions;
 using Librame.Extensions.Core.Builders;
+using Librame.Extensions.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -69,16 +70,25 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<IServiceCollection, TDependency, ICoreBuilder> builderFactory = null)
             where TDependency : AspNetCoreCoreBuilderDependency, new()
         {
+            AddAspNetCoreServiceCharacteristics();
+
             return services
                 .AddLibrame(configureDependency, builderFactory)
-                .AddAspNetCore();
+                .AddAspNetCoreServices();
         }
 
-        private static ICoreBuilder AddAspNetCore(this ICoreBuilder builder)
+
+        private static ICoreBuilder AddAspNetCoreServices(this ICoreBuilder builder)
         {
-            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.AddService<IHttpContextAccessor, HttpContextAccessor>();
 
             return builder;
+        }
+
+        private static void AddAspNetCoreServiceCharacteristics()
+        {
+            CoreBuilderServiceCharacteristicsRegistration.Register
+                .TryAdd<IHttpContextAccessor>(ServiceCharacteristics.Singleton());
         }
 
     }

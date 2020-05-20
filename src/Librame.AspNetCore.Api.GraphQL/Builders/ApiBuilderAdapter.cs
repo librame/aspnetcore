@@ -11,10 +11,12 @@
 #endregion
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Librame.AspNetCore.Api.Builders
 {
     using Extensions.Core.Builders;
+    using Extensions.Core.Services;
 
     internal class ApiBuilderAdapter : AbstractExtensionBuilderAdapter<IApiBuilder>, IApiBuilder
     {
@@ -23,6 +25,10 @@ namespace Librame.AspNetCore.Api.Builders
         {
             Services.AddSingleton<IExtensionBuilderAdapter<IApiBuilder>>(this);
         }
+
+
+        public override ServiceCharacteristics GetServiceCharacteristics(Type serviceType)
+            => ApiBuilderServiceCharacteristicsRegistration.Register.GetOrDefault(serviceType);
 
     }
 }

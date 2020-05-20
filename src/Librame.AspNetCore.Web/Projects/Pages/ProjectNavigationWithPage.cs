@@ -23,11 +23,6 @@ namespace Librame.AspNetCore.Web.Projects
     public class ProjectNavigationWithPage : AbstractProjectNavigation
     {
         /// <summary>
-        /// 基础首页路径。
-        /// </summary>
-        public const string BaseHomePath = "/Home";
-
-        /// <summary>
         /// 基础帐户路径。
         /// </summary>
         public const string BaseAccountPath = "/Account";
@@ -58,9 +53,9 @@ namespace Librame.AspNetCore.Web.Projects
             // Default: Home
             Index = Localizer.AsNavigation(RouteDescriptor.ByPage("/"), p => p.Index);
 
-            AccessDenied = Index.NewRoutePage($"{BaseHomePath}/AccessDenied");
-            Privacy = Index.NewRoutePage($"{BaseHomePath}/Privacy");
-            Sitemap = Index.NewRoutePage($"{BaseHomePath}/Sitemap");
+            AccessDenied = Index.NewRoutePage("/AccessDenied");
+            Privacy = Index.NewRoutePage("/Privacy");
+            Sitemap = Index.NewRoutePage("/Sitemap");
 
             // Area: Account
             Login = Index.NewRoutePage($"{BaseAccountPath}/Login", Area);
@@ -76,10 +71,10 @@ namespace Librame.AspNetCore.Web.Projects
 
         private void AddCommonHeader()
         {
-            About = Localizer.AsNavigation(RouteDescriptor.ByPage($"{BaseHomePath}/About"))
+            About = Localizer.AsNavigation(RouteDescriptor.ByPage("/About"))
                 .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("about"));
 
-            Contact = Localizer.AsNavigation(RouteDescriptor.ByPage($"{BaseHomePath}/Contact"))
+            Contact = Localizer.AsNavigation(RouteDescriptor.ByPage("/Contact"))
                 .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("contact"));
 
             CommonLayout.Header.Add(About);

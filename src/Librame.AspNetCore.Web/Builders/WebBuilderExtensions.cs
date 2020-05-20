@@ -80,17 +80,8 @@ namespace Microsoft.Extensions.DependencyInjection
             parentBuilder.Services.TryAddReferenceBuilderDependency<WebBuilderDependency>(dependency, dependencyType);
 
             // Create Builder
-            webBuilder = builderFactory.NotNullOrDefault(()
+            return builderFactory.NotNullOrDefault(()
                 => (b, d) => new WebBuilder(b, d)).Invoke(parentBuilder, dependency);
-
-            // Configure Builder
-            return webBuilder
-                .AddApplications()
-                .AddDataAnnotations()
-                .AddLocalizers()
-                .AddProjects()
-                .AddServices()
-                .AddThemepacks();
         }
 
     }

@@ -16,6 +16,7 @@ using System;
 namespace Librame.AspNetCore.Web.Builders
 {
     using Extensions.Core.Builders;
+    using Extensions.Core.Services;
 
     internal class WebBuilderAdapter : AbstractExtensionBuilderAdapter<IWebBuilder>, IWebBuilder
     {
@@ -29,8 +30,13 @@ namespace Librame.AspNetCore.Web.Builders
         }
 
 
-        public bool SupportedGenericController { get; internal set; }
+        public bool SupportedGenericController { get; private set; }
 
-        public Type UserType { get; internal set; }
+        public Type UserType { get; private set; }
+
+
+        public override ServiceCharacteristics GetServiceCharacteristics(Type serviceType)
+            => WebBuilderServiceCharacteristicsRegistration.Register.GetOrDefault(serviceType);
+
     }
 }

@@ -6,7 +6,7 @@
     <ApplicationIcon>..\..\Librame.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.4.2.1</Version>
+    <Version>7.4.2.2</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>The Pages Web for Librame.AspNetCore.Identity</Description>
@@ -20,8 +20,8 @@
     <PackageReleaseNotes>The Pages Web for Librame.AspNetCore.Identity</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.4.2.1</AssemblyVersion>
-    <FileVersion>7.4.1949.15117</FileVersion>
+    <AssemblyVersion>7.4.2.2</AssemblyVersion>
+    <FileVersion>7.4.1950.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore.Identity.Web</RootNamespace>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <NeutralLanguage>en-US</NeutralLanguage>

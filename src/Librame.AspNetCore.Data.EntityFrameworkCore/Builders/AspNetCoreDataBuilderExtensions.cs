@@ -46,9 +46,15 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<TDependency> configureDependency = null,
             Func<IExtensionBuilder, TDependency, IDataBuilder> builderFactory = null)
             where TDependency : DataBuilderDependency
+            => parentBuilder.AddData(configureDependency, builderFactory)
+                .AddDataCoreServices();
+
+
+        private static IDataBuilder AddDataCoreServices(this IDataBuilder builder)
         {
-            return parentBuilder.AddData(configureDependency, builderFactory)
-                .AddServices();
+            builder.Services.TryReplace(typeof(ITenantService<,,,,,,>), typeof(AspNetCoreTenantService<,,,,,,>));
+
+            return builder;
         }
 
     }

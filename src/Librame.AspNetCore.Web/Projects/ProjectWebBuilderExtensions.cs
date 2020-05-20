@@ -21,20 +21,11 @@ using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    using Extensions;
-
     /// <summary>
     /// 项目 Web 构建器静态扩展。
     /// </summary>
     public static class ProjectWebBuilderExtensions
     {
-        internal static IWebBuilder AddProjects(this IWebBuilder builder)
-        {
-            builder.Services.TryAddSingleton<IProjectContext, ProjectContext>();
-
-            return builder;
-        }
-
 
         #region AddProject
 

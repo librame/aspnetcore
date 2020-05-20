@@ -20,13 +20,10 @@ namespace Librame.AspNetCore.Localizers
 
 
         public static void UnsupportedCultures(this ILogger logger, string requestCultureProvider, IList<StringSegment> cultures)
-        {
-            _unsupportedCulture(logger, requestCultureProvider, cultures, null);
-        }
+            => _unsupportedCulture(logger, requestCultureProvider, cultures, null);
 
         public static void UnsupportedUICultures(this ILogger logger, string requestCultureProvider, IList<StringSegment> uiCultures)
-        {
-            _unsupportedUICulture(logger, requestCultureProvider, uiCultures, null);
-        }
+            => _unsupportedUICulture(logger, requestCultureProvider, uiCultures, null);
+
     }
 }

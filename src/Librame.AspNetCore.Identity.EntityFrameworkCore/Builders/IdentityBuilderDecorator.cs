@@ -12,10 +12,12 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Librame.AspNetCore.Identity.Builders
 {
     using Extensions.Core.Builders;
+    using Extensions.Core.Services;
 
     internal class IdentityBuilderDecorator : AbstractExtensionBuilderDecorator<IdentityBuilder>, IIdentityBuilderDecorator
     {
@@ -24,6 +26,10 @@ namespace Librame.AspNetCore.Identity.Builders
         {
             Services.AddSingleton<IIdentityBuilderDecorator>(this);
         }
+
+
+        public override ServiceCharacteristics GetServiceCharacteristics(Type serviceType)
+            => ServiceCharacteristics.Singleton();
 
     }
 }

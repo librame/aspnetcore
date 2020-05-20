@@ -10,9 +10,6 @@
 
 #endregion
 
-using GraphQL;
-using GraphQL.Http;
-using Librame.AspNetCore.Api;
 using Librame.AspNetCore.Api.Builders;
 using Librame.Extensions;
 using Librame.Extensions.Core.Builders;
@@ -22,8 +19,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    using Extensions;
-
     /// <summary>
     /// API 构建器静态扩展。
     /// </summary>
@@ -67,26 +62,8 @@ namespace Microsoft.Extensions.DependencyInjection
             parentBuilder.Services.TryAddReferenceBuilderDependency<ApiBuilderDependency>(dependency, dependencyType);
 
             // Create Builder
-            apiBuilder = builderFactory.NotNullOrDefault(()
+            return builderFactory.NotNullOrDefault(()
                 => (b, d) => new ApiBuilder(b, d)).Invoke(parentBuilder, dependency);
-
-            // Configure Builder
-            return apiBuilder
-                .AddGraphQL();
-        }
-
-
-        private static IApiBuilder AddGraphQL(this IApiBuilder builder)
-        {
-            builder.Services.TryAddSingleton<IDocumentWriter, DocumentWriter>();
-            builder.Services.TryAddSingleton<IDocumentExecuter, DocumentExecuter>();
-
-            builder.Services.TryAddScoped<IGraphApiMutation, GraphApiMutation>();
-            builder.Services.TryAddScoped<IGraphApiQuery, GraphApiQuery>();
-            builder.Services.TryAddScoped<IGraphApiSubscription, GraphApiSubscription>();
-            builder.Services.TryAddScoped<IGraphApiSchema, GraphApiSchema>();
-
-            return builder;
         }
 
     }

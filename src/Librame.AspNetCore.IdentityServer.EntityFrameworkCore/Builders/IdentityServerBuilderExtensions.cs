@@ -122,8 +122,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var sourceBuilder = parentBuilder.Services
                 .AddIdentityServer(dependency.IdentityServer)
                 //.ReplacedServices()
-                .AddAspNetIdentity<TUser>()
-                .AddEncryptionSigningCredential();
+                .AddAspNetIdentity<TUser>();
 
             // AddConfigurationStore 与 AddOperationalStore 没有配置为选项服务，所以需要手动配置
             parentBuilder.Services.Configure(dependency.ConfigurationAction);
@@ -137,35 +136,6 @@ namespace Microsoft.Extensions.DependencyInjection
             .Invoke(sourceBuilder, parentBuilder, dependency);
 
             return decorator;
-        }
-
-        private static IIdentityServerBuilder AddEncryptionSigningCredential(this IIdentityServerBuilder builder)
-        {
-            builder.Services.AddSingleton<ISigningCredentialStore>(provider =>
-            {
-                var options = provider.GetRequiredService<IOptions<IdentityServerBuilderOptions>>().Value;
-                if (options.Authorizations.SigningCredentials.IsNull())
-                {
-                    var service = provider.GetRequiredService<ISigningCredentialsService>();
-                    options.Authorizations.SigningCredentials = service.GetGlobalSigningCredentials();
-                }
-                return new DefaultSigningCredentialsStore(options.Authorizations.SigningCredentials);
-            });
-
-            builder.Services.AddSingleton<IValidationKeysStore>(provider =>
-            {
-                var store = provider.GetRequiredService<ISigningCredentialStore>();
-                var credentials = store.GetSigningCredentialsAsync().ConfigureAndResult();
-
-                var keyInfo = new SecurityKeyInfo
-                {
-                    Key = credentials.Key,
-                    SigningAlgorithm = SecurityAlgorithms.RsaSha256
-                };
-                return new DefaultValidationKeysStore(keyInfo.YieldEnumerable());
-            });
-
-            return builder;
         }
 
         //private static IIdentityServerBuilder ReplacedServices(this IIdentityServerBuilder builder)
@@ -244,19 +214,17 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Source.AddClientStore<InMemoryClientStore>();
             builder.Source.AddResourceStore<InMemoryResourcesStore>();
 
-            builder.Services.AddSingleton<IEnumerable<IdentityResource>>(sp =>
+            builder.AddService<IEnumerable<IdentityResource>>(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>().Value;
                 return options.Authorizations.IdentityResources;
             });
-
-            builder.Services.AddSingleton<IEnumerable<ApiResource>>(sp =>
+            builder.AddService<IEnumerable<ApiResource>>(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>().Value;
                 return options.Authorizations.ApiResources;
             });
-
-            builder.Services.AddSingleton<IEnumerable<Client>>(sp =>
+            builder.AddService<IEnumerable<Client>>(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>().Value;
                 return options.Authorizations.Clients;
@@ -269,7 +237,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 // if our default is registered, then overwrite with the InMemoryCorsPolicyService
                 // otherwise don't overwrite with the InMemoryCorsPolicyService, which uses the custom one registered by the host
-                builder.Services.AddTransient<ICorsPolicyService, InMemoryCorsPolicyService>();
+                builder.AddService<ICorsPolicyService, InMemoryCorsPolicyService>();
             }
 
             return builder;
