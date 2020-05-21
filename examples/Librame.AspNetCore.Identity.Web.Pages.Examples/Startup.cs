@@ -15,7 +15,6 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
     using AspNetCore.Identity.Stores;
     using AspNetCore.Web.Builders;
     using Extensions;
-    using Extensions.Data.Builders;
 
     public class Startup
     {
