@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\Librame.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.4.2.2</Version>
+    <Version>7.4.2.3</Version>
     <Authors>Librame Pang</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.Abstractions on IdentityServer application package.</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions on IdentityServer application package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.4.2.2</AssemblyVersion>
-    <FileVersion>7.4.1950.15117</FileVersion>
+    <AssemblyVersion>7.4.2.3</AssemblyVersion>
+    <FileVersion>7.4.1951.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore.IdentityServer</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
@@ -40,7 +40,7 @@
     
   <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="3.1.3" />
-    <PackageReference Include="Librame.Extensions.Encryption.Abstractions" Version="7.5.0.5" />
+    <PackageReference Include="Librame.Extensions.Encryption.Abstractions" Version="7.5.0.6" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
