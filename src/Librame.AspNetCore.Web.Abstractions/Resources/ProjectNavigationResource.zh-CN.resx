@@ -126,6 +126,9 @@
   <data name="Contact" xml:space="preserve">
     <value>联系</value>
   </data>
+  <data name="ExternalLogin" xml:space="preserve">
+    <value>扩展登入</value>
+  </data>
   <data name="Index" xml:space="preserve">
     <value>首页</value>
   </data>

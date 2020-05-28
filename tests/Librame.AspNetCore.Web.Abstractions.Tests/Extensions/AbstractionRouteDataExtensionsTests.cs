@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Librame.AspNetCore.Web.Tests
 {
-    using Routings;
+    using Descriptors;
 
     public class AbstractionRouteDataExtensionsTests
     {
@@ -17,8 +17,8 @@ namespace Librame.AspNetCore.Web.Tests
                 action = "Index"
             });
 
-            var data = new RouteData(values);
-            var descriptor = data.AsRouteDescriptor();
+            var descriptor = values.AsActionRouteDescriptor();
+
             Assert.Equal("Default", descriptor.Area);
             Assert.Equal("Test", descriptor.Controller);
             Assert.Equal("Index", descriptor.Action);

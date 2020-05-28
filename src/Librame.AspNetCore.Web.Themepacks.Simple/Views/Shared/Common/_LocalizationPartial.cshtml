@@ -19,11 +19,20 @@
                 <ul class="dropdown-menu dropdown-user">
                     @foreach (var culture in otherCultures)
                     {
-                        <li>
+                    <li>
+                        @if (Options.Value.DefaultRequestCulture?.Culture.Name == culture.Name)
+                        {
+                            <a class="dropdown-item" href="@ViewContext.HttpContext.Request.Path.Value">
+                                <i class="ti-user"></i> @culture.DisplayName
+                            </a>
+                        }
+                        else
+                        {
                             <a class="dropdown-item" asp-route-culture="@culture.Name" asp-route-uiculture="@culture.Name">
                                 <i class="ti-user"></i> @culture.DisplayName
                             </a>
-                        </li>
+                        }
+                    </li>
                     }
                 </ul>
             }

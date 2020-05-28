@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -16,9 +16,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Web.Applications
 {
+    using AspNetCore.Web.Descriptors;
+    using AspNetCore.Web.Projects;
     using Extensions;
-    using Projects;
-    using Routings;
 
     /// <summary>
     /// 应用控制器。
@@ -47,10 +47,9 @@ namespace Librame.AspNetCore.Web.Applications
         /// 获取区域导航路径。
         /// </summary>
         /// <param name="navigationFactory">指定定位导航的工厂方法。</param>
-        /// <param name="routeName">给定的路由名称（可选）。</param>
         /// <returns>返回字符串。</returns>
-        public string GetAreaNavigationPath(Func<IProjectNavigation, NavigationDescriptor> navigationFactory, string routeName = null)
-            => navigationFactory?.Invoke(Application.CurrentProject.Navigation)?.ToRouteString(Url, routeName);
+        public string GetAreaNavigationPath(Func<IProjectNavigation, NavigationDescriptor> navigationFactory)
+            => navigationFactory?.Invoke(Application.CurrentProject.Navigation)?.GenerateLink(Url);
 
 
         /// <summary>

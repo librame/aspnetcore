@@ -18,7 +18,10 @@
         </div>
 
         <div class="form-bottom">
-            <form id="account" method="post" class="login-form">
+            <form id="account" method="post" class="login-form"
+                  asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                  asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+
                 <div asp-validation-summary="All" class="text-danger"></div>
 
                 <div class="form-group">
@@ -47,14 +50,18 @@
                 <div class="form-group overflow-hidden">
                     <div class="col-sm-6">
                         <p>
-                            <a asp-page="./ForgotPassword">
+                            <a asp-page="./ForgotPassword"
+                               asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                               asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                                 @Localizer.GetString(r => r.ForgotPassword)
                             </a>
                         </p>
                     </div>
                     <div class="col-sm-6 text-right">
                         <p>
-                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
+                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
+                               asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                               asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                                 @Localizer.GetString(r => r.RegisterUser)
                             </a>
                         </p>
@@ -80,7 +87,11 @@
                 }
                 else
                 {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    <form id="external-account" method="post" class="form-horizontal"
+                          asp-page="./ExternalLogin"
+                          asp-route-returnUrl="@Model.ReturnUrl"
+                          asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                          asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                         <div>
                             <p>
                                 @foreach (var provider in Model.ExternalLogins)

@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -50,16 +50,16 @@ namespace Librame.AspNetCore.Web.Themepacks
 
                 return _currentInfo;
             }
-            set
-            {
-                _currentInfo = value.NotNull(nameof(value));
-            }
         }
 
 
         public IThemepackInfo SetCurrentInfo(string name)
         {
-            _currentInfo = FindInfo(name);
+            ExtensionSettings.Preference.RunLocker(() =>
+            {
+                _currentInfo = FindInfo(name);
+            });
+            
             return _currentInfo;
         }
 

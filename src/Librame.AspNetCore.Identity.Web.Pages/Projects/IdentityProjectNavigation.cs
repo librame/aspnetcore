@@ -1,58 +1,65 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
 
 #endregion
 
-using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc.Localization;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Identity.Web.Projects
 {
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Descriptors;
     using AspNetCore.Web.Projects;
     using AspNetCore.Web.Resources;
-    using AspNetCore.Web.Routings;
     using Extensions;
-    using Resources;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class IdentityProjectNavigation : ProjectNavigationWithPage
     {
-        private readonly IStringLocalizer<LayoutViewResource> _layoutLocalizer;
-
-
-        public IdentityProjectNavigation(IStringLocalizer<ProjectNavigationResource> localizer,
-            IStringLocalizer<LayoutViewResource> layoutLocalizer)
+        public IdentityProjectNavigation(IHtmlLocalizer<LayoutViewResource> layoutLocalizer,
+            IHtmlLocalizer<ProjectNavigationResource> localizer)
             : base(localizer, nameof(Identity))
         {
-            _layoutLocalizer = layoutLocalizer.NotNull(nameof(layoutLocalizer));
+            AddManageSidebar(layoutLocalizer.NotNull(nameof(layoutLocalizer)));
 
-            AddManageSidebar();
+            // 重置身份区域首页为管理
+            Index = Manage;
         }
 
 
-        private void AddManageSidebar()
+        private void AddManageSidebar(IHtmlLocalizer<LayoutViewResource> layoutLocalizer)
         {
-            ManageLayout.Sidebar.Add(_layoutLocalizer.AsNavigation(RouteDescriptor.ByPage($"{BaseManagePath}/Index", Area), p => p.Profile)
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("profile").ChangeIcon("la la-user")));
+            var manageRoute = Manage.Route as PageRouteDescriptor;
 
-            ManageLayout.Sidebar.Add(_layoutLocalizer.AsNavigation(RouteDescriptor.ByPage($"{BaseManagePath}/ChangePassword", Area))
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("change-password").ChangeIcon("la la-unlock")));
+            // 管理首页即个人资料
+            var profile = layoutLocalizer.GetNavigation(p => p.Profile, manageRoute)
+                .ChangeId("profile").ChangeIcon("la la-user");
 
-            ManageLayout.Sidebar.Add(_layoutLocalizer.AsNavigation(RouteDescriptor.ByPage($"{BaseManagePath}/ExternalLogins", Area))
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("external-login").ChangeIcon("la la-key")));
+            var changePassword = layoutLocalizer.GetNavigationWithRoutePageName(p => p.ChangePassword, manageRoute)
+                .ChangeId("change-password").ChangeIcon("la la-unlock");
 
-            ManageLayout.Sidebar.Add(_layoutLocalizer.AsNavigation(RouteDescriptor.ByPage($"{BaseManagePath}/TwoFactorAuthentication", Area))
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("two-factor").ChangeIcon("la la-superscript")));
+            var externalLogins = layoutLocalizer.GetNavigationWithRoutePageName(p => p.ExternalLogins, manageRoute)
+                .ChangeId("external-login").ChangeIcon("la la-key");
 
-            ManageLayout.Sidebar.Add(_layoutLocalizer.AsNavigation(RouteDescriptor.ByPage($"{BaseManagePath}/PersonalData", Area))
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("personal-data").ChangeIcon("la la-user-times")));
+            var twoFactor = layoutLocalizer.GetNavigationWithRoutePageName(p => p.TwoFactorAuthentication, manageRoute)
+                .ChangeId("two-factor").ChangeIcon("la la-superscript");
+
+            var personalData = layoutLocalizer.GetNavigationWithRoutePageName(p => p.PersonalData, manageRoute)
+                .ChangeId("personal-data").ChangeIcon("la la-user-times");
+
+            ManageLayout.Sidebar.Add(profile);
+            ManageLayout.Sidebar.Add(changePassword);
+            ManageLayout.Sidebar.Add(externalLogins);
+            ManageLayout.Sidebar.Add(twoFactor);
+            ManageLayout.Sidebar.Add(personalData);
         }
 
     }

@@ -21,7 +21,9 @@
                     <td>
                         @if (Model.ShowRemoveButton)
                         {
-                            <form id="remove-login" asp-page-handler="RemoveLogin" method="post">
+                            <form id="remove-login" method="post" asp-page-handler="RemoveLogin"
+                                  asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                                  asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                                 <div>
                                     <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
                                     <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
@@ -48,7 +50,9 @@ else
 {
     <h4>@Localizer.GetString(r => r.AnotherDescr)</h4>
     <hr />
-    <form id="link-login-form" asp-page-handler="LinkLogin" method="post" class="form-horizontal">
+    <form id="link-login-form" method="post" class="form-horizontal" asp-page-handler="LinkLogin"
+          asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+          asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
         <div id="socialLoginList">
             <p>
                 @foreach (var provider in Model.OtherLogins)

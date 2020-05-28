@@ -5,8 +5,8 @@
     <ApplicationIcon>..\..\Librame.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.4.2.3</Version>
-    <Authors>Librame Pang</Authors>
+    <Version>7.4.2.4</Version>
+    <Authors>Librame Pong</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.IdentityServer.Abstractions with the Web extension package.</Description>
     <Copyright>Copyright © 2012-2020</Copyright>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.AspNetCore.IdentityServer.Abstractions with the Web extension package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.4.2.3</AssemblyVersion>
-    <FileVersion>7.4.1951.15117</FileVersion>
+    <AssemblyVersion>7.4.2.4</AssemblyVersion>
+    <FileVersion>7.4.1955.15117</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
@@ -38,7 +38,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="7.5.0.6" />
+    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="7.5.0.7" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Librame.AspNetCore.IdentityServer.Abstractions\Librame.AspNetCore.IdentityServer.Abstractions.csproj" />
+    <ProjectReference Include="..\Librame.AspNetCore.IdentityServer.EntityFrameworkCore\Librame.AspNetCore.IdentityServer.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\Librame.AspNetCore.Web\Librame.AspNetCore.Web.csproj" />
   </ItemGroup>
 

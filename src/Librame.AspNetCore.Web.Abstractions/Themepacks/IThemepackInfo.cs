@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -23,25 +23,32 @@ namespace Librame.AspNetCore.Web.Themepacks
     public interface IThemepackInfo : IApplicationInfo
     {
         /// <summary>
-        /// 布局字典集合。
+        /// 布局路径集合。
         /// </summary>
-        IReadOnlyDictionary<string, string> Layouts { get; }
+        /// <value>返回包含布局名称与路径的字典集合。</value>
+        IReadOnlyDictionary<string, string> LayoutPaths { get; }
 
         /// <summary>
-        /// 公共布局。
+        /// 公共布局路径。
         /// </summary>
-        string CommonLayout { get; }
+        string CommonLayoutPath { get; }
 
         /// <summary>
-        /// 登入布局。
+        /// 登入布局路径。
         /// </summary>
-        string LoginLayout { get; }
+        string LoginLayoutPath { get; }
 
         /// <summary>
-        /// 管理布局。
+        /// 管理布局路径。
         /// </summary>
-        string ManageLayout { get; }
+        string ManageLayoutPath { get; }
 
+
+        /// <summary>
+        /// 获取布局提供程序。
+        /// </summary>
+        /// <returns>返回 <see cref="ILayoutProvider"/>。</returns>
+        ILayoutProvider GetLayoutProvider();
 
         /// <summary>
         /// 获取静态文件提供程序。

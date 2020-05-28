@@ -1,23 +1,22 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
 
 #endregion
 
-using Microsoft.Extensions.Localization;
-using System.Collections.Concurrent;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace Librame.AspNetCore.Web.Projects
 {
     using AspNetCore.Applications;
+    using AspNetCore.Web.Descriptors;
     using AspNetCore.Web.Resources;
-    using AspNetCore.Web.Routings;
     using AspNetCore.Web.Themepacks;
     using Extensions;
 
@@ -29,21 +28,32 @@ namespace Librame.AspNetCore.Web.Projects
         /// <summary>
         /// 构造一个 <see cref="AbstractProjectNavigation"/>。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IStringLocalizer{ProjectNavigationResource}"/>。</param>
-        /// <param name="area">给定的区域（可选）。</param>
-        protected AbstractProjectNavigation(IStringLocalizer<ProjectNavigationResource> localizer, string area = null)
+        /// <param name="localizer">给定的 <see cref="IHtmlLocalizer{ProjectNavigationResource}"/>。</param>
+        protected AbstractProjectNavigation(IHtmlLocalizer<ProjectNavigationResource> localizer)
+            : this(localizer, area: null)
         {
+            RootNavigation = this;
+        }
+
+        /// <summary>
+        /// 构造一个 <see cref="AbstractProjectNavigation"/>。
+        /// </summary>
+        /// <param name="localizer">给定的 <see cref="IHtmlLocalizer{ProjectNavigationResource}"/>。</param>
+        /// <param name="area">给定的区域。</param>
+        /// <param name="rootNavigation">给定的根 <see cref="IProjectNavigation"/>。</param>
+        protected AbstractProjectNavigation(IHtmlLocalizer<ProjectNavigationResource> localizer,
+            string area, IProjectNavigation rootNavigation)
+            : this(localizer, area)
+        {
+            RootNavigation = rootNavigation.NotNull(nameof(rootNavigation));
+        }
+
+        private AbstractProjectNavigation(IHtmlLocalizer<ProjectNavigationResource> localizer, string area)
+        {
+            LayoutContents = new LayoutContentCollection<NavigationDescriptor>();
+
             Localizer = localizer.NotNull(nameof(localizer));
             Area = area;
-
-            CommonLayout = new LayoutNavigationDescriptor();
-            LoginLayout = new LayoutNavigationDescriptor();
-            ManageLayout = new LayoutNavigationDescriptor();
-
-            Layouts = new ConcurrentDictionary<string, LayoutNavigationDescriptor>();
-            Layouts.AddOrUpdate(AbstractThemepackInfo.CommonLayoutKey, CommonLayout, (key, value) => CommonLayout);
-            Layouts.AddOrUpdate(AbstractThemepackInfo.LoginLayoutKey, LoginLayout, (key, value) => LoginLayout);
-            Layouts.AddOrUpdate(AbstractThemepackInfo.ManageLayoutKey, ManageLayout, (key, value) => ManageLayout);
 
             AddLibrameFootbar();
         }
@@ -51,14 +61,14 @@ namespace Librame.AspNetCore.Web.Projects
 
         private void AddLibrameFootbar()
         {
-            Repository = Localizer.AsNavigation(new RouteDescriptor(AbstractApplicationInfo.AspNetCoreRepositoryUrl),
-                p => p.Repository, optional => optional.ChangeTagTarget("_blank"));
+            Repository = Localizer.GetNavigation(p => p.Repository,
+                AbstractApplicationInfo.AspNetCoreRepositoryUrl).ChangeTargetBlank();
 
-            Issues = Localizer.AsNavigation(new RouteDescriptor($"{AbstractApplicationInfo.AspNetCoreRepositoryUrl}/issues"),
-                p => p.Issues, optional => optional.ChangeTagTarget("_blank"));
+            Issues = Localizer.GetNavigation(p => p.Issues,
+                $"{AbstractApplicationInfo.AspNetCoreRepositoryUrl}/issues").ChangeTargetBlank();
 
-            Licenses = Localizer.AsNavigation(new RouteDescriptor($"{AbstractApplicationInfo.AspNetCoreRepositoryUrl}/blob/master/LICENSE"),
-                p => p.Licenses, optional => optional.ChangeTagTarget("_blank"));
+            Licenses = Localizer.GetNavigation(p => p.Licenses,
+                $"{AbstractApplicationInfo.AspNetCoreRepositoryUrl}/blob/master/LICENSE").ChangeTargetBlank();
 
             ManageLayout.Footer.Add(Repository);
             ManageLayout.Footer.Add(Issues);
@@ -67,9 +77,22 @@ namespace Librame.AspNetCore.Web.Projects
 
 
         /// <summary>
-        /// 本地化资源。
+        /// 根导航（如果当前是根导航，则为自身实例）。
         /// </summary>
-        public IStringLocalizer<ProjectNavigationResource> Localizer { get; }
+        /// <value>返回 <see cref="IProjectNavigation"/>。</value>
+        public IProjectNavigation RootNavigation { get; }
+
+
+        /// <summary>
+        /// 布局内容集合。
+        /// </summary>
+        public LayoutContentCollection<NavigationDescriptor> LayoutContents { get; }
+
+        /// <summary>
+        /// 本地化器。
+        /// </summary>
+        /// <value>返回 <see cref="IHtmlLocalizer{ProjectNavigationResource}"/>。</value>
+        public IHtmlLocalizer<ProjectNavigationResource> Localizer { get; }
 
         /// <summary>
         /// 区域。
@@ -78,91 +101,94 @@ namespace Librame.AspNetCore.Web.Projects
 
 
         /// <summary>
+        /// 公共布局导航。
+        /// </summary>
+        public LayoutContent<NavigationDescriptor> CommonLayout
+            => LayoutContents.Common;
+
+        /// <summary>
+        /// 登入布局导航。
+        /// </summary>
+        public LayoutContent<NavigationDescriptor> LoginLayout
+            => LayoutContents.Login;
+
+        /// <summary>
+        /// 管理布局导航。
+        /// </summary>
+        public LayoutContent<NavigationDescriptor> ManageLayout
+            => LayoutContents.Manage;
+
+
+        /// <summary>
         /// 首页。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Index { get; protected set; }
+        public virtual NavigationDescriptor Index { get; protected set; }
 
 
         /// <summary>
         /// 关于。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> About { get; protected set; }
+        public virtual NavigationDescriptor About { get; protected set; }
 
         /// <summary>
         /// 联系。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Contact { get; protected set; }
+        public virtual NavigationDescriptor Contact { get; protected set; }
 
         /// <summary>
         /// 隐私。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Privacy { get; protected set; }
+        public virtual NavigationDescriptor Privacy { get; protected set; }
 
         /// <summary>
         /// 站点地图。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Sitemap { get; protected set; }
+        public virtual NavigationDescriptor Sitemap { get; protected set; }
 
         /// <summary>
         /// 项目库。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Repository { get; protected set; }
+        public virtual NavigationDescriptor Repository { get; protected set; }
 
         /// <summary>
         /// 反馈。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Issues { get; protected set; }
+        public virtual NavigationDescriptor Issues { get; protected set; }
 
         /// <summary>
         /// 许可。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Licenses { get; protected set; }
+        public virtual NavigationDescriptor Licenses { get; protected set; }
 
         /// <summary>
         /// 拒绝访问。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> AccessDenied { get; protected set; }
+        public virtual NavigationDescriptor AccessDenied { get; protected set; }
 
 
         /// <summary>
         /// 注册。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Register { get; protected set; }
+        public virtual NavigationDescriptor Register { get; protected set; }
 
         /// <summary>
         /// 登入。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Login { get; protected set; }
+        public virtual NavigationDescriptor Login { get; protected set; }
+
+        /// <summary>
+        /// 扩展登入。
+        /// </summary>
+        public virtual NavigationDescriptor ExternalLogin { get; protected set; }
 
         /// <summary>
         /// 登出。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Logout { get; protected set; }
+        public virtual NavigationDescriptor Logout { get; protected set; }
 
         /// <summary>
         /// 管理。
         /// </summary>
-        public NavigationDescriptor<ProjectNavigationResource> Manage { get; protected set; }
-
-
-        /// <summary>
-        /// 布局导航集合。
-        /// </summary>
-        public ConcurrentDictionary<string, LayoutNavigationDescriptor> Layouts { get; }
-
-        /// <summary>
-        /// 公共布局导航。
-        /// </summary>
-        public LayoutNavigationDescriptor CommonLayout { get; }
-
-        /// <summary>
-        /// 登入布局导航。
-        /// </summary>
-        public LayoutNavigationDescriptor LoginLayout { get; }
-
-        /// <summary>
-        /// 管理布局导航。
-        /// </summary>
-        public LayoutNavigationDescriptor ManageLayout { get; }
+        public virtual NavigationDescriptor Manage { get; protected set; }
     }
 }

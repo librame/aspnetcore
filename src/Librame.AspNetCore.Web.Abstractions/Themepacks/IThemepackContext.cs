@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -41,7 +41,7 @@ namespace Librame.AspNetCore.Web.Themepacks
         /// <summary>
         /// 当前主题包信息。
         /// </summary>
-        IThemepackInfo CurrentInfo { get; set; }
+        IThemepackInfo CurrentInfo { get; }
 
 
         /// <summary>

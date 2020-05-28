@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) zwbwl All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://51zwb.com
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -11,7 +11,11 @@
 #endregion
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Librame.Extensions.Core.Combiners
 {
@@ -144,5 +148,37 @@ namespace Librame.Extensions.Core.Combiners
         /// <returns>返回布尔值。</returns>
         public virtual bool Equals(UriCombinerCore other)
             => base.Equals(other);
+
+
+        /// <summary>
+        /// 将查询参数集合转换为查询字符串（内部支持对参数值的特殊字符进行转码处理）。
+        /// </summary>
+        /// <param name="queries">给定的查询参数集合。</param>
+        /// <param name="addStartsWithDelimiter">增加以界定符“?”开始的字符串（可选；默认增加）。</param>
+        /// <returns>返回查询字符串。</returns>
+        public static string ToQuery(IEnumerable<KeyValuePair<string, StringValues>> queries,
+            bool addStartsWithDelimiter = true)
+        {
+            var sb = new StringBuilder();
+
+            if (addStartsWithDelimiter)
+                sb.Append(QueryStringDelimiter);
+
+            var count = queries.Count();
+            queries.ForEach((pair, i) =>
+            {
+                sb.Append(pair.Key);
+                sb.Append(QueryStringKeyValuePairConnector);
+
+                if (pair.Value.IsNotEmpty())
+                    sb.Append(Uri.EscapeDataString(pair.Value));
+
+                if (i < count - 1)
+                    sb.Append(QueryStringSeparator);
+            });
+
+            return Uri.EscapeUriString(sb.ToString());
+        }
+
     }
 }

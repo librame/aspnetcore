@@ -7,6 +7,9 @@
     var email = Model.Principal.GetSignedUserEmail(Context);
     var portrait = Model.Principal.GetSignedUserPortrait(Context);
 
+    // 因 MVC 安全机制，注销窗体必须使用路由模式
+    nav.Logout.Route.NotNull(nameof(nav.Logout.Route));
+
     <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
         <li class="nav-item dropdown">
             <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
@@ -25,26 +28,29 @@
                 </li>
 
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="@nav.Manage.ToRouteString(Url)">
-                    <i class="ti-user"></i> @nav.Manage.Text
+                <a class="dropdown-item" href="@nav.Manage.GenerateLink(Url)">
+                    <i class="ti-user"></i> @nav.Manage.GetLocalizedHtmlText()
                 </a>
 
                 <div class="dropdown-divider"></div>
-                @if (nav.Logout.Route.IsMvc)
+                @if (nav.Logout.Route is ActionRouteDescriptor actionRoute)
                 {
-                    <form asp-controller="@nav.Logout.Route.Controller" asp-action="@nav.Logout.Route.Action" asp-area="@nav.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
+                    <form asp-controller="@actionRoute.Controller" asp-action="@actionRoute.Action" asp-area="@actionRoute.Area" method="post" id="logoutForm" class="navbar-right">
                         <a class="dropdown-item" href="#">
-                            <i class="fa fa-power-off"></i> <button type="submit" class="btn btn-link navbar-btn navbar-link" style="padding:0;">@nav.Logout.Text</button>
+                            <i class="fa fa-power-off"></i> <button type="submit" class="btn btn-link navbar-btn navbar-link" style="padding:0;">@nav.Logout.GetLocalizedHtmlText()</button>
+                        </a>
+                    </form>
+                }
+                else if (nav.Logout.Route is PageRouteDescriptor pageRoute)
+                {
+                    <form asp-page="@pageRoute.Page" asp-area="@pageRoute.Area" method="post" id="logoutForm" class="navbar-right">
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-power-off"></i> <button type="submit" class="btn btn-link navbar-btn navbar-link" style="padding:0;">@nav.Logout.GetLocalizedHtmlText()</button>
                         </a>
                     </form>
                 }
                 else
                 {
-                    <form asp-page="@nav.Logout.Route.Page" asp-area="@nav.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
-                        <a class="dropdown-item" href="#">
-                            <i class="fa fa-power-off"></i> <button type="submit" class="btn btn-link navbar-btn navbar-link" style="padding:0;">@nav.Logout.Text</button>
-                        </a>
-                    </form>
                 }
             </ul>
         </li>

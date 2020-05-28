@@ -42,11 +42,13 @@
 
             @if (!string.IsNullOrWhiteSpace(name))
             {
+                var logoutRoute = logout?.Route as ActionRouteDescriptor;
+
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a asp-action="@logout?.Route?.Action" asp-controller="@logout?.Route?.Controller" asp-area="@logout?.Route?.Area">@logout?.Text</a></li>
+                            <li><a asp-action="@logoutRoute?.Action" asp-controller="@logoutRoute?.Controller" asp-area="@logoutRoute?.Area">@logout?.GetLocalizedHtmlText()</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -56,7 +58,7 @@
                 var register = Application.Project.FindNavigation("Identity")?.Register;
 
                 <ul class="nav navbar-nav">
-                    <li><a href="@register.Route.AppendQueryString(Context.Request.Query["ReturnUrl"])">@register.Text</a></li>
+                    <li><a href="@register?.GenerateLink(Url)">@register.GetLocalizedHtmlText()</a></li>
                 </ul>
             }
         </div>

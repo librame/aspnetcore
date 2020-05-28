@@ -1,16 +1,15 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
 
 #endregion
 
-using Microsoft.AspNetCore.Http;
 using System;
 
 namespace Librame.AspNetCore.Identity.Builders
@@ -44,21 +43,5 @@ namespace Librame.AspNetCore.Identity.Builders
         /// </summary>
         public Func<IdentityAuthenticatorDescriptor, string> AuthenticatorUriFactory { get; set; }
             = descr => descr.BuildOtpAuthUriString();
-
-
-        /// <summary>
-        /// 登入回调路径。
-        /// </summary>
-        public PathString LoginCallbackPath { get; set; }
-
-        /// <summary>
-        /// 登出回调路径。
-        /// </summary>
-        public PathString LogoutCallbackPath { get; set; }
-
-        /// <summary>
-        /// 注册回调路径。
-        /// </summary>
-        public PathString RegisterCallbackPath { get; set; }
     }
 }

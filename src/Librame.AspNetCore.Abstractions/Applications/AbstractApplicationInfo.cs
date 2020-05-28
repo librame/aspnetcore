@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -55,7 +55,7 @@ namespace Librame.AspNetCore.Applications
         /// 作者集合。
         /// </summary>
         public virtual string Authors
-            => "Librame Pang";
+            => "Librame Pong";
 
         /// <summary>
         /// 联系。

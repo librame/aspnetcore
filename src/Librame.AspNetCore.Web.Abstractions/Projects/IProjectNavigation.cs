@@ -1,22 +1,21 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
 
 #endregion
 
-using Microsoft.Extensions.Localization;
-using System.Collections.Concurrent;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace Librame.AspNetCore.Web.Projects
 {
+    using Descriptors;
     using Resources;
-    using Routings;
     using Themepacks;
 
     /// <summary>
@@ -25,9 +24,23 @@ namespace Librame.AspNetCore.Web.Projects
     public interface IProjectNavigation
     {
         /// <summary>
-        /// 本地化资源。
+        /// 根导航（如果当前是根导航，则为自身实例）。
         /// </summary>
-        IStringLocalizer<ProjectNavigationResource> Localizer { get; }
+        /// <value>返回 <see cref="IProjectNavigation"/>。</value>
+        IProjectNavigation RootNavigation { get; }
+
+
+        /// <summary>
+        /// 布局内容集合。
+        /// </summary>
+        /// <value>返回 <see cref="LayoutContentCollection{NavigationDescriptor}"/>。</value>
+        LayoutContentCollection<NavigationDescriptor> LayoutContents { get; }
+
+        /// <summary>
+        /// 本地化器。
+        /// </summary>
+        /// <value>返回 <see cref="IHtmlLocalizer{ProjectNavigationResource}"/>。</value>
+        IHtmlLocalizer<ProjectNavigationResource> Localizer { get; }
 
         /// <summary>
         /// 区域。
@@ -36,91 +49,91 @@ namespace Librame.AspNetCore.Web.Projects
 
 
         /// <summary>
+        /// 公共布局导航。
+        /// </summary>
+        LayoutContent<NavigationDescriptor> CommonLayout { get; }
+
+        /// <summary>
+        /// 登入布局导航。
+        /// </summary>
+        LayoutContent<NavigationDescriptor> LoginLayout { get; }
+
+        /// <summary>
+        /// 管理布局导航。
+        /// </summary>
+        LayoutContent<NavigationDescriptor> ManageLayout { get; }
+
+
+        /// <summary>
         /// 首页。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Index { get; }
+        NavigationDescriptor Index { get; }
 
 
         /// <summary>
         /// 关于。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> About { get; }
+        NavigationDescriptor About { get; }
 
         /// <summary>
         /// 联系。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Contact { get; }
+        NavigationDescriptor Contact { get; }
 
         /// <summary>
         /// 隐私。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Privacy { get; }
+        NavigationDescriptor Privacy { get; }
 
         /// <summary>
         /// 站点地图。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Sitemap { get; }
+        NavigationDescriptor Sitemap { get; }
 
         /// <summary>
         /// 项目库。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Repository { get; }
+        NavigationDescriptor Repository { get; }
 
         /// <summary>
         /// 反馈。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Issues { get; }
+        NavigationDescriptor Issues { get; }
 
         /// <summary>
         /// 许可。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Licenses { get; }
+        NavigationDescriptor Licenses { get; }
 
         /// <summary>
         /// 拒绝访问。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> AccessDenied { get; }
+        NavigationDescriptor AccessDenied { get; }
 
 
         /// <summary>
         /// 注册。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Register { get; }
+        NavigationDescriptor Register { get; }
 
         /// <summary>
         /// 登入。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Login { get; }
+        NavigationDescriptor Login { get; }
+
+        /// <summary>
+        /// 扩展登入。
+        /// </summary>
+        NavigationDescriptor ExternalLogin { get; }
 
         /// <summary>
         /// 登出。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Logout { get; }
+        NavigationDescriptor Logout { get; }
 
         /// <summary>
         /// 管理。
         /// </summary>
-        NavigationDescriptor<ProjectNavigationResource> Manage { get; }
-
-
-        /// <summary>
-        /// 布局导航集合。
-        /// </summary>
-        ConcurrentDictionary<string, LayoutNavigationDescriptor> Layouts { get; }
-
-        /// <summary>
-        /// 公共布局导航。
-        /// </summary>
-        LayoutNavigationDescriptor CommonLayout { get; }
-
-        /// <summary>
-        /// 登入布局导航。
-        /// </summary>
-        LayoutNavigationDescriptor LoginLayout { get; }
-
-        /// <summary>
-        /// 管理布局导航。
-        /// </summary>
-        LayoutNavigationDescriptor ManageLayout { get; }
+        NavigationDescriptor Manage { get; }
     }
 }

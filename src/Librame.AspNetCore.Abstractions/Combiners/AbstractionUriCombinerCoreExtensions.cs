@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) zwbwl All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://51zwb.com
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/

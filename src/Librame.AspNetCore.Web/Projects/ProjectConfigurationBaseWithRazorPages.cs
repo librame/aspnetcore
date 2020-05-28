@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -17,7 +17,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Web.Projects
 {
-    using Applications;
+    using AspNetCore.Web.Applications;
     using Extensions;
 
     /// <summary>

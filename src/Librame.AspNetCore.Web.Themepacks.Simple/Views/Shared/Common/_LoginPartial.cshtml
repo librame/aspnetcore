@@ -2,39 +2,46 @@
 @{
     var nav = Model.LoginbarProject.Navigation;
 }
+
 @if (Model.Principal.IsSignedIn(Context))
 {
-    if (nav.Logout.Route.IsMvc)
+    // 因 MVC 安全机制，注销窗体必须使用路由模式
+    nav.Logout.Route.NotNull(nameof(nav.Logout.Route));
+
+    if (nav.Logout.Route is ActionRouteDescriptor actionRoute)
     {
-        <form asp-controller="@nav.Logout.Route.Controller" asp-action="@nav.Logout.Route.Action" asp-area="@nav.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
+        <form asp-controller="@actionRoute.Controller" asp-action="@actionRoute.Action" asp-area="@actionRoute.Area" method="post" id="logoutForm" class="navbar-right">
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="@nav.Manage.ToRouteString(Url)" title="@nav.Manage.Text">Hello @Model.Principal.GetSignedUserName(Context)!</a>
+                    <a href="@nav.Manage.GenerateLink(Url)" title="@nav.Manage.GetLocalizedText()">Hello @Model.Principal.GetSignedUserName(Context)!</a>
                 </li>
                 <li>
-                    <button type="submit" class="btn btn-link navbar-btn navbar-link">@nav.Logout.Text</button>
+                    <button type="submit" class="btn btn-link navbar-btn navbar-link">@nav.Logout.GetLocalizedHtmlText()</button>
+                </li>
+            </ul>
+        </form>
+    }
+    else if (nav.Logout.Route is PageRouteDescriptor pageRoute)
+    {
+        <form asp-page="@pageRoute.Page" asp-area="@pageRoute.Area" method="post" id="logoutForm" class="navbar-right">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="@nav.Manage.GenerateLink(Url)" title="@nav.Manage.GetLocalizedText()">Hello @Model.Principal.GetSignedUserName(Context)!</a>
+                </li>
+                <li>
+                    <button type="submit" class="btn btn-link navbar-btn navbar-link">@nav.Logout.GetLocalizedHtmlText()</button>
                 </li>
             </ul>
         </form>
     }
     else
     {
-        <form asp-page="@nav.Logout.Route.Page" asp-area="@nav.Logout.Route.Area" method="post" id="logoutForm" class="navbar-right">
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="@nav.Manage.Route" title="@nav.Manage.Text">Hello @Model.Principal.GetSignedUserName(Context)!</a>
-                </li>
-                <li>
-                    <button type="submit" class="btn btn-link navbar-btn navbar-link">@nav.Logout.Text</button>
-                </li>
-            </ul>
-        </form>
     }
 }
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a href="@nav.Register.Route">@nav.Register.Text</a></li>
-        <li><a href="@nav.Login.Route">@nav.Login.Text</a></li>
+        <li><a href="@nav.Register.GenerateLink(Url)">@nav.Register.GetLocalizedHtmlText()</a></li>
+        <li><a href="@nav.Login.GenerateLink(Url)">@nav.Login.GetLocalizedHtmlText()</a></li>
     </ul>
 }

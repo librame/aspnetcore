@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -31,8 +31,8 @@ namespace Librame.AspNetCore.Identity.Builders
         /// <param name="builderFactory">给定创建数据构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
         public static IWebBuilder AddIdentityWeb(this IIdentityBuilderDecorator decorator,
-            Action<WebBuilderDependency> dependencyAction = null,
-            Func<IExtensionBuilder, WebBuilderDependency, IWebBuilder> builderFactory = null)
+            Action<IdentityWebBuilderDependency> dependencyAction = null,
+            Func<IExtensionBuilder, IdentityWebBuilderDependency, IWebBuilder> builderFactory = null)
             => decorator.AddWeb(dependencyAction, builderFactory)
                 .AddUser(decorator?.Source.UserType);
     }

@@ -14,14 +14,12 @@ using System;
 namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
 {
     using AspNetCore.Web.Builders;
-    using AspNetCore.Web.Routings;
     using AspNetCore.Identity.Builders;
     using AspNetCore.IdentityServer.Accessors;
     using AspNetCore.IdentityServer.Builders;
     using AspNetCore.IdentityServer.Stores;
     using Extensions;
     using Extensions.Core.Identifiers;
-    using Extensions.Data.Builders;
     using Extensions.Encryption.Builders;
 
     public class Startup
@@ -38,7 +36,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => context.Request.Path.Equals("/");
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
@@ -87,8 +85,8 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                     dependency.IdentityServer = server =>
                     {
                         // Use Librame.AspNetCore.IdentityServer.Web.Mvc RPL
-                        server.UserInteraction.LoginUrl = RouteDescriptor.ByController("Login", "Account", nameof(IdentityServer));
-                        server.UserInteraction.LogoutUrl = RouteDescriptor.ByController("Logout", "Account", nameof(IdentityServer));
+                        server.UserInteraction.LoginUrl = "/IdentityServer/Account/Login";
+                        server.UserInteraction.LogoutUrl = "/IdentityServer/Account/Logout";
 
                         server.Events.RaiseErrorEvents = true;
                         server.Events.RaiseInformationEvents = true;

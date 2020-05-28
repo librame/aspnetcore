@@ -38,7 +38,9 @@
     {
         <div class="row">
             <div class="col-md-6">
-                <form method="post" style="display: inline-block">
+                <form method="post" style="display: inline-block"
+                      asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                      asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                     <div class="form-group">
                         <button type="submit" class="btn btn-default">@Localizer.GetString(r => r.ButtonText)</button>
                     </div>
@@ -56,10 +58,22 @@
 
 @if (!Model.HasAuthenticator)
 {
-    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-default">@Localizer.GetString(r => r.AddAuthenticatorApp)</a>
+    <a id="enable-authenticator" class="btn btn-default" asp-page="./EnableAuthenticator"
+       asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+       asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+        @Localizer.GetString(r => r.AddAuthenticatorApp)
+    </a>
 }
 else
 {
-    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-default">@Localizer.GetString(r => r.SetupAuthenticatorApp)</a>
-    <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-default">@Localizer.GetString(r => r.ResetAuthenticatorApp)</a>
+    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-default"
+       asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+       asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+        @Localizer.GetString(r => r.SetupAuthenticatorApp)
+    </a>
+    <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-default"
+       asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+       asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+        @Localizer.GetString(r => r.ResetAuthenticatorApp)
+    </a>
 }

@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -74,19 +74,21 @@ namespace Librame.AspNetCore.Web.Applications
 
 
         /// <summary>
-        /// 当前主题包信息。
-        /// </summary>
-        IThemepackInfo CurrentThemepackInfo { get; set; }
-
-        /// <summary>
         /// 登陆栏项目。
         /// </summary>
-        (IProjectInfo Info, IProjectNavigation Navigation) LoginbarProject { get; }
+        /// <returns>返回包含 <see cref="IProjectInfo"/> 与 <see cref="IProjectNavigation"/> 的元组。</returns>
+        ProjectDescriptor LoginbarProject { get; }
 
         /// <summary>
         /// 当前项目。
         /// </summary>
-        (IProjectInfo Info, IProjectNavigation Navigation) CurrentProject { get; }
+        /// <returns>返回包含 <see cref="IProjectInfo"/> 与 <see cref="IProjectNavigation"/> 的元组。</returns>
+        ProjectDescriptor CurrentProject { get; }
+
+        /// <summary>
+        /// 当前主题包信息。
+        /// </summary>
+        IThemepackInfo CurrentThemepackInfo { get; }
 
 
         /// <summary>
@@ -94,6 +96,13 @@ namespace Librame.AspNetCore.Web.Applications
         /// </summary>
         /// <param name="area">给定的区域（请确保项目信息名称与给定的区域保持一致）。</param>
         /// <returns>返回包含 <see cref="IProjectInfo"/> 与 <see cref="IProjectNavigation"/> 的元组。</returns>
-        (IProjectInfo Info, IProjectNavigation Navigation) SetCurrentProject(string area);
+        ProjectDescriptor SetCurrentProject(string area);
+
+        /// <summary>
+        /// 设置当前主题包信息。
+        /// </summary>
+        /// <param name="name">给定的主题包名称。</param>
+        /// <returns>返回 <see cref="IThemepackInfo"/>。</returns>
+        IThemepackInfo SetCurrentThemepackInfo(string name);
     }
 }

@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -27,7 +27,7 @@ namespace Librame.AspNetCore.Web.Projects
         ServiceFactory ServiceFactory { get; }
 
         /// <summary>
-        /// 导航集合。
+        /// 页面。
         /// </summary>
         IEnumerable<IProjectNavigation> Navigations { get; }
 
@@ -36,23 +36,26 @@ namespace Librame.AspNetCore.Web.Projects
         /// </summary>
         IReadOnlyDictionary<string, IProjectInfo> Infos { get; }
 
+
         /// <summary>
         /// 登陆栏项目（根据配置的登陆栏项目名称查找对应的项目，如果不存在则使用当前项目）。
         /// </summary>
-        (IProjectInfo Info, IProjectNavigation Navigation) Loginbar { get; }
+        /// <returns>返回 <see cref="ProjectDescriptor"/>。</returns>
+        ProjectDescriptor Loginbar { get; }
 
         /// <summary>
         /// 当前项目。
         /// </summary>
-        (IProjectInfo Info, IProjectNavigation Navigation) Current { get; set; }
+        /// <returns>返回 <see cref="ProjectDescriptor"/>。</returns>
+        ProjectDescriptor Current { get; }
 
 
         /// <summary>
         /// 设置当前项目。
         /// </summary>
         /// <param name="area">给定的区域（请确保项目信息名称与给定的区域保持一致）。</param>
-        /// <returns>返回包含 <see cref="IProjectInfo"/> 与 <see cref="IProjectNavigation"/> 的元组。</returns>
-        (IProjectInfo Info, IProjectNavigation Navigation) SetCurrent(string area);
+        /// <returns>返回 <see cref="ProjectDescriptor"/>。</returns>
+        ProjectDescriptor SetCurrent(string area);
 
 
         /// <summary>

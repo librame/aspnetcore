@@ -1,21 +1,21 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
 
 #endregion
 
-using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace Librame.AspNetCore.Web.Projects
 {
+    using Descriptors;
     using Resources;
-    using Routings;
 
     /// <summary>
     /// 带页面的项目导航。
@@ -23,62 +23,66 @@ namespace Librame.AspNetCore.Web.Projects
     public class ProjectNavigationWithPage : AbstractProjectNavigation
     {
         /// <summary>
-        /// 基础帐户路径。
-        /// </summary>
-        public const string BaseAccountPath = "/Account";
-
-        /// <summary>
-        /// 基础管理路径。
-        /// </summary>
-        public const string BaseManagePath = BaseAccountPath + "/Manage";
-
-
-        /// <summary>
         /// 构造一个 <see cref="ProjectNavigationWithPage"/>。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IStringLocalizer{ProjectNavigationResource}"/>。</param>
-        public ProjectNavigationWithPage(IStringLocalizer<ProjectNavigationResource> localizer)
-            : this(localizer, null)
+        /// <param name="localizer">给定的 <see cref="IHtmlLocalizer{ProjectNavigationResource}"/>。</param>
+        protected ProjectNavigationWithPage(IHtmlLocalizer<ProjectNavigationResource> localizer)
+            : base(localizer)
         {
+            Initialize();
         }
 
         /// <summary>
         /// 构造一个 <see cref="ProjectNavigationWithPage"/>。
         /// </summary>
-        /// <param name="localizer">给定的 <see cref="IStringLocalizer{ProjectNavigationResource}"/>。</param>
-        /// <param name="area">给定的区域（可选）。</param>
-        protected ProjectNavigationWithPage(IStringLocalizer<ProjectNavigationResource> localizer, string area)
-            : base(localizer, area)
+        /// <param name="localizer">给定的 <see cref="IHtmlLocalizer{ProjectNavigationResource}"/>。</param>
+        /// <param name="area">给定的区域。</param>
+        /// <param name="rootNavigation">给定的根 <see cref="IProjectNavigation"/>。</param>
+        protected ProjectNavigationWithPage(IHtmlLocalizer<ProjectNavigationResource> localizer,
+            string area, IProjectNavigation rootNavigation = null)
+            : base(localizer, area, rootNavigation ?? new RootProjectNavigationWithPage(localizer))
         {
-            // Default: Home
-            Index = Localizer.AsNavigation(RouteDescriptor.ByPage("/"), p => p.Index);
+            Initialize();
+        }
 
-            AccessDenied = Index.NewRoutePage("/AccessDenied");
-            Privacy = Index.NewRoutePage("/Privacy");
-            Sitemap = Index.NewRoutePage("/Sitemap");
+
+        private void Initialize()
+        {
+            // Default: Root
+            var indexRoute = new PageRouteDescriptor($"/{nameof(Index)}", Area);
+
+            Index = Localizer.GetNavigation(indexRoute);
+            AccessDenied = Localizer.GetNavigationWithRoutePageName(p => p.AccessDenied, indexRoute);
+            Privacy = Localizer.GetNavigationWithRoutePageName(p => p.Privacy, indexRoute);
+            About = Localizer.GetNavigationWithRoutePageName(p => p.About, indexRoute);
+            Contact = Localizer.GetNavigationWithRoutePageName(p => p.Contact, indexRoute);
+            Sitemap = Localizer.GetNavigationWithRoutePageName(p => p.Sitemap, indexRoute);
 
             // Area: Account
-            Login = Index.NewRoutePage($"{BaseAccountPath}/Login", Area);
-            Logout = Login.NewRoutePage($"{BaseAccountPath}/Logout");
-            Register = Login.NewRoutePage($"{BaseAccountPath}/Register");
+            var loginRoute = indexRoute.WithPage($"/Account/{nameof(Login)}");
+
+            Login = Localizer.GetNavigation(loginRoute);
+            ExternalLogin = Localizer.GetNavigationWithRoutePageName(p => p.ExternalLogin, loginRoute);
+            Logout = Localizer.GetNavigationWithRoutePageName(p => p.Logout, loginRoute);
+            Register = Localizer.GetNavigationWithRoutePageName(p => p.Register, loginRoute);
 
             // Area: Manage
-            Manage = Login.NewRoutePage($"{BaseManagePath}/Index", nameof(Manage), Area);
+            Manage = Localizer.GetNavigation(indexRoute.WithPage($"/Account/Manage/{nameof(Index)}"), nameof(Manage));
 
             AddCommonHeader();
+            AddCommonFooter();
         }
 
 
         private void AddCommonHeader()
         {
-            About = Localizer.AsNavigation(RouteDescriptor.ByPage("/About"))
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("about"));
-
-            Contact = Localizer.AsNavigation(RouteDescriptor.ByPage("/Contact"))
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("contact"));
-
             CommonLayout.Header.Add(About);
             CommonLayout.Header.Add(Contact);
+        }
+
+        private void AddCommonFooter()
+        {
+            CommonLayout.Footer.Add(Sitemap);
         }
 
     }

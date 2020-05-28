@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Web.Projects
 {
-    using Builders;
+    using AspNetCore.Web.Builders;
     using Extensions;
 
     /// <summary>

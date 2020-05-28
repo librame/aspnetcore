@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -50,20 +50,22 @@ namespace Librame.AspNetCore.Web.Applications
             => Project.ServiceFactory;
 
 
+        public ProjectDescriptor LoginbarProject
+            => Project.Loginbar;
+
+        public ProjectDescriptor CurrentProject
+            => Project.Current;
+
         public IThemepackInfo CurrentThemepackInfo
         {
             get => Themepack.CurrentInfo;
-            set => Themepack.CurrentInfo = value;
         }
 
-        public (IProjectInfo Info, IProjectNavigation Navigation) LoginbarProject
-            => Project.Loginbar;
 
-        public (IProjectInfo Info, IProjectNavigation Navigation) CurrentProject
-            => Project.Current;
-
-
-        public (IProjectInfo Info, IProjectNavigation Navigation) SetCurrentProject(string area)
+        public ProjectDescriptor SetCurrentProject(string area)
             => Project.SetCurrent(area);
+
+        public IThemepackInfo SetCurrentThemepackInfo(string name)
+            => Themepack.SetCurrentInfo(name);
     }
 }

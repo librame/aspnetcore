@@ -8,12 +8,12 @@
     <ul class="nav">
     @foreach (var descr in nav.ManageLayout.Sidebar)
     {
-        if (descr.VisibilityFactory.Invoke(this, descr))
+        if (descr.Visibility)
         {
-            <li class="nav-item @descr.ActiveCssClassNameFactory.Invoke(this, descr)">
-                <a id="@descr.TagId" href="@descr.ToRouteString(Url)" title="@descr.TagTitle">
+            <li class="nav-item @descr.FormatActiveCssClassNameOrEmptyString(ViewContext)">
+                <a id="@descr.Id" href="@descr.GenerateLink(Url)" title="@descr.GetLocalizedText()">
                     <i class="@descr.Icon"></i>
-                    <p>@descr.Text</p>
+                    <p>@descr.GetLocalizedHtmlText()</p>
                 </a>
             </li>
         }

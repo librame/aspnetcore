@@ -73,7 +73,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Web.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.IdentityServer.Web.Tests", "tests\Librame.AspNetCore.IdentityServer.Web.Tests\Librame.AspNetCore.IdentityServer.Web.Tests.csproj", "{DE7EA136-6B48-46E8-AA8F-8A07D25F62EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AspNetCore.Authentication.Librame", "src\Microsoft.AspNetCore.Authentication.Librame\Microsoft.AspNetCore.Authentication.Librame.csproj", "{A18F2F2E-34C5-4A35-B960-F02B99367F7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Authentication.OpenIdConnect", "src\Librame.AspNetCore.Authentication.OpenIdConnect\Librame.AspNetCore.Authentication.OpenIdConnect.csproj", "{A18F2F2E-34C5-4A35-B960-F02B99367F7C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{4333230B-23E5-42F4-8622-7E1D8F8D9317}"
 EndProject

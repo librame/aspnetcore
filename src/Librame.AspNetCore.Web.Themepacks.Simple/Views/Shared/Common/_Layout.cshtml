@@ -2,7 +2,7 @@
 @inject IOptions<WebBuilderOptions> Options
 @inject ICompositeViewEngine Engine
 @{
-    var nav = Application.SetCurrentProject(ViewContext).Navigation;
+    var project = Application.SetCurrentProject(ViewContext);
     var theme = Options.Value.Themepack;
 }
 <!DOCTYPE html>
@@ -11,7 +11,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @Application.CurrentProject.Info.DisplayName (@Application.CurrentThemepackInfo.DisplayName)</title>
+    <title>@ViewData["Title"] - @project.Info.DisplayName (@Application.CurrentThemepackInfo.DisplayName)</title>
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
     <environment include="Development">
@@ -29,19 +29,21 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <a href="/" class="navbar-brand">@Application.CurrentProject.Info.DisplayName (@Application.CurrentThemepackInfo.DisplayName)</a>
+                <a href="@project.RootNavigation.Index.GenerateLink(Url)" class="navbar-brand">
+                    @project.Info.DisplayName (@Application.CurrentThemepackInfo.DisplayName)
+                </a>
             </div>
             <div class="navbar-collapse collapse">
-                @if (theme.CommonHeaderNavigationVisibility && nav.CommonLayout.Header.IsNotEmpty())
+                @if (theme.CommonHeaderNavigationVisibility && project.Navigation.CommonLayout.Header.IsNotEmpty())
                 {
-                    <ul class="nav navbar-nav">
-                        @*<li><a href="@nav.Index.ToRouteString(Url)">@nav.Index.Text</a></li>*@
+                <ul class="nav navbar-nav">
+                    @*<li><a href="@project.RootNavigation.Index.GenerateLink(Url)">@project.RootNavigation.Index.GetLocalizedText()</a></li>*@
 
-                        @foreach (var descr in nav.CommonLayout.Header)
-                        {
-                            <li><a href="@descr.ToRouteString(Url)">@descr.Text</a></li>
-                        }
-                    </ul>
+                    @foreach (var descr in project.Navigation.CommonLayout.Header)
+                    {
+                        <li><a href="@descr.GenerateLink(Url)">@descr.GetLocalizedHtmlText()</a></li>
+                    }
+                </ul>
                 }
 
                 @if (theme.CommonLocalizationVisibility)

@@ -32,7 +32,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => context.Request.Path.Equals("/");
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
@@ -43,7 +43,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
                 //IdentityConstants.TwoFactorUserIdScheme
             })
-            .AddIdentityCookies(cookies => { });
+            .AddIdentityCookies();
 
             var mvcBuilder = services.AddRazorPages(options =>
             {
@@ -69,9 +69,6 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                 //.AddStoreInitializer<GuidIdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
-                    // Use Librame.AspNetCore.Identity.Web.Mvc RPL
-                    dependency.Options.LoginCallbackPath = new PathString("/Identity/Manage/Index");
-
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })
                 .AddIdentityWeb()

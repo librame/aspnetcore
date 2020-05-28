@@ -1,9 +1,9 @@
 #region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -84,6 +84,12 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [InjectionService]
         private IClockService _clock = null;
 
+        [InjectionService]
+        private IApplicationContext _application = null;
+
+        [InjectionService]
+        private IdentityWebBuilderDependency _dependency = null;
+
 
         private readonly IIdentityStoreIdentifierGenerator _identifierGenerator = null;
         private readonly UserManager<TUser> _userManager = null;
@@ -101,6 +107,18 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
 
             _identifierGenerator = _serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser>();
             _userManager = _signInManager.UserManager;
+        }
+
+
+        /// <summary>
+        /// GET: /Account/Login
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
 
 
@@ -156,7 +174,9 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return this.RedirectToLocalUrlOrDefaultPath(returnUrl, _builderOptions.Value.LoginCallbackPath);
+
+                    var navigation = _dependency.LoginSuccessfulCallbackNavigation?.Invoke(_application.CurrentProject.Navigation);
+                    return this.RedirectToLocalUrlOrDefaultPath(returnUrl, navigation?.GenerateLink(Url));
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -244,7 +264,9 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
 
                     _logger.LogInformation(3, "User created a new account with password.");
-                    return this.RedirectToLocalUrlOrDefaultPath(returnUrl, _builderOptions.Value.RegisterCallbackPath);
+
+                    var navigation = _dependency.RegisterSuccessfulCallbackNavigation?.Invoke(_application.CurrentProject.Navigation);
+                    return this.RedirectToLocalUrlOrDefaultPath(returnUrl, navigation?.GenerateLink(Url));
                 }
                 AddErrors(result);
             }
@@ -255,17 +277,19 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
 
 
         /// <summary>
-        /// POST: /Account/LogOff
+        /// POST: /Account/Logout
         /// </summary>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
-        public async Task<IActionResult> LogOff(string returnUrl = null)
+        public async Task<IActionResult> Logout(string returnUrl = null)
         {
             await _signInManager.SignOutAsync().ConfigureAndWaitAsync();
             _logger.LogInformation(4, "User logged out.");
-            return this.RedirectToLocalUrlOrDefaultPath(returnUrl, _builderOptions.Value.LogoutCallbackPath);
+
+            var navigation = _dependency.LogoutSuccessfulCallbackNavigation?.Invoke(_application.CurrentProject.Navigation);
+            return this.RedirectToLocalUrlOrDefaultPath(returnUrl, navigation?.GenerateLink(Url));
         }
 
 
@@ -284,6 +308,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
             // Request a redirect to the external login provider.
             var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
             return Challenge(properties, provider);
         }
 
@@ -319,7 +344,9 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info).ConfigureAndWaitAsync();
 
                 _logger.LogInformation(5, "User logged in with {Name} provider.", (string)info.LoginProvider);
-                return this.RedirectToLocalUrlOrDefaultPath(returnUrl, _builderOptions.Value.LoginCallbackPath);
+
+                var navigation = _dependency.LoginSuccessfulCallbackNavigation?.Invoke(_application.CurrentProject.Navigation);
+                return this.RedirectToLocalUrlOrDefaultPath(returnUrl, navigation?.GenerateLink(Url));
             }
             if (result.RequiresTwoFactor)
             {
@@ -382,7 +409,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
                         // Update any authentication tokens as well
                         await _signInManager.UpdateExternalAuthenticationTokensAsync(info).ConfigureAndWaitAsync();
 
-                        return this.RedirectToLocalUrlOrDefaultPath(returnUrl, _builderOptions.Value.LoginCallbackPath);
+                        var navigation = _dependency.LoginSuccessfulCallbackNavigation?.Invoke(_application.CurrentProject.Navigation);
+                        return this.RedirectToLocalUrlOrDefaultPath(returnUrl, navigation?.GenerateLink(Url));
                     }
                 }
                 AddErrors(result);

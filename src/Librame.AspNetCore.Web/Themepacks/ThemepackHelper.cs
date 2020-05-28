@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -28,6 +28,5 @@ namespace Librame.AspNetCore.Web.Themepacks
         public static IReadOnlyDictionary<string, IThemepackInfo> ThemepackInfos
             => ApplicationHelper.GetApplicationInfos(ThemepackAssemblyPatternRegistration.All,
                 type => type.EnsureCreate<IThemepackInfo>()); // 此创建方法要求类型可公共访问
-
     }
 }

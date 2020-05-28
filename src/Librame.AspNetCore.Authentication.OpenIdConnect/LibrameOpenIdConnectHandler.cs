@@ -1,16 +1,16 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
 
 #endregion
 
-using Librame.Extensions;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
@@ -24,31 +24,32 @@ using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.Librame
+namespace Librame.AspNetCore.Authentication.OpenIdConnect
 {
+    using Extensions;
+
     /// <summary>
-    /// 重置 <see cref="OpenIdConnectHandler"/>。
+    /// Librame <see cref="OpenIdConnectHandler"/>。
     /// </summary>
-    public class ResetOpenIdConnectHandler : OpenIdConnectHandler
+    public class LibrameOpenIdConnectHandler : OpenIdConnectHandler
     {
         private OpenIdConnectConfiguration _configuration;
 
 
         /// <summary>
-        /// 构造一个 <see cref="ResetOpenIdConnectHandler"/>。
+        /// 构造一个 <see cref="LibrameOpenIdConnectHandler"/>。
         /// </summary>
         /// <param name="options">给定的 <see cref="IOptionsMonitor{TOptions}"/>。</param>
         /// <param name="logger">给定的 <see cref="ILoggerFactory"/>。</param>
         /// <param name="htmlEncoder">给定的 <see cref="HtmlEncoder"/>。</param>
         /// <param name="encoder">给定的 <see cref="UrlEncoder"/>。</param>
         /// <param name="clock">给定的 <see cref="ISystemClock"/>。</param>
-        public ResetOpenIdConnectHandler(IOptionsMonitor<OpenIdConnectOptions> options, ILoggerFactory logger, HtmlEncoder htmlEncoder, UrlEncoder encoder, ISystemClock clock)
+        public LibrameOpenIdConnectHandler(IOptionsMonitor<OpenIdConnectOptions> options, ILoggerFactory logger, HtmlEncoder htmlEncoder, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, htmlEncoder, encoder, clock)
         {
         }
@@ -606,7 +607,8 @@ namespace Microsoft.AspNetCore.Authentication.Librame
             return null;
         }
 
-        private async Task<MessageReceivedContext> RunMessageReceivedEventAsync(OpenIdConnectMessage message, AuthenticationProperties properties)
+        private async Task<MessageReceivedContext> RunMessageReceivedEventAsync(
+            OpenIdConnectMessage message, AuthenticationProperties properties)
         {
             Logger.MessageReceived(message.BuildRedirectUrl());
             var context = new MessageReceivedContext(Context, Scheme, Options, properties)
@@ -630,7 +632,9 @@ namespace Microsoft.AspNetCore.Authentication.Librame
             return context;
         }
 
-        private async Task<TokenValidatedContext> RunTokenValidatedEventAsync(OpenIdConnectMessage authorizationResponse, OpenIdConnectMessage tokenEndpointResponse, ClaimsPrincipal user, AuthenticationProperties properties, JwtSecurityToken jwt, string nonce)
+        private async Task<TokenValidatedContext> RunTokenValidatedEventAsync(
+            OpenIdConnectMessage authorizationResponse, OpenIdConnectMessage tokenEndpointResponse,
+            ClaimsPrincipal user, AuthenticationProperties properties, JwtSecurityToken jwt, string nonce)
         {
             var context = new TokenValidatedContext(Context, Scheme, Options, user, properties)
             {
@@ -656,7 +660,9 @@ namespace Microsoft.AspNetCore.Authentication.Librame
             return context;
         }
 
-        private async Task<AuthorizationCodeReceivedContext> RunAuthorizationCodeReceivedEventAsync(OpenIdConnectMessage authorizationResponse, ClaimsPrincipal user, AuthenticationProperties properties, JwtSecurityToken jwt)
+        private async Task<AuthorizationCodeReceivedContext> RunAuthorizationCodeReceivedEventAsync(
+            OpenIdConnectMessage authorizationResponse, ClaimsPrincipal user,
+            AuthenticationProperties properties, JwtSecurityToken jwt)
         {
             Logger.AuthorizationCodeReceived();
 
@@ -732,7 +738,8 @@ namespace Microsoft.AspNetCore.Authentication.Librame
             return context;
         }
 
-        private async Task<AuthenticationFailedContext> RunAuthenticationFailedEventAsync(OpenIdConnectMessage message, Exception exception)
+        private async Task<AuthenticationFailedContext> RunAuthenticationFailedEventAsync(
+            OpenIdConnectMessage message, Exception exception)
         {
             var context = new AuthenticationFailedContext(Context, Scheme, Options)
             {
@@ -757,7 +764,8 @@ namespace Microsoft.AspNetCore.Authentication.Librame
         }
 
         // Note this modifies properties if Options.UseTokenLifetime
-        private ClaimsPrincipal ValidateToken(string idToken, AuthenticationProperties properties, TokenValidationParameters validationParameters, out JwtSecurityToken jwt)
+        private ClaimsPrincipal ValidateToken(string idToken, AuthenticationProperties properties,
+            TokenValidationParameters validationParameters, out JwtSecurityToken jwt)
         {
             if (!Options.SecurityTokenValidator.CanReadToken(idToken))
             {
@@ -806,7 +814,8 @@ namespace Microsoft.AspNetCore.Authentication.Librame
             return principal;
         }
 
-        private OpenIdConnectProtocolException CreateOpenIdConnectProtocolException(OpenIdConnectMessage message, HttpResponseMessage response)
+        private OpenIdConnectProtocolException CreateOpenIdConnectProtocolException(OpenIdConnectMessage message,
+            HttpResponseMessage response)
         {
             var description = message.ErrorDescription ?? "error_description is null";
             var errorUri = message.ErrorUri ?? "error_uri is null";

@@ -10,8 +10,8 @@
             @foreach (var descr in nav.ManageLayout.Footer)
             {
                 <li class="nav-item">
-                    <a class="nav-link" href="@descr.ToRouteString(Url)" title="@descr.TagTitle" @descr.TagTargetFormat>
-                        @descr.Text
+                    <a class="nav-link" href="@descr.GenerateLink(Url)" title="@descr.GetLocalizedText()" @descr.FormatTargetPairOrEmptyString()>
+                        @descr.GetLocalizedHtmlText()
                     </a>
                 </li>
             }

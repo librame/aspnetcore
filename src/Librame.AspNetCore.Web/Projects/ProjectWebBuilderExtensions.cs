@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.NotNull(nameof(builder));
 
-            builder.Services.AddSingleton<IProjectNavigation, TNavigation>();
+            builder.AddService<IProjectNavigation, TNavigation>();
             builder.Services.ConfigureOptions(typeof(TConfiguration));
 
             return builder;
@@ -65,8 +65,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.AddProjectCore<TConfiguration, TNavigation>();
 
-            if (!builder.Services.TryGet<IProjectNavigation, ProjectNavigationWithController>(out _))
-                builder.Services.AddSingleton<IProjectNavigation, ProjectNavigationWithController>();
+            if (!builder.Services.TryGet<IProjectNavigation, RootProjectNavigationWithController>(out _))
+                builder.Services.AddSingleton<IProjectNavigation, RootProjectNavigationWithController>();
 
             var assemblies = ThemepackHelper.ThemepackInfos.Values.Select(info => info.Assembly)
                 .Append(razorAssembly)
@@ -93,8 +93,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.AddProjectCore<TConfiguration, TNavigation>();
 
-            if (!builder.Services.TryGet<IProjectNavigation, ProjectNavigationWithPage>(out _))
-                builder.Services.AddSingleton<IProjectNavigation, ProjectNavigationWithPage>();
+            if (!builder.Services.TryGet<IProjectNavigation, RootProjectNavigationWithPage>(out _))
+                builder.Services.AddSingleton<IProjectNavigation, RootProjectNavigationWithPage>();
 
             var assemblies = ThemepackHelper.ThemepackInfos.Values.Select(info => info.Assembly)
                 .Append(razorAssembly)

@@ -51,9 +51,6 @@ namespace Librame.AspNetCore.IdentityServer.Api
                 .AddStoreInitializer<GuidIdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
-                    // Use Librame.AspNetCore.Identity.Web.Mvc RPL
-                    dependency.Options.LoginCallbackPath = new PathString("/Identity/Manage/Index");
-
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })
                 .AddIdentityApi();

@@ -31,7 +31,9 @@
             </p>
             <div class="row">
                 <div class="col-md-6">
-                    <form id="send-code" method="post">
+                    <form id="send-code" method="post"
+                          asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                          asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                         <div class="form-group">
                             <label asp-for="Input.TwoFactorCode" class="control-label">@Localizer.GetString(r => r.VerificationCode)</label>
                             <input asp-for="Input.TwoFactorCode" class="form-control" autocomplete="off" />

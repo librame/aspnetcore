@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -24,8 +24,8 @@ using System.Linq;
 
 namespace Librame.AspNetCore.Web.Projects
 {
-    using Applications;
-    using Builders;
+    using AspNetCore.Web.Applications;
+    using AspNetCore.Web.Builders;
     using Extensions;
     using Extensions.Core.Services;
 
@@ -85,9 +85,16 @@ namespace Librame.AspNetCore.Web.Projects
 
             if (IdentityConstants.ApplicationScheme.Equals(name, StringComparison.Ordinal))
             {
-                options.LoginPath = Navigation.Login.Route.ToString();
-                options.LogoutPath = Navigation.Logout.Route.ToString();
-                options.AccessDeniedPath = Navigation.AccessDenied.Route.ToString();
+                options.LoginPath = Navigation.Login.GenerateSimulativeLink();
+                options.LogoutPath = Navigation.Logout.GenerateSimulativeLink();
+                options.AccessDeniedPath = Navigation.AccessDenied.GenerateSimulativeLink();
+            }
+
+            if (IdentityConstants.ExternalScheme.Equals(name, StringComparison.Ordinal))
+            {
+                options.LoginPath = Navigation.ExternalLogin.GenerateSimulativeLink();
+                options.LogoutPath = Navigation.Logout.GenerateSimulativeLink();
+                options.AccessDeniedPath = Navigation.AccessDenied.GenerateSimulativeLink();
             }
         }
 

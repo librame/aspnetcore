@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -34,15 +34,17 @@ namespace Librame.AspNetCore.Identity.Web.Projects
         {
             base.ConfigurePageConventions(conventions);
 
-            conventions.AuthorizeAreaFolder(Area, Navigation.Manage.Route);
-            conventions.AuthorizeAreaPage(Area, Navigation.Logout.Route);
+            var managePath = Navigation.Manage.GenerateSimulativeLink();
+
+            conventions.AuthorizeAreaFolder(Area, managePath);
+            conventions.AuthorizeAreaPage(Area, Navigation.Logout.GenerateSimulativeLink());
 
             var filter = typeof(ExternalAuthenticationSchemesPageFilter<>)
                 .MakeGenericType(Builder.UserType)
                 .EnsureCreateObject(BuilderOptions);
 
             conventions.AddAreaFolderApplicationModelConvention(Area,
-                Navigation.Manage.Route,
+                managePath,
                 model => model.Filters.Add((IFilterMetadata)filter));
         }
 

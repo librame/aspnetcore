@@ -15,14 +15,20 @@
             <strong>@Localizer.GetString(r => r.Descr)</strong>
         </p>
 
-        <form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group">
+        <form id="download-data" method="post" class="form-group" asp-page="DownloadPersonalData"
+              asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+              asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
             <div class="form-group">
                 <button type="submit" class="btn btn-default">@Localizer.GetString(r => r.DownloadButtonText)</button>
             </div>
         </form>
 
         <p>
-            <a id="delete" asp-page="DeletePersonalData" class="btn btn-default">@Localizer.GetString(r => r.ButtonText)</a>
+            <a id="delete" class="btn btn-default" asp-page="DeletePersonalData"
+               asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+               asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+                @Localizer.GetString(r => r.ButtonText)
+            </a>
         </p>
     </div>
 </div>

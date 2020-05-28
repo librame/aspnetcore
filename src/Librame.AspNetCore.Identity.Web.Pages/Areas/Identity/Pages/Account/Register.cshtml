@@ -17,7 +17,10 @@
         </div>
 
         <div class="form-bottom">
-            <form method="post" class="login-form" asp-route-returnUrl="@Model.ReturnUrl">
+            <form method="post" class="login-form" asp-route-returnUrl="@Model.ReturnUrl"
+                  asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                  asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+
                 <div asp-validation-summary="All" class="text-danger"></div>
 
                 <div class="form-group">
@@ -46,7 +49,9 @@
 
                 <div class="form-group">
                     <p>
-                        <a id="login" asp-page="./Login">
+                        <a id="login" asp-page="./Login"
+                           asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                           asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                             @Model.Localizer.GetString(r => r.Login)
                         </a>
                     </p>

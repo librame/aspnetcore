@@ -5,9 +5,9 @@
     <ApplicationIcon>..\..\Librame.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.4.2.3</Version>
-    <Authors>Librame Pang</Authors>
-    <Company>Librame.net</Company>
+    <Version>7.4.2.4</Version>
+    <Authors>Librame Pong</Authors>
+    <Company>https://github.com/librame</Company>
     <Description>Based Librame.Extensions.Core.Abstractions on ASP.NET Core extension package.</Description>
     <Copyright>Copyright © 2012-2020</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.Extensions.Core.Abstractions on ASP.NET Core extension package.</PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.4.2.3</AssemblyVersion>
-    <FileVersion>7.4.1951.15117</FileVersion>
+    <AssemblyVersion>7.4.2.4</AssemblyVersion>
+    <FileVersion>7.4.1955.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Core.Abstractions" Version="7.5.0.6" />
+    <PackageReference Include="Librame.Extensions.Core.Abstractions" Version="7.5.0.7" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

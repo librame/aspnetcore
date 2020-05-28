@@ -1,59 +1,61 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
 
 #endregion
 
-using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc.Localization;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Identity.Web.Projects
 {
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Descriptors;
     using AspNetCore.Web.Projects;
     using AspNetCore.Web.Resources;
-    using AspNetCore.Web.Routings;
     using Extensions;
-    using Resources;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class IdentityProjectNavigation : ProjectNavigationWithController
     {
-        private readonly IStringLocalizer<LayoutViewResource> _layoutLocalizer;
-
-
-        public IdentityProjectNavigation(IStringLocalizer<ProjectNavigationResource> localizer,
-            IStringLocalizer<LayoutViewResource> layoutLocalizer)
+        public IdentityProjectNavigation(IHtmlLocalizer<LayoutViewResource> layoutLocalizer,
+            IHtmlLocalizer<ProjectNavigationResource> localizer)
             : base(localizer, nameof(Identity))
         {
-            _layoutLocalizer = layoutLocalizer.NotNull(nameof(layoutLocalizer));
+            AddManageSidebar(layoutLocalizer.NotNull(nameof(layoutLocalizer)));
 
-            Logout.Route.ChangeAction("LogOff");
-
-            AddManageSidebar();
+            // 重置身份区域首页为管理
+            Index = Manage;
         }
 
 
-        private void AddManageSidebar()
+        private void AddManageSidebar(IHtmlLocalizer<LayoutViewResource> layoutLocalizer)
         {
-            var controller = "Manage";
+            var manageRoute = Manage.Route as ActionRouteDescriptor;
 
-            ManageLayout.Sidebar.Add(_layoutLocalizer.AsNavigation(RouteDescriptor.ByController("Index", controller, Area), p => p.Profile)
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("profile").ChangeIcon("la la-user")));
+            // 管理首页即个人资料
+            var profile = layoutLocalizer.GetNavigation(p => p.Profile, manageRoute)
+                .ChangeId("profile").ChangeIcon("la la-user");
 
-            ManageLayout.Sidebar.Add(_layoutLocalizer.AsNavigation(RouteDescriptor.ByController("ChangePassword", controller, Area))
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("change-password").ChangeIcon("la la-unlock")));
+            var changePassword = layoutLocalizer.GetNavigationWithRouteAction(p => p.ChangePassword, manageRoute)
+                .ChangeId("change-password").ChangeIcon("la la-unlock");
 
-            ManageLayout.Sidebar.Add(_layoutLocalizer.AsNavigation(RouteDescriptor.ByController("ManageLogins", controller, Area), p => p.ExternalLogins)
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("external-login").ChangeIcon("la la-key")));
+            var externalLogins = layoutLocalizer.GetNavigation(p => p.ExternalLogins, manageRoute.WithAction("ManageLogins"))
+                .ChangeId("external-login").ChangeIcon("la la-key");
 
-            ManageLayout.Sidebar.Add(_layoutLocalizer.AsNavigation(RouteDescriptor.ByController("AddPhoneNumber", controller, Area))
-                .ChangeOptional(optional => optional.ChangeActiveCssClassNameForPage().ChangeTagId("add-phone-number").ChangeIcon("la la-superscript")));
+            var addPhoneNumber = layoutLocalizer.GetNavigationWithRouteAction(p => p.AddPhoneNumber, manageRoute)
+                .ChangeId("add-phone-number").ChangeIcon("la la-superscript");
+
+            ManageLayout.Sidebar.Add(profile);
+            ManageLayout.Sidebar.Add(changePassword);
+            ManageLayout.Sidebar.Add(externalLogins);
+            ManageLayout.Sidebar.Add(addPhoneNumber);
         }
 
     }

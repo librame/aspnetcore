@@ -28,12 +28,12 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="@nav.Index.ToRouteString(Url)">@nav.Index.Text</a></li>
+                    <li><a href="@nav.Index.GenerateLink(Url)">@nav.Index.GetLocalizedHtmlText()</a></li>
                     @if (nav.CommonLayout.Header.IsNotEmpty())
                     {
                         foreach (var descr in nav.CommonLayout.Header)
                         {
-                            <li><a href="@descr.ToRouteString(Url)">@descr.Text</a></li>
+                            <li><a href="@descr.GenerateLink(Url)">@descr.GetLocalizedHtmlText()</a></li>
                         }
                     }
                 </ul>

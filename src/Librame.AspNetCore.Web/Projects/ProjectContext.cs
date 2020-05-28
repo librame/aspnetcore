@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -27,10 +27,11 @@ namespace Librame.AspNetCore.Web.Projects
     {
         private readonly WebBuilderOptions _options = null;
 
-        private (IProjectInfo Info, IProjectNavigation Navigation) _current;
+        private ProjectDescriptor _current;
 
 
-        public ProjectContext(ServiceFactory serviceFactory, IEnumerable<IProjectNavigation> navigations,
+        public ProjectContext(ServiceFactory serviceFactory,
+            IEnumerable<IProjectNavigation> navigations,
             IOptions<WebBuilderOptions> options)
         {
             ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
@@ -59,48 +60,42 @@ namespace Librame.AspNetCore.Web.Projects
         public IReadOnlyDictionary<string, IProjectInfo> Infos
             => LoadInfos();
 
-        public (IProjectInfo Info, IProjectNavigation Navigation) Loginbar
+
+        public ProjectDescriptor Loginbar
         {
             get
             {
-                IProjectInfo info = null;
-                IProjectNavigation nav = null;
+                ProjectDescriptor descriptor = null;
 
                 if (_options.LoginbarProjectName.IsNotEmpty())
                 {
-                    info = FindInfo(_options.LoginbarProjectName);
-                    nav = FindNavigation(_options.LoginbarProjectName);
+                    descriptor = new ProjectDescriptor(FindInfo(_options.LoginbarProjectName),
+                        FindNavigation(_options.LoginbarProjectName));
                 }
 
-                if (info.IsNull() || nav.IsNull())
-                    return Current;
-                
-                return (info, nav);
+                return descriptor ?? Current;
             }
         }
 
-        public (IProjectInfo Info, IProjectNavigation Navigation) Current
+        public ProjectDescriptor Current
         {
             get
             {
-                if (_current.Info.IsNull() || _current.Navigation.IsNull())
+                if (_current.IsNull())
                     return SetCurrent(null);
 
                 return _current;
             }
-            set
-            {
-                value.Info.NotNull(nameof(value.Info));
-                value.Navigation.NotNull(nameof(value.Navigation));
-
-                _current = value;
-            }
         }
 
 
-        public (IProjectInfo Info, IProjectNavigation Navigation) SetCurrent(string area)
+        public ProjectDescriptor SetCurrent(string area)
         {
-            _current = (FindInfo(area), FindNavigation(area));
+            ExtensionSettings.Preference.RunLocker(() =>
+            {
+                _current = new ProjectDescriptor(FindInfo(area), FindNavigation(area));
+            });
+            
             return _current;
         }
 

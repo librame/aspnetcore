@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -32,6 +32,13 @@ namespace Librame.AspNetCore.Web.Themepacks.Simple
         public override IStringLocalizer Localizer
             => new ThemepackExpressionLocalizer<ThemepackInfoResource>();
 
+
+        /// <summary>
+        /// 获取布局提供程序。
+        /// </summary>
+        /// <returns>返回 <see cref="ILayoutProvider"/>。</returns>
+        public override ILayoutProvider GetLayoutProvider()
+            => new AssemblyLayoutProvider(Assembly);
 
         /// <summary>
         /// 获取静态文件提供程序。

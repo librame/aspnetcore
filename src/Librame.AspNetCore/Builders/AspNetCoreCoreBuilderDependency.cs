@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -11,6 +11,7 @@
 #endregion
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
 using System.Globalization;
 
@@ -43,6 +44,7 @@ namespace Librame.AspNetCore.Builders
         {
             RequestLocalization = new OptionsDependency<RequestLocalizationOptions>();
 
+            RequestLocalization.Options.DefaultRequestCulture = new RequestCulture(DefaultCultureInfos[1]);
             RequestLocalization.Options.SupportedCultures = DefaultCultureInfos;
             RequestLocalization.Options.SupportedUICultures = DefaultCultureInfos;
 

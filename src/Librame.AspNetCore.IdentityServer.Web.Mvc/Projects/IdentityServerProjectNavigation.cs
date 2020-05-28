@@ -1,36 +1,29 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
 
 #endregion
 
-using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc.Localization;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.IdentityServer.Web.Projects
 {
     using AspNetCore.Web.Projects;
     using AspNetCore.Web.Resources;
-    using Extensions;
-    using Resources;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class IdentityServerProjectNavigation : ProjectNavigationWithController
     {
-        private readonly IStringLocalizer<LayoutViewResource> _layoutLocalizer;
-
-
-        public IdentityServerProjectNavigation(IStringLocalizer<ProjectNavigationResource> localizer,
-            IStringLocalizer<LayoutViewResource> layoutLocalizer)
+        public IdentityServerProjectNavigation(IHtmlLocalizer<ProjectNavigationResource> localizer)
             : base(localizer, nameof(IdentityServer))
         {
-            _layoutLocalizer = layoutLocalizer.NotNull(nameof(layoutLocalizer));
         }
 
     }

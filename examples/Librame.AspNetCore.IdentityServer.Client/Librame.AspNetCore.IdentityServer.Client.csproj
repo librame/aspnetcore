@@ -12,7 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\shared\Librame.Models\Librame.Models.csproj" />
     <ProjectReference Include="..\..\src\Librame.AspNetCore.Abstractions\Librame.AspNetCore.Abstractions.csproj" />
-    <ProjectReference Include="..\..\src\Microsoft.AspNetCore.Authentication.Librame\Microsoft.AspNetCore.Authentication.Librame.csproj" />
+    <ProjectReference Include="..\..\src\Librame.AspNetCore.Authentication.OpenIdConnect\Librame.AspNetCore.Authentication.OpenIdConnect.csproj" />
   </ItemGroup>
 
 </Project>

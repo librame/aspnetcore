@@ -1,9 +1,9 @@
 #region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -22,10 +22,10 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
+    using AspNetCore.Identity.Web.Resources;
     using AspNetCore.Web;
     using Extensions;
     using Extensions.Network.Services;
-    using Resources;
 
     /// <summary>
     /// 首页页面模型。

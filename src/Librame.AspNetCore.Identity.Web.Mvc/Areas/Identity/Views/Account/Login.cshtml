@@ -1,5 +1,5 @@
-@using System.Collections.Generic
 @using Microsoft.AspNetCore.Authentication
+@using System.Collections.Generic
 @model LoginViewModel
 @inject IHtmlLocalizer<LoginViewResource> Localizer
 @{
@@ -21,7 +21,10 @@
         </div>
 
         <div class="form-bottom">
-            <form id="account" method="post" class="login-form" asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">
+            <form id="account" method="post" class="login-form" asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]"
+                  asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                  asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+
                 <div asp-validation-summary="All" class="text-danger"></div>
 
                 <div class="form-group">
@@ -54,14 +57,18 @@
                 <div class="form-group overflow-hidden">
                     <div class="col-sm-6">
                         <p>
-                            <a asp-action="ForgotPassword">
+                            <a asp-action="ForgotPassword"
+                               asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                               asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                                 @Localizer.GetString(r => r.ForgotPassword)
                             </a>
                         </p>
                     </div>
                     <div class="col-sm-6 text-right">
                         <p>
-                            <a asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]">
+                            <a asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]"
+                               asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                               asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                                 @Localizer.GetString(r => r.RegisterUser)
                             </a>
                         </p>
@@ -87,7 +94,9 @@
                 }
                 else
                 {
-                    <form id="external-account" asp-controller="Account" asp-action="ExternalLogin" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    <form id="external-account" method="post" class="form-horizontal" asp-controller="Account" asp-action="ExternalLogin" asp-route-returnUrl="@ViewData["ReturnUrl"]"
+                          asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                          asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                         <div>
                             <p>
                                 @foreach (var provider in loginProviders)

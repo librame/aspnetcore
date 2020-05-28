@@ -4,6 +4,7 @@
     var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
     var showBanner = !consentFeature?.CanTrack ?? false;
 }
+
 @if (showBanner)
 {
     var cookieString = consentFeature?.CreateConsentCookie();
@@ -25,7 +26,7 @@
                     @Html.Raw(Model.CurrentThemepackInfo.Localizer.GetString("PrivacyAndCookiePolicy").Value)
                 </p>
                 <div class="navbar-right">
-                    <a href="@nav.Privacy.ToRouteString(Url)" class="btn btn-info navbar-btn">@nav.Privacy.Text</a>
+                    <a href="@nav?.Privacy.GenerateLink(Url)" class="btn btn-info navbar-btn">@nav?.Privacy.GetLocalizedHtmlText()</a>
                     <button type="button" class="btn btn-default navbar-btn" data-cookie-string="@cookieString">@Model.CurrentThemepackInfo.Localizer.GetString("PrivacyAndCookiePolicyButton").Value</button>
                 </div>
             </div>

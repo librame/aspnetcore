@@ -1,9 +1,9 @@
 ﻿#region License
 
 /* **************************************************************************************
- * Copyright (c) Librame Pang All rights reserved.
+ * Copyright (c) Librame Pong All rights reserved.
  * 
- * http://librame.net
+ * https://github.com/librame
  * 
  * You must not remove this notice, or any other, from this software.
  * **************************************************************************************/
@@ -28,7 +28,7 @@ namespace Librame.AspNetCore.Web.Themepacks
         {
             if (_patterns.IsEmpty)
             {
-                Add($@"^{nameof(Librame)}.{nameof(AspNetCore)}.{nameof(Web)}.(Themepacks).(\w+)$");
+                Add($@"^{nameof(Librame)}.{nameof(AspNetCore)}.{nameof(Web)}.{nameof(Themepacks)}.(\w+)$");
             }
         }
 
