@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -26,99 +27,15 @@ namespace Librame.AspNetCore.Web.Applications
     using Extensions.Core.Services;
 
     /// <summary>
-    /// 应用控制器。
+    /// 应用页面模型。
     /// </summary>
-    /// <typeparam name="TUser">指定的用户类型。</typeparam>
-    public abstract class ApplicationController<TUser> : ApplicationController
-        where TUser : class
+    public class ApplicationPageModel : PageModel
     {
         /// <summary>
-        /// 构造一个 <see cref="ApplicationController{TUser}"/>。
+        /// 构造一个 <see cref="ApplicationPageModel"/>。
         /// </summary>
         /// <param name="injection">给定的 <see cref="IInjectionService"/>。</param>
-        protected ApplicationController(IInjectionService injection)
-            : base(injection)
-        {
-        }
-
-
-        /// <summary>
-        /// 登入管理器。
-        /// </summary>
-        [InjectionService]
-        public SignInManager<TUser> SignInManager { get; set; }
-
-        /// <summary>
-        /// 用户管理器。
-        /// </summary>
-        public UserManager<TUser> UserManager
-            => SignInManager?.UserManager;
-
-
-        /// <summary>
-        /// 验证登入用户动作结果。
-        /// </summary>
-        /// <param name="actionResultFactory">给定的动作结果工厂方法。</param>
-        /// <returns>返回 <see cref="Task{IActionResult}"/>。</returns>
-        protected virtual async Task<IActionResult> VerifyLoginUserActionResult(Func<TUser, IActionResult> actionResultFactory)
-        {
-            (TUser user, IActionResult result) = await GetLoginUserAsync().ConfigureAndResultAsync();
-
-            if (result.IsNotNull())
-                return result;
-
-            return actionResultFactory?.Invoke(user);
-        }
-
-        /// <summary>
-        /// 验证登入用户动作结果。
-        /// </summary>
-        /// <param name="actionResultFactory">给定的动作结果工厂方法。</param>
-        /// <returns>返回 <see cref="Task{IActionResult}"/>。</returns>
-        protected virtual async Task<IActionResult> VerifyLoginUserActionResult(Func<TUser, Task<IActionResult>> actionResultFactory)
-        {
-            (TUser user, IActionResult result) = await GetLoginUserAsync().ConfigureAndResultAsync();
-
-            if (result.IsNotNull())
-                return result;
-
-            return await (actionResultFactory?.Invoke(user)).ConfigureAndResultAsync();
-        }
-
-        private async Task<(TUser user, IActionResult result)> GetLoginUserAsync()
-        {
-            var user = await UserManager.GetUserAsync(User).ConfigureAndResultAsync();
-            if (user.IsNull())
-            {
-                var options = Application.ServiceFactory.GetRequiredService<IOptions<CookieAuthenticationOptions>>().Value;
-                var returnUrlPair = $"{options.ReturnUrlParameter}={Request.Path}";
-
-                var redirectResult = RedirectToAreaNavigation(nav =>
-                {
-                    var descr = nav.IdentityNavigation?.Login ?? nav.RootNavigation.Index;
-                    return descr.WithRoute<ActionRouteDescriptor>(r => r.WithId(returnUrlPair));
-                });
-                //return NotFound($"Unable to load user with ID '{UserManager.GetUserId(User)}'.");
-
-                return (null, redirectResult);
-            }
-
-            return (user, null);
-        }
-
-    }
-
-
-    /// <summary>
-    /// 应用控制器。
-    /// </summary>
-    public abstract class ApplicationController : Controller
-    {
-        /// <summary>
-        /// 构造一个 <see cref="ApplicationController"/>。
-        /// </summary>
-        /// <param name="injection">给定的 <see cref="IInjectionService"/>。</param>
-        protected ApplicationController(IInjectionService injection)
+        protected ApplicationPageModel(IInjectionService injection)
             : base()
         {
             injection.NotNull(nameof(injection)).Inject(this);
@@ -132,6 +49,13 @@ namespace Librame.AspNetCore.Web.Applications
         /// </summary>
         [InjectionService]
         public IApplicationContext Application { get; set; }
+
+
+        /// <summary>
+        /// 状态消息。
+        /// </summary>
+        [TempData]
+        public string StatusMessage { get; set; }
 
 
         /// <summary>
@@ -188,6 +112,69 @@ namespace Librame.AspNetCore.Web.Applications
 
             // 如果默认路径为空，则使用站点地图首页路径
             return Redirect(defaultPath.NotEmptyOrDefault(() => GetAreaNavigationPath(nav => nav.Index)));
+        }
+
+
+        /// <summary>
+        /// 验证登入用户动作结果。
+        /// </summary>
+        /// <param name="userManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
+        /// <param name="actionResultFactory">给定的动作结果工厂方法。</param>
+        /// <returns>返回 <see cref="Task{IActionResult}"/>。</returns>
+        [SuppressMessage("Design", "CA1062:验证公共方法的参数")]
+        protected virtual async Task<IActionResult> VerifyLoginUserActionResult<TUser>(UserManager<TUser> userManager,
+            Func<TUser, IActionResult> actionResultFactory)
+            where TUser : class
+        {
+            (TUser user, IActionResult result) = await GetLoginUserAsync(userManager).ConfigureAndResultAsync();
+
+            if (result.IsNotNull())
+                return result;
+
+            return actionResultFactory?.Invoke(user);
+        }
+
+        /// <summary>
+        /// 验证登入用户动作结果。
+        /// </summary>
+        /// <param name="userManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
+        /// <param name="actionResultFactory">给定的动作结果工厂方法。</param>
+        /// <returns>返回 <see cref="Task{IActionResult}"/>。</returns>
+        [SuppressMessage("Design", "CA1062:验证公共方法的参数")]
+        protected virtual async Task<IActionResult> VerifyLoginUserActionResult<TUser>(UserManager<TUser> userManager,
+            Func<TUser, Task<IActionResult>> actionResultFactory)
+            where TUser : class
+        {
+            (TUser user, IActionResult result) = await GetLoginUserAsync(userManager).ConfigureAndResultAsync();
+
+            if (result.IsNotNull())
+                return result;
+
+            return await (actionResultFactory?.Invoke(user)).ConfigureAndResultAsync();
+        }
+
+        private async Task<(TUser user, IActionResult result)> GetLoginUserAsync<TUser>(UserManager<TUser> userManager)
+            where TUser : class
+        {
+            userManager.NotNull(nameof(userManager));
+
+            var user = await userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            if (user.IsNull())
+            {
+                var options = Application.ServiceFactory.GetRequiredService<IOptions<CookieAuthenticationOptions>>().Value;
+                var returnUrlPair = $"{options.ReturnUrlParameter}={Request.Path}";
+
+                var redirectResult = RedirectToAreaNavigation(nav =>
+                {
+                    var descr = nav.IdentityNavigation?.Login ?? nav.RootNavigation.Index;
+                    return descr.WithRoute<PageRouteDescriptor>(r => r.WithId(returnUrlPair));
+                });
+                //return NotFound($"Unable to load user with ID '{UserManager.GetUserId(User)}'.");
+
+                return (null, redirectResult);
+            }
+
+            return (user, null);
         }
 
     }

@@ -35,21 +35,27 @@ namespace Librame.AspNetCore.Identity.Builders
 
 
         /// <summary>
-        /// 登入成功回调路径（默认导航管理首页）。
+        /// 登入成功回调路径（默认身份导航管理）。
         /// </summary>
         public Func<IProjectNavigation, NavigationDescriptor> LoginSuccessfulCallbackNavigation { get; set; }
-            = navs => navs.Manage;
+            = navs => navs.IdentityNavigation?.Manage;
 
         /// <summary>
-        /// 登出成功回调路径（默认导航首页）。
+        /// 登出成功回调路径（默认根导航首页）。
         /// </summary>
         public Func<IProjectNavigation, NavigationDescriptor> LogoutSuccessfulCallbackNavigation { get; set; }
-            = navs => navs.Index;
+            = navs => navs.RootNavigation.Index;
 
         /// <summary>
-        /// 注册成功回调路径（默认导航首页）。
+        /// 注册成功回调路径（默认根导航首页）。
         /// </summary>
         public Func<IProjectNavigation, NavigationDescriptor> RegisterSuccessfulCallbackNavigation { get; set; }
-            = navs => navs.Index;
+            = navs => navs.RootNavigation.Index;
+
+        /// <summary>
+        /// 双因子恢复码长度。
+        /// </summary>
+        public int TwoFactorRecoveryCodeLength { get; set; }
+            = 5;
     }
 }

@@ -20,7 +20,7 @@
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
     <AssemblyVersion>7.4.2.4</AssemblyVersion>
-    <FileVersion>7.4.1955.15117</FileVersion>
+    <FileVersion>7.4.1962.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Core.Abstractions" Version="7.5.0.7" />
+    <PackageReference Include="Librame.Extensions.Core.Abstractions" Version="7.5.0.8" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

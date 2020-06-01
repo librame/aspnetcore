@@ -10,11 +10,13 @@
 
 #endregion
 
+using System;
 using System.Collections.Generic;
 
 namespace Librame.AspNetCore.Web.Builders
 {
     using AspNetCore.Web.Options;
+    using AspNetCore.Web.Projects;
     using Extensions.Core.Builders;
 
     /// <summary>
@@ -41,11 +43,10 @@ namespace Librame.AspNetCore.Web.Builders
             = $"{typeof(WebBuilderOptions).Namespace}.HasExternalLogins";
 
         /// <summary>
-        /// 登陆栏项目名称。
+        /// 断定身份导航（默认使用“Identity”模块导航）。
         /// </summary>
-        public string LoginbarProjectName { get; set; }
-            = "Identity";
-
+        public Func<IProjectNavigation, bool> PredicateIdentityNavigation { get; set; }
+            = nav => (bool)nav.Area?.Equals("Identity", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// 查找应用程序集模式列表。

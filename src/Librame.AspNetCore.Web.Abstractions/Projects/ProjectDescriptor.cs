@@ -46,5 +46,12 @@ namespace Librame.AspNetCore.Web.Projects
         /// </summary>
         public IProjectNavigation RootNavigation
             => Navigation.RootNavigation;
+
+        /// <summary>
+        /// 身份项目导航。
+        /// </summary>
+        public IProjectNavigation IdentityNavigation
+            => Navigation.IdentityNavigation;
+
     }
 }

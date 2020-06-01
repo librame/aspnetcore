@@ -29,7 +29,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
+            var authBuilder = services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => context.Request.Path.Equals("/");
@@ -40,8 +40,8 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
             {
                 // SignInManager.SignOutAsync
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-                //IdentityConstants.TwoFactorUserIdScheme
+                // SignInManager.SignInWithClaimsAsync
+                //options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
             })
             .AddIdentityCookies();
 
@@ -66,7 +66,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                 })
                 .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
                 .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
-                //.AddStoreInitializer<GuidIdentityStoreInitializer>()
+                .AddStoreInitializer<GuidIdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;

@@ -17,7 +17,6 @@ using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
 namespace Librame.AspNetCore.Web.Descriptors
 {
@@ -79,7 +78,7 @@ namespace Librame.AspNetCore.Web.Descriptors
         /// 路由描述符。
         /// </summary>
         /// <value>返回 <see cref="AbstractRouteDescriptor"/> 或 NULL。</value>
-        public AbstractRouteDescriptor Route { get; }
+        public AbstractRouteDescriptor Route { get; private set; }
 
 
         /// <summary>
@@ -142,6 +141,72 @@ namespace Librame.AspNetCore.Web.Descriptors
         {
             Target = "_blank";
             return this;
+        }
+
+        /// <summary>
+        /// 改变路由描述符。
+        /// </summary>
+        /// <typeparam name="TDescriptor">指定的路由描述符类型。</typeparam>
+        /// <param name="newRouteFactory">给定的新路由描述符工厂方法。</param>
+        /// <returns>返回 <see cref="NavigationDescriptor"/>。</returns>
+        public NavigationDescriptor ChangeRoute<TDescriptor>(Func<TDescriptor, TDescriptor> newRouteFactory)
+            where TDescriptor : AbstractRouteDescriptor
+            => ChangeRoute(newRouteFactory?.Invoke((TDescriptor)Route));
+
+        /// <summary>
+        /// 改变路由描述符。
+        /// </summary>
+        /// <param name="newRoute">给定的新 <see cref="AbstractRouteDescriptor"/>。</param>
+        /// <returns>返回 <see cref="NavigationDescriptor"/>。</returns>
+        public NavigationDescriptor ChangeRoute(AbstractRouteDescriptor newRoute)
+        {
+            Route = newRoute.NotNull(nameof(newRoute));
+            return this;
+        }
+
+
+        /// <summary>
+        /// 带有初始化链接。
+        /// </summary>
+        /// <param name="newInitialLink">给定的新初始化链接。</param>
+        /// <returns>返回 <see cref="NavigationDescriptor"/>。</returns>
+        public NavigationDescriptor WithInitialLink(string newInitialLink)
+        {
+            var nav = new NavigationDescriptor(Localizer, LocalizerName, newInitialLink);
+
+            nav.Id = Id;
+            nav.Icon = Icon;
+            nav.Target = Target;
+            nav.Visibility = Visibility;
+
+            return nav;
+        }
+
+        /// <summary>
+        /// 带有路由描述符。
+        /// </summary>
+        /// <typeparam name="TRoute">指定的路由描述符类型。</typeparam>
+        /// <param name="newRouteFactory">给定的新路由描述符工厂方法。</param>
+        /// <returns>返回 <see cref="NavigationDescriptor"/>。</returns>
+        public NavigationDescriptor WithRoute<TRoute>(Func<TRoute, TRoute> newRouteFactory)
+            where TRoute : AbstractRouteDescriptor
+            => WithRoute(newRouteFactory?.Invoke((TRoute)Route));
+
+        /// <summary>
+        /// 带有路由描述符。
+        /// </summary>
+        /// <param name="newRoute">给定的新 <see cref="AbstractRouteDescriptor"/>。</param>
+        /// <returns>返回 <see cref="NavigationDescriptor"/>。</returns>
+        public NavigationDescriptor WithRoute(AbstractRouteDescriptor newRoute)
+        {
+            var nav = new NavigationDescriptor(Localizer, newRoute, LocalizerName);
+
+            nav.Id = Id;
+            nav.Icon = Icon;
+            nav.Target = Target;
+            nav.Visibility = Visibility;
+
+            return nav;
         }
 
 
@@ -260,30 +325,7 @@ namespace Librame.AspNetCore.Web.Descriptors
             if (Route.IsNull())
                 return InitialLink;
 
-            var sb = new StringBuilder();
-
-            if (Route.Area.IsNotEmpty())
-                sb.Append($"/{Route.Area}");
-
-            if (Route is ActionRouteDescriptor actionRoute)
-            {
-                if (actionRoute.Controller.IsNotEmpty())
-                    sb.Append($"/{actionRoute.Controller}");
-
-                if (actionRoute.Action.IsNotEmpty())
-                    sb.Append($"/{actionRoute.Action}");
-            }
-
-            if (Route is PageRouteDescriptor pageRoute)
-            {
-                if (pageRoute.Page.IsNotEmpty())
-                    sb.Append(pageRoute.Page.EnsureLeading('/'));
-            }
-
-            if (Route.Id.IsNotEmpty())
-                sb.Append(Route.Id.EnsureLeading('?'));
-
-            return sb.ToString();
+            return Route.GenerateSimulativeLink();
         }
 
     }

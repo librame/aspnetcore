@@ -1,5 +1,7 @@
-﻿@model IndexViewModel
+﻿@model UserViewModel
+@inject IHtmlLocalizer<UserViewModelResource> UserViewLocalizer
 @{
+    var profile = ViewBag.Profile as ProfileViewModel;
     var localizer = ViewBag.Localizer as IHtmlLocalizer<IndexViewResource>;
     ViewData["Title"] = localizer.GetString(r => r.Title);
 }
@@ -12,10 +14,43 @@
 <div class="row">
     <div class="col-md-10">
         <div class="form-horizontal">
+            <form id="profile-form" method="post"
+                  asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                  asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.Name"></label>
+                    <input asp-for="@Model.Name" class="form-control" disabled />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.Email"></label>
+                    @if ((bool)ViewBag.IsEmailConfirmed)
+                    {
+                        <div class="input-group">
+                            <input asp-for="@Model.Email" class="form-control" placeholder="@UserViewLocalizer.GetString(p => p.Email) ..." />
+                            <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <input asp-for="@Model.Email" class="form-control" placeholder="@UserViewLocalizer.GetString(p => p.Email) ..." />
+                        <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">@localizer.GetString(r => r.SendButtonText)</button>
+                    }
+                    <span asp-validation-for="@Model.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button id="update-profile-button" type="submit" class="btn btn-default">@localizer.GetString(r => r.ButtonText)</button>
+                </div>
+            </form>
+
             <div class="form-group">
                 <h5>@localizer.GetString(r => r.Password)</h5>
 
-                @if (Model.HasPassword)
+                @if (profile.HasPassword)
                 {
                     <text>
                         [&nbsp;&nbsp;
@@ -44,13 +79,13 @@
             <div class="form-group">
                 <h5>@localizer.GetString(r => r.ExternalLogins)</h5>
 
-                @Model.Logins.Count
+                @profile.Logins.Count
                 [&nbsp;&nbsp;
-                    <a asp-controller="Manage" asp-action="ManageLogins"
-                       asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
-                       asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
-                        @localizer.GetString(r => r.ManageLogins)
-                    </a>
+                <a asp-controller="Manage" asp-action="ManageLogins"
+                   asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                   asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+                    @localizer.GetString(r => r.ManageLogins)
+                </a>
                 &nbsp;&nbsp;]
             </div>
 
@@ -62,8 +97,8 @@
                     See <a href="http://go.microsoft.com/fwlink/?LinkID=532713">this article</a>
                     for details on setting up this ASP.NET application to support two-factor authentication using SMS.
                 </p>-->
-                @(Model.PhoneNumber ?? localizer.GetString(r => r.NonePhoneNumber).Value)
-                @if (Model.PhoneNumber != null)
+                @(profile.PhoneNumber ?? localizer.GetString(r => r.NonePhoneNumber).Value)
+                @if (profile.PhoneNumber != null)
                 {
                     <br />
                     <text>
@@ -103,19 +138,19 @@
                     There are no two-factor authentication providers configured. See <a href="http://go.microsoft.com/fwlink/?LinkID=532713">this article</a>
                     for setting up this application to support two-factor authentication.
                 </p>-->
-                @if (Model.TwoFactor)
+                @if (profile.TwoFactor)
                 {
                     <form method="post" class="form-horizontal" role="form" asp-controller="Manage" asp-action="DisableTwoFactorAuthentication"
-                           asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
-                           asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+                          asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                          asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                         @localizer.GetString(r => r.EnableTwoFactor) [<button type="submit" class="btn-link">@localizer.GetString(r => r.DisableTwoFactor)</button>]
                     </form>
                 }
                 else
                 {
                     <form method="post" class="form-horizontal" role="form" asp-controller="Manage" asp-action="EnableTwoFactorAuthentication"
-                           asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
-                           asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+                          asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                          asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                         [<button type="submit" class="btn-link">@localizer.GetString(r => r.EnableTwoFactor)</button>] @localizer.GetString(r => r.DisableTwoFactor)
                     </form>
                 }
@@ -124,20 +159,20 @@
             <div class="form-group">
                 <h5>@localizer.GetString(r => r.AuthenticationApp)</h5>
 
-                @if (Model.AuthenticatorKey == null)
+                @if (profile.AuthenticatorKey == null)
                 {
                     <form method="post" class="form-horizontal" role="form" asp-controller="Manage" asp-action="ResetAuthenticatorKey"
-                           asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
-                           asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+                          asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                          asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                         [<button type="submit" class="btn-link">@localizer.GetString(r => r.ResetAuthenticatorKey)</button>]
                     </form>
                 }
                 else
                 {
-                    <text>@localizer.GetString(r => r.YourKeyIs) @Model.AuthenticatorKey</text>
+                    <text>@localizer.GetString(r => r.YourKeyIs) @profile.AuthenticatorKey</text>
                     <form method="post" class="form-horizontal" role="form" asp-controller="Manage" asp-action="GenerateRecoveryCode"
-                           asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
-                           asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
+                          asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
+                          asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">
                         [<button type="submit" class="btn-link">@localizer.GetString(r => r.GenerateRecoveryCode)</button>]
                     </form>
                 }

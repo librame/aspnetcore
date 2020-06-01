@@ -17,9 +17,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace Librame.AspNetCore.Identity.Web.Models
 {
     /// <summary>
-    /// 首页视图模型。
+    /// 资料视图模型。
     /// </summary>
-    public class IndexViewModel
+    public class ProfileViewModel
     {
         /// <summary>
         /// 有密码。
@@ -52,31 +52,4 @@ namespace Librame.AspNetCore.Identity.Web.Models
         /// </summary>
         public string AuthenticatorKey { get; set; }
     }
-
-    ///// <summary>
-    ///// 索引视图模型。
-    ///// </summary>
-    //public class IndexViewModel
-    //{
-    //    /// <summary>
-    //    /// 称呼。
-    //    /// </summary>
-    //    [Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
-    //    [Display(Name = nameof(Name), ResourceType = typeof(UserViewModelResource))]
-    //    public string Name { get; set; }
-
-    //    /// <summary>
-    //    /// 电邮。
-    //    /// </summary>
-    //    [EmailAddress(ErrorMessageResourceName = nameof(EmailAddressAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
-    //    [Display(Name = nameof(Email), ResourceType = typeof(UserViewModelResource))]
-    //    public string Email { get; set; }
-
-    //    /// <summary>
-    //    /// 电话。
-    //    /// </summary>
-    //    //[Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
-    //    [Display(Name = nameof(Phone), ResourceType = typeof(UserViewModelResource))]
-    //    public string Phone { get; set; }
-    //}
 }

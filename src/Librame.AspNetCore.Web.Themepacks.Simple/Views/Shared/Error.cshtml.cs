@@ -14,10 +14,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Librame.AspNetCore.Identity.Web.Pages.Examples
+namespace Librame.AspNetCore.Web.Themepacks.Simple
 {
-    using AspNetCore.Web.Models;
+    using Models;
 
     /// <summary>
     /// 错误页面模型。
@@ -29,8 +30,10 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
         /// <summary>
         /// 视图模型。
         /// </summary>
+        [SuppressMessage("Performance", "CA1822:将成员标记为 static")]
         public ErrorViewModel ViewModel
             => new ErrorViewModel();
+
 
         /// <summary>
         /// 获取方法。

@@ -10,10 +10,8 @@
 
 #endregion
 
-namespace Librame.AspNetCore.Identity.Web.Resources
+namespace Librame.AspNetCore.Web.Resources
 {
-    using AspNetCore.Web.Resources;
-
     /// <summary>
     /// 错误视图资源。
     /// </summary>

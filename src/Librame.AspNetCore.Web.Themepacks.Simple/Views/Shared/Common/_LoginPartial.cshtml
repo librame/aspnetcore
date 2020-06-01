@@ -1,6 +1,6 @@
 @model IApplicationContext
 @{
-    var nav = Model.LoginbarProject.Navigation;
+    var nav = Model.CurrentProject.IdentityNavigation;
 }
 
 @if (Model.Principal.IsSignedIn(Context))

@@ -183,6 +183,9 @@
   <data name="SendButtonText" xml:space="preserve">
     <value>发送验证电邮</value>
   </data>
+  <data name="SetEmailSuccess" xml:space="preserve">
+    <value>您的邮箱已设置。</value>
+  </data>
   <data name="SetPassword" xml:space="preserve">
     <value>创建</value>
   </data>

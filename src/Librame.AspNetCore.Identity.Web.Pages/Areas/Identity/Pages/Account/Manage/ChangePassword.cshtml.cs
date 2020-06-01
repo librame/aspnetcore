@@ -13,7 +13,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -23,59 +22,53 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
     using AspNetCore.Web;
-    using Builders;
+    using AspNetCore.Web.Applications;
     using Extensions;
-    using Models;
-    using Resources;
+    using Extensions.Core.Services;
 
     /// <summary>
     /// 修改密码页面模型。
     /// </summary>
     [GenericApplicationModel(typeof(ChangePasswordPageModel<>))]
-    public class ChangePasswordPageModel : PageModel
+    public class ChangePasswordPageModel : ApplicationPageModel
     {
         /// <summary>
         /// 构造一个 <see cref="ChangePasswordPageModel"/>。
         /// </summary>
-        /// <param name="registerLocalizer">给定的 <see cref="IHtmlLocalizer{RegisterViewResource}"/>。</param>
-        /// <param name="builderOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
-        /// <param name="options">给定的 <see cref="IOptions{IdentityOptions}"/>。</param>
-        public ChangePasswordPageModel(IHtmlLocalizer<RegisterViewResource> registerLocalizer,
-            IOptions<IdentityBuilderOptions> builderOptions, IOptions<IdentityOptions> options)
+        /// <param name="injection">给定的 <see cref="IInjectionService"/>。</param>
+        public ChangePasswordPageModel(IInjectionService injection)
+            : base(injection)
         {
-            RegisterLocalizer = registerLocalizer;
-            BuilderOptions = builderOptions?.Value;
-            Options = options?.Value;
         }
 
 
         /// <summary>
         /// 本地化资源。
         /// </summary>
-        public IHtmlLocalizer<RegisterViewResource> RegisterLocalizer { get; }
+        [InjectionService]
+        public IHtmlLocalizer<RegisterViewResource> RegisterLocalizer { get; set; }
 
         /// <summary>
         /// 构建器选项。
         /// </summary>
-        public IdentityBuilderOptions BuilderOptions { get; }
+        [InjectionService]
+        public IOptions<IdentityBuilderOptions> BuilderOptions { get; set; }
 
         /// <summary>
         /// 选项。
         /// </summary>
-        public IdentityOptions Options { get; }
+        [InjectionService]
+        public IOptions<IdentityOptions> Options { get; set; }
 
         /// <summary>
         /// 输入模型。
         /// </summary>
         [BindProperty]
         public ChangePasswordViewModel Input { get; set; }
-
-        /// <summary>
-        /// 状态消息。
-        /// </summary>
-        [TempData]
-        public string StatusMessage { get; set; }
 
 
         /// <summary>
@@ -98,43 +91,39 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
     internal class ChangePasswordPageModel<TUser> : ChangePasswordPageModel
         where TUser : class
     {
-        private readonly SignInManager<TUser> _signInManager;
-        private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<ChangePasswordPageModel> _logger;
-        private readonly IStringLocalizer<StatusMessageResource> _statusLocalizer;
+        [InjectionService]
+        private SignInManager<TUser> _signInManager = null;
+
+        [InjectionService]
+        private ILogger<ChangePasswordPageModel> _logger = null;
+
+        [InjectionService]
+        private IStringLocalizer<StatusMessageResource> _statusLocalizer = null;
 
 
-        public ChangePasswordPageModel(
-            SignInManager<TUser> signInManager,
-            ILogger<ChangePasswordPageModel> logger,
-            IStringLocalizer<StatusMessageResource> statusLocalizer,
-            IHtmlLocalizer<RegisterViewResource> registerLocalizer,
-            IOptions<IdentityBuilderOptions> builderOptions,
-            IOptions<IdentityOptions> options)
-            : base(registerLocalizer, builderOptions, options)
+        private readonly UserManager<TUser> _userManager = null;
+
+
+        public ChangePasswordPageModel(IInjectionService injection)
+            : base(injection)
         {
-            _signInManager = signInManager;
-            _userManager = signInManager.UserManager;
-            _logger = logger;
-            _statusLocalizer = statusLocalizer;
+            _userManager = _signInManager.UserManager;
         }
 
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
-            if (user == null)
+            return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+                var hasPassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync();
+                if (!hasPassword)
+                {
+                    return RedirectToPage("./SetPassword");
+                }
 
-            var hasPassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync();
-            if (!hasPassword)
-            {
-                return RedirectToPage("./SetPassword");
-            }
-
-            return Page();
+                return Page();
+            })
+            .ConfigureAndResultAsync();
         }
 
         public override async Task<IActionResult> OnPostAsync()
@@ -144,28 +133,25 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
-            if (user == null)
+            return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+                var result = await _userManager.ChangePasswordAsync(user,
+                    Input.OldPassword, Input.NewPassword).ConfigureAndResultAsync();
 
-            var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword).ConfigureAndResultAsync();
-            if (!changePasswordResult.Succeeded)
-            {
-                foreach (var error in changePasswordResult.Errors)
+                if (!result.Succeeded)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    AddModelErrors(result);
+                    return Page();
                 }
-                return Page();
-            }
 
-            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
-            _logger.LogInformation("User changed their password successfully.");
-            
-            StatusMessage = _statusLocalizer.GetString(r => r.ChangePassword);
+                await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
+                _logger.LogInformation("User changed their password successfully.");
 
-            return RedirectToPage();
+                StatusMessage = _statusLocalizer.GetString(r => r.ChangePassword);
+                return RedirectToPage();
+            })
+            .ConfigureAndResultAsync();
         }
+
     }
 }

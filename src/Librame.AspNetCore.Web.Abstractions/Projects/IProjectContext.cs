@@ -38,12 +38,6 @@ namespace Librame.AspNetCore.Web.Projects
 
 
         /// <summary>
-        /// 登陆栏项目（根据配置的登陆栏项目名称查找对应的项目，如果不存在则使用当前项目）。
-        /// </summary>
-        /// <returns>返回 <see cref="ProjectDescriptor"/>。</returns>
-        ProjectDescriptor Loginbar { get; }
-
-        /// <summary>
         /// 当前项目。
         /// </summary>
         /// <returns>返回 <see cref="ProjectDescriptor"/>。</returns>

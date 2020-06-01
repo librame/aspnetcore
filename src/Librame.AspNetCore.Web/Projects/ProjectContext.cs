@@ -37,6 +37,18 @@ namespace Librame.AspNetCore.Web.Projects
             ServiceFactory = serviceFactory.NotNull(nameof(serviceFactory));
             Navigations = navigations.NotNull(nameof(navigations));
             _options = options.NotNull(nameof(options)).Value;
+
+            Initialize();
+        }
+
+
+        private void Initialize()
+        {
+            var identityNavigation = Navigations.FirstOrDefault(_options.PredicateIdentityNavigation);
+            if (identityNavigation.IsNotNull())
+            {
+                Navigations.ForEach(nav => nav.IdentityNavigation = identityNavigation);
+            }
         }
 
 
@@ -60,22 +72,6 @@ namespace Librame.AspNetCore.Web.Projects
         public IReadOnlyDictionary<string, IProjectInfo> Infos
             => LoadInfos();
 
-
-        public ProjectDescriptor Loginbar
-        {
-            get
-            {
-                ProjectDescriptor descriptor = null;
-
-                if (_options.LoginbarProjectName.IsNotEmpty())
-                {
-                    descriptor = new ProjectDescriptor(FindInfo(_options.LoginbarProjectName),
-                        FindNavigation(_options.LoginbarProjectName));
-                }
-
-                return descriptor ?? Current;
-            }
-        }
 
         public ProjectDescriptor Current
         {

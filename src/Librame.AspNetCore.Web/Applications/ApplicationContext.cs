@@ -50,9 +50,6 @@ namespace Librame.AspNetCore.Web.Applications
             => Project.ServiceFactory;
 
 
-        public ProjectDescriptor LoginbarProject
-            => Project.Loginbar;
-
         public ProjectDescriptor CurrentProject
             => Project.Current;
 

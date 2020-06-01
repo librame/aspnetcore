@@ -183,6 +183,9 @@
   <data name="SendButtonText" xml:space="preserve">
     <value>Send verification email</value>
   </data>
+  <data name="SetEmailSuccess" xml:space="preserve">
+    <value>Your email has been set.</value>
+  </data>
   <data name="SetPassword" xml:space="preserve">
     <value>Create</value>
   </data>

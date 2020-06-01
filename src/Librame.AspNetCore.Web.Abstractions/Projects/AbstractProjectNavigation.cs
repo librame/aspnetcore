@@ -82,6 +82,12 @@ namespace Librame.AspNetCore.Web.Projects
         /// <value>返回 <see cref="IProjectNavigation"/>。</value>
         public IProjectNavigation RootNavigation { get; }
 
+        /// <summary>
+        /// 身份导航。
+        /// </summary>
+        /// <value>返回 <see cref="IProjectNavigation"/> 或 NULL。</value>
+        public IProjectNavigation IdentityNavigation { get; set; }
+
 
         /// <summary>
         /// 布局内容集合。

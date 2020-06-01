@@ -20,7 +20,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
     <AssemblyVersion>7.4.2.4</AssemblyVersion>
-    <FileVersion>7.4.1955.15117</FileVersion>
+    <FileVersion>7.4.1962.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore.Api</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>

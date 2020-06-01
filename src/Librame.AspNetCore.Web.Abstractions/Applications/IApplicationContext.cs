@@ -74,15 +74,9 @@ namespace Librame.AspNetCore.Web.Applications
 
 
         /// <summary>
-        /// 登陆栏项目。
-        /// </summary>
-        /// <returns>返回包含 <see cref="IProjectInfo"/> 与 <see cref="IProjectNavigation"/> 的元组。</returns>
-        ProjectDescriptor LoginbarProject { get; }
-
-        /// <summary>
         /// 当前项目。
         /// </summary>
-        /// <returns>返回包含 <see cref="IProjectInfo"/> 与 <see cref="IProjectNavigation"/> 的元组。</returns>
+        /// <returns>返回 <see cref="ProjectDescriptor"/>。</returns>
         ProjectDescriptor CurrentProject { get; }
 
         /// <summary>
@@ -95,7 +89,7 @@ namespace Librame.AspNetCore.Web.Applications
         /// 设置当前项目。
         /// </summary>
         /// <param name="area">给定的区域（请确保项目信息名称与给定的区域保持一致）。</param>
-        /// <returns>返回包含 <see cref="IProjectInfo"/> 与 <see cref="IProjectNavigation"/> 的元组。</returns>
+        /// <returns>返回 <see cref="ProjectDescriptor"/>。</returns>
         ProjectDescriptor SetCurrentProject(string area);
 
         /// <summary>

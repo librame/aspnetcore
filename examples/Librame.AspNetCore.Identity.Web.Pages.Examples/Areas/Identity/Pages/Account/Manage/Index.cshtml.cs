@@ -1,16 +1,17 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Examples
 {
     using AspNetCore.Identity.Stores;
+    using AspNetCore.Identity.Web.Models;
     using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
     using Extensions.Core.Services;
     using Extensions.Network.Services;
@@ -18,13 +19,10 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
     /// <summary>
     /// 首页模型。
     /// </summary>
-    public class IndexPageModel : PageModel
+    public class IndexPageModel : ApplicationPageModel
     {
         [InjectionService]
         private IEmailService _emailService = null;
-
-        //[InjectionService]
-        //private ISmsService _smsService = null;
 
         [InjectionService]
         private IStringLocalizer<RegisterViewResource> _registerLocalizer = null;
@@ -35,25 +33,20 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
         [InjectionService]
         private SignInManager<DefaultIdentityUser<Guid>> _signInManager = null;
 
+
         private readonly UserManager<DefaultIdentityUser<Guid>> _userManager = null;
 
 
         /// <summary>
         /// 构造一个 <see cref="IndexPageModel"/>。
         /// </summary>
-        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
-        public IndexPageModel(IInjectionService injectionService)
+        /// <param name="injection">给定的 <see cref="IInjectionService"/>。</param>
+        public IndexPageModel(IInjectionService injection)
+            : base(injection)
         {
-            injectionService.Inject(this);
-
             _userManager = _signInManager.UserManager;
         }
 
-
-        /// <summary>
-        /// 用户名。
-        /// </summary>
-        public string UserName { get; set; }
 
         /// <summary>
         /// 是否电邮确认。
@@ -61,59 +54,46 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
         public bool IsEmailConfirmed { get; set; }
 
         /// <summary>
-        /// 状态消息。
+        /// 资料视图模型。
         /// </summary>
-        [TempData]
-        public string StatusMessage { get; set; }
+        public ProfileViewModel Profile { get; set; }
 
         /// <summary>
         /// 输入模型。
         /// </summary>
         [BindProperty]
-        public InputModel Input { get; set; }
-        
-        /// <summary>
-        /// 输入模型。
-        /// </summary>
-        //[ViewResourceMapping("Index")]
-        public class InputModel : Account.Manage.IndexPageModel.InputModel
-        {
-            [Required(ErrorMessageResourceName = nameof(RequiredAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
-            [Range(0, 199, ErrorMessageResourceName = nameof(RangeAttribute), ErrorMessageResourceType = typeof(ErrorMessageResource))]
-            [Display(Name = nameof(Age))]
-            public int Age { get; set; } = 18;
-        }
+        public UserViewModel Input { get; set; }
 
 
-        /// <summary>
-        /// 异步获取方法。
-        /// </summary>
-        /// <returns></returns>
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
-            if (user == null)
+            return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+                Profile = new ProfileViewModel
+                {
+                    HasPassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync(),
+                    PhoneNumber = await _userManager.GetPhoneNumberAsync(user).ConfigureAndResultAsync(),
+                    TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync(),
+                    Logins = await _userManager.GetLoginsAsync(user).ConfigureAndResultAsync(),
+                    BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user).ConfigureAndResultAsync(),
+                    AuthenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync()
+                };
 
-            UserName = user.UserName;
+                var userName = await _userManager.GetUserNameAsync(user).ConfigureAndResultAsync();
+                var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
 
-            Input = new InputModel
-            {
-                Email = user.Email,
-                Phone = user.PhoneNumber
-            };
+                Input = new UserViewModel
+                {
+                    Name = userName,
+                    Email = email
+                };
 
-            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user).ConfigureAndResultAsync();
-
-            return Page();
+                IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user).ConfigureAndResultAsync();
+                return Page();
+            })
+            .ConfigureAndResultAsync();
         }
 
-        /// <summary>
-        /// 异步提交方法。
-        /// </summary>
-        /// <returns></returns>
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -121,41 +101,59 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
-            if (user == null)
+            return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var updateProfileResult = await _userManager.UpdateAsync(user).ConfigureAndResultAsync();
-            if (!updateProfileResult.Succeeded)
-            {
-                throw new InvalidOperationException($"Unexpected error ocurred updating the profile for user with ID '{user.Id}'");
-            }
-
-            if (Input.Email != user.Email)
-            {
-                var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email).ConfigureAndResultAsync();
-                if (!setEmailResult.Succeeded)
+                var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
+                if (Input.Email != email)
                 {
-                    throw new InvalidOperationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
-                }
-            }
+                    var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email).ConfigureAndResultAsync();
+                    if (!setEmailResult.Succeeded)
+                    {
+                        var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+                        throw new InvalidOperationException($"Unexpected error occurred setting email for user with ID '{userId}'.");
+                    }
 
-            if (Input.Phone != user.PhoneNumber)
+                    // In our UI email and user name are one and the same, so when we update the email
+                    // we need to update the user name.
+                    var setUserNameResult = await _userManager.SetUserNameAsync(user, Input.Email).ConfigureAndResultAsync();
+                    if (!setUserNameResult.Succeeded)
+                    {
+                        var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+                        throw new InvalidOperationException($"Unexpected error occurred setting name for user with ID '{userId}'.");
+                    }
+                }
+
+                await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
+
+                StatusMessage = _statusLocalizer.GetString(r => r.ProfileUpdated)?.ToString();
+                return RedirectToPage();
+            })
+            .ConfigureAndResultAsync();
+        }
+
+        public async Task<IActionResult> OnPostRemovePhoneNumberAsync()
+        {
+            if (!ModelState.IsValid)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.Phone).ConfigureAndResultAsync();
-                if (!setPhoneResult.Succeeded)
-                {
-                    throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
-                }
+                return Page();
             }
 
-            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
+            return await VerifyLoginUserActionResult(_userManager, async user =>
+            {
+                var result = await _userManager.SetPhoneNumberAsync(user, null).ConfigureAndResultAsync();
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                    StatusMessage = "Remove phone number succeeded.";
+                }
+                else
+                {
+                    StatusMessage = result.Errors.FirstOrDefault()?.Description;
+                }
 
-            StatusMessage = _statusLocalizer.GetString(r => r.ProfileUpdated);
-
-            return RedirectToPage();
+                return RedirectToPage();
+            })
+            .ConfigureAndResultAsync();
         }
 
         public async Task<IActionResult> OnPostSendVerificationEmailAsync()
@@ -165,30 +163,64 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
-            if (user == null)
+            return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+                var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
+
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { userId, token },
+                    protocol: Request.Scheme);
+
+                await _emailService.SendAsync(
+                    email,
+                    _registerLocalizer.GetString(r => r.ConfirmYourEmail)?.ToString(),
+                    _registerLocalizer.GetString(r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl))?.ToString()).ConfigureAndWaitAsync();
+
+                StatusMessage = _statusLocalizer.GetString(r => r.VerificationEmailSent)?.ToString();
+                return RedirectToPage();
+            })
+            .ConfigureAndResultAsync();
+        }
+
+        public async Task<IActionResult> OnPostEnableTwoFactorAuthenticationAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
             }
 
-            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
-            var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
+            return await VerifyLoginUserActionResult(_userManager, async user =>
+            {
+                await _userManager.SetTwoFactorEnabledAsync(user, true).ConfigureAndWaitAsync();
+                await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                //_logger.LogInformation(2, "User enabled two-factor authentication.");
 
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmail",
-                pageHandler: null,
-                values: new { user.Id, token },
-                protocol: Request.Scheme);
+                StatusMessage = "User enabled two-factor authentication.";
+                return RedirectToAction(nameof(Index));
+            })
+            .ConfigureAndResultAsync();
+        }
 
-            await _emailService.SendAsync(
-                email,
-                _registerLocalizer.GetString(r => r.ConfirmYourEmail),
-                _registerLocalizer.GetString(r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl))).ConfigureAndWaitAsync();
+        public async Task<IActionResult> OnPostResetAuthenticatorKeyAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
-            StatusMessage = _statusLocalizer.GetString(r => r.VerificationEmailSent);
+            return await VerifyLoginUserActionResult(_userManager, async user =>
+            {
+                await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
+                //_logger.LogInformation(1, "User reset authenticator key.");
 
-            return RedirectToPage();
+                StatusMessage = "User reset authenticator key.";
+                return RedirectToAction(nameof(Index));
+            })
+            .ConfigureAndResultAsync();
         }
 
     }

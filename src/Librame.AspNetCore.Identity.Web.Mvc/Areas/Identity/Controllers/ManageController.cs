@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
     [GenericApplicationModel]
     [Area(IdentityRouteBuilderExtensions.AreaName)]
     [Route(IdentityRouteBuilderExtensions.Template)]
-    public class ManageController<TUser> : ApplicationController
+    public class ManageController<TUser> : ApplicationController<TUser>
         where TUser : class
     {
         [InjectionService]
@@ -69,23 +70,14 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [InjectionService]
         private IHtmlLocalizer<ExternalLoginsViewResource> _manageLoginsLocalizer = null;
 
-        [InjectionService]
-        private SignInManager<TUser> _signInManager = null;
-
-        private readonly UserManager<TUser> _userManager = null;
-
 
         /// <summary>
         /// 构造一个 <see cref="ManageController{TUser}"/>。
         /// </summary>
-        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
-        /// <param name="application">给定的 <see cref="IApplicationContext"/>。</param>
-        public ManageController(IInjectionService injectionService, IApplicationContext application)
-            : base(application)
+        /// <param name="injection">给定的 <see cref="IInjectionService"/>。</param>
+        public ManageController(IInjectionService injection)
+            : base(injection)
         {
-            injectionService.NotNull(nameof(injectionService)).Inject(this);
-
-            _userManager = _signInManager.UserManager;
         }
 
 
@@ -97,55 +89,110 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
-            ViewData["StatusMessage"] =
-                message == ManageMessageId.ChangePasswordSuccess ? _indexLocalizer.GetString(r => r.ChangePasswordSuccess).Value
-                : message == ManageMessageId.SetPasswordSuccess ? _indexLocalizer.GetString(r => r.SetPasswordSuccess).Value
-                : message == ManageMessageId.SetTwoFactorSuccess ? _indexLocalizer.GetString(r => r.SetTwoFactorSuccess).Value
-                : message == ManageMessageId.Error ? _indexLocalizer.GetString(r => r.Error).Value
-                : message == ManageMessageId.AddPhoneSuccess ? _indexLocalizer.GetString(r => r.AddPhoneSuccess).Value
-                : message == ManageMessageId.RemovePhoneSuccess ? _indexLocalizer.GetString(r => r.RemovePhoneSuccess).Value
-                : "";
-
+            ViewData["StatusMessage"] = GetManageMessage(message);
             ViewBag.Localizer = _indexLocalizer;
 
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            var model = new IndexViewModel
+            return await VerifyLoginUserActionResult(async user =>
             {
-                HasPassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync(),
-                PhoneNumber = await _userManager.GetPhoneNumberAsync(user).ConfigureAndResultAsync(),
-                TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync(),
-                Logins = await _userManager.GetLoginsAsync(user).ConfigureAndResultAsync(),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user).ConfigureAndResultAsync(),
-                AuthenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync()
-            };
-            return View(model);
+                ViewBag.IsEmailConfirmed = await UserManager.IsEmailConfirmedAsync(user).ConfigureAndResultAsync();
+
+                ViewBag.Profile = new ProfileViewModel
+                {
+                    HasPassword = await UserManager.HasPasswordAsync(user).ConfigureAndResultAsync(),
+                    PhoneNumber = await UserManager.GetPhoneNumberAsync(user).ConfigureAndResultAsync(),
+                    TwoFactor = await UserManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync(),
+                    Logins = await UserManager.GetLoginsAsync(user).ConfigureAndResultAsync(),
+                    BrowserRemembered = await SignInManager.IsTwoFactorClientRememberedAsync(user).ConfigureAndResultAsync(),
+                    AuthenticatorKey = await UserManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync()
+                };
+
+                var userName = await UserManager.GetUserNameAsync(user).ConfigureAndResultAsync();
+                var email = await UserManager.GetEmailAsync(user).ConfigureAndResultAsync();
+
+                return View(new UserViewModel
+                {
+                    Name = userName,
+                    Email = email
+                });
+            })
+            .ConfigureAndResultAsync();
+        }
+
+        /// <summary>
+        /// POST: /Manage/Index
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(UserViewModel model)
+        {
+            model.NotNull(nameof(model));
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return await VerifyLoginUserActionResult(async user =>
+            {
+                ManageMessageId? message = ManageMessageId.Error;
+
+                var email = await UserManager.GetEmailAsync(user).ConfigureAndResultAsync();
+                if (model.Email != email)
+                {
+                    var setEmailResult = await UserManager.SetEmailAsync(user, model.Email).ConfigureAndResultAsync();
+                    if (!setEmailResult.Succeeded)
+                    {
+                        var userId = await UserManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+                        throw new InvalidOperationException($"Unexpected error occurred setting email for user with ID '{userId}'.");
+                    }
+
+                    // In our UI email and user name are one and the same, so when we update the email
+                    // we need to update the user name.
+                    var setUserNameResult = await UserManager.SetUserNameAsync(user, model.Email).ConfigureAndResultAsync();
+                    if (!setUserNameResult.Succeeded)
+                    {
+                        var userId = await UserManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+                        throw new InvalidOperationException($"Unexpected error occurred setting name for user with ID '{userId}'.");
+                    }
+                }
+
+                await SignInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
+
+                message = ManageMessageId.SetEmailSuccess;
+                return RedirectToAction(nameof(Index), new { Message = message });
+            })
+            .ConfigureAndResultAsync();
         }
 
 
         /// <summary>
         /// POST: /Manage/RemoveLogin
         /// </summary>
-        /// <param name="account"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel account)
+        public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel model)
         {
-            account.NotNull(nameof(account));
+            model.NotNull(nameof(model));
 
-            ManageMessageId? message = ManageMessageId.Error;
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user != null)
+            return await VerifyLoginUserActionResult(async user =>
             {
-                var result = await _userManager.RemoveLoginAsync(user, account.LoginProvider, account.ProviderKey).ConfigureAndResultAsync();
+                ManageMessageId? message = ManageMessageId.Error;
+
+                var result = await UserManager.RemoveLoginAsync(user, model.LoginProvider, model.ProviderKey).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                    await SignInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                     message = ManageMessageId.RemoveLoginSuccess;
                 }
-            }
-            return RedirectToAction(nameof(ManageLogins), new { Message = message });
+
+                return RedirectToAction(nameof(ManageLogins), new { Message = message });
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -178,13 +225,18 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
             {
                 return View(model);
             }
-            // Generate the token and send it
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.Phone).ConfigureAndResultAsync();
-            
-            await _smsService.SendAsync(model.Phone, _addPhoneNumberLocalizer.GetString(r => r.YourSecurityCodeIs).Value + code).ConfigureAndWaitAsync();
-            
-            return RedirectToAction(nameof(VerifyPhoneNumber), new { phoneNumber = model.Phone });
+
+            return await VerifyLoginUserActionResult(async user =>
+            {
+                // Generate the token and send it
+                var code = await UserManager.GenerateChangePhoneNumberTokenAsync(user, model.Phone).ConfigureAndResultAsync();
+
+                await _smsService.SendAsync(model.Phone,
+                    _addPhoneNumberLocalizer.GetString(r => r.YourSecurityCodeIs).Value + code).ConfigureAndWaitAsync();
+
+                return RedirectToAction(nameof(VerifyPhoneNumber), new { phoneNumber = model.Phone });
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -196,13 +248,14 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetAuthenticatorKey()
         {
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user != null)
+            return await VerifyLoginUserActionResult(async user =>
             {
-                await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
+                await UserManager.ResetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
                 _logger.LogInformation(1, "User reset authenticator key.");
-            }
-            return RedirectToAction(nameof(Index), "Manage");
+
+                return RedirectToAction(nameof(Index));
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -214,14 +267,17 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GenerateRecoveryCode()
         {
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user != null)
+            return await VerifyLoginUserActionResult(async user =>
             {
-                var codes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 5).ConfigureAndResultAsync();
+                var dependency = Application.ServiceFactory.GetRequiredService<IdentityWebBuilderDependency>();
+
+                var codes = await UserManager.GenerateNewTwoFactorRecoveryCodesAsync(user,
+                    dependency.TwoFactorRecoveryCodeLength).ConfigureAndResultAsync();
                 _logger.LogInformation(1, "User generated new recovery code.");
+
                 return View("DisplayRecoveryCodes", new DisplayRecoveryCodesViewModel { Codes = codes });
-            }
-            return View("Error");
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -233,14 +289,15 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnableTwoFactorAuthentication()
         {
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user != null)
+            return await VerifyLoginUserActionResult(async user =>
             {
-                await _userManager.SetTwoFactorEnabledAsync(user, true).ConfigureAndWaitAsync();
-                await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
-                _logger.LogInformation(1, "User enabled two-factor authentication.");
-            }
-            return RedirectToAction(nameof(Index), "Manage");
+                await UserManager.SetTwoFactorEnabledAsync(user, true).ConfigureAndWaitAsync();
+                await SignInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                _logger.LogInformation(2, "User enabled two-factor authentication.");
+
+                return RedirectToAction(nameof(Index));
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -252,14 +309,15 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DisableTwoFactorAuthentication()
         {
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user != null)
+            return await VerifyLoginUserActionResult(async user =>
             {
-                await _userManager.SetTwoFactorEnabledAsync(user, false).ConfigureAndWaitAsync();
-                await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                await UserManager.SetTwoFactorEnabledAsync(user, false).ConfigureAndWaitAsync();
+                await SignInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                 _logger.LogInformation(2, "User disabled two-factor authentication.");
-            }
-            return RedirectToAction(nameof(Index), "Manage");
+
+                return RedirectToAction(nameof(Index));
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -273,11 +331,16 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         {
             ViewBag.Localizer = _verifyPhoneNumberLocalizer;
 
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber).ConfigureAndWaitAsync();
+            return await VerifyLoginUserActionResult(async user =>
+            {
+                await UserManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber).ConfigureAndWaitAsync();
 
-            // Send an SMS to verify the phone number
-            return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { Phone = phoneNumber });
+                // Send an SMS to verify the phone number
+                return phoneNumber == null
+                    ? View("Error")
+                    : View(new VerifyPhoneNumberViewModel { Phone = phoneNumber });
+            })
+            .ConfigureAndResultAsync();
         }
 
         /// <summary>
@@ -298,19 +361,21 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
             {
                 return View(model);
             }
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user != null)
+
+            return await VerifyLoginUserActionResult(async user =>
             {
-                var result = await _userManager.ChangePhoneNumberAsync(user, model.Phone, model.Code).ConfigureAndResultAsync();
+                var result = await UserManager.ChangePhoneNumberAsync(user, model.Phone, model.Code).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                    await SignInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.AddPhoneSuccess });
                 }
-            }
-            // If we got this far, something failed, redisplay the form
-            ModelState.AddModelError(string.Empty, _verifyPhoneNumberLocalizer.GetString(r => r.Failed).Value);
-            return View(model);
+
+                // If we got this far, something failed, redisplay the form
+                ModelState.AddModelError(string.Empty, _verifyPhoneNumberLocalizer.GetString(r => r.Failed).Value);
+                return View();
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -322,17 +387,19 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemovePhoneNumber()
         {
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user != null)
+            return await VerifyLoginUserActionResult(async user =>
             {
-                var result = await _userManager.SetPhoneNumberAsync(user, null).ConfigureAndResultAsync();
+                var result = await UserManager.SetPhoneNumberAsync(user, null).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                    await SignInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.RemovePhoneSuccess });
                 }
-            }
-            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
+
+                AddModelErrors(result);
+                return View();
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -370,20 +437,21 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
             {
                 return View(model);
             }
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user != null)
+
+            return await VerifyLoginUserActionResult(async user =>
             {
-                var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword).ConfigureAndResultAsync();
+                var result = await UserManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                    await SignInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                     _logger.LogInformation(3, "User changed their password successfully.");
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangePasswordSuccess });
                 }
-                AddErrors(result);
+
+                AddModelErrors(result);
                 return View(model);
-            }
-            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -422,19 +490,19 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
                 return View(model);
             }
 
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user != null)
+            return await VerifyLoginUserActionResult(async user =>
             {
-                var result = await _userManager.AddPasswordAsync(user, model.NewPassword).ConfigureAndResultAsync();
+                var result = await UserManager.AddPasswordAsync(user, model.NewPassword).ConfigureAndResultAsync();
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                    await SignInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.SetPasswordSuccess });
                 }
-                AddErrors(result);
+
+                AddModelErrors(result);
                 return View(model);
-            }
-            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -446,30 +514,24 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ManageLogins(ManageMessageId? message = null)
         {
+            ViewData["StatusMessage"] = GetManageMessage(message);
             ViewBag.Localizer = _manageLoginsLocalizer;
 
-            ViewData["StatusMessage"] =
-                message == ManageMessageId.RemoveLoginSuccess ? _manageLoginsLocalizer.GetString(r => r.RemoveLoginSuccess).Value
-                : message == ManageMessageId.AddLoginSuccess ? _manageLoginsLocalizer.GetString(r => r.AddLoginSuccess).Value
-                : message == ManageMessageId.Error ? _manageLoginsLocalizer.GetString(r => r.Error).Value
-                : "";
-
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user == null)
+            return await VerifyLoginUserActionResult(async user =>
             {
-                return View("Error");
-            }
+                var userLogins = await UserManager.GetLoginsAsync(user).ConfigureAndResultAsync();
+                var schemes = await SignInManager.GetExternalAuthenticationSchemesAsync().ConfigureAndResultAsync();
+                var otherLogins = schemes.Where(auth => userLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
 
-            var userLogins = await _userManager.GetLoginsAsync(user).ConfigureAndResultAsync();
-            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAndResultAsync();
-            var otherLogins = schemes.Where(auth => userLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
-            ViewData["ShowRemoveButton"] = _userManager.HasPasswordAsync(user).Result || userLogins.Count > 1;
+                ViewData["ShowRemoveButton"] = UserManager.HasPasswordAsync(user).Result || userLogins.Count > 1;
 
-            return View(new ManageLoginsViewModel
-            {
-                CurrentLogins = userLogins,
-                OtherLogins = otherLogins
-            });
+                return View(new ManageLoginsViewModel
+                {
+                    CurrentLogins = userLogins,
+                    OtherLogins = otherLogins
+                });
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -480,12 +542,17 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult LinkLogin(string provider)
+        public Task<IActionResult> LinkLogin(string provider)
         {
-            // Request a redirect to the external login provider to link a login for the current user
-            var redirectUrl = Url.Action("LinkLoginCallback", "Manage");
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
-            return Challenge(properties, provider);
+            return VerifyLoginUserActionResult(user =>
+            {
+                // Request a redirect to the external login provider to link a login for the current user
+                var redirectUrl = Url.Action("LinkLoginCallback", "Manage");
+                var properties = SignInManager.ConfigureExternalAuthenticationProperties(provider,
+                    redirectUrl, UserManager.GetUserId(User));
+
+                return Challenge(properties, provider);
+            });
         }
 
         /// <summary>
@@ -493,24 +560,22 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> LinkLoginCallback()
+        public async Task<IActionResult> LinkLoginCallback()
         {
-            var user = await GetCurrentUserAsync().ConfigureAndResultAsync();
-            if (user == null)
+            return await VerifyLoginUserActionResult(async user =>
             {
-                return View("Error");
-            }
+                var userId = await UserManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+                var info = await SignInManager.GetExternalLoginInfoAsync(userId).ConfigureAndResultAsync();
+                if (info.IsNull())
+                {
+                    return RedirectToAction(nameof(ManageLogins), new { Message = ManageMessageId.Error });
+                }
 
-            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
-            var info = await _signInManager.GetExternalLoginInfoAsync(userId).ConfigureAndResultAsync();
-            if (info == null)
-            {
-                return RedirectToAction(nameof(ManageLogins), new { Message = ManageMessageId.Error });
-            }
-
-            var result = await _userManager.AddLoginAsync(user, info).ConfigureAndResultAsync();
-            var message = result.Succeeded ? ManageMessageId.AddLoginSuccess : ManageMessageId.Error;
-            return RedirectToAction(nameof(ManageLogins), new { Message = message });
+                var result = await UserManager.AddLoginAsync(user, info).ConfigureAndResultAsync();
+                var message = result.Succeeded ? ManageMessageId.AddLoginSuccess : ManageMessageId.Error;
+                return RedirectToAction(nameof(ManageLogins), new { Message = message });
+            })
+            .ConfigureAndResultAsync();
         }
 
 
@@ -535,6 +600,11 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
             /// 修改密码成功。
             /// </summary>
             ChangePasswordSuccess,
+
+            /// <summary>
+            /// 设置邮箱成功。
+            /// </summary>
+            SetEmailSuccess,
 
             /// <summary>
             /// 设置双因子成功。
@@ -562,17 +632,13 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
             Error
         }
 
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
 
-        private async Task<TUser> GetCurrentUserAsync()
+        private string GetManageMessage(ManageMessageId? message = null)
         {
-            return await _userManager.GetUserAsync(HttpContext.User).ConfigureAndResultAsync();
+            if (message.IsNotNull())
+                return _indexLocalizer.GetString(message.Value.AsEnumName());
+
+            return string.Empty;
         }
 
         #endregion

@@ -183,6 +183,9 @@
   <data name="SendButtonText" xml:space="preserve">
     <value>發送驗證郵箱</value>
   </data>
+  <data name="SetEmailSuccess" xml:space="preserve">
+    <value>您的電郵已設置。</value>
+  </data>
   <data name="SetPassword" xml:space="preserve">
     <value>創建口令</value>
   </data>

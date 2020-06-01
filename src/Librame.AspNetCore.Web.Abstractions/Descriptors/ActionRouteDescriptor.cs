@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Routing;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace Librame.AspNetCore.Web.Descriptors
 {
@@ -132,6 +133,30 @@ namespace Librame.AspNetCore.Web.Descriptors
         /// <returns>返回字符串。</returns>
         public override string GetViewName()
             => Action;
+
+
+        /// <summary>
+        /// 生成模拟链接。
+        /// </summary>
+        /// <returns>返回链接字符串。</returns>
+        public override string GenerateSimulativeLink()
+        {
+            var sb = new StringBuilder();
+
+            if (Area.IsNotEmpty())
+                sb.Append($"/{Area}");
+
+            if (Controller.IsNotEmpty())
+                sb.Append($"/{Controller}");
+
+            if (Action.IsNotEmpty())
+                sb.Append($"/{Action}");
+
+            if (Id.IsNotEmpty())
+                sb.Append(Id.EnsureLeading('?'));
+
+            return sb.ToString();
+        }
 
 
         /// <summary>

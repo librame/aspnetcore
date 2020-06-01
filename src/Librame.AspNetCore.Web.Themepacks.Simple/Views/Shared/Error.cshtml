@@ -1,6 +1,7 @@
 ﻿@page
-@model ErrorPageModel
-@inject IHtmlLocalizer<ErrorViewResource> Localizer
+@using Microsoft.AspNetCore.Mvc.Localization
+@model Librame.AspNetCore.Web.Themepacks.Simple.ErrorPageModel
+@inject IHtmlLocalizer<Librame.AspNetCore.Web.Resources.ErrorViewResource> Localizer
 @{
     ViewData["Title"] = Localizer.GetString(r => r.Title);
 }

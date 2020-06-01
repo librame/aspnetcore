@@ -11,9 +11,9 @@
 #endregion
 
 using Microsoft.AspNetCore.Routing;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace Librame.AspNetCore.Web.Descriptors
 {
@@ -94,29 +94,15 @@ namespace Librame.AspNetCore.Web.Descriptors
         public PageRouteDescriptor WithPage(string newPage)
         {
             newPage.NotEmpty(nameof(newPage));
-            return new PageRouteDescriptor(Page, Area, Id);
+            return new PageRouteDescriptor(newPage, Area, Id);
         }
 
         private string NormalizeNewPageByName(string newPageName)
         {
             newPageName.NotEmpty(nameof(newPageName));
 
-            var pathSeparator = ExtensionSettings.AltDirectorySeparatorChar;
-
-            if (newPageName.Contains(pathSeparator, StringComparison.OrdinalIgnoreCase)
-                || newPageName.Contains(ExtensionSettings.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidOperationException($"The '{nameof(newPageName)}' parameter does not support the path.");
-
-            if (Page == pathSeparator.ToString())
-                return $"{pathSeparator}{newPageName}";
-
-            if (Page.Contains(pathSeparator, StringComparison.OrdinalIgnoreCase))
-            {
-                var pair = Page.SplitPairByLastIndexOf(pathSeparator);
-                return $"{pair.Key}{pathSeparator}{newPageName}";
-            }
-
-            return newPageName;
+            (var _, var extension) = Page.GetFileBaseNameAndExtension(out var basePath);
+            return $"{basePath}{newPageName}{extension}";
         }
 
 
@@ -128,6 +114,27 @@ namespace Librame.AspNetCore.Web.Descriptors
         {
             (var baseName, _) = Page.GetFileBaseNameAndExtension(out _);
             return baseName;
+        }
+
+
+        /// <summary>
+        /// 生成模拟链接。
+        /// </summary>
+        /// <returns>返回链接字符串。</returns>
+        public override string GenerateSimulativeLink()
+        {
+            var sb = new StringBuilder();
+
+            if (Area.IsNotEmpty())
+                sb.Append($"/{Area}");
+
+            if (Page.IsNotEmpty())
+                sb.Append(Page.EnsureLeading('/'));
+
+            if (Id.IsNotEmpty())
+                sb.Append(Id.EnsureLeading('?'));
+
+            return sb.ToString();
         }
 
 

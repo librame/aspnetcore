@@ -30,7 +30,7 @@
                 @Localizer.GetString(r => r.VerificationCodeInfo)
             </p>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-10">
                     <form id="send-code" method="post"
                           asp-route-culture="@ViewContext.HttpContext.Request.Query["culture"]"
                           asp-route-uiculture="@ViewContext.HttpContext.Request.Query["uiculture"]">

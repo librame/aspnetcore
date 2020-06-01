@@ -53,16 +53,23 @@ namespace Librame.Extensions.Data.Services
 
         protected override ITenant GetSwitchTenantCore(DbContextAccessor<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId> dbContextAccessor)
         {
-            var options = _httpContext?.RequestServices?.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
-            if (options.IsNotNull() && !RequestCultureEquals(options.DefaultRequestCulture) && dbContextAccessor.Tenants.Count() > 1)
+            try
             {
-                var name = options.DefaultRequestCulture.Culture.Name;
-                var host = options.DefaultRequestCulture.Culture.DisplayName;
+                var options = _httpContext?.RequestServices?.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
+                if (options.IsNotNull() && !RequestCultureEquals(options.DefaultRequestCulture) && dbContextAccessor.Tenants.Count() > 1)
+                {
+                    var name = options.DefaultRequestCulture.Culture.Name;
+                    var host = options.DefaultRequestCulture.Culture.DisplayName;
 
-                ITenant tenant = dbContextAccessor.Tenants.FirstOrDefault(t => t.Name == name && t.Host == host);
-                Logger.LogInformation($"Get database tenant: Name={tenant?.Name}, Host={tenant?.Host}");
+                    ITenant tenant = dbContextAccessor.Tenants.FirstOrDefault(t => t.Name == name && t.Host == host);
+                    Logger.LogInformation($"Get database tenant: Name={tenant?.Name}, Host={tenant?.Host}");
 
-                return tenant ?? Options.DefaultTenant;
+                    return tenant ?? Options.DefaultTenant;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.AsInnerMessage());
             }
 
             return base.GetSwitchTenantCore(dbContextAccessor);
@@ -71,19 +78,26 @@ namespace Librame.Extensions.Data.Services
         protected override Task<ITenant> GetSwitchTenantCoreAsync(DbContextAccessor<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId> dbContextAccessor,
             CancellationToken cancellationToken = default)
         {
-            var options = _httpContext?.RequestServices?.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
-            if (options.IsNotNull() && !RequestCultureEquals(options.DefaultRequestCulture) && dbContextAccessor.Tenants.Count() > 1)
+            try
             {
-                var name = options.DefaultRequestCulture.Culture.Name;
-                var host = options.DefaultRequestCulture.Culture.DisplayName;
-
-                return cancellationToken.RunFactoryOrCancellationAsync(() =>
+                var options = _httpContext?.RequestServices?.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
+                if (options.IsNotNull() && !RequestCultureEquals(options.DefaultRequestCulture) && dbContextAccessor.Tenants.Count() > 1)
                 {
-                    ITenant tenant = dbContextAccessor.Tenants.FirstOrDefault(t => t.Name == name && t.Host == host);
-                    Logger.LogInformation($"Get database tenant: Name={tenant?.Name}, Host={tenant?.Host}");
+                    var name = options.DefaultRequestCulture.Culture.Name;
+                    var host = options.DefaultRequestCulture.Culture.DisplayName;
 
-                    return tenant ?? Options.DefaultTenant;
-                });
+                    return cancellationToken.RunFactoryOrCancellationAsync(() =>
+                    {
+                        ITenant tenant = dbContextAccessor.Tenants.FirstOrDefault(t => t.Name == name && t.Host == host);
+                        Logger.LogInformation($"Get database tenant: Name={tenant?.Name}, Host={tenant?.Host}");
+
+                        return tenant ?? Options.DefaultTenant;
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.AsInnerMessage());
             }
 
             return base.GetSwitchTenantCoreAsync(dbContextAccessor, cancellationToken);

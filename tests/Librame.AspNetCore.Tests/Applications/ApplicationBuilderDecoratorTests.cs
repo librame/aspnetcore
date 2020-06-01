@@ -51,5 +51,6 @@ namespace Librame.AspNetCore.Tests
             public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware)
                 => throw new NotImplementedException();
         }
+
     }
 }

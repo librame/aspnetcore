@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,9 +23,10 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Web.Resources;
     using AspNetCore.Web;
     using Extensions;
-    using Resources;
 
     /// <summary>
     /// 生成恢复码集合页面模型。
@@ -115,14 +117,16 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
                 throw new InvalidOperationException($"Cannot generate recovery codes for user with ID '{userId}' as they do not have 2FA enabled.");
             }
 
-            var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10).ConfigureAndResultAsync();
-            RecoveryCodes = recoveryCodes.ToArray();
+            var dependency = HttpContext.RequestServices.GetRequiredService<IdentityWebBuilderDependency>();
+            var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user,
+                dependency.TwoFactorRecoveryCodeLength).ConfigureAndResultAsync();
 
+            RecoveryCodes = recoveryCodes.ToArray();
             _logger.LogInformation("User with ID '{UserId}' has generated new 2FA recovery codes.", userId);
 
             StatusMessage = _statusLocalizer.GetString(r => r.GenerateRecoveryCodes)?.ToString();
-
             return RedirectToPage("./ShowRecoveryCodes");
         }
+
     }
 }

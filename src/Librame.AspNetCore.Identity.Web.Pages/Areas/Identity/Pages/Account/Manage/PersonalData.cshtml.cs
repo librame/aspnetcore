@@ -43,9 +43,9 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
         private readonly UserManager<TUser> _userManager;
 
 
-        public PersonalDataPageModel(UserManager<TUser> userManager)
+        public PersonalDataPageModel(SignInManager<TUser> signInManager)
         {
-            _userManager = userManager;
+            _userManager = signInManager.UserManager;
         }
 
 
@@ -59,5 +59,6 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
             return Page();
         }
+
     }
 }

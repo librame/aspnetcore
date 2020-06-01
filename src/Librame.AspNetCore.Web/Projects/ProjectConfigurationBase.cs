@@ -108,6 +108,7 @@ namespace Librame.AspNetCore.Web.Projects
         {
             options = options ?? new RazorViewEngineOptions();
 
+            // 重置语言视图定位扩展器
             var expander = options.ViewLocationExpanders?.FirstOrDefault(p => p is LanguageViewLocationExpander);
             if (expander != null)
                 options.ViewLocationExpanders.Remove(expander);

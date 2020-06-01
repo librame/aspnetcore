@@ -126,6 +126,11 @@ namespace Librame.AspNetCore.Identity.Web.Resources
         public string ChangePasswordSuccess { get; set; }
 
         /// <summary>
+        /// 设定邮箱成功。
+        /// </summary>
+        public string SetEmailSuccess { get; set; }
+
+        /// <summary>
         /// 设定密码成功。
         /// </summary>
         public string SetPasswordSuccess { get; set; }

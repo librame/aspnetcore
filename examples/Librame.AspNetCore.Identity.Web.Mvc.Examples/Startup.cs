@@ -39,8 +39,8 @@ namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
             {
                 // SignInManager.SignOutAsync
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-                //IdentityConstants.TwoFactorUserIdScheme
+                // SignInManager.SignInWithClaimsAsync
+                //options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
             })
             .AddIdentityCookies();
 

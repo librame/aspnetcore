@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.Web.Descriptors
     /// <summary>
     /// 抽象路由描述符。
     /// </summary>
-    public abstract class AbstractRouteDescriptor
+    public abstract class AbstractRouteDescriptor : IEquatable<AbstractRouteDescriptor>
     {
         /// <summary>
         /// 构造一个 <see cref="AbstractRouteDescriptor"/>。
@@ -85,6 +85,46 @@ namespace Librame.AspNetCore.Web.Descriptors
         /// </summary>
         /// <returns>返回字符串。</returns>
         public abstract string GetViewName();
+
+
+        /// <summary>
+        /// 生成模拟链接。
+        /// </summary>
+        /// <returns>返回链接字符串。</returns>
+        public abstract string GenerateSimulativeLink();
+
+
+        /// <summary>
+        /// 是否相等。
+        /// </summary>
+        /// <param name="other">给定的 <see cref="AbstractRouteDescriptor"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        public bool Equals(AbstractRouteDescriptor other)
+            => ToString().Equals(other?.ToString(), StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// 是否相等。
+        /// </summary>
+        /// <param name="obj">给定的对象。</param>
+        /// <returns>返回布尔值。</returns>
+        public override bool Equals(object obj)
+            => obj is AbstractRouteDescriptor other && Equals(other);
+
+
+        /// <summary>
+        /// 获取哈希码。
+        /// </summary>
+        /// <returns>返回整数。</returns>
+        public override int GetHashCode()
+            => ToString().GetHashCode(StringComparison.InvariantCulture);
+
+
+        /// <summary>
+        /// 转换为字符串。
+        /// </summary>
+        /// <returns>返回模拟链接字符串。</returns>
+        public override string ToString()
+            => GenerateSimulativeLink();
 
 
         /// <summary>
