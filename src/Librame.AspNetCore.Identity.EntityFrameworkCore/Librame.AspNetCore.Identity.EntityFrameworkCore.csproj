@@ -15,7 +15,7 @@
     <PackageIcon>Librame.png</PackageIcon>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>librame,aspnetcore,Identity,EntityFrameworkCore</PackageTags>
+    <PackageTags>librame,aspnetcore,identity,entityframeworkcore,efcore</PackageTags>
     <PackageReleaseNotes>Based Librame.AspNetCore.Identity.Abstractions on EntityFrameworkCore application implementation.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
