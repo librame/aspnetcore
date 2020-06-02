@@ -11,7 +11,7 @@
     <Description>Based Librame.AspNetCore.Api.Abstractions on Identity API package.</Description>
     <Copyright>Copyright © 2012-2020</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/librame/LibrameCore</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/librame/aspnetcore</PackageProjectUrl>
     <PackageIcon>Librame.png</PackageIcon>
     <RepositoryUrl>https://github.com/librame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
