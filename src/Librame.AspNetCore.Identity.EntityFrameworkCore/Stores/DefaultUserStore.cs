@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Security.Claims;
 
@@ -20,25 +21,25 @@ namespace Librame.AspNetCore.Identity.Stores
 {
     using Extensions;
     using Extensions.Core.Services;
-    using Extensions.Data.Stores;
+    using Extensions.Data.ValueGenerators;
 
     /// <summary>
     /// 默认用户存储。
     /// </summary>
     /// <typeparam name="TDbContext">指定的访问器类型。</typeparam>
-    public class DefaultUserStore<TDbContext> : DefaultUserStore<TDbContext, Guid>
+    public class DefaultUserStore<TDbContext> : DefaultUserStore<TDbContext, Guid, Guid>
         where TDbContext : DbContext
     {
         /// <summary>
         /// 构造一个默认用户存储。
         /// </summary>
-        /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="context">给定的 <typeparamref name="TDbContext"/>。</param>
         /// <param name="describer">给定的 <see cref="IdentityErrorDescriber"/>（可选）。</param>
-        public DefaultUserStore(IClockService clock, TDbContext context, IdentityErrorDescriber describer = null)
-            : base(clock, context, describer)
+        public DefaultUserStore(TDbContext context, IdentityErrorDescriber describer = null)
+            : base(context, describer)
         {
         }
+
     }
 
 
@@ -47,23 +48,29 @@ namespace Librame.AspNetCore.Identity.Stores
     /// </summary>
     /// <typeparam name="TDbContext">指定的数据库上下文类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
-    public class DefaultUserStore<TDbContext, TGenId> : UserStore<DefaultIdentityUser<TGenId>,
-        DefaultIdentityRole<TGenId>, TDbContext, TGenId,
-        DefaultIdentityUserClaim<TGenId>, DefaultIdentityUserRole<TGenId>, DefaultIdentityUserLogin<TGenId>,
-        DefaultIdentityUserToken<TGenId>, DefaultIdentityRoleClaim<TGenId>>
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+    public class DefaultUserStore<TDbContext, TGenId, TCreatedBy> : UserStore<DefaultIdentityUser<TGenId, TCreatedBy>,
+        DefaultIdentityRole<TGenId, TCreatedBy>,
+        TDbContext, TGenId,
+        DefaultIdentityUserClaim<TGenId, TCreatedBy>,
+        DefaultIdentityUserRole<TGenId, TCreatedBy>,
+        DefaultIdentityUserLogin<TGenId, TCreatedBy>,
+        DefaultIdentityUserToken<TGenId, TCreatedBy>,
+        DefaultIdentityRoleClaim<TGenId, TCreatedBy>>
         where TDbContext : DbContext
         where TGenId : IEquatable<TGenId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
         /// <summary>
         /// 构造一个默认用户存储。
         /// </summary>
-        /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="context">给定的 <typeparamref name="TDbContext"/>。</param>
         /// <param name="describer">给定的 <see cref="IdentityErrorDescriber"/>（可选）。</param>
-        public DefaultUserStore(IClockService clock, TDbContext context, IdentityErrorDescriber describer = null)
+        public DefaultUserStore(TDbContext context, IdentityErrorDescriber describer = null)
             : base(context, describer)
         {
-            Clock = clock.NotNull(nameof(clock));
+            Clock = context.GetService<IClockService>();
+            CreatedByGenerator = context.GetService<IDefaultValueGenerator<TCreatedBy>>();
         }
 
 
@@ -73,25 +80,25 @@ namespace Librame.AspNetCore.Identity.Stores
         public IClockService Clock { get; }
 
         /// <summary>
-        /// 当前类型名称。
+        /// 创建者默认值生成器。
         /// </summary>
-        protected string CurrentTypeName
-            => EntityPopulator.FormatTypeName(GetType());
+        protected IDefaultValueGenerator<TCreatedBy> CreatedByGenerator { get; }
 
 
         /// <summary>
         /// 创建用户声明。
         /// </summary>
-        /// <param name="user">给定的 <see cref="DefaultIdentityUser{TGenId}"/>。</param>
+        /// <param name="user">给定的 <see cref="DefaultIdentityUser{TGenId, TCreatedBy}"/>。</param>
         /// <param name="claim">给定的 <see cref="Claim"/>。</param>
-        /// <returns>返回 <see cref="DefaultIdentityUserClaim{TGenId}"/>。</returns>
-        protected override DefaultIdentityUserClaim<TGenId> CreateUserClaim(DefaultIdentityUser<TGenId> user, Claim claim)
+        /// <returns>返回 <see cref="DefaultIdentityUserClaim{TGenId, TCreatedBy}"/>。</returns>
+        protected override DefaultIdentityUserClaim<TGenId, TCreatedBy> CreateUserClaim
+            (DefaultIdentityUser<TGenId, TCreatedBy> user, Claim claim)
         {
             var userClaim = base.CreateUserClaim(user, claim);
 
             userClaim.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
             userClaim.CreatedTimeTicks = userClaim.CreatedTime.Ticks;
-            userClaim.CreatedBy = CurrentTypeName;
+            userClaim.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
 
             return userClaim;
         }
@@ -99,16 +106,17 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 创建用户登入。
         /// </summary>
-        /// <param name="user">给定的 <see cref="DefaultIdentityUser{TGenId}"/>。</param>
+        /// <param name="user">给定的 <see cref="DefaultIdentityUser{TGenId, TCreatedBy}"/>。</param>
         /// <param name="login">给定的 <see cref="UserLoginInfo"/>。</param>
-        /// <returns>返回 <see cref="DefaultIdentityUserLogin{TGenId}"/>。</returns>
-        protected override DefaultIdentityUserLogin<TGenId> CreateUserLogin(DefaultIdentityUser<TGenId> user, UserLoginInfo login)
+        /// <returns>返回 <see cref="DefaultIdentityUserLogin{TGenId, TCreatedBy}"/>。</returns>
+        protected override DefaultIdentityUserLogin<TGenId, TCreatedBy> CreateUserLogin
+            (DefaultIdentityUser<TGenId, TCreatedBy> user, UserLoginInfo login)
         {
             var userLogin = base.CreateUserLogin(user, login);
 
             userLogin.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
             userLogin.CreatedTimeTicks = userLogin.CreatedTime.Ticks;
-            userLogin.CreatedBy = CurrentTypeName;
+            userLogin.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
 
             return userLogin;
         }
@@ -116,16 +124,17 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 创建用户角色。
         /// </summary>
-        /// <param name="user">给定的 <see cref="DefaultIdentityUser{TGenId}"/>。</param>
-        /// <param name="role">给定的 <see cref="DefaultIdentityRole{TGenId}"/>。</param>
-        /// <returns>返回 <see cref="DefaultIdentityUserRole{TGenId}"/>。</returns>
-        protected override DefaultIdentityUserRole<TGenId> CreateUserRole(DefaultIdentityUser<TGenId> user, DefaultIdentityRole<TGenId> role)
+        /// <param name="user">给定的 <see cref="DefaultIdentityUser{TGenId, TCreatedBy}"/>。</param>
+        /// <param name="role">给定的 <see cref="DefaultIdentityRole{TGenId, TCreatedBy}"/>。</param>
+        /// <returns>返回 <see cref="DefaultIdentityUserRole{TGenId, TCreatedBy}"/>。</returns>
+        protected override DefaultIdentityUserRole<TGenId, TCreatedBy> CreateUserRole
+            (DefaultIdentityUser<TGenId, TCreatedBy> user, DefaultIdentityRole<TGenId, TCreatedBy> role)
         {
             var userRole = base.CreateUserRole(user, role);
 
             userRole.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
             userRole.CreatedTimeTicks = userRole.CreatedTime.Ticks;
-            userRole.CreatedBy = CurrentTypeName;
+            userRole.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
 
             return userRole;
         }
@@ -133,18 +142,19 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 创建用户令牌。
         /// </summary>
-        /// <param name="user">给定的 <see cref="DefaultIdentityUser{TGenId}"/>。</param>
+        /// <param name="user">给定的 <see cref="DefaultIdentityUser{TGenId, TCreatedBy}"/>。</param>
         /// <param name="loginProvider">给定的登入提供程序。</param>
         /// <param name="name">给定的名称。</param>
         /// <param name="value">给定的值。</param>
-        /// <returns>返回 <see cref="DefaultIdentityUserToken{TGenId}"/>。</returns>
-        protected override DefaultIdentityUserToken<TGenId> CreateUserToken(DefaultIdentityUser<TGenId> user, string loginProvider, string name, string value)
+        /// <returns>返回 <see cref="DefaultIdentityUserToken{TGenId, TCreatedBy}"/>。</returns>
+        protected override DefaultIdentityUserToken<TGenId, TCreatedBy> CreateUserToken
+            (DefaultIdentityUser<TGenId, TCreatedBy> user, string loginProvider, string name, string value)
         {
             var userToken = base.CreateUserToken(user, loginProvider, name, value);
 
             userToken.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
             userToken.CreatedTimeTicks = userToken.CreatedTime.Ticks;
-            userToken.CreatedBy = CurrentTypeName;
+            userToken.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
 
             return userToken;
         }

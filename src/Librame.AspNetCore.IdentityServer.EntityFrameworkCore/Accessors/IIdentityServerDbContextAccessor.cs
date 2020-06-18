@@ -12,12 +12,10 @@
 
 namespace Librame.AspNetCore.IdentityServer.Accessors
 {
-    using Identity.Accessors;
-
     /// <summary>
     /// 身份服务器数据库上下文访问器接口。
     /// </summary>
-    public interface IIdentityServerDbContextAccessor : IIdentityDbContextAccessor, IConfigurationDbContextAccessor, IPersistedGrantDbContextAccessor
+    public interface IIdentityServerDbContextAccessor : IConfigurationDbContextAccessor, IPersistedGrantDbContextAccessor
     {
     }
 }

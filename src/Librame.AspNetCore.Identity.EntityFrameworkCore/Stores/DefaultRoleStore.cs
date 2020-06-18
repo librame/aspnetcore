@@ -13,6 +13,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Security.Claims;
 
@@ -20,25 +21,25 @@ namespace Librame.AspNetCore.Identity.Stores
 {
     using Extensions;
     using Extensions.Core.Services;
-    using Extensions.Data.Stores;
+    using Extensions.Data.ValueGenerators;
 
     /// <summary>
     /// 默认角色存储。
     /// </summary>
     /// <typeparam name="TDbContext">指定的数据库上下文类型。</typeparam>
-    public class DefaultRoleStore<TDbContext> : DefaultRoleStore<TDbContext, Guid>
+    public class DefaultRoleStore<TDbContext> : DefaultRoleStore<TDbContext, Guid, Guid>
         where TDbContext : DbContext
     {
         /// <summary>
         /// 构造一个默认角色存储。
         /// </summary>
-        /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="context">给定的 <typeparamref name="TDbContext"/>。</param>
         /// <param name="describer">给定的 <see cref="IdentityErrorDescriber"/>（可选）。</param>
-        public DefaultRoleStore(IClockService clock, TDbContext context, IdentityErrorDescriber describer = null)
-            : base(clock, context, describer)
+        public DefaultRoleStore(TDbContext context, IdentityErrorDescriber describer = null)
+            : base(context, describer)
         {
         }
+
     }
 
 
@@ -47,50 +48,52 @@ namespace Librame.AspNetCore.Identity.Stores
     /// </summary>
     /// <typeparam name="TDbContext">指定的数据库上下文类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
-    public class DefaultRoleStore<TDbContext, TGenId> : RoleStore<DefaultIdentityRole<TGenId>,
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+    public class DefaultRoleStore<TDbContext, TGenId, TCreatedBy> : RoleStore<DefaultIdentityRole<TGenId, TCreatedBy>,
         TDbContext, TGenId,
-        DefaultIdentityUserRole<TGenId>, DefaultIdentityRoleClaim<TGenId>>
+        DefaultIdentityUserRole<TGenId, TCreatedBy>, DefaultIdentityRoleClaim<TGenId, TCreatedBy>>
         where TDbContext : DbContext
         where TGenId : IEquatable<TGenId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
         /// <summary>
         /// 构造一个默认角色存储。
         /// </summary>
-        /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="context">给定的 <typeparamref name="TDbContext"/>。</param>
         /// <param name="describer">给定的 <see cref="IdentityErrorDescriber"/>（可选）。</param>
-        public DefaultRoleStore(IClockService clock, TDbContext context, IdentityErrorDescriber describer = null)
+        public DefaultRoleStore(TDbContext context, IdentityErrorDescriber describer = null)
             : base(context, describer)
         {
-            Clock = clock.NotNull(nameof(clock));
+            Clock = context.GetService<IClockService>();
+            CreatedByGenerator = context.GetService<IDefaultValueGenerator<TCreatedBy>>();
         }
 
 
         /// <summary>
         /// 时钟服务。
         /// </summary>
-        public IClockService Clock { get; }
+        protected IClockService Clock { get; }
 
         /// <summary>
-        /// 当前类型名称。
+        /// 创建者默认值生成器。
         /// </summary>
-        protected string CurrentTypeName
-            => EntityPopulator.FormatTypeName(GetType());
+        protected IDefaultValueGenerator<TCreatedBy> CreatedByGenerator { get; }
 
 
         /// <summary>
         /// 创建身份角色。
         /// </summary>
-        /// <param name="role">给定的 <see cref="DefaultIdentityRole{TGenId}"/>。</param>
+        /// <param name="role">给定的 <see cref="DefaultIdentityRole{TGenId, TCreatedBy}"/>。</param>
         /// <param name="claim">给定的 <see cref="Claim"/>。</param>
-        /// <returns>返回 <see cref="DefaultIdentityRoleClaim{TGenId}"/>。</returns>
-        protected override DefaultIdentityRoleClaim<TGenId> CreateRoleClaim(DefaultIdentityRole<TGenId> role, Claim claim)
+        /// <returns>返回 <see cref="DefaultIdentityRoleClaim{TGenId, TCreatedBy}"/>。</returns>
+        protected override DefaultIdentityRoleClaim<TGenId, TCreatedBy> CreateRoleClaim
+            (DefaultIdentityRole<TGenId, TCreatedBy> role, Claim claim)
         {
             var roleClaim = base.CreateRoleClaim(role, claim);
 
             roleClaim.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
             roleClaim.CreatedTimeTicks = roleClaim.CreatedTime.Ticks;
-            roleClaim.CreatedBy = CurrentTypeName;
+            roleClaim.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
 
             return roleClaim;
         }

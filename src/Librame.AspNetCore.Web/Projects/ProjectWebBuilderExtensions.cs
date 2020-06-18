@@ -65,7 +65,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.AddProjectCore<TConfiguration, TNavigation>();
 
-            if (!builder.Services.TryGet<IProjectNavigation, RootProjectNavigationWithController>(out _))
+            if (!builder.Services.TryGetAll<IProjectNavigation, RootProjectNavigationWithController>(out _))
                 builder.Services.AddSingleton<IProjectNavigation, RootProjectNavigationWithController>();
 
             var assemblies = ThemepackHelper.ThemepackInfos.Values.Select(info => info.Assembly)
@@ -93,7 +93,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.AddProjectCore<TConfiguration, TNavigation>();
 
-            if (!builder.Services.TryGet<IProjectNavigation, RootProjectNavigationWithPage>(out _))
+            if (!builder.Services.TryGetAll<IProjectNavigation, RootProjectNavigationWithPage>(out _))
                 builder.Services.AddSingleton<IProjectNavigation, RootProjectNavigationWithPage>();
 
             var assemblies = ThemepackHelper.ThemepackInfos.Values.Select(info => info.Assembly)

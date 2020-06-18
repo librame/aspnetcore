@@ -40,20 +40,22 @@ namespace Librame.AspNetCore.Identity.Accessors
         /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
         /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
         /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+        /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
         /// <param name="accessor">给定的数据库上下文访问器。</param>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public static void ConfigureIdentityStores<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId>
-            (this ModelBuilder modelBuilder, IdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId> accessor)
-            where TRole : DefaultIdentityRole<TGenId>
-            where TRoleClaim : DefaultIdentityRoleClaim<TGenId>
-            where TUser : DefaultIdentityUser<TGenId>
-            where TUserClaim : DefaultIdentityUserClaim<TGenId>
-            where TUserLogin : DefaultIdentityUserLogin<TGenId>
-            where TUserRole : DefaultIdentityUserRole<TGenId>
-            where TUserToken : DefaultIdentityUserToken<TGenId>
+        public static void ConfigureIdentityStores<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy>
+            (this ModelBuilder modelBuilder, IdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy> accessor)
+            where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
+            where TRoleClaim : DefaultIdentityRoleClaim<TGenId, TCreatedBy>
+            where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
+            where TUserClaim : DefaultIdentityUserClaim<TGenId, TCreatedBy>
+            where TUserLogin : DefaultIdentityUserLogin<TGenId, TCreatedBy>
+            where TUserRole : DefaultIdentityUserRole<TGenId, TCreatedBy>
+            where TUserToken : DefaultIdentityUserToken<TGenId, TCreatedBy>
             where TGenId : IEquatable<TGenId>
             where TIncremId : IEquatable<TIncremId>
+            where TCreatedBy : IEquatable<TCreatedBy>
         {
             modelBuilder.NotNull(nameof(modelBuilder));
             accessor.NotNull(nameof(accessor));

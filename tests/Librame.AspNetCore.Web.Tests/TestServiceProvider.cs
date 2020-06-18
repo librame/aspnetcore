@@ -16,7 +16,7 @@ namespace Librame.AspNetCore.Web.Tests
 
                 services.AddLibrameCore();
 
-                services.TryReplace<IStringLocalizerFactory, TestCoreResourceManagerStringLocalizerFactory>();
+                services.TryReplaceAll<IStringLocalizerFactory, TestCoreResourceManagerStringLocalizerFactory>();
 
                 return services.BuildServiceProvider();
             });

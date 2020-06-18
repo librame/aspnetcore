@@ -15,6 +15,7 @@ using System;
 
 namespace Librame.AspNetCore.IdentityServer.Builders
 {
+    using AspNetCore.Web.Applications;
     using AspNetCore.Web.Builders;
     using Extensions.Core.Builders;
 
@@ -27,13 +28,19 @@ namespace Librame.AspNetCore.IdentityServer.Builders
         /// 添加身份服务器 Web 扩展。
         /// </summary>
         /// <param name="decorator">给定的 <see cref="IIdentityServerBuilderDecorator"/>。</param>
-        /// <param name="dependencyAction">给定的选项配置动作（可选）。</param>
+        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建数据构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
         public static IWebBuilder AddIdentityServerWeb(this IIdentityServerBuilderDecorator decorator,
-            Action<WebBuilderDependency> dependencyAction = null,
+            Action<WebBuilderDependency> configureDependency = null,
             Func<IExtensionBuilder, WebBuilderDependency, IWebBuilder> builderFactory = null)
-            => decorator.AddWeb(dependencyAction, builderFactory)
-                .AddUser(decorator?.UserType);
+        {
+            var builder = decorator.AddWeb(configureDependency, builderFactory);
+
+            builder.AddService<IApplicationPrincipal, IdentityServerApplicationPrincipal>();
+
+            return builder;
+        }
+
     }
 }

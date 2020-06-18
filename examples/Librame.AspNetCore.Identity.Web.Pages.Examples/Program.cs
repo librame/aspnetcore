@@ -12,9 +12,8 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
-        {
-            return WebHost.CreateDefaultBuilder(args)
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .ConfigureLogging(logging =>
                 {
@@ -22,6 +21,5 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                     logging.SetMinimumLevel(LogLevel.Trace);
                 })
                 .UseNLog();
-        }
     }
 }

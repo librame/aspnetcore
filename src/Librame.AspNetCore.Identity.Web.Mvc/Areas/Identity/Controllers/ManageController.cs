@@ -27,7 +27,6 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
     using AspNetCore.Identity.Builders;
     using AspNetCore.Identity.Web.Models;
     using AspNetCore.Identity.Web.Resources;
-    using AspNetCore.Web;
     using AspNetCore.Web.Applications;
     using Extensions;
     using Extensions.Core.Services;
@@ -37,7 +36,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
     /// ¹ÜÀí¿ØÖÆÆ÷¡£
     /// </summary>
     [Authorize]
-    [GenericApplicationModel]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper))]
     [Area(IdentityRouteBuilderExtensions.AreaName)]
     [Route(IdentityRouteBuilderExtensions.Template)]
     public class ManageController<TUser> : ApplicationController<TUser>

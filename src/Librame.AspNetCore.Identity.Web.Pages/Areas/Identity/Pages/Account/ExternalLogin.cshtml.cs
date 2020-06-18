@@ -19,7 +19,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account
@@ -27,17 +26,18 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
     using AspNetCore.Identity.Stores;
     using AspNetCore.Identity.Web.Models;
     using AspNetCore.Identity.Web.Resources;
-    using AspNetCore.Web;
+    using AspNetCore.Web.Applications;
     using Extensions;
     using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
-    using Extensions.Data.Stores;
+    using Extensions.Data.ValueGenerators;
 
     /// <summary>
     /// 外部登入确认页面模型。
     /// </summary>
     [AllowAnonymous]
-    [GenericApplicationModel(typeof(ExternalLoginPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(ExternalLoginPageModel<,,>))]
     public class ExternalLoginPageModel : PageModel
     {
         /// <summary>
@@ -103,33 +103,38 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
 
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    internal class ExternalLoginPageModel<TUser> : ExternalLoginPageModel
-        where TUser : class, IIdentifier
+    internal class ExternalLoginPageModel<TUser, TGenId, TCreateBy> : ExternalLoginPageModel
+        where TUser : class, IIdentifier<TGenId>
+        where TGenId : IEquatable<TGenId>
+        where TCreateBy : IEquatable<TCreateBy>
     {
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
         private readonly IUserStore<TUser> _userStore;
         private readonly ILogger<ExternalLoginPageModel> _logger;
-        private readonly IClockService _clockService;
+        private readonly IClockService _clock;
         private readonly IStringLocalizer<ErrorMessageResource> _errorLocalizer;
-        private readonly IIdentityStoreIdentifierGenerator _identifierGenerator;
+        private readonly IIdentityStoreIdentifierGenerator<TGenId> _identifierGenerator;
+        private readonly IDefaultValueGenerator<TCreateBy> _createdByGenerator;
 
 
         public ExternalLoginPageModel(
             SignInManager<TUser> signInManager,
             IUserStore<TUser> userStore,
             ILogger<ExternalLoginPageModel> logger,
-            IClockService clockService,
+            IClockService clock,
             IStringLocalizer<ErrorMessageResource> errorLocalizer,
+            IDefaultValueGenerator<TCreateBy> createdByGenerator,
             ServiceFactory serviceFactory)
         {
             _signInManager = signInManager.NotNull(nameof(signInManager));
             _userStore = userStore.NotNull(nameof(userStore));
             _logger = logger.NotNull(nameof(logger));
-            _clockService = clockService.NotNull(nameof(clockService));
+            _clock = clock.NotNull(nameof(clock));
             _errorLocalizer = errorLocalizer.NotNull(nameof(errorLocalizer));
+            _createdByGenerator = createdByGenerator.NotNull(nameof(createdByGenerator));
 
-            _identifierGenerator = serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser>();
+            _identifierGenerator = serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser, TGenId>();
             _userManager = signInManager.UserManager;
         }
 
@@ -209,10 +214,12 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
                 var user = CreateUser();
 
                 var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
-                await user.SetIdAsync(userId).ConfigureAndWaitAsync();
+                await user.SetIdAsync(userId).ConfigureAndResultAsync();
 
-                var result = await _userManager.CreateUserByEmail<ExternalLoginPageModel<TUser>, TUser>(_userStore,
-                    _clockService, user, Input.Email).ConfigureAndResultAsync();
+                var createdBy = await _createdByGenerator.GetValueAsync(GetType()).ConfigureAndResultAsync();
+
+                var result = await _userManager.CreateUserByEmail(_userStore,
+                    _clock, user, createdBy, Input.Email).ConfigureAndResultAsync();
 
                 if (result.Succeeded)
                 {
@@ -235,27 +242,6 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             ReturnUrl = returnUrl;
             return Page();
         }
-
-        //private async Task<IdentityResult> CreateUserByEmail(IClockService clock, TUser user, string email, string password = null,
-        //    CancellationToken cancellationToken = default)
-        //{
-        //    await _userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
-
-        //    if (!_userManager.SupportsUserEmail)
-        //        throw new NotSupportedException("The identity builder requires a user store with email support.");
-
-        //    var emailStore = (IUserEmailStore<TUser>)_userStore;
-        //    await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
-
-        //    // Populate Creation
-        //    await EntityPopulator.PopulateCreationAsync<RegisterPageModel>(clock, user, cancellationToken: cancellationToken)
-        //        .ConfigureAndWaitAsync();
-
-        //    if (password.IsNotEmpty())
-        //        return await _userManager.CreateAsync(user, password).ConfigureAndResultAsync();
-
-        //    return await _userManager.CreateAsync(user).ConfigureAndResultAsync();
-        //}
 
         private static TUser CreateUser()
         {

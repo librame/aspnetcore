@@ -22,17 +22,18 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account
 {
-    using AspNetCore.Web;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
     using Extensions.Network.Services;
-    using Models;
-    using Resources;
 
     /// <summary>
     /// 忘记密码页面模型。
     /// </summary>
     [AllowAnonymous]
-    [GenericApplicationModel(typeof(ForgotPasswordPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(ForgotPasswordPageModel<>))]
     public class ForgotPasswordPageModel : PageModel
     {
         /// <summary>

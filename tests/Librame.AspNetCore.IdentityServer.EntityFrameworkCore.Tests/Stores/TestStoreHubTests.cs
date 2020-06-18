@@ -14,34 +14,19 @@ namespace Librame.AspNetCore.IdentityServer.Tests
 
             // Identity
             var roles = stores.GetRoles();
-            Assert.Empty(roles);
-
-            roles = stores.UseWriteDbConnection().GetRoles();
             Assert.NotEmpty(roles);
 
-            var users = stores.UseDefaultDbConnection().GetUsers();
-            Assert.Empty(users);
-
-            users = stores.UseWriteDbConnection().GetUsers();
+            var users = stores.GetUsers();
             Assert.NotEmpty(users);
 
             // IdentityServer
-            var apiResources = stores.UseDefaultDbConnection().GetApiResources();
-            Assert.Empty(apiResources);
-
-            apiResources = stores.UseWriteDbConnection().GetApiResources();
+            var apiResources = stores.GetApiResources();
             Assert.NotEmpty(apiResources);
 
-            var clients = stores.UseDefaultDbConnection().GetClients();
-            Assert.Empty(clients);
-
-            clients = stores.UseWriteDbConnection().GetClients();
+            var clients = stores.GetClients();
             Assert.NotEmpty(clients);
 
-            var identities = stores.UseDefaultDbConnection().GetIdentityResources();
-            Assert.Empty(identities);
-
-            identities = stores.UseWriteDbConnection().GetIdentityResources();
+            var identities = stores.GetIdentityResources();
             Assert.NotEmpty(identities);
         }
 

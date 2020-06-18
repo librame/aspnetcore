@@ -15,12 +15,12 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
 {
     using AspNetCore.Web.Builders;
     using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Stores;
     using AspNetCore.IdentityServer.Accessors;
     using AspNetCore.IdentityServer.Builders;
     using AspNetCore.IdentityServer.Stores;
     using Extensions;
     using Extensions.Core.Identifiers;
-    using Extensions.Encryption.Builders;
 
     public class Startup
     {
@@ -41,19 +41,21 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
             });
 
             var mvcBuilder = services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
             services.AddLibrameCore()
-                .AddDataCore(dependency =>
+                //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
+                .AddNetwork()
+                .AddData(dependency =>
                 {
                     dependency.Options.IdentifierGenerator = CombIdentifierGenerator.MySQL;
 
                     // Use MySQL
                     dependency.BindDefaultTenant(MySqlConnectionStringHelper.Validate);
                 })
-                .AddAccessor<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
+                .AddAccessorCore<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
                 {
                     optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
                     {
@@ -63,10 +65,8 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                 })
                 .AddDatabaseDesignTime<MySqlDesignTimeServices>()
                 .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentifierGenerator>()
-                .AddIdentity<IdentityServerDbContextAccessor>(dependency =>
-                {
-                    dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
-                })
+                .AddStoreInitializer<GuidIdentityStoreInitializer>()
+                .AddIdentity<IdentityServerDbContextAccessor>()
                 .AddIdentityWeb(dependency =>
                 {
                     dependency.Options.Themepack.CommonHeaderNavigationVisibility = false;
@@ -75,12 +75,9 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                 .AddIdentityServer(dependency =>
                 {
                     // Use InMemoryStores
-                    //dependency.Builder.Action = options =>
-                    //{
-                    //    options.Authorizations.IdentityResources.AddRange(IdentityServerConfiguration.DefaultIdentityResources);
-                    //    options.Authorizations.ApiResources.Add(IdentityServerConfiguration.DefaultApiResource);
-                    //    options.Authorizations.Clients.Add(IdentityServerConfiguration.DefaultClient);
-                    //};
+                    //dependency.Options.Authorizations.IdentityResources.AddRange(IdentityServerConfiguration.DefaultIdentityResources);
+                    //dependency.Options.Authorizations.ApiResources.Add(IdentityServerConfiguration.DefaultApiResource);
+                    //dependency.Options.Authorizations.Clients.Add(IdentityServerConfiguration.DefaultClient);
 
                     dependency.IdentityServer = server =>
                     {
@@ -96,9 +93,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                 })
                 .AddAccessorStores<IdentityServerDbContextAccessor>() //.AddInMemoryStores()
                 .AddIdentityServerWeb()
-                .AddIdentityServerProjectController(mvcBuilder)
-                .AddEncryption().AddDeveloperGlobalSigningCredentials()
-                .AddNetwork();
+                .AddIdentityServerProjectController(mvcBuilder);
 
             services.AddAuthentication(options =>
             {

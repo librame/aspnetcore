@@ -15,6 +15,7 @@ using System;
 
 namespace Librame.AspNetCore.Identity.Builders
 {
+    using AspNetCore.Web.Applications;
     using AspNetCore.Web.Builders;
     using Extensions.Core.Builders;
 
@@ -27,13 +28,19 @@ namespace Librame.AspNetCore.Identity.Builders
         /// 添加身份 Web 扩展。
         /// </summary>
         /// <param name="decorator">给定的 <see cref="IIdentityBuilderDecorator"/>。</param>
-        /// <param name="dependencyAction">给定的选项配置动作（可选）。</param>
+        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建数据构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
         public static IWebBuilder AddIdentityWeb(this IIdentityBuilderDecorator decorator,
-            Action<IdentityWebBuilderDependency> dependencyAction = null,
+            Action<IdentityWebBuilderDependency> configureDependency = null,
             Func<IExtensionBuilder, IdentityWebBuilderDependency, IWebBuilder> builderFactory = null)
-            => decorator.AddWeb(dependencyAction, builderFactory)
-                .AddUser(decorator?.Source.UserType);
+        {
+            var builder = decorator.AddWeb(configureDependency, builderFactory);
+
+            builder.AddService<IApplicationPrincipal, IdentityApplicationPrincipal>();
+
+            return builder;
+        }
+
     }
 }

@@ -16,6 +16,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Librame.AspNetCore.IdentityServer.Web.Projects
 {
     using AspNetCore.Web.Projects;
+    using Extensions.Core.Localizers;
     using Extensions.Core.Services;
 
     /// <summary>
@@ -43,7 +44,8 @@ namespace Librame.AspNetCore.IdentityServer.Web.Projects
         /// <summary>
         /// 本地化定位器。
         /// </summary>
+        /// <value>返回 <see cref="IEnhancedStringLocalizer{IdentityServerProjectInfoResource}"/>。</value>
         public override IStringLocalizer Localizer
-            => ServiceFactory.GetRequiredService<IStringLocalizer<IdentityServerProjectInfoResource>>();
+            => ServiceFactory.GetRequiredService<IEnhancedStringLocalizer<IdentityServerProjectInfoResource>>();
     }
 }

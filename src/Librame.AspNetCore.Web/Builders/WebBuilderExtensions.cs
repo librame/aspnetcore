@@ -32,18 +32,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IWebBuilder EnableSupportedGenericController(this IWebBuilder builder)
             => builder.SetProperty(p => p.SupportedGenericController, true);
 
-        /// <summary>
-        /// 添加用户类型。
-        /// </summary>
-        /// <param name="builder">给定的 <see cref="IWebBuilder"/>。</param>
-        /// <param name="userType">给定的用户类型。</param>
-        /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
-        public static IWebBuilder AddUser(this IWebBuilder builder, Type userType)
-            => builder.SetProperty(p => p.UserType, userType);
-
 
         /// <summary>
-        /// 添加 Web 扩展。
+        /// 添加 Web 扩展（支持多次添加，从第二次开始，返回适配器模式）。
         /// </summary>
         /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
@@ -55,7 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
             => parentBuilder.AddWeb<WebBuilderDependency>(configureDependency, builderFactory);
 
         /// <summary>
-        /// 添加 Web 扩展。
+        /// 添加 Web 扩展（支持多次添加，从第二次开始，返回适配器模式）。
         /// </summary>
         /// <typeparam name="TDependency">指定的依赖类型。</typeparam>
         /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
@@ -68,8 +59,8 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<IExtensionBuilder, TDependency, IWebBuilder> builderFactory = null)
             where TDependency : WebBuilderDependency
         {
-            // 如果已经添加过 Web 扩展，则直接返回，防止出现重复配置的情况
-            if (parentBuilder.TryGetParentBuilder(out IWebBuilder webBuilder))
+            // 如果已经添加过 Web 扩展，则直接返回适配器模式
+            if (parentBuilder.TryGetBuilder(out IWebBuilder webBuilder))
                 return new WebBuilderAdapter(parentBuilder, webBuilder);
 
             // Clear Options Cache

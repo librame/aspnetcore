@@ -10,25 +10,27 @@ namespace Librame.AspNetCore.IdentityServer.Tests
     using AspNetCore.IdentityServer.Accessors;
     using AspNetCore.IdentityServer.Stores;
     using Extensions.Data.Stores;
+    using Extensions.Data.ValueGenerators;
     using Models;
 
     public class TestGuidIdentityServerStoreInitializer : GuidIdentityServerStoreInitializer
     {
-        public TestGuidIdentityServerStoreInitializer(SignInManager<DefaultIdentityUser<Guid>> signInManager,
-            RoleManager<DefaultIdentityRole<Guid>> roleMananger,
-            IUserStore<DefaultIdentityUser<Guid>> userStore,
-            GuidIdentityServerStoreIdentifierGenerator identifier, ILoggerFactory loggerFactory)
-            : base(signInManager, roleMananger, userStore, identifier, loggerFactory)
+        public TestGuidIdentityServerStoreInitializer(SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
+            RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
+            IUserStore<DefaultIdentityUser<Guid, Guid>> userStore,
+            IDefaultValueGenerator<Guid> createdByGenerator,
+            IStoreIdentifierGenerator<Guid> identifierGenerator, ILoggerFactory loggerFactory)
+            : base(signInManager, roleMananger, userStore, createdByGenerator, identifierGenerator, loggerFactory)
         {
         }
 
 
-        protected override void InitializeCore<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TIncremId>
-            (IStoreHub<TAudit, TAuditProperty, TEntity, TMigration, TTenant, Guid, TIncremId> stores)
+        protected override void InitializeData(IDataStoreHub<DataAudit<Guid, Guid>, DataAuditProperty<int, Guid>,
+            DataEntity<Guid, Guid>, DataMigration<Guid, Guid>, DataTenant<Guid, Guid>, Guid> dataStores)
         {
-            base.InitializeCore(stores);
+            base.InitializeData(dataStores);
 
-            if (stores.Accessor is IdentityServerDbContextAccessor dbContextAccessor)
+            if (dataStores.Accessor is IdentityServerDbContextAccessor dbContextAccessor)
             {
                 InitializeApiResources(dbContextAccessor);
 
@@ -37,6 +39,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                 InitializeIdentityResources(dbContextAccessor);
             }
         }
+
 
         private void InitializeApiResources(IdentityServerDbContextAccessor stores)
         {

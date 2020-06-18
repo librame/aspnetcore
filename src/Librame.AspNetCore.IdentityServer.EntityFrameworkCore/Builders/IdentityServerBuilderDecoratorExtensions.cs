@@ -20,10 +20,8 @@ using Librame.AspNetCore.IdentityServer.Builders;
 using Librame.Extensions;
 using Librame.Extensions.Core.Builders;
 using Librame.Extensions.Core.Options;
-using Librame.Extensions.Encryption.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -34,25 +32,25 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     /// 身份服务器构建器静态扩展。
     /// </summary>
-    public static class IdentityServerBuilderExtensions
+    public static class IdentityServerBuilderDecoratorExtensions
     {
         /// <summary>
-        /// 添加身份服务器扩展。
+        /// 添加身份服务器扩展（默认使用 <see cref="DefaultIdentityUser{TGenId, TCreatedBy}"/> 为用户模型）。
         /// </summary>
-        /// <param name="parentBuilder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="configureIdentityServer">给定的配置身份服务器选项动作方法。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
         public static IIdentityServerBuilderDecorator AddIdentityServer(this IExtensionBuilder parentBuilder,
             Action<IdentityServerOptions> configureIdentityServer,
             Func<IIdentityServerBuilder, IExtensionBuilder, IdentityServerBuilderDependency, IIdentityServerBuilderDecorator> builderFactory = null)
-            => parentBuilder.AddIdentityServer<DefaultIdentityUser<Guid>>(configureIdentityServer, builderFactory);
+            => parentBuilder.AddIdentityServer<DefaultIdentityUser<Guid, Guid>>(configureIdentityServer, builderFactory);
 
         /// <summary>
         /// 添加身份服务器扩展。
         /// </summary>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
-        /// <param name="parentBuilder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="configureIdentityServer">给定的配置身份服务器选项动作方法。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
@@ -70,22 +68,22 @@ namespace Microsoft.Extensions.DependencyInjection
 
 
         /// <summary>
-        /// 添加身份服务器扩展。
+        /// 添加身份服务器扩展（默认使用 <see cref="DefaultIdentityUser{TGenId, TCreatedBy}"/> 为用户模型）。
         /// </summary>
-        /// <param name="parentBuilder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
         public static IIdentityServerBuilderDecorator AddIdentityServer(this IExtensionBuilder parentBuilder,
             Action<IdentityServerBuilderDependency> configureDependency = null,
             Func<IIdentityServerBuilder, IExtensionBuilder, IdentityServerBuilderDependency, IIdentityServerBuilderDecorator> builderFactory = null)
-            => parentBuilder.AddIdentityServer<DefaultIdentityUser<Guid>>(configureDependency, builderFactory);
+            => parentBuilder.AddIdentityServer<DefaultIdentityUser<Guid, Guid>>(configureDependency, builderFactory);
 
         /// <summary>
         /// 添加身份服务器扩展。
         /// </summary>
         /// <typeparam name="TUser">指定的用户类型。</typeparam>
-        /// <param name="parentBuilder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
@@ -131,9 +129,11 @@ namespace Microsoft.Extensions.DependencyInjection
             // Create Decorator
             var decorator = builderFactory.NotNullOrDefault(() =>
             {
-                return (s, p, d) => new IdentityServerBuilderDecorator(typeof(TUser), s, p, d);
+                return (s, p, d) => new IdentityServerBuilderDecorator(s, p, d);
             })
             .Invoke(sourceBuilder, parentBuilder, dependency);
+
+            decorator.SetProperty(p => p.UserType, typeof(TUser));
 
             return decorator;
         }

@@ -21,43 +21,22 @@ namespace Librame.AspNetCore.Identity.Stores
     /// <summary>
     /// 身份存储标识符生成器接口。
     /// </summary>
-    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
-    public interface IIdentityStoreIdentifierGenerator<TGenId> : IIdentityStoreIdentifierGenerator, IStoreIdentifierGenerator<TGenId>
-        where TGenId : IEquatable<TGenId>
+    /// <typeparam name="TId">指定的标识类型。</typeparam>
+    public interface IIdentityStoreIdentifierGenerator<TId> : IDataStoreIdentifierGenerator<TId>
+        where TId : IEquatable<TId>
     {
         /// <summary>
         /// 异步生成角色标识。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TGenId"/> 的异步操作。</returns>
-        new Task<TGenId> GenerateRoleIdAsync(CancellationToken cancellationToken = default);
+        /// <returns>返回一个包含 <typeparamref name="TId"/> 的异步操作。</returns>
+        Task<TId> GenerateRoleIdAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 异步生成用户标识。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <typeparamref name="TGenId"/> 的异步操作。</returns>
-        new Task<TGenId> GenerateUserIdAsync(CancellationToken cancellationToken = default);
-    }
-
-
-    /// <summary>
-    /// 身份存储标识符生成器接口。
-    /// </summary>
-    public interface IIdentityStoreIdentifierGenerator : IStoreIdentifierGenerator
-    {
-        /// <summary>
-        /// 异步获取角色标识。
-        /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含标识对象的异步操作。</returns>
-        Task<object> GenerateRoleIdAsync(CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// 异步获取用户标识。
-        /// </summary>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含标识对象的异步操作。</returns>
-        Task<object> GenerateUserIdAsync(CancellationToken cancellationToken = default);
+        /// <returns>返回一个包含 <typeparamref name="TId"/> 的异步操作。</returns>
+        Task<TId> GenerateUserIdAsync(CancellationToken cancellationToken = default);
     }
 }

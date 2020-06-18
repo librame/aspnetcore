@@ -21,8 +21,9 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <summary>
     /// 身份数据库上下文访问器。
     /// </summary>
-    public class IdentityDbContextAccessor : IdentityDbContextAccessor<DefaultIdentityRole<Guid>, DefaultIdentityUser<Guid>, Guid, int>
-        , IIdentityDbContextAccessor
+    public class IdentityDbContextAccessor
+        : IdentityDbContextAccessor<DefaultIdentityRole<Guid, Guid>, DefaultIdentityUser<Guid, Guid>, Guid, int, Guid>,
+            IIdentityDbContextAccessor
     {
         /// <summary>
         /// 构造一个身份数据库上下文访问器实例。
@@ -42,15 +43,17 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
-    public class IdentityDbContextAccessor<TRole, TUser, TGenId, TIncremId>
-        : IdentityDbContextAccessor<TRole, DefaultIdentityRoleClaim<TGenId>,
-            TUser, DefaultIdentityUserClaim<TGenId>, DefaultIdentityUserLogin<TGenId>,
-            DefaultIdentityUserRole<TGenId>, DefaultIdentityUserToken<TGenId>, TGenId, TIncremId>
-        , IIdentityDbContextAccessor<TRole, TUser, TGenId>
-        where TRole : DefaultIdentityRole<TGenId>
-        where TUser : DefaultIdentityUser<TGenId>
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+    public class IdentityDbContextAccessor<TRole, TUser, TGenId, TIncremId, TCreatedBy>
+        : IdentityDbContextAccessor<TRole, DefaultIdentityRoleClaim<TGenId, TCreatedBy>,
+            TUser, DefaultIdentityUserClaim<TGenId, TCreatedBy>, DefaultIdentityUserLogin<TGenId, TCreatedBy>,
+            DefaultIdentityUserRole<TGenId, TCreatedBy>, DefaultIdentityUserToken<TGenId, TCreatedBy>, TGenId, TIncremId, TCreatedBy>
+        , IIdentityDbContextAccessor<TRole, TUser, TGenId, TCreatedBy>
+        where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
+        where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
         /// <summary>
         /// 构造一个身份数据库上下文访问器实例。
@@ -75,17 +78,20 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
-    public class IdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId>
-        : DbContextAccessor<TGenId, TIncremId>, IIdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken>
-        where TRole : DefaultIdentityRole<TGenId>
-        where TRoleClaim : DefaultIdentityRoleClaim<TGenId>
-        where TUser : DefaultIdentityUser<TGenId>
-        where TUserClaim : DefaultIdentityUserClaim<TGenId>
-        where TUserLogin : DefaultIdentityUserLogin<TGenId>
-        where TUserRole : DefaultIdentityUserRole<TGenId>
-        where TUserToken : DefaultIdentityUserToken<TGenId>
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+    public class IdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy>
+        : DbContextAccessor<TGenId, TIncremId, TCreatedBy>,
+            IIdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken>
+        where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
+        where TRoleClaim : DefaultIdentityRoleClaim<TGenId, TCreatedBy>
+        where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
+        where TUserClaim : DefaultIdentityUserClaim<TGenId, TCreatedBy>
+        where TUserLogin : DefaultIdentityUserLogin<TGenId, TCreatedBy>
+        where TUserRole : DefaultIdentityUserRole<TGenId, TCreatedBy>
+        where TUserToken : DefaultIdentityUserToken<TGenId, TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
         /// <summary>
         /// 构造一个身份数据库上下文访问器实例。

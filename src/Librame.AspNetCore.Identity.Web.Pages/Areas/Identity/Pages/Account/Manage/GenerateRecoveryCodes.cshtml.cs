@@ -25,13 +25,14 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
     using AspNetCore.Identity.Builders;
     using AspNetCore.Identity.Web.Resources;
-    using AspNetCore.Web;
+    using AspNetCore.Web.Applications;
     using Extensions;
 
     /// <summary>
     /// 生成恢复码集合页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(GenerateRecoveryCodesPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(GenerateRecoveryCodesPageModel<>))]
     public class GenerateRecoveryCodesPageModel : PageModel
     {
         /// <summary>

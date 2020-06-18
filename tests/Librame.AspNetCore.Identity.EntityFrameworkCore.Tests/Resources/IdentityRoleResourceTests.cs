@@ -24,17 +24,17 @@ namespace Librame.AspNetCore.Identity.Tests
         {
             CultureInfoUtility.Register(new CultureInfo(cultureName));
 
-            var id = localizer.GetString(r => r.Id);
-            Assert.False(id.ResourceNotFound);
+            var localized = localizer.GetString(r => r.Id);
+            Assert.False(localized.ResourceNotFound);
 
-            var normalizedName = localizer.GetString(r => r.NormalizedName);
-            Assert.False(normalizedName.ResourceNotFound);
+            localized = localizer.GetString(r => r.NormalizedName);
+            Assert.False(localized.ResourceNotFound);
 
-            var name = localizer.GetString(r => r.Name);
-            Assert.False(name.ResourceNotFound);
+            localized = localizer.GetString(r => r.Name);
+            Assert.False(localized.ResourceNotFound);
 
-            var concurrencyStamp = localizer.GetString(r => r.ConcurrencyStamp);
-            Assert.False(concurrencyStamp.ResourceNotFound);
+            localized = localizer.GetString(r => r.ConcurrencyStamp);
+            Assert.False(localized.ResourceNotFound);
         }
 
     }

@@ -122,6 +122,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// </summary>
         /// <param name="name">给定的配置名称。</param>
         /// <param name="options">给定的 <see cref="StaticFileOptions"/>。</param>
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递")]
         public virtual void PostConfigure(string name, StaticFileOptions options)
         {
             options = options ?? new StaticFileOptions();

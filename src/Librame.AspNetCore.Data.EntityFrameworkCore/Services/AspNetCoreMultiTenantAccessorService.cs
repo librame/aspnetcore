@@ -30,20 +30,21 @@ namespace Librame.Extensions.Data.Services
     using Stores;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    internal class AspNetCoreTenantService<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId>
-        : TenantService<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId>
-        where TAudit : DataAudit<TGenId>
+    internal class AspNetCoreMultiTenantAccessorService<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId, TCreatedBy>
+        : MultiTenantAccessorService<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId, TCreatedBy>
+        where TAudit : DataAudit<TGenId, TCreatedBy>
         where TAuditProperty : DataAuditProperty<TIncremId, TGenId>
-        where TEntity : DataEntity<TGenId>
-        where TMigration : DataMigration<TGenId>
-        where TTenant : DataTenant<TGenId>
+        where TEntity : DataEntity<TGenId, TCreatedBy>
+        where TMigration : DataMigration<TGenId, TCreatedBy>
+        where TTenant : DataTenant<TGenId, TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
         private readonly HttpContext _httpContext;
 
 
-        public AspNetCoreTenantService(IHttpContextAccessor httpContextAccessor,
+        public AspNetCoreMultiTenantAccessorService(IHttpContextAccessor httpContextAccessor,
             IOptions<DataBuilderOptions> options, ILoggerFactory logger)
             : base(options, logger)
         {
@@ -51,7 +52,9 @@ namespace Librame.Extensions.Data.Services
         }
 
 
-        protected override ITenant GetSwitchTenantCore(DbContextAccessor<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId> dbContextAccessor)
+        [SuppressMessage("Design", "CA1031:不捕获常规异常类型")]
+        protected override ITenant GetSwitchTenantCore
+            (DbContextAccessor<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId, TCreatedBy> dbContextAccessor)
         {
             try
             {
@@ -75,7 +78,9 @@ namespace Librame.Extensions.Data.Services
             return base.GetSwitchTenantCore(dbContextAccessor);
         }
 
-        protected override Task<ITenant> GetSwitchTenantCoreAsync(DbContextAccessor<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId> dbContextAccessor,
+        [SuppressMessage("Design", "CA1031:不捕获常规异常类型")]
+        protected override Task<ITenant> GetSwitchTenantCoreAsync
+            (DbContextAccessor<TAudit, TAuditProperty, TEntity, TMigration, TTenant, TGenId, TIncremId, TCreatedBy> dbContextAccessor,
             CancellationToken cancellationToken = default)
         {
             try

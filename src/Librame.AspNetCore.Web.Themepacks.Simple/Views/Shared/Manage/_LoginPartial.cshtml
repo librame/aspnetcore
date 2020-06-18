@@ -5,7 +5,7 @@
     var nav = Model.CurrentProject.Navigation;
     var userName = Model.Principal.GetSignedUserName(Context);
     var email = Model.Principal.GetSignedUserEmail(Context);
-    var portrait = Model.Principal.GetSignedUserPortrait(Context);
+    var portrait = Model.Principal.GetSignedUserPortraitPath(Context);
 
     // 因 MVC 安全机制，注销窗体必须使用路由模式
     nav.Logout.Route.NotNull(nameof(nav.Logout.Route));

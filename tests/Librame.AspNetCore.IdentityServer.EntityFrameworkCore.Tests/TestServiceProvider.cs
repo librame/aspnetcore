@@ -12,8 +12,6 @@ namespace Librame.AspNetCore.IdentityServer.Tests
     using AspNetCore.IdentityServer.Stores;
     using Extensions;
     using Extensions.Core.Identifiers;
-    using Extensions.Data.Builders;
-    using Extensions.Encryption.Builders;
 
     internal static class TestServiceProvider
     {
@@ -32,19 +30,19 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                 .AddIdentityCookies(cookies => { });
 
                 services.AddLibrameCore()
-                    .AddDataCore(dependency =>
+                    //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
+                    .AddData(dependency =>
                     {
                         dependency.Options.IdentifierGenerator = CombIdentifierGenerator.MySQL;
 
                         // Use MySQL
-                        dependency.Options.DefaultTenant.EncryptedConnectionStrings = true;
                         dependency.Options.DefaultTenant.DefaultConnectionString
-                            = MySqlConnectionStringHelper.Validate("1MtE5ZRWRqRYtm0vkqyTB4xi8E5iB5OnxJFpTfyJpV1YB9r1kQz5QO2wE8nfXDoK6vY/A5fXpJ7M5FtggIfUia31KymmnapwOusOcWiSu5yiZZfUF2iwyTxkGIkWlmY3");
+                            = MySqlConnectionStringHelper.Validate("server=localhost;port=3306;database=librame_identityserver_default;user=root;password=123456;");
                         dependency.Options.DefaultTenant.WritingConnectionString
-                            = MySqlConnectionStringHelper.Validate("1MtE5ZRWRqRYtm0vkqyTB4xi8E5iB5OnxJFpTfyJpV1YB9r1kQz5QO2wE8nfXDoKZDv7B8bfMirykRdf+FGsdq31KymmnapwOusOcWiSu5yiZZfUF2iwyTxkGIkWlmY3");
-                        dependency.Options.DefaultTenant.WritingSeparation = true;
+                            = MySqlConnectionStringHelper.Validate("server=localhost;port=3306;database=librame_identityserver_writing;user=root;password=123456;");
+                        //dependency.Options.DefaultTenant.WritingSeparation = true;
                     })
-                    .AddAccessor<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
+                    .AddAccessorCore<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
                     {
                         optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
                         {
@@ -60,7 +58,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                     {
                         options.Identity.Options.Stores.MaxLengthForKeys = 128;
                     })
-                    .AddIdentityServer<DefaultIdentityUser<Guid>>(dependency =>
+                    .AddIdentityServer<DefaultIdentityUser<Guid, Guid>>(dependency =>
                     {
                         dependency.IdentityServer = options =>
                         {
@@ -72,8 +70,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                             options.Authentication.CookieAuthenticationScheme = IdentityConstants.ApplicationScheme;
                         };
                     })
-                    .AddAccessorStores<IdentityServerDbContextAccessor>()
-                    .AddEncryption().AddDeveloperGlobalSigningCredentials();
+                    .AddAccessorStores<IdentityServerDbContextAccessor>();
 
                 return services.BuildServiceProvider();
             });

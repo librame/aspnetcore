@@ -45,17 +45,19 @@ namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
             .AddIdentityCookies();
 
             var mvcBuilder = services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
             services.AddLibrameCore()
-                .AddDataCore(dependency =>
+                //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
+                .AddNetwork()
+                .AddData(dependency =>
                 {
                     // Use SQL Server
                     dependency.BindDefaultTenant();
                 })
-                .AddAccessor<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
+                .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
                 {
                     optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
@@ -68,8 +70,7 @@ namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })
                 .AddIdentityWeb()
-                .AddIdentityProjectController(mvcBuilder)
-                .AddNetwork();
+                .AddIdentityProjectController(mvcBuilder);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

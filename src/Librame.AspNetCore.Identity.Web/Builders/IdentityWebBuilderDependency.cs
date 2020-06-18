@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Identity.Builders
     using Extensions.Core.Builders;
 
     /// <summary>
-    /// 身份 WEB 构建器依赖。
+    /// 身份 Web 构建器依赖。
     /// </summary>
     public class IdentityWebBuilderDependency : WebBuilderDependency
     {

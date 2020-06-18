@@ -24,50 +24,50 @@ namespace Librame.AspNetCore.Identity.Tests
         {
             CultureInfoUtility.Register(new CultureInfo(cultureName));
 
-            var id = localizer.GetString(r => r.Id);
-            Assert.False(id.ResourceNotFound);
+            var localized = localizer.GetString(r => r.Id);
+            Assert.False(localized.ResourceNotFound);
 
-            var accessFailedCount = localizer.GetString(r => r.AccessFailedCount);
-            Assert.False(accessFailedCount.ResourceNotFound);
+            localized = localizer.GetString(r => r.AccessFailedCount);
+            Assert.False(localized.ResourceNotFound);
 
-            var passwordHash = localizer.GetString(r => r.PasswordHash);
-            Assert.False(passwordHash.ResourceNotFound);
+            localized = localizer.GetString(r => r.PasswordHash);
+            Assert.False(localized.ResourceNotFound);
 
-            var normalizedUserName = localizer.GetString(r => r.NormalizedUserName);
-            Assert.False(normalizedUserName.ResourceNotFound);
+            localized = localizer.GetString(r => r.NormalizedUserName);
+            Assert.False(localized.ResourceNotFound);
 
-            var userName = localizer.GetString(r => r.UserName);
-            Assert.False(userName.ResourceNotFound);
+            localized = localizer.GetString(r => r.UserName);
+            Assert.False(localized.ResourceNotFound);
 
-            var normalizedEmail = localizer.GetString(r => r.NormalizedEmail);
-            Assert.False(normalizedEmail.ResourceNotFound);
+            localized = localizer.GetString(r => r.NormalizedEmail);
+            Assert.False(localized.ResourceNotFound);
 
-            var email = localizer.GetString(r => r.Email);
-            Assert.False(email.ResourceNotFound);
+            localized = localizer.GetString(r => r.Email);
+            Assert.False(localized.ResourceNotFound);
 
-            var emailConfirmed = localizer.GetString(r => r.EmailConfirmed);
-            Assert.False(emailConfirmed.ResourceNotFound);
+            localized = localizer.GetString(r => r.EmailConfirmed);
+            Assert.False(localized.ResourceNotFound);
 
-            var phoneNumber = localizer.GetString(r => r.PhoneNumber);
-            Assert.False(phoneNumber.ResourceNotFound);
+            localized = localizer.GetString(r => r.PhoneNumber);
+            Assert.False(localized.ResourceNotFound);
 
-            var phoneNumberConfirmed = localizer.GetString(r => r.PhoneNumberConfirmed);
-            Assert.False(phoneNumberConfirmed.ResourceNotFound);
+            localized = localizer.GetString(r => r.PhoneNumberConfirmed);
+            Assert.False(localized.ResourceNotFound);
 
-            var lockoutEnabled = localizer.GetString(r => r.LockoutEnabled);
-            Assert.False(lockoutEnabled.ResourceNotFound);
+            localized = localizer.GetString(r => r.LockoutEnabled);
+            Assert.False(localized.ResourceNotFound);
 
-            var lockoutEnd = localizer.GetString(r => r.LockoutEnd);
-            Assert.False(lockoutEnd.ResourceNotFound);
+            localized = localizer.GetString(r => r.LockoutEnd);
+            Assert.False(localized.ResourceNotFound);
 
-            var twoFactorEnabled = localizer.GetString(r => r.TwoFactorEnabled);
-            Assert.False(twoFactorEnabled.ResourceNotFound);
+            localized = localizer.GetString(r => r.TwoFactorEnabled);
+            Assert.False(localized.ResourceNotFound);
 
-            var concurrencyStamp = localizer.GetString(r => r.ConcurrencyStamp);
-            Assert.False(concurrencyStamp.ResourceNotFound);
+            localized = localizer.GetString(r => r.ConcurrencyStamp);
+            Assert.False(localized.ResourceNotFound);
 
-            var securityStamp = localizer.GetString(r => r.SecurityStamp);
-            Assert.False(securityStamp.ResourceNotFound);
+            localized = localizer.GetString(r => r.SecurityStamp);
+            Assert.False(localized.ResourceNotFound);
         }
 
     }

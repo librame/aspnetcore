@@ -14,11 +14,9 @@ using Librame.AspNetCore.Api;
 using Librame.AspNetCore.Api.Builders;
 using Librame.AspNetCore.Identity.Api;
 using Librame.AspNetCore.Identity.Builders;
-using Librame.AspNetCore.Identity.Stores;
 using Librame.Extensions.Core.Builders;
-using Librame.Extensions.Core.Identifiers;
-using Librame.Extensions.Data.Stores;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -34,36 +32,26 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
+        [SuppressMessage("Design", "CA1062:验证公共方法的参数")]
         public static IApiBuilder AddIdentityApi(this IIdentityBuilderDecorator decorator,
             Action<ApiBuilderDependency> configureDependency = null,
             Func<IExtensionBuilder, ApiBuilderDependency, IApiBuilder> builderFactory = null)
-            => decorator.AddIdentityApi<DefaultIdentityRole<Guid>,
-                DefaultIdentityUser<Guid>>(configureDependency, builderFactory);
-
-        /// <summary>
-        /// 添加 Identity API 扩展。
-        /// </summary>
-        /// <typeparam name="TRole">指定的角色类型。</typeparam>
-        /// <typeparam name="TUser">指定的用户类型。</typeparam>
-        /// <param name="decorator">给定的 <see cref="IIdentityBuilderDecorator"/>。</param>
-        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
-        /// <param name="builderFactory">给定创建 API 构建器的工厂方法（可选）。</param>
-        /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
-        public static IApiBuilder AddIdentityApi<TRole, TUser>(this IIdentityBuilderDecorator decorator,
-            Action<ApiBuilderDependency> configureDependency = null,
-            Func<IExtensionBuilder, ApiBuilderDependency, IApiBuilder> builderFactory = null)
-            where TRole : class, IIdentifier, ICreatedTimeTicks
-            where TUser : class, IIdentifier, ICreatedTimeTicks
-            => decorator.AddApi(configureDependency, builderFactory)
-                .AddIdentityApiCore<TRole, TUser>();
-
-
-        private static IApiBuilder AddIdentityApiCore<TRole, TUser>(this IApiBuilder builder)
-            where TRole : class, IIdentifier, ICreatedTimeTicks
-            where TUser : class, IIdentifier, ICreatedTimeTicks
         {
-            builder.Services.TryReplace<IGraphApiQuery, IdentityGraphApiQuery<TRole, TUser>>();
-            builder.Services.TryReplace<IGraphApiMutation, IdentityGraphApiMutation<TUser>>();
+            var builder = decorator.AddApi(configureDependency, builderFactory);
+
+            var accessorMappingDescriptor = decorator.DataBuilder.AccessorMappingDescriptor;
+
+            var apiMutationType = typeof(IdentityGraphApiMutation<,,>).MakeGenericType(
+                decorator.Source.UserType,
+                accessorMappingDescriptor.GenId.ArgumentType,
+                accessorMappingDescriptor.CreatedBy.ArgumentType);
+
+            var apiQueryType = typeof(IdentityGraphApiQuery<,>).MakeGenericType(
+                decorator.Source.RoleType,
+                decorator.Source.UserType);
+
+            decorator.Services.TryReplaceAll(typeof(IGraphApiMutation), apiMutationType);
+            decorator.Services.TryReplaceAll(typeof(IGraphApiQuery), apiQueryType);
 
             return builder;
         }

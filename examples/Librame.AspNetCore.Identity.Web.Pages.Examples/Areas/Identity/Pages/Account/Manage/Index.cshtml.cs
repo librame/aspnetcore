@@ -31,10 +31,10 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
         private IStringLocalizer<StatusMessageResource> _statusLocalizer = null;
 
         [InjectionService]
-        private SignInManager<DefaultIdentityUser<Guid>> _signInManager = null;
+        private SignInManager<DefaultIdentityUser<Guid, Guid>> _signInManager = null;
 
 
-        private readonly UserManager<DefaultIdentityUser<Guid>> _userManager = null;
+        private readonly UserManager<DefaultIdentityUser<Guid, Guid>> _userManager = null;
 
 
         /// <summary>

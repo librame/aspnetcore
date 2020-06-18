@@ -21,15 +21,16 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
-    using AspNetCore.Web;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
-    using Models;
-    using Resources;
 
     /// <summary>
     /// 删除个人数据页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(DeletePersonalDataPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(DeletePersonalDataPageModel<>))]
     public class DeletePersonalDataPageModel : PageModel
     {
         /// <summary>

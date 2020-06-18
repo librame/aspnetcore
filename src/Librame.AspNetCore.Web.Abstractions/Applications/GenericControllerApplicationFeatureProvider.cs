@@ -19,30 +19,37 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
-namespace Librame.AspNetCore.Web.Projects
+namespace Librame.AspNetCore.Web.Applications
 {
+    using AspNetCore.Web.Builders;
     using Extensions;
 
     /// <summary>
-    /// 带用户的泛型控制器模型提供程序。
+    /// 泛型控制器应用特征提供程序。
     /// </summary>
     /// <remarks>
     /// 参考 <see cref="ControllerFeatureProvider"/>。
     /// </remarks>
-    public class GenericControllerModelProviderWithUser : IApplicationFeatureProvider<ControllerFeature>
+    public class GenericControllerApplicationFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
     {
         private const string ControllerTypeNameSuffix = "Controller";
-        private readonly Type _userType;
 
 
         /// <summary>
-        /// 构造一个 <see cref="GenericControllerModelProviderWithUser"/>。
+        /// 构造一个 <see cref="GenericControllerApplicationFeatureProvider"/>。
         /// </summary>
-        /// <param name="userType">给定的用户类型。</param>
-        public GenericControllerModelProviderWithUser(Type userType)
+        /// <param name="builder">给定的 <see cref="IWebBuilder"/>。</param>
+        public GenericControllerApplicationFeatureProvider(IWebBuilder builder)
         {
-            _userType = userType.NotNull(nameof(userType));
+            Builder = builder.NotNull(nameof(builder));
         }
+
+
+        /// <summary>
+        /// Web 构建器。
+        /// </summary>
+        /// <value>返回 <see cref="IWebBuilder"/>。</value>
+        public IWebBuilder Builder { get; }
 
 
         /// <summary>
@@ -51,7 +58,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// <param name="parts">给定的 <see cref="IEnumerable{ApplicationPart}"/>。</param>
         /// <param name="feature">给定的 <see cref="ControllerFeature"/>。</param>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
+        public virtual void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
             foreach (var part in parts.OfType<IApplicationPartTypeProvider>())
             {
@@ -60,8 +67,8 @@ namespace Librame.AspNetCore.Web.Projects
                     // 限定为泛型应用模型特性的应用模型集合
                     if (type.TryGetCustomAttribute(out GenericApplicationModelAttribute attribute))
                     {
-                        var implementationType = attribute.ApplyGenericTypeIfNull(type)
-                            .BuildImplementationType(_userType);
+                        var implementationType = attribute.ApplyGenericTypeDefinitionIfNull(type)
+                            .BuildImplementationType(Builder);
 
                         if (!feature.Controllers.Contains(implementationType))
                             feature.Controllers.Add(implementationType.GetTypeInfo());

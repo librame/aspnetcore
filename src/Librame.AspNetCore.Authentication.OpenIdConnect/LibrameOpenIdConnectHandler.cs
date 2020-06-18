@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -73,10 +74,13 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
             return BaseHandleRequestAsync();
         }
 
+
         /// <summary>
         /// Fix RemoteAuthenticationHandler{OpenIdConnectOptions}.HandleRequestAsync()。
         /// </summary>
         /// <returns>返回一个带布尔值的异步操作。</returns>
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递")]
+        [SuppressMessage("Design", "CA1031:不捕获常规异常类型")]
         private async Task<bool> BaseHandleRequestAsync()
         {
             if (!await ShouldHandleRequestAsync().ConfigureAndResultAsync())
@@ -202,6 +206,8 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
         /// Invoked to process incoming OpenIdConnect messages.
         /// </summary>
         /// <returns>An <see cref="HandleRequestResult"/>.</returns>
+        [SuppressMessage("Design", "CA1031:不捕获常规异常类型")]
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递")]
         protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
         {
             Logger.EnteringOpenIdAuthenticationHandlerHandleRemoteAuthenticateAsync(GetType().FullName);
@@ -569,13 +575,15 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
             properties.StoreTokens(tokens);
         }
 
+
         /// <summary>
         /// Searches <see cref="HttpRequest.Cookies"/> for a matching nonce.
         /// </summary>
         /// <param name="nonce">the nonce that we are looking for.</param>
         /// <returns>echos 'nonce' if a cookie is found that matches, null otherwise.</returns>
         /// <remarks>Examine <see cref="IRequestCookieCollection.Keys"/> of <see cref="HttpRequest.Cookies"/> that start with the prefix: 'OpenIdConnectAuthenticationDefaults.Nonce'.
-        /// <see cref="ISecureDataFormat{TData}.Unprotect(string)"/> of <see cref="OpenIdConnectOptions.StringDataFormat"/> is used to obtain the actual 'nonce'. If the nonce is found, then <see cref="M:IResponseCookies.Delete"/> of <see cref="HttpResponse.Cookies"/> is called.</remarks>
+        /// <see cref="ISecureDataFormat{TData}.Unprotect(string)"/> of <see cref="OpenIdConnectOptions.StringDataFormat"/> is used to obtain the actual 'nonce'. If the nonce is found, then <see cref="IResponseCookies.Delete(string)"/> of <see cref="HttpResponse.Cookies"/> is called.</remarks>
+        [SuppressMessage("Design", "CA1031:不捕获常规异常类型")]
         private string ReadNonceCookie(string nonce)
         {
             if (nonce == null)

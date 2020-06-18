@@ -18,6 +18,7 @@ using System.Reflection;
 
 namespace Librame.AspNetCore.Web.Projects
 {
+    using AspNetCore.Web.Applications;
     using Extensions;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
@@ -170,7 +171,7 @@ namespace Librame.AspNetCore.Web.Projects
 
             var controllerModel = new ControllerModel(typeInfo, attributes);
 
-            if (controllerModel.ControllerType.TryGetCustomAttribute(out GenericApplicationModelAttribute _))
+            if (controllerModel.ControllerType.IsDefined<GenericApplicationModelAttribute>())
                 controllerModel.ControllerName = typeInfo.GetGenericBodyName();
             else
                 controllerModel.ControllerName = typeInfo.Name;

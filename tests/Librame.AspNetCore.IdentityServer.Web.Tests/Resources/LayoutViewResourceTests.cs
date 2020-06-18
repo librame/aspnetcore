@@ -24,8 +24,8 @@ namespace Librame.AspNetCore.IdentityServer.Web.Tests
         {
             CultureInfoUtility.Register(new CultureInfo(cultureName));
 
-            var profile = localizer.GetString(r => r.Title);
-            Assert.False(profile.ResourceNotFound);
+            var localized = localizer.GetString(r => r.Title);
+            Assert.False(localized.ResourceNotFound);
         }
 
     }

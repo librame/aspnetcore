@@ -14,27 +14,31 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace Librame.AspNetCore.Web.Projects
+namespace Librame.AspNetCore.Web.Applications
 {
-    using Builders;
+    using AspNetCore.Web.Builders;
     using Extensions;
 
     /// <summary>
-    /// 带用户的泛型页面模型约定。
+    /// 泛型页面应用模型约定。
     /// </summary>
-    public class GenericPageModelConventionWithUser : IPageApplicationModelConvention
+    public class GenericPageApplicationModelConvention : IPageApplicationModelConvention
     {
-        private readonly IWebBuilder _builder;
+        /// <summary>
+        /// 构造一个 <see cref="GenericPageApplicationModelConvention"/>。
+        /// </summary>
+        /// <param name="builder">给定的 <see cref="IWebBuilder"/>。</param>
+        public GenericPageApplicationModelConvention(IWebBuilder builder)
+        {
+            Builder = builder.NotNull(nameof(builder));
+        }
 
 
         /// <summary>
-        /// 构造一个 <see cref="GenericPageModelConventionWithUser"/>。
+        /// Web 构建器。
         /// </summary>
-        /// <param name="builder">给定的 <see cref="IWebBuilder"/>。</param>
-        public GenericPageModelConventionWithUser(IWebBuilder builder)
-        {
-            _builder = builder.NotNull(nameof(builder));
-        }
+        /// <value>返回 <see cref="IWebBuilder"/>。</value>
+        public IWebBuilder Builder { get; }
 
 
         /// <summary>
@@ -46,8 +50,8 @@ namespace Librame.AspNetCore.Web.Projects
         {
             if (model.ModelType.TryGetCustomAttribute(out GenericApplicationModelAttribute attribute))
             {
-                var implementationModelType = attribute.BuildImplementationType(_builder.UserType);
-                model.ModelType = implementationModelType.GetTypeInfo();
+                var implementationType = attribute.BuildImplementationType(Builder);
+                model.ModelType = implementationType.GetTypeInfo();
             }
         }
 

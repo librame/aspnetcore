@@ -29,7 +29,7 @@ namespace Librame.AspNetCore.Identity.Api.StoreTypes
         /// </summary>
         public IdentityRoleType()
         {
-            Field(f => nameof(DefaultIdentityRole<Guid>.Name), nullable: true);
+            Field(f => nameof(DefaultIdentityRole<Guid, Guid>.Name), nullable: true);
         }
 
     }

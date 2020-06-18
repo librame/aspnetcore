@@ -19,13 +19,14 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
-    using AspNetCore.Web;
+    using AspNetCore.Web.Applications;
     using Extensions;
 
     /// <summary>
     /// 个人数据页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(PersonalDataPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(PersonalDataPageModel<>))]
     public class PersonalDataPageModel : PageModel
     {
         /// <summary>

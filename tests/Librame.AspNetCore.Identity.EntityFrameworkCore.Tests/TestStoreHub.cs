@@ -10,7 +10,7 @@ namespace Librame.AspNetCore.Identity.Tests
     using Extensions.Data.Collections;
     using Extensions.Data.Stores;
 
-    public class TestStoreHub : StoreHub<Guid, int>
+    public class TestStoreHub : DataStoreHub<Guid, int, Guid>
     {
         private readonly IdentityDbContextAccessor _currentAccessor;
 
@@ -22,24 +22,11 @@ namespace Librame.AspNetCore.Identity.Tests
         }
 
 
-        public IList<DefaultIdentityRole<Guid>> GetRoles()
+        public IList<DefaultIdentityRole<Guid, Guid>> GetRoles()
             => _currentAccessor.Roles.ToList();
 
-        public IPageable<DefaultIdentityUser<Guid>> GetUsers()
+        public IPageable<DefaultIdentityUser<Guid, Guid>> GetUsers()
             => _currentAccessor.Users.AsPagingByIndex(ordered => ordered.OrderBy(k => k.Id), 1, 10);
-
-
-        public TestStoreHub UseDefaultDbConnection()
-        {
-            _currentAccessor.ChangeConnectionString(t => t.DefaultConnectionString);
-            return this;
-        }
-
-        public TestStoreHub UseWriteDbConnection()
-        {
-            _currentAccessor.ChangeConnectionString(t => t.WritingConnectionString);
-            return this;
-        }
 
     }
 }

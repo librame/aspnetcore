@@ -24,11 +24,11 @@ namespace Librame.AspNetCore.Identity.Web.Tests
         {
             CultureInfoUtility.Register(new CultureInfo(cultureName));
 
-            var password = localizer.GetString(r => r.Password);
-            Assert.False(password.ResourceNotFound);
+            var localized = localizer.GetString(r => r.Password);
+            Assert.False(localized.ResourceNotFound);
 
-            var confirmPassword = localizer.GetString(r => r.ConfirmPassword);
-            Assert.False(confirmPassword.ResourceNotFound);
+            localized = localizer.GetString(r => r.ConfirmPassword);
+            Assert.False(localized.ResourceNotFound);
         }
 
     }

@@ -18,6 +18,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Web.Projects
 {
+    using AspNetCore.Web.Applications;
     using AspNetCore.Web.Builders;
     using Extensions;
 
@@ -27,52 +28,53 @@ namespace Librame.AspNetCore.Web.Projects
     public static class GenericControllerWebBuilderExtensions
     {
         /// <summary>
-        /// 添加泛型控制器集合。
+        /// 添加带用户的泛型控制器集合。
         /// </summary>
         /// <param name="builder">给定的 <see cref="IWebBuilder"/>。</param>
         /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IWebBuilder AddGenericControllers(this IWebBuilder builder)
         {
-            builder.NotNull(nameof(builder));
-
-            if (builder.SupportedGenericController)
-                return builder;
-
-            var replaceAssembly = typeof(ApplicationPartManager).Assembly;
-
-            var defaultApplicationModelProviderType = replaceAssembly
-                .GetType("Microsoft.AspNetCore.Mvc.ApplicationModels.DefaultApplicationModelProvider");
-            builder.Services.TryReplace(typeof(IApplicationModelProvider), defaultApplicationModelProviderType,
-                typeof(ResetDefaultApplicationModelProvider));
-
-            builder.Services.AddSingleton<ResetApplicationModelFactory>();
-
-            var controllerActionDescriptorProviderType = replaceAssembly
-                .GetType("Microsoft.AspNetCore.Mvc.ApplicationModels.ControllerActionDescriptorProvider");
-            builder.Services.TryReplace(typeof(IActionDescriptorProvider), controllerActionDescriptorProviderType,
-                typeof(ResetControllerActionDescriptorProvider));
-
-            builder.EnableSupportedGenericController();
+            if (!builder.SupportedGenericController)
+                builder.AddGenericControllersCore();
 
             return builder;
         }
 
-        /// <summary>
-        /// 添加带用户的泛型控制器集合。
-        /// </summary>
-        /// <param name="builder">给定的 <see cref="IWebBuilder"/>。</param>
-        /// <returns>返回 <see cref="IWebBuilder"/>。</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public static IWebBuilder AddGenericControllersWithUser(this IWebBuilder builder)
+        private static IWebBuilder AddGenericControllersCore(this IWebBuilder builder)
         {
-            builder.AddGenericControllers();
+            var replaceAssembly = typeof(ApplicationPartManager).Assembly;
 
-            if (builder.Services.TryGet<ApplicationPartManager>(out ServiceDescriptor descriptor))
+            // 重置 MVC 默认应用模型提供程序
+            var oldDefaultApplicationModelProviderType = replaceAssembly
+                .GetType("Microsoft.AspNetCore.Mvc.ApplicationModels.DefaultApplicationModelProvider");
+
+            builder.Services.TryReplaceAll(typeof(IApplicationModelProvider),
+                typeof(ResetDefaultApplicationModelProvider),
+                oldDefaultApplicationModelProviderType);
+
+            builder.Services.AddSingleton<ResetApplicationModelFactory>();
+
+            // 重置 MVC 控制器动作描述符提供程序
+            var oldControllerActionDescriptorProviderType = replaceAssembly
+                .GetType("Microsoft.AspNetCore.Mvc.ApplicationModels.ControllerActionDescriptorProvider");
+
+            builder.Services.TryReplaceAll(typeof(IActionDescriptorProvider),
+                typeof(ResetControllerActionDescriptorProvider),
+                oldControllerActionDescriptorProviderType);
+
+            // 添加泛型控制器应用特征提供程序
+            if (builder.Services.TryGetAll<ApplicationPartManager>(out var descriptors))
             {
-                var manager = (ApplicationPartManager)descriptor.ImplementationInstance;
-                manager.FeatureProviders.Add(new GenericControllerModelProviderWithUser(builder.UserType));
+                descriptors.ForEach(descriptor =>
+                {
+                    var manager = (ApplicationPartManager)descriptor.ImplementationInstance;
+                    manager.FeatureProviders.Add(new GenericControllerApplicationFeatureProvider(builder));
+                });
             }
+
+            // 启用泛型控制器支持
+            builder.EnableSupportedGenericController();
 
             return builder;
         }

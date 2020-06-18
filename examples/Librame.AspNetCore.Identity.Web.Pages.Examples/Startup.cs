@@ -23,13 +23,11 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
             Configuration = configuration;
         }
 
-
         public IConfiguration Configuration { get; }
-
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var authBuilder = services.Configure<CookiePolicyOptions>(options =>
+            services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => context.Request.Path.Equals("/");
@@ -54,12 +52,14 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
             .AddDataAnnotationsLocalization();
 
             services.AddLibrameCore()
-                .AddDataCore(dependency =>
+                //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
+                .AddNetwork()
+                .AddData(dependency =>
                 {
                     // Use SQL Server
                     dependency.BindDefaultTenant();
                 })
-                .AddAccessor<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
+                .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
                 {
                     optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
@@ -72,8 +72,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })
                 .AddIdentityWeb()
-                .AddIdentityProjectPage(mvcBuilder)
-                .AddNetwork();
+                .AddIdentityProjectPage(mvcBuilder);
         }
 
         

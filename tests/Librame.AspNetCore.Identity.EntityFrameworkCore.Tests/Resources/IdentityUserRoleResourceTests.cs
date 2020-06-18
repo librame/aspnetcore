@@ -24,11 +24,11 @@ namespace Librame.AspNetCore.Identity.Tests
         {
             CultureInfoUtility.Register(new CultureInfo(cultureName));
 
-            var userId = localizer.GetString(r => r.UserId);
-            Assert.False(userId.ResourceNotFound);
+            var localized = localizer.GetString(r => r.UserId);
+            Assert.False(localized.ResourceNotFound);
 
-            var roleId = localizer.GetString(r => r.RoleId);
-            Assert.False(roleId.ResourceNotFound);
+            localized = localizer.GetString(r => r.RoleId);
+            Assert.False(localized.ResourceNotFound);
         }
 
     }

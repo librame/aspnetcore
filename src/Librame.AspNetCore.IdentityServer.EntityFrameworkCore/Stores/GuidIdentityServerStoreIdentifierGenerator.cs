@@ -30,9 +30,9 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         /// <param name="options">给定的 <see cref="IOptions{DataBuilderOptions}"/>。</param>
         /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        public GuidIdentityServerStoreIdentifierGenerator(IOptions<DataBuilderOptions> options,
-            IClockService clock, ILoggerFactory loggerFactory)
-            : base(options, clock, loggerFactory)
+        public GuidIdentityServerStoreIdentifierGenerator(IClockService clock,
+            IOptions<DataBuilderOptions> options, ILoggerFactory loggerFactory)
+            : base(clock, options, loggerFactory)
         {
         }
 

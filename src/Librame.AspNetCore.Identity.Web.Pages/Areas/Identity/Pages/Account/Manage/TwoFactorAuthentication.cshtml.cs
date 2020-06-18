@@ -21,14 +21,15 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
-    using AspNetCore.Web;
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
-    using Resources;
 
     /// <summary>
     /// 双因子验证页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(TwoFactorAuthenticationPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(TwoFactorAuthenticationPageModel<>))]
     public class TwoFactorAuthenticationPageModel : PageModel
     {
         /// <summary>

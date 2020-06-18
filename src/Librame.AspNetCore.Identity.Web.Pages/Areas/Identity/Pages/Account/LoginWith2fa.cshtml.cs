@@ -22,16 +22,17 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account
 {
-    using AspNetCore.Web;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
-    using Models;
-    using Resources;
 
     /// <summary>
     /// 抽象双因子登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [GenericApplicationModel(typeof(LoginWith2faPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(LoginWith2faPageModel<>))]
     public class LoginWith2faPageModel : PageModel
     {
         /// <summary>

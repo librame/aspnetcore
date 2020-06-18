@@ -24,8 +24,8 @@ namespace Librame.AspNetCore.Web.Tests
         {
             CultureInfoUtility.Register(new CultureInfo(cultureName));
 
-            var displayName = localizer.GetString(r => r.DisplayName);
-            Assert.False(displayName.ResourceNotFound);
+            var localized = localizer.GetString(r => r.DisplayName);
+            Assert.False(localized.ResourceNotFound);
         }
 
     }

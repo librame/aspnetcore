@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.Identity.Api.StoreTypes
         public IdentityUserType()
         {
             // 为保障隐私，仅支持用户名查询
-            Field(f => nameof(DefaultIdentityUser<Guid>.UserName), nullable: true);
+            Field(f => nameof(DefaultIdentityUser<Guid, Guid>.UserName), nullable: true);
         }
 
     }

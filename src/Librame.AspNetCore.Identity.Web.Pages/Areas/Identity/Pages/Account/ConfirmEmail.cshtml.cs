@@ -20,14 +20,15 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account
 {
-    using AspNetCore.Web;
+    using AspNetCore.Web.Applications;
     using Extensions;
 
     /// <summary>
     /// 确认电邮页面模型。
     /// </summary>
     [AllowAnonymous]
-    [GenericApplicationModel(typeof(ConfirmEmailPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(ConfirmEmailPageModel<>))]
     public class ConfirmEmailPageModel : PageModel
     {
         /// <summary>

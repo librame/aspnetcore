@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ApiBuilderExtensions
     {
         /// <summary>
-        /// 添加 API 扩展。
+        /// 添加 API 扩展（支持多次添加，从第二次开始，返回适配器模式）。
         /// </summary>
         /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
@@ -37,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
             => parentBuilder.AddApi<ApiBuilderDependency>(configureDependency, builderFactory);
 
         /// <summary>
-        /// 添加 API 扩展。
+        /// 添加 API 扩展（支持多次添加，从第二次开始，返回适配器模式）。
         /// </summary>
         /// <typeparam name="TDependency">指定的依赖类型。</typeparam>
         /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
@@ -50,8 +50,8 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<IExtensionBuilder, TDependency, IApiBuilder> builderFactory = null)
             where TDependency : ApiBuilderDependency
         {
-            // 如果已经添加过 API 扩展，则直接返回，防止出现重复配置的情况
-            if (parentBuilder.TryGetParentBuilder(out IApiBuilder apiBuilder))
+            // 如果已经添加过 API 扩展，则直接返回适配器模式
+            if (parentBuilder.TryGetBuilder(out IApiBuilder apiBuilder))
                 return new ApiBuilderAdapter(parentBuilder, apiBuilder);
 
             // Clear Options Cache

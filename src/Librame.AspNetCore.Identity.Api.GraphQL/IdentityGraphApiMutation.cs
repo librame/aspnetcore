@@ -30,15 +30,19 @@ namespace Librame.AspNetCore.Identity.Api
     using Extensions;
     using Extensions.Core.Combiners;
     using Extensions.Core.Identifiers;
+    using Extensions.Core.Localizers;
     using Extensions.Core.Services;
+    using Extensions.Data.ValueGenerators;
     using Extensions.Network.Services;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    internal class IdentityGraphApiMutation<TUser> : ObjectGraphType, IGraphApiMutation
-        where TUser : class, IIdentifier
+    internal class IdentityGraphApiMutation<TUser, TGenId, TCreatedBy> : ObjectGraphType, IGraphApiMutation
+        where TUser : class, IIdentifier<TGenId>
+        where TGenId : IEquatable<TGenId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
         [InjectionService]
-        private ILogger<IdentityGraphApiMutation<TUser>> _logger = null;
+        private ILogger<IdentityGraphApiMutation<TUser, TGenId, TCreatedBy>> _logger = null;
 
         [InjectionService]
         private IClockService _clock = null;
@@ -50,7 +54,10 @@ namespace Librame.AspNetCore.Identity.Api
         private ServiceFactory _serviceFactory = null;
 
         [InjectionService]
-        private IStringLocalizer<RegisterApiModelResource> _localizer = null;
+        private IEnhancedStringLocalizer<RegisterApiModelResource> _localizer = null;
+
+        [InjectionService]
+        private IDefaultValueGenerator<TCreatedBy> _createdByGenerator = null;
 
         [InjectionService]
         private IUserStore<TUser> _userStore = null;
@@ -59,7 +66,7 @@ namespace Librame.AspNetCore.Identity.Api
         private SignInManager<TUser> _signInManager = null;
 
 
-        private readonly IIdentityStoreIdentifierGenerator _identifierGenerator = null;
+        private readonly IIdentityStoreIdentifierGenerator<TGenId> _identifierGenerator = null;
         private readonly UserManager<TUser> _userManager;
 
 
@@ -67,7 +74,7 @@ namespace Librame.AspNetCore.Identity.Api
         {
             injectionService.Inject(this);
 
-            _identifierGenerator = _serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser>();
+            _identifierGenerator = _serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser, TGenId>();
             _userManager = _signInManager.UserManager;
 
             Name = nameof(ISchema.Mutation);
@@ -131,11 +138,14 @@ namespace Librame.AspNetCore.Identity.Api
                     var model = context.GetArgument<RegisterApiModel>("user");
 
                     var user = typeof(TUser).EnsureCreate<TUser>();
-                    var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
-                    await user.SetIdAsync(userId).ConfigureAndWaitAsync();
 
-                    var result = await _userManager.CreateUserByEmail<IdentityGraphApiMutation<TUser>, TUser>(_userStore,
-                        _clock, user, model.Email, model.Password).ConfigureAndResultAsync();
+                    var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
+                    await user.SetIdAsync(userId).ConfigureAndResultAsync();
+
+                    var createdBy = await _createdByGenerator.GetValueAsync(GetType()).ConfigureAndResultAsync();
+
+                    var result = await _userManager.CreateUserByEmail(_userStore,
+                        _clock, user, createdBy, model.Email, model.Password).ConfigureAndResultAsync();
 
                     if (result.Succeeded)
                     {

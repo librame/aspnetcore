@@ -13,7 +13,6 @@
 using Librame.AspNetCore.Builders;
 using Librame.Extensions;
 using Librame.Extensions.Core.Builders;
-using Librame.Extensions.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -49,13 +48,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// 添加 Librame for ASP.NET Core。
         /// </summary>
         /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
-        /// <param name="dependencyAction">给定的依赖选项配置动作（可选）。</param>
+        /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建核心构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
         public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
-            Action<AspNetCoreCoreBuilderDependency> dependencyAction = null,
+            Action<AspNetCoreCoreBuilderDependency> configureDependency = null,
             Func<IServiceCollection, AspNetCoreCoreBuilderDependency, ICoreBuilder> builderFactory = null)
-            => services.AddLibrameCore<AspNetCoreCoreBuilderDependency>(dependencyAction, builderFactory);
+            => services.AddLibrameCore<AspNetCoreCoreBuilderDependency>(configureDependency, builderFactory);
 
         /// <summary>
         /// 添加 Librame for ASP.NET Core。
@@ -69,26 +68,16 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<TDependency> configureDependency = null,
             Func<IServiceCollection, TDependency, ICoreBuilder> builderFactory = null)
             where TDependency : AspNetCoreCoreBuilderDependency, new()
-        {
-            AddAspNetCoreServiceCharacteristics();
-
-            return services
+            => services
                 .AddLibrame(configureDependency, builderFactory)
-                .AddAspNetCoreServices();
-        }
+                .AddInternalAspNetCoreServices();
 
 
-        private static ICoreBuilder AddAspNetCoreServices(this ICoreBuilder builder)
+        private static ICoreBuilder AddInternalAspNetCoreServices(this ICoreBuilder builder)
         {
-            builder.AddService<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             return builder;
-        }
-
-        private static void AddAspNetCoreServiceCharacteristics()
-        {
-            CoreBuilderServiceCharacteristicsRegistration.Register
-                .TryAdd<IHttpContextAccessor>(ServiceCharacteristics.Singleton());
         }
 
     }

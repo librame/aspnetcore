@@ -24,20 +24,20 @@ namespace Librame.AspNetCore.Identity.Web.Tests
         {
             CultureInfoUtility.Register(new CultureInfo(cultureName));
 
-            var title = localizer.GetString(r => r.Title);
-            Assert.False(title.ResourceNotFound);
+            var localized = localizer.GetString(r => r.Title);
+            Assert.False(localized.ResourceNotFound);
 
-            var descr = localizer.GetString(r => r.Descr);
-            Assert.False(descr.ResourceNotFound);
+            localized = localizer.GetString(r => r.Descr);
+            Assert.False(localized.ResourceNotFound);
 
-            var buttonText = localizer.GetString(r => r.ButtonText);
-            Assert.False(buttonText.ResourceNotFound);
+            localized = localizer.GetString(r => r.ButtonText);
+            Assert.False(localized.ResourceNotFound);
 
-            var forgotPassword = localizer.GetString(r => r.ForgotPassword);
-            Assert.False(forgotPassword.ResourceNotFound);
+            localized = localizer.GetString(r => r.ForgotPassword);
+            Assert.False(localized.ResourceNotFound);
 
-            var registerUser = localizer.GetString(r => r.RegisterUser);
-            Assert.False(registerUser.ResourceNotFound);
+            localized = localizer.GetString(r => r.RegisterUser);
+            Assert.False(localized.ResourceNotFound);
         }
 
     }

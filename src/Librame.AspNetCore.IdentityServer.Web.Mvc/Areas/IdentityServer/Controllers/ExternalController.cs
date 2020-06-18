@@ -23,7 +23,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 {
     using AspNetCore.IdentityServer.Builders;
     using AspNetCore.IdentityServer.Options;
-    using AspNetCore.Web;
+    using AspNetCore.Web.Applications;
     using Extensions;
     using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
@@ -32,13 +32,15 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
     /// 外部控制器。
     /// </summary>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     [SecurityHeaders]
     [AllowAnonymous]
-    [GenericApplicationModel(typeof(ExternalController<>))]
+    [GenericApplicationModel(typeof(IdentityServerGenericTypeDefinitionMapper))]
     [Area(IdentityServerRouteBuilderExtensions.AreaName)]
     [Route(IdentityServerRouteBuilderExtensions.Template)]
-    public class ExternalController<TUser> : Controller
-        where TUser : class, IIdentifier
+    public class ExternalController<TUser, TGenId> : Controller
+        where TUser : class, IIdentifier<TGenId>
+        where TGenId : IEquatable<TGenId>
     {
         [InjectionService]
         private SignInManager<TUser> _signInManager = null;
@@ -57,7 +59,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 
 
         /// <summary>
-        /// 构造一个 <see cref="ExternalController{TUser}"/>。
+        /// 构造一个 <see cref="ExternalController{TUser, TGenId}"/>。
         /// </summary>
         /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
         public ExternalController(IInjectionService injectionService)
@@ -319,12 +321,16 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         }
 
         [SuppressMessage("Style", "IDE0060:删除未使用的参数")]
-        private static void ProcessLoginCallbackForWsFed(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
+        [SuppressMessage("Usage", "CA1801:检查未使用的参数")]
+        private static void ProcessLoginCallbackForWsFed(AuthenticateResult externalResult, List<Claim> localClaims,
+            AuthenticationProperties localSignInProps)
         {
         }
 
         [SuppressMessage("Style", "IDE0060:删除未使用的参数")]
-        private static void ProcessLoginCallbackForSaml2p(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
+        [SuppressMessage("Usage", "CA1801:检查未使用的参数")]
+        private static void ProcessLoginCallbackForSaml2p(AuthenticateResult externalResult, List<Claim> localClaims,
+            AuthenticationProperties localSignInProps)
         {
         }
 

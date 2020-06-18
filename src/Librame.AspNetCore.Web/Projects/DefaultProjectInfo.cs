@@ -15,6 +15,7 @@ using Microsoft.Extensions.Localization;
 namespace Librame.AspNetCore.Web.Projects
 {
     using AspNetCore.Web.Resources;
+    using Extensions.Core.Localizers;
     using Extensions.Core.Services;
 
     internal class DefaultProjectInfo : AbstractProjectInfo
@@ -32,6 +33,6 @@ namespace Librame.AspNetCore.Web.Projects
             => DefaultProjectName;
 
         public override IStringLocalizer Localizer
-            => ServiceFactory.GetRequiredService<IStringLocalizer<DefaultProjectInfoResource>>();
+            => ServiceFactory.GetRequiredService<IEnhancedStringLocalizer<DefaultProjectInfoResource>>();
     }
 }

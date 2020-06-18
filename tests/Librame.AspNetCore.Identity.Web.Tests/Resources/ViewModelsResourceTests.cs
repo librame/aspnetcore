@@ -24,29 +24,29 @@ namespace Librame.AspNetCore.Identity.Web.Tests
         {
             CultureInfoUtility.Register(new CultureInfo(cultureName));
 
-            var email = localizer.GetString(r => r.Email);
-            Assert.False(email.ResourceNotFound);
+            var localized = localizer.GetString(r => r.Email);
+            Assert.False(localized.ResourceNotFound);
 
-            var password = localizer.GetString(r => r.Password);
-            Assert.False(password.ResourceNotFound);
+            localized = localizer.GetString(r => r.Password);
+            Assert.False(localized.ResourceNotFound);
 
-            var confirmPassword = localizer.GetString(r => r.ConfirmPassword);
-            Assert.False(confirmPassword.ResourceNotFound);
+            localized = localizer.GetString(r => r.ConfirmPassword);
+            Assert.False(localized.ResourceNotFound);
 
-            var newPassword = localizer.GetString(r => r.NewPassword);
-            Assert.False(newPassword.ResourceNotFound);
+            localized = localizer.GetString(r => r.NewPassword);
+            Assert.False(localized.ResourceNotFound);
 
-            var confirmNewPassword = localizer.GetString(r => r.ConfirmNewPassword);
-            Assert.False(confirmNewPassword.ResourceNotFound);
+            localized = localizer.GetString(r => r.ConfirmNewPassword);
+            Assert.False(localized.ResourceNotFound);
 
-            var oldPassword = localizer.GetString(r => r.OldPassword);
-            Assert.False(oldPassword.ResourceNotFound);
+            localized = localizer.GetString(r => r.OldPassword);
+            Assert.False(localized.ResourceNotFound);
 
-            var phoneNumber = localizer.GetString(r => r.Phone);
-            Assert.False(phoneNumber.ResourceNotFound);
+            localized = localizer.GetString(r => r.Phone);
+            Assert.False(localized.ResourceNotFound);
 
-            var rememberMe = localizer.GetString(r => r.RememberMe);
-            Assert.False(rememberMe.ResourceNotFound);
+            localized = localizer.GetString(r => r.RememberMe);
+            Assert.False(localized.ResourceNotFound);
         }
 
     }

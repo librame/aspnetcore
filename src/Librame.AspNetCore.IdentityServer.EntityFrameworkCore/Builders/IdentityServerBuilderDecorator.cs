@@ -22,30 +22,32 @@ namespace Librame.AspNetCore.IdentityServer.Builders
     using Extensions;
     using Extensions.Core.Builders;
     using Extensions.Core.Services;
+    using Extensions.Data.Builders;
     using Extensions.Encryption.Services;
 
-    internal class IdentityServerBuilderDecorator : AbstractExtensionBuilderDecorator<IIdentityServerBuilder>, IIdentityServerBuilderDecorator
+    /// <summary>
+    /// <see cref="IIdentityServerBuilder"/> 装饰器。
+    /// </summary>
+    public class IdentityServerBuilderDecorator : AbstractExtensionBuilderDecorator<IIdentityServerBuilder>,
+        IIdentityServerBuilderDecorator
     {
-        public IdentityServerBuilderDecorator(Type userType, IIdentityServerBuilder sourceBuilder, IExtensionBuilder parentBuilder,
-            IdentityServerBuilderDependency dependency)
+        /// <summary>
+        /// 构造一个 <see cref="IdentityServerBuilderDecorator"/>。
+        /// </summary>
+        /// <param name="sourceBuilder">给定的 <see cref="IIdentityServerBuilder"/>。</param>
+        /// <param name="parentBuilder">给定的父级 <see cref="IDataBuilder"/>。</param>
+        /// <param name="dependency">给定的 <see cref="IdentityServerBuilderDependency"/>。</param>
+        public IdentityServerBuilderDecorator(IIdentityServerBuilder sourceBuilder,
+            IExtensionBuilder parentBuilder, IdentityServerBuilderDependency dependency)
             : base(sourceBuilder, parentBuilder, dependency)
         {
-            UserType = userType.NotNull(nameof(userType));
-
             Services.AddSingleton<IIdentityServerBuilderDecorator>(this);
 
-            AddIdentityServerServices();
+            AddInternalServices();
         }
 
 
-        public Type UserType { get; }
-
-
-        public override ServiceCharacteristics GetServiceCharacteristics(Type serviceType)
-            => IdentityServerBuilderServiceCharacteristicsRegistration.Register.GetOrDefault(serviceType);
-
-
-        private void AddIdentityServerServices()
+        private void AddInternalServices()
         {
             AddService<ISigningCredentialStore>(provider =>
             {
@@ -57,6 +59,7 @@ namespace Librame.AspNetCore.IdentityServer.Builders
                 }
                 return new DefaultSigningCredentialsStore(options.Authorizations.SigningCredentials);
             });
+
             AddService<IValidationKeysStore>(provider =>
             {
                 var store = provider.GetRequiredService<ISigningCredentialStore>();
@@ -70,6 +73,21 @@ namespace Librame.AspNetCore.IdentityServer.Builders
                 return new DefaultValidationKeysStore(keyInfo.YieldEnumerable());
             });
         }
+
+
+        /// <summary>
+        /// 用户类型。
+        /// </summary>
+        public Type UserType { get; private set; }
+
+
+        /// <summary>
+        /// 获取指定服务类型的特征。
+        /// </summary>
+        /// <param name="serviceType">给定的服务类型。</param>
+        /// <returns>返回 <see cref="ServiceCharacteristics"/>。</returns>
+        public override ServiceCharacteristics GetServiceCharacteristics(Type serviceType)
+            => IdentityServerBuilderServiceCharacteristicsRegistration.Register.GetOrDefault(serviceType);
 
     }
 }

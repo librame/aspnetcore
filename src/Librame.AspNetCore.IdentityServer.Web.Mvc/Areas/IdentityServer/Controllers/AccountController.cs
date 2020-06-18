@@ -24,7 +24,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
     using AspNetCore.IdentityServer.Builders;
     using AspNetCore.IdentityServer.Options;
     using AspNetCore.IdentityServer.Web.Models;
-    using AspNetCore.Web;
+    using AspNetCore.Web.Applications;
     using Extensions;
     using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
@@ -36,11 +36,13 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
     /// </summary>
     [SecurityHeaders]
     [AllowAnonymous]
-    [GenericApplicationModel(typeof(AccountController<>))]
+    [Authorize]
+    [GenericApplicationModel(typeof(IdentityServerGenericTypeDefinitionMapper))]
     [Area(IdentityServerRouteBuilderExtensions.AreaName)]
     [Route(IdentityServerRouteBuilderExtensions.Template)]
-    public class AccountController<TUser> : Controller
-        where TUser : class, IIdentifier
+    public class AccountController<TUser, TGenId> : Controller
+        where TUser : class, IIdentifier<TGenId>
+        where TGenId : IEquatable<TGenId>
     {
         [InjectionService]
         private SignInManager<TUser> _signInManager = null;
@@ -60,9 +62,9 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         [InjectionService]
         private IOptions<IdentityServerBuilderOptions> _builderOptions = null;
 
-        
+
         /// <summary>
-        /// 构造一个 <see cref="AccountController{TUser}"/>。
+        /// 构造一个 <see cref="AccountController{TUser, TGenId}"/>。
         /// </summary>
         /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
         public AccountController(IInjectionService injectionService)

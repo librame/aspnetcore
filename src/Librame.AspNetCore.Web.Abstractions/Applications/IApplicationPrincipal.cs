@@ -46,8 +46,8 @@ namespace Librame.AspNetCore.Web.Applications
         /// 获取已登入用户标识。
         /// </summary>
         /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
-        /// <returns>返回字符串。</returns>
-        string GetSignedUserId(HttpContext context);
+        /// <returns>返回对象。</returns>
+        dynamic GetSignedUserId(HttpContext context);
 
         /// <summary>
         /// 获取已登入用户名称。
@@ -71,17 +71,17 @@ namespace Librame.AspNetCore.Web.Applications
         string GetSignedUserPhoneNumber(HttpContext context);
 
         /// <summary>
-        /// 获取已登入用户头像。
+        /// 获取已登入用户头像路径。
         /// </summary>
         /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
         /// <returns>返回字符串。</returns>
-        string GetSignedUserPortrait(HttpContext context);
+        string GetSignedUserPortraitPath(HttpContext context);
 
         /// <summary>
         /// 获取已登入用户角色列表。
         /// </summary>
         /// <param name="context">给定的 <see cref="HttpContext"/>。</param>
-        /// <returns>返回 <see cref="IList{String}"/>。</returns>
-        IList<string> GetSignedUserRoles(HttpContext context);
+        /// <returns>返回 <see cref="IReadOnlyList{String}"/>。</returns>
+        IReadOnlyList<string> GetSignedUserRoles(HttpContext context);
     }
 }

@@ -27,14 +27,15 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
 {
     using AspNetCore.Identity.Web.Models;
     using AspNetCore.Identity.Web.Resources;
-    using AspNetCore.Web;
+    using AspNetCore.Web.Applications;
     using Extensions;
 
     /// <summary>
     /// 登入页面模型。
     /// </summary>
     [AllowAnonymous]
-    [GenericApplicationModel(typeof(LoginPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(LoginPageModel<>))]
     public class LoginPageModel : PageModel
     {
         /// <summary>

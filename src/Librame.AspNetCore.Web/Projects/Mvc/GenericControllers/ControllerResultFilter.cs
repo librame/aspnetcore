@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -18,7 +19,9 @@ namespace Librame.AspNetCore.Web.Projects
         /// <inheritdoc />
         public int Order { get; set; } = int.MinValue;
 
+
         /// <inheritdoc />
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递")]
         public Task OnResultExecutionAsync(
             ResultExecutingContext context,
             ResultExecutionDelegate next)

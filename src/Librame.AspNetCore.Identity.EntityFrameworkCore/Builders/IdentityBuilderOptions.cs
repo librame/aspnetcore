@@ -15,23 +15,14 @@ using System;
 namespace Librame.AspNetCore.Identity.Builders
 {
     using AspNetCore.Identity.Options;
-    using Extensions.Data.Builders;
-    using Extensions.Data.Stores;
+    using Extensions.Core.Builders;
+    using Extensions.Data.Options;
 
     /// <summary>
     /// 身份构建器选项。
     /// </summary>
-    public class IdentityBuilderOptions : DataBuilderOptionsBase<IdentityTableOptions>
+    public class IdentityBuilderOptions : AbstractDataOptions<IdentityStoreOptions, IdentityTableOptions>, IExtensionBuilderOptions
     {
-        /// <summary>
-        /// 构造一个 <see cref="DataBuilderOptions"/>。
-        /// </summary>
-        public IdentityBuilderOptions()
-            : base(new DataTenant<Guid>())
-        {
-        }
-
-
         /// <summary>
         /// 启用密码规则提示（默认启用）。
         /// </summary>
@@ -42,6 +33,6 @@ namespace Librame.AspNetCore.Identity.Builders
         /// 认证器 URI 工厂方法。
         /// </summary>
         public Func<IdentityAuthenticatorDescriptor, string> AuthenticatorUriFactory { get; set; }
-            = descr => descr.BuildOtpAuthUriString();
+            = descr => descr.BuildOTPAuthUriString();
     }
 }

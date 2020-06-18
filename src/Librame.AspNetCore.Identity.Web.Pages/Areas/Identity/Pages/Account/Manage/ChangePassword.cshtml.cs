@@ -25,7 +25,6 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
     using AspNetCore.Identity.Builders;
     using AspNetCore.Identity.Web.Models;
     using AspNetCore.Identity.Web.Resources;
-    using AspNetCore.Web;
     using AspNetCore.Web.Applications;
     using Extensions;
     using Extensions.Core.Services;
@@ -33,7 +32,8 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
     /// <summary>
     /// 修改密码页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(ChangePasswordPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(ChangePasswordPageModel<>))]
     public class ChangePasswordPageModel : ApplicationPageModel
     {
         /// <summary>

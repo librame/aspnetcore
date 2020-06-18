@@ -10,8 +10,6 @@
 
 #endregion
 
-using System;
-
 namespace Librame.AspNetCore.Web.Builders
 {
     using Extensions.Core.Builders;
@@ -25,10 +23,5 @@ namespace Librame.AspNetCore.Web.Builders
         /// 支持泛型控制器。
         /// </summary>
         bool SupportedGenericController { get; }
-
-        /// <summary>
-        /// 用户类型。
-        /// </summary>
-        Type UserType { get; }
     }
 }

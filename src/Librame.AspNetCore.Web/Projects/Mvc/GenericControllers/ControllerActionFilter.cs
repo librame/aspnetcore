@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Web.Projects
@@ -18,7 +19,9 @@ namespace Librame.AspNetCore.Web.Projects
         /// <inheritdoc />
         public int Order { get; set; } = int.MinValue;
 
+
         /// <inheritdoc />
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递")]
         public Task OnActionExecutionAsync(
             ActionExecutingContext context,
             ActionExecutionDelegate next)

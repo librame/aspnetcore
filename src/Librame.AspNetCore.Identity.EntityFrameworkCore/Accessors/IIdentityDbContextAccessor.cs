@@ -21,7 +21,8 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <summary>
     /// 身份数据库上下文访问器接口。
     /// </summary>
-    public interface IIdentityDbContextAccessor : IIdentityDbContextAccessor<DefaultIdentityRole<Guid>, DefaultIdentityUser<Guid>, Guid>
+    public interface IIdentityDbContextAccessor
+        : IIdentityDbContextAccessor<DefaultIdentityRole<Guid, Guid>, DefaultIdentityUser<Guid, Guid>, Guid, Guid>
     {
     }
 
@@ -32,13 +33,15 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <typeparam name="TRole">指定的角色类型。</typeparam>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
-    public interface IIdentityDbContextAccessor<TRole, TUser, TGenId>
-        : IIdentityDbContextAccessor<TRole, DefaultIdentityRoleClaim<TGenId>,
-            TUser, DefaultIdentityUserClaim<TGenId>, DefaultIdentityUserLogin<TGenId>,
-            DefaultIdentityUserRole<TGenId>, DefaultIdentityUserToken<TGenId>>
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+    public interface IIdentityDbContextAccessor<TRole, TUser, TGenId, TCreatedBy>
+        : IIdentityDbContextAccessor<TRole, DefaultIdentityRoleClaim<TGenId, TCreatedBy>,
+            TUser, DefaultIdentityUserClaim<TGenId, TCreatedBy>, DefaultIdentityUserLogin<TGenId, TCreatedBy>,
+            DefaultIdentityUserRole<TGenId, TCreatedBy>, DefaultIdentityUserToken<TGenId, TCreatedBy>>
         where TRole : class
         where TUser : class
         where TGenId : IEquatable<TGenId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
     }
 
@@ -53,7 +56,8 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
     /// <typeparam name="TUserRole">指定的用户角色类型。</typeparam>
     /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
-    public interface IIdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken> : IAccessor
+    public interface IIdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken>
+        : IAccessor // 接口不强制继承 IDbContextAccessor<TAudit, TAuditProperty, TEntity, TMigration, TTenant>
         where TRole : class
         where TRoleClaim : class
         where TUser : class

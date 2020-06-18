@@ -23,13 +23,14 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
     using AspNetCore.Identity.Web.Models;
     using AspNetCore.Identity.Web.Resources;
-    using AspNetCore.Web;
+    using AspNetCore.Web.Applications;
     using Extensions;
 
     /// <summary>
     /// 验证手机号码页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(VerifyPhoneNumberPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(VerifyPhoneNumberPageModel<>))]
     public class VerifyPhoneNumberPageModel : PageModel
     {
         /// <summary>

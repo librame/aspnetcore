@@ -23,14 +23,15 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
-    using AspNetCore.Web;
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
-    using Resources;
 
     /// <summary>
     /// 外部登入页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(ExternalLoginsPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(ExternalLoginsPageModel<>))]
     public class ExternalLoginsPageModel : PageModel
     {
         /// <summary>

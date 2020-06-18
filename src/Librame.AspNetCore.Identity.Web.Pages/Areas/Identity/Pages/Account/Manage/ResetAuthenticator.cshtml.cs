@@ -21,14 +21,15 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
-    using AspNetCore.Web;
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
-    using Resources;
 
     /// <summary>
     /// 重置验证器页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(ResetAuthenticatorPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(ResetAuthenticatorPageModel<>))]
     public class ResetAuthenticatorPageModel : PageModel
     {
         /// <summary>

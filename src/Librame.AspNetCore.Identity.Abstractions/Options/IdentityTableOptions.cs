@@ -18,9 +18,9 @@ namespace Librame.AspNetCore.Identity.Options
     using Extensions.Data.Options;
 
     /// <summary>
-    /// 身份表选项。
+    /// 身份表名选项。
     /// </summary>
-    public class IdentityTableOptions : TableOptions
+    public class IdentityTableOptions : AbstractTableOptions
     {
         /// <summary>
         /// 使用 Identity 前缀（默认使用）。

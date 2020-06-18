@@ -25,16 +25,17 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
-    using AspNetCore.Web;
-    using Builders;
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
-    using Models;
-    using Resources;
 
     /// <summary>
     /// 启用验证器页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(EnableAuthenticatorPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(EnableAuthenticatorPageModel<>))]
     public class EnableAuthenticatorPageModel : PageModel
     {
         /// <summary>
@@ -215,7 +216,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
             var descriptor = new IdentityAuthenticatorDescriptor(schemeName, email, unformattedKey);
             var qrCodeUri = _options.AuthenticatorUriFactory?.Invoke(descriptor);
             if (qrCodeUri.IsEmpty())
-                qrCodeUri = descriptor.BuildOtpAuthUriString();
+                qrCodeUri = descriptor.BuildOTPAuthUriString();
 
             return qrCodeUri;
         }

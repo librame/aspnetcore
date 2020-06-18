@@ -21,14 +21,15 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account
 {
-    using AspNetCore.Web;
+    using AspNetCore.Web.Applications;
     using Extensions;
 
     /// <summary>
     /// 登出页面模型。
     /// </summary>
     [AllowAnonymous]
-    [GenericApplicationModel(typeof(LogoutPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(LogoutPageModel<>))]
     public class LogoutPageModel : PageModel
     {
         /// <summary>

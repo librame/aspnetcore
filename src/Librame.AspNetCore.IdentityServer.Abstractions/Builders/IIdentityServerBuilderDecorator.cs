@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.IdentityServer.Builders
     /// <summary>
     /// <see cref="IIdentityServerBuilder"/> 装饰器接口。
     /// </summary>
-    public interface IIdentityServerBuilderDecorator : IExtensionBuilderDecorator<IIdentityServerBuilder>
+    public interface IIdentityServerBuilderDecorator : IExtensionBuilder, IExtensionBuilderDecorator<IIdentityServerBuilder>
     {
         /// <summary>
         /// 用户类型。

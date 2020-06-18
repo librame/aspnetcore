@@ -16,25 +16,25 @@ namespace Librame.AspNetCore.Web.Themepacks
     using Extensions.Core.Resources;
 
     /// <summary>
-    /// 主题包表达式定位器。
+    /// 主题包字典字符串定位器。
     /// </summary>
     /// <typeparam name="TResource">指定的资源类型。</typeparam>
-    public class ThemepackExpressionLocalizer<TResource> : DictionaryStringLocalizer<TResource>
+    public class ThemepackDictionaryStringLocalizer<TResource> : DictionaryStringLocalizer<TResource>
         where TResource : class, IResource
     {
         /// <summary>
-        /// 构造一个 <see cref="ThemepackExpressionLocalizer{TResource}"/>。
+        /// 构造一个 <see cref="ThemepackDictionaryStringLocalizer{TResource}"/>。
         /// </summary>
-        public ThemepackExpressionLocalizer()
+        public ThemepackDictionaryStringLocalizer()
             : this(new CoreResourceDictionaryStringLocalizerFactory())
         {
         }
 
         /// <summary>
-        /// 构造一个 <see cref="ThemepackExpressionLocalizer{TResource}"/>。
+        /// 构造一个 <see cref="ThemepackDictionaryStringLocalizer{TResource}"/>。
         /// </summary>
         /// <param name="factory">给定的 <see cref="IDictionaryStringLocalizerFactory"/>。</param>
-        public ThemepackExpressionLocalizer(IDictionaryStringLocalizerFactory factory)
+        public ThemepackDictionaryStringLocalizer(IDictionaryStringLocalizerFactory factory)
             : base(factory)
         {
         }

@@ -22,16 +22,17 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
-    using AspNetCore.Web;
-    using Builders;
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
-    using Models;
-    using Resources;
 
     /// <summary>
     /// 设置密码页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(SetPasswordPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(SetPasswordPageModel<>))]
     public class SetPasswordPageModel : PageModel
     {
         /// <summary>

@@ -17,9 +17,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.Identity.Web.Projects
 {
+    using AspNetCore.Identity.Builders;
     using AspNetCore.Web.Applications;
     using AspNetCore.Web.Projects;
     using Extensions;
+    using Extensions.Core.Builders;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class IdentityProjectConfiguration : ProjectConfigurationBaseWithRazorPages
@@ -39,8 +41,10 @@ namespace Librame.AspNetCore.Identity.Web.Projects
             conventions.AuthorizeAreaFolder(Area, managePath);
             conventions.AuthorizeAreaPage(Area, Navigation.Logout.GenerateSimulativeLink());
 
+            var decorator = Builder.GetRequiredBuilder<IIdentityBuilderDecorator>();
+
             var filter = typeof(ExternalAuthenticationSchemesPageFilter<>)
-                .MakeGenericType(Builder.UserType)
+                .MakeGenericType(decorator.Source.UserType)
                 .EnsureCreateObject(BuilderOptions);
 
             conventions.AddAreaFolderApplicationModelConvention(Area,

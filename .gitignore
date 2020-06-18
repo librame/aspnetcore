@@ -295,6 +295,9 @@ __pycache__/
 *.db
 *.dll
 *.dat
+*.rsa
+*.keys
 logs/
 _configs/
 _reports/
+_resources/

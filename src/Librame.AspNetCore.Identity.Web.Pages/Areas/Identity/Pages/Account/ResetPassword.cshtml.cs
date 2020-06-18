@@ -22,17 +22,18 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account
 {
-    using AspNetCore.Web;
-    using Builders;
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Web.Models;
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
-    using Models;
-    using Resources;
 
     /// <summary>
     /// 重置密码页面模型。
     /// </summary>
     [AllowAnonymous]
-    [GenericApplicationModel(typeof(ResetPasswordPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(ResetPasswordPageModel<>))]
     public class ResetPasswordPageModel : PageModel
     {
         /// <summary>

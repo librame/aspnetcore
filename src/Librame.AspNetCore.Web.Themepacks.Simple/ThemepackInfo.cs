@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.Web.Themepacks.Simple
         /// 本地化定位器。
         /// </summary>
         public override IStringLocalizer Localizer
-            => new ThemepackExpressionLocalizer<ThemepackInfoResource>();
+            => new ThemepackDictionaryStringLocalizer<ThemepackInfoResource>();
 
 
         /// <summary>

@@ -27,39 +27,39 @@ namespace Librame.AspNetCore.Web.Builders
     using Extensions.Core.Builders;
     using Extensions.Core.Services;
 
-    internal class WebBuilder : AbstractExtensionBuilder, IWebBuilder
+    /// <summary>
+    /// Web 构建器。
+    /// </summary>
+    public class WebBuilder : AbstractExtensionBuilder, IWebBuilder
     {
+        /// <summary>
+        /// 构造一个 <see cref="WebBuilder"/>。
+        /// </summary>
+        /// <param name="parentBuilder">给定的 <see cref="IExtensionBuilder"/>。</param>
+        /// <param name="dependency">给定的 <see cref="WebBuilderDependency"/>。</param>
         public WebBuilder(IExtensionBuilder parentBuilder, WebBuilderDependency dependency)
             : base(parentBuilder, dependency)
         {
             Services.AddSingleton<IWebBuilder>(this);
 
-            AddWebServices();
+            AddInternalServices();
         }
 
 
-        public bool SupportedGenericController { get; private set; }
-
-        public Type UserType { get; private set; }
-
-
-        public override ServiceCharacteristics GetServiceCharacteristics(Type serviceType)
-            => WebBuilderServiceCharacteristicsRegistration.Register.GetOrDefault(serviceType);
-
-
-        private void AddWebServices()
+        private void AddInternalServices()
         {
             // Applications
             AddService<IApplicationContext, ApplicationContext>();
-            AddService<IApplicationPrincipal, ApplicationPrincipal>();
 
             // DataAnnotations
-            Services.TryReplace<IValidationAttributeAdapterProvider, ResetValidationAttributeAdapterProvider>();
+            Services.TryReplaceAll<IValidationAttributeAdapterProvider, ResetValidationAttributeAdapterProvider>();
 
-            var mvcDataAnnotationsMvcOptionsSetupType = typeof(IValidationAttributeAdapterProvider).Assembly
+            var oldMvcDataAnnotationsMvcOptionsSetupType = typeof(IValidationAttributeAdapterProvider).Assembly
                 .GetType("Microsoft.Extensions.DependencyInjection.MvcDataAnnotationsMvcOptionsSetup");
-            Services.TryReplace(typeof(IConfigureOptions<MvcOptions>), mvcDataAnnotationsMvcOptionsSetupType,
-                typeof(ResetMvcDataAnnotationsMvcOptionsSetup));
+
+            Services.TryReplaceAll(typeof(IConfigureOptions<MvcOptions>),
+                typeof(ResetMvcDataAnnotationsMvcOptionsSetup),
+                oldMvcDataAnnotationsMvcOptionsSetupType);
 
             // Localizers
             AddService(typeof(IDictionaryHtmlLocalizer<>), typeof(DictionaryHtmlLocalizer<>));
@@ -75,6 +75,21 @@ namespace Librame.AspNetCore.Web.Builders
             // Themepacks
             AddService<IThemepackContext, ThemepackContext>();
         }
+
+
+        /// <summary>
+        /// 支持泛型控制器。
+        /// </summary>
+        public bool SupportedGenericController { get; private set; }
+
+
+        /// <summary>
+        /// 获取指定服务类型的特征。
+        /// </summary>
+        /// <param name="serviceType">给定的服务类型。</param>
+        /// <returns>返回 <see cref="ServiceCharacteristics"/>。</returns>
+        public override ServiceCharacteristics GetServiceCharacteristics(Type serviceType)
+            => WebBuilderServiceCharacteristicsRegistration.Register.GetOrDefault(serviceType);
 
     }
 }

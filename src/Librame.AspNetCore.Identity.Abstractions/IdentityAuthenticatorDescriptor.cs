@@ -73,7 +73,7 @@ namespace Librame.AspNetCore.Identity
         /// </summary>
         /// <returns>返回字符串。</returns>
         [SuppressMessage("Microsoft.Design", "CA1055:UriReturnValuesShouldNotBeStrings")]
-        public string BuildOtpAuthUriString()
+        public string BuildOTPAuthUriString()
             => $"otpauth://totp/{SchemeName}:{AccountName}?secret={SecretKey}&issuer={Issuer}&digits={PasswordDigits}";
 
 
@@ -107,6 +107,6 @@ namespace Librame.AspNetCore.Identity
         /// </summary>
         /// <returns>返回字符串。</returns>
         public override string ToString()
-            => BuildOtpAuthUriString();
+            => BuildOTPAuthUriString();
     }
 }

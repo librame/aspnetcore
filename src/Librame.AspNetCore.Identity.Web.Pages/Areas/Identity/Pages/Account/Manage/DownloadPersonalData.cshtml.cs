@@ -24,14 +24,15 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
-    using AspNetCore.Web;
+    using AspNetCore.Web.Applications;
     using Extensions;
     using Extensions.Core.Builders;
 
     /// <summary>
     /// 下载个人数据页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(DownloadPersonalDataModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(DownloadPersonalDataPageModel<>))]
     public class DownloadPersonalDataPageModel : PageModel
     {
         /// <summary>
@@ -51,7 +52,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    internal class DownloadPersonalDataModel<TUser> : DownloadPersonalDataPageModel
+    internal class DownloadPersonalDataPageModel<TUser> : DownloadPersonalDataPageModel
         where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
@@ -59,7 +60,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
         private readonly ILogger<DownloadPersonalDataPageModel> _logger;
 
 
-        public DownloadPersonalDataModel(
+        public DownloadPersonalDataPageModel(
             UserManager<TUser> userManager,
             IOptions<CoreBuilderOptions> coreOptions,
             ILogger<DownloadPersonalDataPageModel> logger)

@@ -27,10 +27,12 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
     /// </summary>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
-    public class ConfigurationDbContextAccessor<TGenId, TIncremId>
-        : DbContextAccessor<TGenId, TIncremId>, IConfigurationDbContextAccessor
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+    public class ConfigurationDbContextAccessor<TGenId, TIncremId, TCreatedBy>
+        : DbContextAccessor<TGenId, TIncremId, TCreatedBy>, IConfigurationDbContextAccessor
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
         /// <summary>
         /// 构造一个配置数据库上下文访问器实例。

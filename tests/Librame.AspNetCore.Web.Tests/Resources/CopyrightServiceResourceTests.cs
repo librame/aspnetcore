@@ -24,26 +24,26 @@ namespace Librame.AspNetCore.Web.Tests
         {
             CultureInfoUtility.Register(new CultureInfo(cultureName));
 
-            var copyright = localizer.GetString(r => r.Copyright);
-            Assert.False(copyright.ResourceNotFound);
+            var localized = localizer.GetString(r => r.Copyright);
+            Assert.False(localized.ResourceNotFound);
 
-            var poweredBy = localizer.GetString(r => r.PoweredBy);
-            Assert.False(poweredBy.ResourceNotFound);
+            localized = localizer.GetString(r => r.PoweredBy);
+            Assert.False(localized.ResourceNotFound);
 
-            var culture = localizer.GetString(r => r.Culture);
-            Assert.False(culture.ResourceNotFound);
+            localized = localizer.GetString(r => r.Culture);
+            Assert.False(localized.ResourceNotFound);
 
-            var application = localizer.GetString(r => r.Application);
-            Assert.False(application.ResourceNotFound);
+            localized = localizer.GetString(r => r.Application);
+            Assert.False(localized.ResourceNotFound);
 
-            var themepack = localizer.GetString(r => r.Themepack);
-            Assert.False(themepack.ResourceNotFound);
+            localized = localizer.GetString(r => r.Themepack);
+            Assert.False(localized.ResourceNotFound);
 
-            var searchInNuget = localizer.GetString(r => r.SearchInNuget);
-            Assert.False(searchInNuget.ResourceNotFound);
+            localized = localizer.GetString(r => r.SearchInNuget);
+            Assert.False(localized.ResourceNotFound);
 
-            var gotoMicrosoft = localizer.GetString(r => r.GotoMicrosoft);
-            Assert.False(gotoMicrosoft.ResourceNotFound);
+            localized = localizer.GetString(r => r.GotoMicrosoft);
+            Assert.False(localized.ResourceNotFound);
         }
 
     }

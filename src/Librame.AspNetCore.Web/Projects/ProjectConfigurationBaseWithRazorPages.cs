@@ -68,10 +68,10 @@ namespace Librame.AspNetCore.Web.Projects
         }
 
         /// <summary>
-        /// 获取页面应用模型约束。
+        /// 获取页面应用模型约定（使用泛型页面应用模型）。
         /// </summary>
         /// <returns>返回 <see cref="IPageApplicationModelConvention"/>。</returns>
         protected virtual IPageApplicationModelConvention GetPageApplicationModelConvention()
-            => new GenericPageModelConventionWithUser(Builder);
+            => new GenericPageApplicationModelConvention(Builder);
     }
 }

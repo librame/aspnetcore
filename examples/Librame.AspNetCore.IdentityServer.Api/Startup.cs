@@ -1,10 +1,8 @@
 ﻿using Librame.AspNetCore.Identity.Accessors;
 using Librame.AspNetCore.Identity.Stores;
 using Librame.Extensions;
-using Librame.Extensions.Data.Builders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
@@ -36,12 +34,13 @@ namespace Librame.AspNetCore.IdentityServer.Api
                 });
 
             services.AddLibrameCore()
-                .AddDataCore(dependency =>
+                //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
+                .AddData(dependency =>
                 {
                     // Use SQL Server
                     dependency.BindDefaultTenant();
                 })
-                .AddAccessor<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
+                .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
                 {
                     optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
                         sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));

@@ -23,7 +23,6 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
     using AspNetCore.Identity.Web.Models;
     using AspNetCore.Identity.Web.Resources;
-    using AspNetCore.Web;
     using AspNetCore.Web.Applications;
     using Extensions;
     using Extensions.Core.Services;
@@ -32,7 +31,8 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
     /// <summary>
     /// 首页页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(IndexPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(IndexPageModel<>))]
     public class IndexPageModel : ApplicationPageModel
     {
         /// <summary>

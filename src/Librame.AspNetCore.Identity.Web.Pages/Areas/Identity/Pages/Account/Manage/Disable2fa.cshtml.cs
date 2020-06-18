@@ -21,14 +21,15 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
-    using AspNetCore.Web;
+    using AspNetCore.Identity.Web.Resources;
+    using AspNetCore.Web.Applications;
     using Extensions;
-    using Resources;
 
     /// <summary>
     /// 禁用双因子验证页面模型。
     /// </summary>
-    [GenericApplicationModel(typeof(Disable2faPageModel<>))]
+    [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper),
+        typeof(Disable2faPageModel<>))]
     public class Disable2faPageModel : PageModel
     {
         /// <summary>

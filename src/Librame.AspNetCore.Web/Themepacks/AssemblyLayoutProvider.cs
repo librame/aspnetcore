@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Razor.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -53,6 +54,7 @@ namespace Librame.AspNetCore.Web.Themepacks
         /// <param name="pathPattern">给定布局查找的路径模式（可选）。</param>
         /// <param name="nameSelector">给定符合布局查找路径模式的名称选择器（可选）。</param>
         /// <returns>返回包含布局名称与路径的字典集合。</returns>
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递")]
         public Dictionary<string, string> GetLayouts(string pathPattern = null,
             Func<GroupCollection, string> nameSelector = null)
         {

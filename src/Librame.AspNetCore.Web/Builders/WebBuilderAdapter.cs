@@ -24,15 +24,12 @@ namespace Librame.AspNetCore.Web.Builders
             : base(parentBuilder, webBuilder)
         {
             SupportedGenericController = webBuilder.SupportedGenericController;
-            UserType = webBuilder.UserType;
 
             Services.AddSingleton<IExtensionBuilderAdapter<IWebBuilder>>(this);
         }
 
 
         public bool SupportedGenericController { get; private set; }
-
-        public Type UserType { get; private set; }
 
 
         public override ServiceCharacteristics GetServiceCharacteristics(Type serviceType)
