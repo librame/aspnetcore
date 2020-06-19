@@ -21,7 +21,7 @@ namespace Librame.AspNetCore.IdentityServer.Stores
     using Identity.Stores;
 
     /// <summary>
-    /// GUID 身份服务器存储初始化器。
+    /// <see cref="Guid"/> 身份服务器存储初始化器。
     /// </summary>
     public class GuidIdentityServerStoreInitializer : GuidIdentityStoreInitializer
     {

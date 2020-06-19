@@ -241,7 +241,7 @@ namespace Librame.AspNetCore.Identity.Stores
 
             foreach (var email in GetDefaultUserEmails())
             {
-                if (!TryGetUser(email, out TUser user))
+                if (!TryGetUser(email, out var user))
                 {
                     user = userType.EnsureCreate<TUser>();
 

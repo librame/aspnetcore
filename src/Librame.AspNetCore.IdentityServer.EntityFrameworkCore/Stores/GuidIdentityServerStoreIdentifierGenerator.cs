@@ -20,15 +20,15 @@ namespace Librame.AspNetCore.IdentityServer.Stores
     using Identity.Stores;
 
     /// <summary>
-    /// GUID 身份服务器存储标识符生成器。
+    /// <see cref="Guid"/> 身份服务器存储标识符生成器。
     /// </summary>
     public class GuidIdentityServerStoreIdentifierGenerator : GuidIdentityStoreIdentifierGenerator
     {
         /// <summary>
         /// 构造一个 <see cref="GuidIdentityServerStoreIdentifierGenerator"/>。
         /// </summary>
-        /// <param name="options">给定的 <see cref="IOptions{DataBuilderOptions}"/>。</param>
         /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
+        /// <param name="options">给定的 <see cref="IOptions{DataBuilderOptions}"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         public GuidIdentityServerStoreIdentifierGenerator(IClockService clock,
             IOptions<DataBuilderOptions> options, ILoggerFactory loggerFactory)

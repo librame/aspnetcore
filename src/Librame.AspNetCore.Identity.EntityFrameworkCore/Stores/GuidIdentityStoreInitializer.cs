@@ -20,7 +20,7 @@ namespace Librame.AspNetCore.Identity.Stores
     using Extensions.Data.ValueGenerators;
 
     /// <summary>
-    /// GUID 身份存储初始化器。
+    /// <see cref="Guid"/> 身份存储初始化器。
     /// </summary>
     public class GuidIdentityStoreInitializer : IdentityStoreInitializerBase<Guid, int, Guid>
     {
