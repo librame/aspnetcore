@@ -21,9 +21,17 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <summary>
     /// 身份数据库上下文访问器。
     /// </summary>
-    public class IdentityDbContextAccessor
-        : IdentityDbContextAccessor<DefaultIdentityRole<Guid, Guid>, DefaultIdentityUser<Guid, Guid>, Guid, int, Guid>,
-            IIdentityDbContextAccessor
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+    public class IdentityDbContextAccessor<TGenId, TIncremId, TCreatedBy>
+        : IdentityDbContextAccessor<DefaultIdentityRole<TGenId, TCreatedBy>,
+            DefaultIdentityUser<TGenId, TCreatedBy>,
+            TGenId, TIncremId, TCreatedBy>,
+        IIdentityDbContextAccessor<TGenId, TCreatedBy>
+        where TGenId : IEquatable<TGenId>
+        where TIncremId : IEquatable<TIncremId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
         /// <summary>
         /// 构造一个身份数据库上下文访问器实例。
@@ -33,6 +41,7 @@ namespace Librame.AspNetCore.Identity.Accessors
             : base(options)
         {
         }
+
     }
 
 
@@ -63,6 +72,7 @@ namespace Librame.AspNetCore.Identity.Accessors
             : base(options)
         {
         }
+
     }
 
 

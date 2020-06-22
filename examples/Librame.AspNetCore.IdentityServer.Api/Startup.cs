@@ -40,15 +40,15 @@ namespace Librame.AspNetCore.IdentityServer.Api
                     // Use SQL Server
                     dependency.BindDefaultTenant();
                 })
-                .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
+                .AddAccessorCore<DemoIdentityDbContextAccessor>((tenant, optionsBuilder) =>
                 {
                     optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
-                        sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
+                        sql => sql.MigrationsAssembly(typeof(DemoIdentityDbContextAccessor).GetAssemblyDisplayName()));
                 })
                 .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
                 .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
                 .AddStoreInitializer<GuidIdentityStoreInitializer>()
-                .AddIdentity<IdentityDbContextAccessor>(dependency =>
+                .AddDemoIdentity<DemoIdentityDbContextAccessor>(dependency =>
                 {
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })

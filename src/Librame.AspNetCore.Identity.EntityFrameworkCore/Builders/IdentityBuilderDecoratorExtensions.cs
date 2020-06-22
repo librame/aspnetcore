@@ -11,7 +11,6 @@
 #endregion
 
 using Librame.AspNetCore.Identity;
-using Librame.AspNetCore.Identity.Accessors;
 using Librame.AspNetCore.Identity.Builders;
 using Librame.AspNetCore.Identity.Protectors;
 using Librame.AspNetCore.Identity.Stores;
@@ -34,17 +33,17 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class IdentityBuilderDecoratorExtensions
     {
         /// <summary>
-        /// 添加身份扩展（默认使用 <see cref="DefaultIdentityRole{TGenId, TCreatedBy}"/> 角色与 <see cref="DefaultIdentityUser{TGenId, TCreatedBy}"/> 用户模型）。
+        /// 添加演示身份扩展（默认使用 <see cref="DefaultIdentityRole{Guid, Guid}"/> 角色与 <see cref="DefaultIdentityUser{Guid, Guid}"/> 用户模型）。
         /// </summary>
         /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
         /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderDecorator"/>。</returns>
-        public static IIdentityBuilderDecorator AddIdentity<TAccessor>
+        public static IIdentityBuilderDecorator AddDemoIdentity<TAccessor>
             (this IExtensionBuilder parentBuilder, Action<IdentityBuilderDependency> configureDependency = null,
             Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependency, IIdentityBuilderDecorator> builderFactory = null)
-            where TAccessor : DbContext, IIdentityDbContextAccessor
+            where TAccessor : DbContext, IAccessor
             => parentBuilder.AddIdentity<TAccessor, DefaultIdentityRole<Guid, Guid>,
                 DefaultIdentityUser<Guid, Guid>>(configureDependency, builderFactory);
 

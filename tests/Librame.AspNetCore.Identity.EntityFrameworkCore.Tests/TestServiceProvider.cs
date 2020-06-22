@@ -35,16 +35,16 @@ namespace Librame.AspNetCore.Identity.Tests
                             = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
                         //dependency.Options.DefaultTenant.WritingSeparation = true;
                     })
-                    .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
+                    .AddAccessorCore<DemoIdentityDbContextAccessor>((tenant, optionsBuilder) =>
                     {
                         optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
-                            sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
+                            sql => sql.MigrationsAssembly(typeof(DemoIdentityDbContextAccessor).GetAssemblyDisplayName()));
                     })
                     .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
                     .AddStoreHub<TestStoreHub>()
                     .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
                     .AddStoreInitializer<GuidIdentityStoreInitializer>()
-                    .AddIdentity<IdentityDbContextAccessor>(dependency =>
+                    .AddDemoIdentity<DemoIdentityDbContextAccessor>(dependency =>
                     {
                         dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                     });

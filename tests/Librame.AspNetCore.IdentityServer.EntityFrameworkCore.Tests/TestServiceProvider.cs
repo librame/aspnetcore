@@ -42,11 +42,11 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                             = MySqlConnectionStringHelper.Validate("server=localhost;port=3306;database=librame_identityserver_writing;user=root;password=123456;");
                         //dependency.Options.DefaultTenant.WritingSeparation = true;
                     })
-                    .AddAccessorCore<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
+                    .AddAccessorCore<DemoIdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
                     {
                         optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
                         {
-                            mySql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName());
+                            mySql.MigrationsAssembly(typeof(DemoIdentityServerDbContextAccessor).GetAssemblyDisplayName());
                             mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
                         });
                     })
@@ -54,7 +54,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                     .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentifierGenerator>()
                     .AddStoreInitializer<TestGuidIdentityServerStoreInitializer>()
                     .AddStoreHub<TestStoreHub>()
-                    .AddIdentity<IdentityServerDbContextAccessor>(options =>
+                    .AddDemoIdentity<DemoIdentityServerDbContextAccessor>(options =>
                     {
                         options.Identity.Options.Stores.MaxLengthForKeys = 128;
                     })
@@ -70,7 +70,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                             options.Authentication.CookieAuthenticationScheme = IdentityConstants.ApplicationScheme;
                         };
                     })
-                    .AddAccessorStores<IdentityServerDbContextAccessor>();
+                    .AddAccessorStores<DemoIdentityServerDbContextAccessor>();
 
                 return services.BuildServiceProvider();
             });

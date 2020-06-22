@@ -35,13 +35,13 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class IdentityServerBuilderDecoratorExtensions
     {
         /// <summary>
-        /// 添加身份服务器扩展（默认使用 <see cref="DefaultIdentityUser{TGenId, TCreatedBy}"/> 为用户模型）。
+        /// 添加演示身份服务器扩展（默认使用 <see cref="DefaultIdentityUser{TGenId, TCreatedBy}"/> 为用户模型）。
         /// </summary>
         /// <param name="parentBuilder">给定的父级 <see cref="IExtensionBuilder"/>。</param>
         /// <param name="configureIdentityServer">给定的配置身份服务器选项动作方法。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
-        public static IIdentityServerBuilderDecorator AddIdentityServer(this IExtensionBuilder parentBuilder,
+        public static IIdentityServerBuilderDecorator AddDemoIdentityServer(this IExtensionBuilder parentBuilder,
             Action<IdentityServerOptions> configureIdentityServer,
             Func<IIdentityServerBuilder, IExtensionBuilder, IdentityServerBuilderDependency, IIdentityServerBuilderDecorator> builderFactory = null)
             => parentBuilder.AddIdentityServer<DefaultIdentityUser<Guid, Guid>>(configureIdentityServer, builderFactory);

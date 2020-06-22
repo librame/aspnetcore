@@ -15,6 +15,7 @@ using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Accessors
@@ -22,9 +23,15 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
     using Identity.Accessors;
 
     /// <summary>
-    /// 身份服务器数据库上下文访问器。
+    /// 身份服务器数据库上下文访问器（集成身份数据库）。
     /// </summary>
-    public class IdentityServerDbContextAccessor : IdentityDbContextAccessor, IIdentityServerDbContextAccessor
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+    public class IdentityServerDbContextAccessor<TGenId, TIncremId, TCreatedBy> : IdentityDbContextAccessor<TGenId, TIncremId, TCreatedBy>, IIdentityServerDbContextAccessor
+        where TGenId : IEquatable<TGenId>
+        where TIncremId : IEquatable<TIncremId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
         /// <summary>
         /// 构造一个身份服务器数据库上下文访问器实例。

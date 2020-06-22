@@ -21,8 +21,12 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <summary>
     /// 身份数据库上下文访问器接口。
     /// </summary>
-    public interface IIdentityDbContextAccessor
-        : IIdentityDbContextAccessor<DefaultIdentityRole<Guid, Guid>, DefaultIdentityUser<Guid, Guid>, Guid, Guid>
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+    public interface IIdentityDbContextAccessor<TGenId, TCreatedBy>
+        : IIdentityDbContextAccessor<DefaultIdentityRole<TGenId, TCreatedBy>, DefaultIdentityUser<TGenId, TCreatedBy>, TGenId, TCreatedBy>
+        where TGenId : IEquatable<TGenId>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
     }
 
