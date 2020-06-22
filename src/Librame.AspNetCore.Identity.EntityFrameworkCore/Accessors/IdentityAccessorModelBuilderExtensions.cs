@@ -22,6 +22,7 @@ namespace Librame.AspNetCore.Identity.Accessors
     using AspNetCore.Identity.Stores;
     using Extensions;
     using Extensions.Data;
+    using Extensions.Data.Accessors;
 
     /// <summary>
     /// 身份访问器模型构建器静态扩展。
@@ -42,10 +43,10 @@ namespace Librame.AspNetCore.Identity.Accessors
         /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
         /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
-        /// <param name="accessor">给定的数据库上下文访问器。</param>
+        /// <param name="accessor">给定的 <see cref="IAccessor"/>。</param>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static void ConfigureIdentityStores<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy>
-            (this ModelBuilder modelBuilder, IdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy> accessor)
+            (this ModelBuilder modelBuilder, IAccessor accessor)
             where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
             where TRoleClaim : DefaultIdentityRoleClaim<TGenId, TCreatedBy>
             where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
