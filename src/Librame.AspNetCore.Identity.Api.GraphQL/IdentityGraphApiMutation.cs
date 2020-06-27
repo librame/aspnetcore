@@ -32,12 +32,12 @@ namespace Librame.AspNetCore.Identity.Api
     using Extensions.Core.Identifiers;
     using Extensions.Core.Localizers;
     using Extensions.Core.Services;
-    using Extensions.Data.ValueGenerators;
+    using Extensions.Data.Stores;
     using Extensions.Network.Services;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class IdentityGraphApiMutation<TUser, TGenId, TCreatedBy> : ObjectGraphType, IGraphApiMutation
-        where TUser : class, IIdentifier<TGenId>
+        where TUser : class, IIdentifier<TGenId>, ICreation<TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TCreatedBy : IEquatable<TCreatedBy>
     {
@@ -55,9 +55,6 @@ namespace Librame.AspNetCore.Identity.Api
 
         [InjectionService]
         private IEnhancedStringLocalizer<RegisterApiModelResource> _localizer = null;
-
-        [InjectionService]
-        private IDefaultValueGenerator<TCreatedBy> _createdByGenerator = null;
 
         [InjectionService]
         private IUserStore<TUser> _userStore = null;
@@ -142,10 +139,8 @@ namespace Librame.AspNetCore.Identity.Api
                     var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
                     await user.SetIdAsync(userId).ConfigureAndResultAsync();
 
-                    var createdBy = await _createdByGenerator.GetValueAsync(GetType()).ConfigureAndResultAsync();
-
-                    var result = await _userManager.CreateUserByEmail(_userStore,
-                        _clock, user, createdBy, model.Email, model.Password).ConfigureAndResultAsync();
+                    var result = await _userManager.CreateUserByEmail<TUser, TCreatedBy>(_userStore,
+                        _clock, user, model.Email, model.Password).ConfigureAndResultAsync();
 
                     if (result.Succeeded)
                     {

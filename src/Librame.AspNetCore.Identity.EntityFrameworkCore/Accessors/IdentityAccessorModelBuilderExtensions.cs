@@ -46,7 +46,37 @@ namespace Librame.AspNetCore.Identity.Accessors
         /// <param name="accessor">给定的 <see cref="IAccessor"/>。</param>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static void ConfigureIdentityStores<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy>
-            (this ModelBuilder modelBuilder, IAccessor accessor)
+            (this ModelBuilder modelBuilder, IdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy> accessor)
+            where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
+            where TRoleClaim : DefaultIdentityRoleClaim<TGenId, TCreatedBy>
+            where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
+            where TUserClaim : DefaultIdentityUserClaim<TGenId, TCreatedBy>
+            where TUserLogin : DefaultIdentityUserLogin<TGenId, TCreatedBy>
+            where TUserRole : DefaultIdentityUserRole<TGenId, TCreatedBy>
+            where TUserToken : DefaultIdentityUserToken<TGenId, TCreatedBy>
+            where TGenId : IEquatable<TGenId>
+            where TIncremId : IEquatable<TIncremId>
+            where TCreatedBy : IEquatable<TCreatedBy>
+            => modelBuilder.ConfigureIdentityStores<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy>(accessor as DbContextAccessorBase);
+
+        /// <summary>
+        /// 配置身份存储集合。
+        /// </summary>
+        /// <typeparam name="TRole">指定的角色类型。</typeparam>
+        /// <typeparam name="TRoleClaim">指定的角色声明类型。</typeparam>
+        /// <typeparam name="TUserRole">指定的用户角色类型。</typeparam>
+        /// <typeparam name="TUser">指定的用户类型。</typeparam>
+        /// <typeparam name="TUserClaim">指定的用户声明类型。</typeparam>
+        /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
+        /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
+        /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+        /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
+        /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+        /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
+        /// <param name="accessor">给定的 <see cref="IAccessor"/>。</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+        public static void ConfigureIdentityStores<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy>
+            (this ModelBuilder modelBuilder, DbContextAccessorBase accessor)
             where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
             where TRoleClaim : DefaultIdentityRoleClaim<TGenId, TCreatedBy>
             where TUser : DefaultIdentityUser<TGenId, TCreatedBy>

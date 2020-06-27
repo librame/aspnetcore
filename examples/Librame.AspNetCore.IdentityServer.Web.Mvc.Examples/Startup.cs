@@ -55,18 +55,18 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                     // Use MySQL
                     dependency.BindDefaultTenant(MySqlConnectionStringHelper.Validate);
                 })
-                .AddAccessorCore<DemoIdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
+                .AddAccessorCore<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
                 {
                     optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
                     {
-                        mySql.MigrationsAssembly(typeof(DemoIdentityServerDbContextAccessor).GetAssemblyDisplayName());
+                        mySql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName());
                         mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
                     });
                 })
                 .AddDatabaseDesignTime<MySqlDesignTimeServices>()
                 .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentifierGenerator>()
                 .AddStoreInitializer<GuidIdentityStoreInitializer>()
-                .AddDemoIdentity<DemoIdentityServerDbContextAccessor>()
+                .AddIdentity<IdentityServerDbContextAccessor>()
                 .AddIdentityWeb(dependency =>
                 {
                     dependency.Options.Themepack.CommonHeaderNavigationVisibility = false;
@@ -91,7 +91,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                         server.Events.RaiseSuccessEvents = true;
                     };
                 })
-                .AddAccessorStores<DemoIdentityServerDbContextAccessor>() //.AddInMemoryStores()
+                .AddAccessorStores<IdentityServerDbContextAccessor>() //.AddInMemoryStores()
                 .AddIdentityServerWeb()
                 .AddIdentityServerProjectController(mvcBuilder);
 

@@ -10,19 +10,14 @@
 
 #endregion
 
-namespace Librame.AspNetCore.Identity.Options
+namespace Librame.AspNetCore.IdentityServer.Options
 {
     using Extensions.Data.Options;
 
     /// <summary>
-    /// 身份存储选项。
+    /// 身份服务器表名选项。
     /// </summary>
-    public class IdentityStoreOptions : AbstractStoreOptions
+    public class IdentityServerTableOptions : AbstractTableOptions
     {
-        /// <summary>
-        /// 初始化选项。
-        /// </summary>
-        public IdentityStoreInitializationOptions Initialization { get; set; }
-            = new IdentityStoreInitializationOptions();
     }
 }

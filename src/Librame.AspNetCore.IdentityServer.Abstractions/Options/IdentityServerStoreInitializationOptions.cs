@@ -11,37 +11,35 @@
 #endregion
 
 using IdentityServer4.Models;
-using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.IdentityServer.Options
 {
     /// <summary>
-    /// 授权选项。
+    /// 身份服务器存储初始化选项。
     /// </summary>
-    public class AuthorizationOptions
+    public class IdentityServerStoreInitializationOptions
     {
         /// <summary>
-        /// 身份资源集合。
+        /// 默认 API 资源列表集合。
         /// </summary>
-        public List<IdentityResource> IdentityResources { get; }
-            = new List<IdentityResource>();
-
-        /// <summary>
-        /// API 资源集合。
-        /// </summary>
-        public List<ApiResource> ApiResources { get; }
+        [SuppressMessage("Usage", "CA2227:集合属性应为只读")]
+        public List<ApiResource> DefaultApiResources { get; set; }
             = new List<ApiResource>();
 
         /// <summary>
-        /// 客户端集合。
+        /// 默认客户端列表集合。
         /// </summary>
-        public List<Client> Clients { get; }
+        [SuppressMessage("Usage", "CA2227:集合属性应为只读")]
+        public List<Client> DefaultClients { get; set; }
             = new List<Client>();
 
         /// <summary>
-        /// 用于签名令牌的签名证书。
+        /// 默认身份资源列表集合。
         /// </summary>
-        public SigningCredentials SigningCredentials { get; set; }
+        [SuppressMessage("Usage", "CA2227:集合属性应为只读")]
+        public List<IdentityResource> DefaultIdentityResources { get; set; }
+            = new List<IdentityResource>();
     }
 }

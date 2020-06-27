@@ -11,44 +11,10 @@
 #endregion
 
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Librame.AspNetCore.Identity.Accessors
 {
-    using AspNetCore.Identity.Stores;
     using Extensions.Data.Accessors;
-
-    /// <summary>
-    /// 身份数据库上下文访问器接口。
-    /// </summary>
-    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
-    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
-    public interface IIdentityDbContextAccessor<TGenId, TCreatedBy>
-        : IIdentityDbContextAccessor<DefaultIdentityRole<TGenId, TCreatedBy>, DefaultIdentityUser<TGenId, TCreatedBy>, TGenId, TCreatedBy>
-        where TGenId : IEquatable<TGenId>
-        where TCreatedBy : IEquatable<TCreatedBy>
-    {
-    }
-
-
-    /// <summary>
-    /// 身份数据库上下文访问器接口。
-    /// </summary>
-    /// <typeparam name="TRole">指定的角色类型。</typeparam>
-    /// <typeparam name="TUser">指定的用户类型。</typeparam>
-    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
-    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
-    public interface IIdentityDbContextAccessor<TRole, TUser, TGenId, TCreatedBy>
-        : IIdentityDbContextAccessor<TRole, DefaultIdentityRoleClaim<TGenId, TCreatedBy>,
-            TUser, DefaultIdentityUserClaim<TGenId, TCreatedBy>, DefaultIdentityUserLogin<TGenId, TCreatedBy>,
-            DefaultIdentityUserRole<TGenId, TCreatedBy>, DefaultIdentityUserToken<TGenId, TCreatedBy>>
-        where TRole : class
-        where TUser : class
-        where TGenId : IEquatable<TGenId>
-        where TCreatedBy : IEquatable<TCreatedBy>
-    {
-    }
-
 
     /// <summary>
     /// 身份数据库上下文访问器接口。

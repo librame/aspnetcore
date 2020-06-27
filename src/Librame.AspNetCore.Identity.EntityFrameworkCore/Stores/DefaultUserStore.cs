@@ -19,9 +19,8 @@ using System.Security.Claims;
 
 namespace Librame.AspNetCore.Identity.Stores
 {
-    using Extensions;
     using Extensions.Core.Services;
-    using Extensions.Data.ValueGenerators;
+    using Extensions.Data.Stores;
 
     /// <summary>
     /// 默认用户存储。
@@ -70,7 +69,6 @@ namespace Librame.AspNetCore.Identity.Stores
             : base(context, describer)
         {
             Clock = context.GetService<IClockService>();
-            CreatedByGenerator = context.GetService<IDefaultValueGenerator<TCreatedBy>>();
         }
 
 
@@ -78,11 +76,6 @@ namespace Librame.AspNetCore.Identity.Stores
         /// 时钟服务。
         /// </summary>
         public IClockService Clock { get; }
-
-        /// <summary>
-        /// 创建者默认值生成器。
-        /// </summary>
-        protected IDefaultValueGenerator<TCreatedBy> CreatedByGenerator { get; }
 
 
         /// <summary>
@@ -96,9 +89,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var userClaim = base.CreateUserClaim(user, claim);
 
-            userClaim.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
-            userClaim.CreatedTimeTicks = userClaim.CreatedTime.Ticks;
-            userClaim.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
+            userClaim.PopulateCreationAsync(Clock);
 
             return userClaim;
         }
@@ -114,9 +105,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var userLogin = base.CreateUserLogin(user, login);
 
-            userLogin.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
-            userLogin.CreatedTimeTicks = userLogin.CreatedTime.Ticks;
-            userLogin.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
+            userLogin.PopulateCreationAsync(Clock);
 
             return userLogin;
         }
@@ -132,9 +121,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var userRole = base.CreateUserRole(user, role);
 
-            userRole.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
-            userRole.CreatedTimeTicks = userRole.CreatedTime.Ticks;
-            userRole.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
+            userRole.PopulateCreationAsync(Clock);
 
             return userRole;
         }
@@ -152,9 +139,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var userToken = base.CreateUserToken(user, loginProvider, name, value);
 
-            userToken.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
-            userToken.CreatedTimeTicks = userToken.CreatedTime.Ticks;
-            userToken.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
+            userToken.PopulateCreationAsync(Clock);
 
             return userToken;
         }

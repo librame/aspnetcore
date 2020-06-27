@@ -52,12 +52,12 @@ namespace Librame.AspNetCore.IdentityServer.Builders
             AddService<ISigningCredentialStore>(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<IdentityServerBuilderOptions>>().Value;
-                if (options.Authorizations.SigningCredentials.IsNull())
+                if (options.SigningCredentials.IsNull())
                 {
                     var service = provider.GetRequiredService<ISigningCredentialsService>();
-                    options.Authorizations.SigningCredentials = service.GetGlobalSigningCredentials();
+                    options.SigningCredentials = service.GetGlobalSigningCredentials();
                 }
-                return new DefaultSigningCredentialsStore(options.Authorizations.SigningCredentials);
+                return new DefaultSigningCredentialsStore(options.SigningCredentials);
             });
 
             AddService<IValidationKeysStore>(provider =>

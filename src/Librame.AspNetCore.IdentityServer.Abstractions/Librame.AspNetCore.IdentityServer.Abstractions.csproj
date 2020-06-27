@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\Librame.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.5.0.1</Version>
+    <Version>7.5.0.2</Version>
     <Authors>Librame Pong</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.Abstractions on IdentityServer application package.</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.AspNetCore.Abstractions on IdentityServer application package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.5.0.1</AssemblyVersion>
-    <FileVersion>7.5.1979.15117</FileVersion>
+    <AssemblyVersion>7.5.0.2</AssemblyVersion>
+    <FileVersion>7.5.1988.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore.IdentityServer</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
@@ -40,20 +40,20 @@
     
   <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="3.1.3" />
-    <PackageReference Include="Librame.Extensions.Encryption.Abstractions" Version="7.6.0.4" />
+    <PackageReference Include="Librame.Extensions.Encryption.Abstractions" Version="7.6.0.6" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.5" />
   </ItemGroup>
-    
-  <ItemGroup>
-    <ProjectReference Include="..\Librame.AspNetCore.Data.Abstractions\Librame.AspNetCore.Data.Abstractions.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\Librame.png" Pack="true" Visible="false" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Librame.AspNetCore.Identity.Abstractions\Librame.AspNetCore.Identity.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

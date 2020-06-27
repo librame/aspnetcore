@@ -10,15 +10,17 @@
 
 #endregion
 
+using Microsoft.IdentityModel.Tokens;
+
 namespace Librame.AspNetCore.IdentityServer.Builders
 {
     using AspNetCore.IdentityServer.Options;
-    using Extensions.Core.Builders;
+    using Extensions.Data.Builders;
 
     /// <summary>
     /// 身份服务器构建器选项。
     /// </summary>
-    public class IdentityServerBuilderOptions : IExtensionBuilderOptions
+    public class IdentityServerBuilderOptions : AbstractDataBuilderOptions<IdentityServerStoreOptions, IdentityServerTableOptions>
     {
         /// <summary>
         /// 帐户。
@@ -33,9 +35,8 @@ namespace Librame.AspNetCore.IdentityServer.Builders
             = new ConsentOptions();
 
         /// <summary>
-        /// 授权。
+        /// 用于签名令牌的签名证书。
         /// </summary>
-        public AuthorizationOptions Authorizations { get; set; }
-            = new AuthorizationOptions();
+        public SigningCredentials SigningCredentials { get; set; }
     }
 }

@@ -5,7 +5,7 @@
     <ApplicationIcon>..\..\Librame.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.5.0.1</Version>
+    <Version>7.5.0.2</Version>
     <Authors>Librame Pong</Authors>
     <Company>librame.net</Company>
     <Description>Based Librame.AspNetCore.IdentityServer.Abstractions with the Web extension package.</Description>
@@ -19,8 +19,8 @@
     <PackageReleaseNotes>Based Librame.AspNetCore.IdentityServer.Abstractions with the Web extension package.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.5.0.1</AssemblyVersion>
-    <FileVersion>7.5.1979.15117</FileVersion>
+    <AssemblyVersion>7.5.0.2</AssemblyVersion>
+    <FileVersion>7.5.1988.15117</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
@@ -38,7 +38,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="7.6.0.4" />
+    <PackageReference Include="Librame.Extensions.Network.Abstractions" Version="7.6.0.6" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

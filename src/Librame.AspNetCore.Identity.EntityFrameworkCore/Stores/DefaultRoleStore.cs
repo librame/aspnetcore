@@ -19,9 +19,8 @@ using System.Security.Claims;
 
 namespace Librame.AspNetCore.Identity.Stores
 {
-    using Extensions;
     using Extensions.Core.Services;
-    using Extensions.Data.ValueGenerators;
+    using Extensions.Data.Stores;
 
     /// <summary>
     /// 默认角色存储。
@@ -65,7 +64,6 @@ namespace Librame.AspNetCore.Identity.Stores
             : base(context, describer)
         {
             Clock = context.GetService<IClockService>();
-            CreatedByGenerator = context.GetService<IDefaultValueGenerator<TCreatedBy>>();
         }
 
 
@@ -73,11 +71,6 @@ namespace Librame.AspNetCore.Identity.Stores
         /// 时钟服务。
         /// </summary>
         protected IClockService Clock { get; }
-
-        /// <summary>
-        /// 创建者默认值生成器。
-        /// </summary>
-        protected IDefaultValueGenerator<TCreatedBy> CreatedByGenerator { get; }
 
 
         /// <summary>
@@ -91,9 +84,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var roleClaim = base.CreateRoleClaim(role, claim);
 
-            roleClaim.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
-            roleClaim.CreatedTimeTicks = roleClaim.CreatedTime.Ticks;
-            roleClaim.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
+            roleClaim.PopulateCreationAsync(Clock);
 
             return roleClaim;
         }

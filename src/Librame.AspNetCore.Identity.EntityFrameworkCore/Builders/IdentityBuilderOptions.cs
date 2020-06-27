@@ -15,13 +15,12 @@ using System;
 namespace Librame.AspNetCore.Identity.Builders
 {
     using AspNetCore.Identity.Options;
-    using Extensions.Core.Builders;
-    using Extensions.Data.Options;
+    using Extensions.Data.Builders;
 
     /// <summary>
     /// 身份构建器选项。
     /// </summary>
-    public class IdentityBuilderOptions : AbstractDataOptions<IdentityStoreOptions, IdentityTableOptions>, IExtensionBuilderOptions
+    public class IdentityBuilderOptions : AbstractDataBuilderOptions<IdentityStoreOptions, IdentityTableOptions>
     {
         /// <summary>
         /// 启用密码规则提示（默认启用）。

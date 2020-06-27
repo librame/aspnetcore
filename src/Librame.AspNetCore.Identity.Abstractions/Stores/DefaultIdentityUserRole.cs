@@ -31,7 +31,7 @@ namespace Librame.AspNetCore.Identity.Stores
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     [Description("默认身份用户角色")]
     public class DefaultIdentityUserRole<TGenId, TCreatedBy> : IdentityUserRole<TGenId>,
-        ICreation<TCreatedBy, DateTimeOffset>, ICreatedTimeTicks
+        ICreation<TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TCreatedBy : IEquatable<TCreatedBy>
     {

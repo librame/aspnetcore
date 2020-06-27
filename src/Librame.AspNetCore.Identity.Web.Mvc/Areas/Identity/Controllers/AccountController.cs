@@ -35,7 +35,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
     using Extensions;
     using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
-    using Extensions.Data.ValueGenerators;
+    using Extensions.Data.Stores;
     using Extensions.Network.Services;
 
     /// <summary>
@@ -43,18 +43,18 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
     /// </summary>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
-    /// <typeparam name="TCreateBy">指定的创建者类型。</typeparam>
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     [Authorize]
     [GenericApplicationModel(typeof(IdentityGenericTypeDefinitionMapper))]
     [Area(IdentityRouteBuilderExtensions.AreaName)]
     [Route(IdentityRouteBuilderExtensions.Template)]
-    public class AccountController<TUser, TGenId, TCreateBy> : ApplicationController<TUser>
-        where TUser : class, IIdentifier<TGenId>
+    public class AccountController<TUser, TGenId, TCreatedBy> : ApplicationController<TUser>
+        where TUser : class, IIdentifier<TGenId>, ICreation<TCreatedBy>
         where TGenId : IEquatable<TGenId>
-        where TCreateBy : IEquatable<TCreateBy>
+        where TCreatedBy : IEquatable<TCreatedBy>
     {
         [InjectionService]
-        private ILogger<AccountController<TUser, TGenId, TCreateBy>> _logger = null;
+        private ILogger<AccountController<TUser, TGenId, TCreatedBy>> _logger = null;
 
         [InjectionService]
         private IEmailService _emailService = null;
@@ -88,9 +88,6 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
 
         [InjectionService]
         private IApplicationContext _application = null;
-
-        [InjectionService]
-        private IDefaultValueGenerator<TCreateBy> _createdByGenerator = null;
 
         [InjectionService]
         private IdentityWebBuilderDependency _dependency = null;
@@ -244,10 +241,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
                 var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
                 await user.SetIdAsync(userId).ConfigureAndResultAsync();
 
-                var createdBy = await _createdByGenerator.GetValueAsync(GetType()).ConfigureAndResultAsync();
-
-                var result = await UserManager.CreateUserByEmail(_userStore,
-                    _clock, user, createdBy, model.Email, model.Password).ConfigureAndResultAsync();
+                var result = await UserManager.CreateUserByEmail<TUser, TCreatedBy>(_userStore,
+                    _clock, user, model.Email, model.Password).ConfigureAndResultAsync();
 
                 if (result.Succeeded)
                 {
@@ -398,10 +393,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
                 var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
                 await user.SetIdAsync(userId).ConfigureAndResultAsync();
 
-                var createdBy = await _createdByGenerator.GetValueAsync(GetType()).ConfigureAndResultAsync();
-
-                var result = await UserManager.CreateUserByEmail<TUser, TCreateBy>(_userStore,
-                    _clock, user, createdBy, model.Email).ConfigureAndResultAsync();
+                var result = await UserManager.CreateUserByEmail<TUser, TCreatedBy>(_userStore,
+                    _clock, user, model.Email).ConfigureAndResultAsync();
 
                 if (result.Succeeded)
                 {

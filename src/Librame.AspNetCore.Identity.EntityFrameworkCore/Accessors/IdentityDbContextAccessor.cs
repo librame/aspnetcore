@@ -21,14 +21,31 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <summary>
     /// 身份数据库上下文访问器。
     /// </summary>
+    public class IdentityDbContextAccessor : IdentityDbContextAccessor<Guid, int, Guid>
+    {
+        /// <summary>
+        /// 构造一个 <see cref="IdentityDbContextAccessor"/>。
+        /// </summary>
+        /// <param name="options">给定的 <see cref="DbContextOptions"/>。</param>
+        public IdentityDbContextAccessor(DbContextOptions options)
+            : base(options)
+        {
+        }
+
+    }
+
+
+    /// <summary>
+    /// 身份数据库上下文访问器。
+    /// </summary>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     public class IdentityDbContextAccessor<TGenId, TIncremId, TCreatedBy>
-        : IdentityDbContextAccessor<DefaultIdentityRole<TGenId, TCreatedBy>,
+        : IdentityDbContextAccessor<
+            DefaultIdentityRole<TGenId, TCreatedBy>,
             DefaultIdentityUser<TGenId, TCreatedBy>,
-            TGenId, TIncremId, TCreatedBy>,
-        IIdentityDbContextAccessor<TGenId, TCreatedBy>
+            TGenId, TIncremId, TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
         where TCreatedBy : IEquatable<TCreatedBy>
@@ -54,10 +71,14 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     public class IdentityDbContextAccessor<TRole, TUser, TGenId, TIncremId, TCreatedBy>
-        : IdentityDbContextAccessor<TRole, DefaultIdentityRoleClaim<TGenId, TCreatedBy>,
-            TUser, DefaultIdentityUserClaim<TGenId, TCreatedBy>, DefaultIdentityUserLogin<TGenId, TCreatedBy>,
-            DefaultIdentityUserRole<TGenId, TCreatedBy>, DefaultIdentityUserToken<TGenId, TCreatedBy>, TGenId, TIncremId, TCreatedBy>
-        , IIdentityDbContextAccessor<TRole, TUser, TGenId, TCreatedBy>
+        : IdentityDbContextAccessor<TRole,
+            DefaultIdentityRoleClaim<TGenId, TCreatedBy>,
+            TUser,
+            DefaultIdentityUserClaim<TGenId, TCreatedBy>,
+            DefaultIdentityUserLogin<TGenId, TCreatedBy>,
+            DefaultIdentityUserRole<TGenId, TCreatedBy>,
+            DefaultIdentityUserToken<TGenId, TCreatedBy>,
+            TGenId, TIncremId, TCreatedBy>
         where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
         where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
         where TGenId : IEquatable<TGenId>

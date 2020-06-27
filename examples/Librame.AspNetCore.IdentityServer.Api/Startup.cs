@@ -1,7 +1,4 @@
-﻿using Librame.AspNetCore.Identity.Accessors;
-using Librame.AspNetCore.Identity.Stores;
-using Librame.Extensions;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
@@ -11,6 +8,10 @@ using Microsoft.Extensions.Hosting;
 
 namespace Librame.AspNetCore.IdentityServer.Api
 {
+    using AspNetCore.Identity.Accessors;
+    using AspNetCore.Identity.Stores;
+    using Extensions;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -40,15 +41,15 @@ namespace Librame.AspNetCore.IdentityServer.Api
                     // Use SQL Server
                     dependency.BindDefaultTenant();
                 })
-                .AddAccessorCore<DemoIdentityDbContextAccessor>((tenant, optionsBuilder) =>
+                .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
                 {
                     optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
-                        sql => sql.MigrationsAssembly(typeof(DemoIdentityDbContextAccessor).GetAssemblyDisplayName()));
+                        sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
                 })
                 .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
                 .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
                 .AddStoreInitializer<GuidIdentityStoreInitializer>()
-                .AddDemoIdentity<DemoIdentityDbContextAccessor>(dependency =>
+                .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })

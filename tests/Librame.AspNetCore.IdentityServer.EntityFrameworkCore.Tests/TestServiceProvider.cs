@@ -12,6 +12,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
     using AspNetCore.IdentityServer.Stores;
     using Extensions;
     using Extensions.Core.Identifiers;
+    using Models;
 
     internal static class TestServiceProvider
     {
@@ -42,21 +43,21 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                             = MySqlConnectionStringHelper.Validate("server=localhost;port=3306;database=librame_identityserver_writing;user=root;password=123456;");
                         //dependency.Options.DefaultTenant.WritingSeparation = true;
                     })
-                    .AddAccessorCore<DemoIdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
+                    .AddAccessorCore<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
                     {
                         optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
                         {
-                            mySql.MigrationsAssembly(typeof(DemoIdentityServerDbContextAccessor).GetAssemblyDisplayName());
+                            mySql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName());
                             mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
                         });
                     })
                     .AddDatabaseDesignTime<MySqlDesignTimeServices>()
                     .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentifierGenerator>()
-                    .AddStoreInitializer<TestGuidIdentityServerStoreInitializer>()
+                    .AddStoreInitializer<GuidIdentityServerStoreInitializer>()
                     .AddStoreHub<TestStoreHub>()
-                    .AddDemoIdentity<DemoIdentityServerDbContextAccessor>(options =>
+                    .AddIdentity<IdentityServerDbContextAccessor>(dependency =>
                     {
-                        options.Identity.Options.Stores.MaxLengthForKeys = 128;
+                        dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                     })
                     .AddIdentityServer<DefaultIdentityUser<Guid, Guid>>(dependency =>
                     {
@@ -69,8 +70,17 @@ namespace Librame.AspNetCore.IdentityServer.Tests
 
                             options.Authentication.CookieAuthenticationScheme = IdentityConstants.ApplicationScheme;
                         };
+
+                        dependency.Options.Stores.Initialization.DefaultClients
+                            .Add(IdentityServerConfiguration.DefaultClient);
+
+                        dependency.Options.Stores.Initialization.DefaultApiResources
+                            .Add(IdentityServerConfiguration.DefaultApiResource);
+
+                        dependency.Options.Stores.Initialization.DefaultIdentityResources
+                            .AddRange(IdentityServerConfiguration.DefaultIdentityResources);
                     })
-                    .AddAccessorStores<DemoIdentityServerDbContextAccessor>();
+                    .AddAccessorStores<IdentityServerDbContextAccessor>();
 
                 return services.BuildServiceProvider();
             });

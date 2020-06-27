@@ -25,10 +25,29 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
     /// <summary>
     /// 身份服务器数据库上下文访问器（集成身份数据库）。
     /// </summary>
+    public class IdentityServerDbContextAccessor : IdentityServerDbContextAccessor<Guid, int, Guid>
+    {
+        /// <summary>
+        /// 构造一个身份服务器数据库上下文访问器实例。
+        /// </summary>
+        /// <param name="options">给定的 <see cref="DbContextOptions"/>。</param>
+        public IdentityServerDbContextAccessor(DbContextOptions options)
+            : base(options)
+        {
+        }
+
+    }
+
+
+    /// <summary>
+    /// 身份服务器数据库上下文访问器（集成身份数据库）。
+    /// </summary>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
-    public class IdentityServerDbContextAccessor<TGenId, TIncremId, TCreatedBy> : IdentityDbContextAccessor<TGenId, TIncremId, TCreatedBy>, IIdentityServerDbContextAccessor
+    public class IdentityServerDbContextAccessor<TGenId, TIncremId, TCreatedBy>
+        : IdentityDbContextAccessor<TGenId, TIncremId, TCreatedBy>,
+        IIdentityServerDbContextAccessor
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
         where TCreatedBy : IEquatable<TCreatedBy>

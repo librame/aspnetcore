@@ -19,41 +19,49 @@ using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Stores
 {
-    using AspNetCore.Identity.Accessors;
+    using AspNetCore.Identity.Options;
     using Extensions;
     using Extensions.Core.Utilities;
+    using Extensions.Data.Accessors;
     using Extensions.Data.Stores;
-    using Extensions.Data.ValueGenerators;
 
     /// <summary>
-    /// 身份存储初始化器基类。
+    /// 抽象身份存储初始化器。
     /// </summary>
+    /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
-    public class IdentityStoreInitializerBase<TGenId, TIncremId, TCreatedBy>
-        : IdentityStoreInitializerBase<DefaultIdentityRole<TGenId, TCreatedBy>,
-            DefaultIdentityUser<TGenId, TCreatedBy>, DefaultIdentityUserRole<TGenId, TCreatedBy>,
+    public abstract class AbstractIdentityStoreInitializer<TAccessor, TGenId, TIncremId, TCreatedBy>
+        : AbstractIdentityStoreInitializer<TAccessor,
+            DefaultIdentityRole<TGenId, TCreatedBy>,
+            DefaultIdentityRoleClaim<TGenId, TCreatedBy>,
+            DefaultIdentityUser<TGenId, TCreatedBy>,
+            DefaultIdentityUserClaim<TGenId, TCreatedBy>,
+            DefaultIdentityUserLogin<TGenId, TCreatedBy>,
+            DefaultIdentityUserRole<TGenId, TCreatedBy>,
+            DefaultIdentityUserToken<TGenId, TCreatedBy>,
             TGenId, TIncremId, TCreatedBy>
+        where TAccessor : class, IAccessor
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
         where TCreatedBy : IEquatable<TCreatedBy>
     {
         /// <summary>
-        /// 构造一个身份存储初始化器基类。
+        /// 构造一个抽象身份存储初始化器。
         /// </summary>
-        /// <param name="signInManager">给定的 <see cref="SignInManager{DefaultIdentityUser}"/>。</param>
-        /// <param name="roleMananger">给定的 <see cref="RoleManager{DefaultIdentityRole}"/>。</param>
-        /// <param name="userStore">给定的 <see cref="IUserStore{DefaultIdentityUser}"/>。</param>
-        /// <param name="createdByGenerator">给定的 <see cref="IDefaultValueGenerator{TCreatedBy}"/>。</param>
-        /// <param name="identifierGenerator">给定的 <see cref="IStoreIdentifierGenerator{TGenId}"/>。</param>
+        /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
+        /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
+        /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
+        /// <param name="identifierGenerator">给定的 <see cref="IStoreIdentifierGenerator"/>。</param>
+        /// <param name="validator">给定的 <see cref="IStoreInitializationValidator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        protected IdentityStoreInitializerBase(SignInManager<DefaultIdentityUser<TGenId, TCreatedBy>> signInManager,
+        protected AbstractIdentityStoreInitializer(IdentityStoreInitializationOptions initializationOptions,
+            SignInManager<DefaultIdentityUser<TGenId, TCreatedBy>> signInManager,
             RoleManager<DefaultIdentityRole<TGenId, TCreatedBy>> roleMananger,
-            IUserStore<DefaultIdentityUser<TGenId, TCreatedBy>> userStore,
-            IDefaultValueGenerator<TCreatedBy> createdByGenerator,
-            IStoreIdentifierGenerator<TGenId> identifierGenerator, ILoggerFactory loggerFactory)
-            : base(signInManager, roleMananger, userStore, createdByGenerator, identifierGenerator, loggerFactory)
+            IStoreIdentifierGenerator identifierGenerator,
+            IStoreInitializationValidator validator, ILoggerFactory loggerFactory)
+            : base(initializationOptions, signInManager, roleMananger, identifierGenerator, validator, loggerFactory)
         {
         }
 
@@ -61,46 +69,63 @@ namespace Librame.AspNetCore.Identity.Stores
 
 
     /// <summary>
-    /// 身份存储初始化器基类。
+    /// 抽象身份存储初始化器。
     /// </summary>
+    /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     /// <typeparam name="TRole">指定的角色类型。</typeparam>
+    /// <typeparam name="TRoleClaim">指定的角色声明类型。</typeparam>
     /// <typeparam name="TUser">指定的用户类型。</typeparam>
+    /// <typeparam name="TUserClaim">指定的用户声明类型。</typeparam>
+    /// <typeparam name="TUserLogin">指定的用户登陆类型。</typeparam>
     /// <typeparam name="TUserRole">指定的用户角色类型。</typeparam>
+    /// <typeparam name="TUserToken">指定的用户令牌类型。</typeparam>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
-    public class IdentityStoreInitializerBase<TRole, TUser, TUserRole, TGenId, TIncremId, TCreatedBy>
-        : DataStoreInitializerBase<TGenId, TIncremId, TCreatedBy>
+    public abstract class AbstractIdentityStoreInitializer<TAccessor, TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy>
+        : AbstractDataStoreInitializer<TAccessor, TGenId, TIncremId, TCreatedBy>
+        where TAccessor : class, IAccessor
         where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
+        where TRoleClaim : DefaultIdentityRoleClaim<TGenId, TCreatedBy>
         where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
+        where TUserClaim : DefaultIdentityUserClaim<TGenId, TCreatedBy>
+        where TUserLogin : DefaultIdentityUserLogin<TGenId, TCreatedBy>
         where TUserRole : DefaultIdentityUserRole<TGenId, TCreatedBy>
+        where TUserToken : DefaultIdentityUserToken<TGenId, TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
         where TCreatedBy : IEquatable<TCreatedBy>
     {
         /// <summary>
-        /// 构造一个身份存储初始化器基类。
+        /// 构造一个抽象身份存储初始化器。
         /// </summary>
+        /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
-        /// <param name="userStore">给定的 <see cref="IUserStore{TUser}"/>。</param>
-        /// <param name="createdByGenerator">给定的 <see cref="IDefaultValueGenerator{TCreatedBy}"/>。</param>
-        /// <param name="identifierGenerator">给定的 <see cref="IStoreIdentifierGenerator{TGenId}"/>。</param>
+        /// <param name="identifierGenerator">给定的 <see cref="IStoreIdentifierGenerator"/>。</param>
+        /// <param name="validator">给定的 <see cref="IStoreInitializationValidator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        protected IdentityStoreInitializerBase(SignInManager<TUser> signInManager,
-            RoleManager<TRole> roleMananger, IUserStore<TUser> userStore,
-            IDefaultValueGenerator<TCreatedBy> createdByGenerator,
-            IStoreIdentifierGenerator<TGenId> identifierGenerator, ILoggerFactory loggerFactory)
-            : base(createdByGenerator, identifierGenerator, loggerFactory)
+        protected AbstractIdentityStoreInitializer(IdentityStoreInitializationOptions initializationOptions,
+            SignInManager<TUser> signInManager, RoleManager<TRole> roleMananger,
+            IStoreIdentifierGenerator identifierGenerator,
+            IStoreInitializationValidator validator, ILoggerFactory loggerFactory)
+            : base(identifierGenerator, validator, loggerFactory)
         {
+            InitializationOptions = initializationOptions.NotNull(nameof(initializationOptions));
+
             SignInManager = signInManager.NotNull(nameof(signInManager));
             RoleManager = roleMananger.NotNull(nameof(roleMananger));
-            UserStore = userStore.NotNull(nameof(userStore));
 
             CurrentRoles = new List<TRole>();
             CurrentUsers = new List<TUser>();
         }
 
+
+        /// <summary>
+        /// 初始化选项。
+        /// </summary>
+        /// <value>返回 <see cref="IdentityStoreInitializationOptions"/>。</value>
+        protected IdentityStoreInitializationOptions InitializationOptions { get; }
 
         /// <summary>
         /// 登入管理器。
@@ -111,11 +136,6 @@ namespace Librame.AspNetCore.Identity.Stores
         /// 角色管理器。
         /// </summary>
         public RoleManager<TRole> RoleManager { get; }
-
-        /// <summary>
-        /// 用户存储。
-        /// </summary>
-        public IUserStore<TUser> UserStore { get; }
 
         /// <summary>
         /// 用户管理器。
@@ -142,28 +162,6 @@ namespace Librame.AspNetCore.Identity.Stores
 
 
         /// <summary>
-        /// 获取默认密码。
-        /// </summary>
-        /// <param name="user">给定的 <typeparamref name="TUser"/>。</param>
-        /// <returns>返回字符串。</returns>
-        protected virtual string GetDefaultPassword(TUser user)
-            => "Password!123456";
-
-        /// <summary>
-        /// 获取默认角色名称集合。
-        /// </summary>
-        /// <returns>返回字符串数组。</returns>
-        protected virtual string[] GetDefaultRoleNames()
-            => new string[] { "SuperAdministrator", "Administrator" };
-
-        /// <summary>
-        /// 获取默认用户电邮集合（默认将电邮当作用户名）。
-        /// </summary>
-        /// <returns>返回字符串数组。</returns>
-        protected virtual string[] GetDefaultUserEmails()
-            => new string[] { "librame@librame.net", "libramecore@librame.net" };
-
-        /// <summary>
         /// 获取默认用户角色。
         /// </summary>
         /// <param name="user">给定的 <typeparamref name="TUser"/>。</param>
@@ -173,34 +171,30 @@ namespace Librame.AspNetCore.Identity.Stores
 
 
         /// <summary>
-        /// 初始化数据。
+        /// 初始化核心。
         /// </summary>
-        /// <param name="dataStores">给定的数据存储中心。</param>
-        [SuppressMessage("Design", "CA1062:验证公共方法的参数")]
-        protected override void InitializeData(IDataStoreHub<DataAudit<TGenId, TCreatedBy>,
-            DataAuditProperty<TIncremId, TGenId>, DataEntity<TGenId, TCreatedBy>,
-            DataMigration<TGenId, TCreatedBy>, DataTenant<TGenId, TCreatedBy>, TGenId> dataStores)
+        /// <param name="stores">给定的 <see cref="IStoreHub"/>。</param>
+        protected override void InitializeCore(IStoreHub stores)
         {
-            base.InitializeData(dataStores);
+            base.InitializeCore(stores);
 
-            if (dataStores.Accessor is IIdentityDbContextAccessor<TRole, TUser, TGenId, TCreatedBy> identityAccessor)
+            if (stores is IIdentityStoreHub<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken> identityStores)
             {
-                InitializeIdentityRoles(identityAccessor);
+                InitializeIdentityRoles(identityStores);
 
-                InitializeIdentityUsers(identityAccessor);
+                InitializeIdentityUsers(identityStores);
             }
         }
 
         /// <summary>
         /// 初始化身份角色集合。
         /// </summary>
-        /// <param name="identityAccessor">给定的身份数据库上下文访问器。</param>
         [SuppressMessage("Design", "CA1062:验证公共方法的参数")]
-        protected virtual void InitializeIdentityRoles(IIdentityDbContextAccessor<TRole, TUser, TGenId, TCreatedBy> identityAccessor)
+        protected virtual void InitializeIdentityRoles(IIdentityStoreHub<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken> identityStores)
         {
             var roleType = typeof(TRole);
 
-            foreach (var name in GetDefaultRoleNames())
+            foreach (var name in InitializationOptions.DefaultRoleNames)
             {
                 if (!TryGetRole(name, out var role))
                 {
@@ -210,11 +204,11 @@ namespace Librame.AspNetCore.Identity.Stores
                     role.Name = name;
 
                     role.Id = IdentityIdentifierGenerator.GenerateRoleIdAsync().ConfigureAndResult();
-                    role.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
-                    role.CreatedTimeTicks = role.CreatedTime.Ticks;
-                    role.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
 
-                    identityAccessor.Roles.Add(role);
+                    role.PopulateCreationAsync(Clock).ConfigureAndResult();
+
+                    identityStores.TryCreate(role);
+
                     RequiredSaveChanges = true;
                 }
 
@@ -232,14 +226,13 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 初始化用户集合。
         /// </summary>
-        /// <param name="identityAccessor">给定的身份数据库上下文访问器。</param>
         [SuppressMessage("Design", "CA1062:验证公共方法的参数")]
-        protected virtual void InitializeIdentityUsers(IIdentityDbContextAccessor<TRole, TUser, TGenId, TCreatedBy> identityAccessor)
+        protected virtual void InitializeIdentityUsers(IIdentityStoreHub<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken> identityStores)
         {
             var userType = typeof(TUser);
             var userRoleType = typeof(TUserRole);
 
-            foreach (var email in GetDefaultUserEmails())
+            foreach (var email in InitializationOptions.DefaultUserEmails)
             {
                 if (!TryGetUser(email, out var user))
                 {
@@ -255,16 +248,15 @@ namespace Librame.AspNetCore.Identity.Stores
                         user.EmailConfirmed = true;
                     }
 
-                    var defaultPassword = GetDefaultPassword(user);
+                    var defaultPassword = InitializationOptions.DefaultPassword;
                     user.PasswordHash = UserManager.PasswordHasher.HashPassword(user, defaultPassword);
                     user.SecurityStamp = RandomUtility.GenerateByteArray(20).AsHexString();
 
                     user.Id = IdentityIdentifierGenerator.GenerateRoleIdAsync().ConfigureAndResult();
-                    user.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
-                    user.CreatedTimeTicks = user.CreatedTime.Ticks;
-                    user.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
 
-                    identityAccessor.Users.Add(user);
+                    user.PopulateCreationAsync(Clock).ConfigureAndResult();
+
+                    identityStores.TryCreate(user);
 
                     // UserRole
                     var defaultRole = GetDefaultUserRole(user);
@@ -272,11 +264,10 @@ namespace Librame.AspNetCore.Identity.Stores
 
                     userRole.UserId = user.Id;
                     userRole.RoleId = defaultRole.Id;
-                    userRole.CreatedTime = Clock.GetNowOffsetAsync().ConfigureAndResult();
-                    userRole.CreatedTimeTicks = userRole.CreatedTime.Ticks;
-                    userRole.CreatedBy = CreatedByGenerator.GetValueAsync(GetType()).ConfigureAndResult();
 
-                    identityAccessor.UserRoles.Add(userRole);
+                    userRole.PopulateCreationAsync(Clock).ConfigureAndResult();
+
+                    identityStores.TryCreate(userRole);
 
                     RequiredSaveChanges = true;
                 }

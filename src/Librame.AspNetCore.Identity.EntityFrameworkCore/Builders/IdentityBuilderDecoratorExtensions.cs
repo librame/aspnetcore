@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configureDependency">给定的配置依赖动作方法（可选）。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityBuilderDecorator"/>。</returns>
-        public static IIdentityBuilderDecorator AddDemoIdentity<TAccessor>
+        public static IIdentityBuilderDecorator AddIdentity<TAccessor>
             (this IExtensionBuilder parentBuilder, Action<IdentityBuilderDependency> configureDependency = null,
             Func<IdentityBuilder, IExtensionBuilder, IdentityBuilderDependency, IIdentityBuilderDecorator> builderFactory = null)
             where TAccessor : DbContext, IAccessor

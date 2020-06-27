@@ -28,9 +28,6 @@ namespace Librame.AspNetCore.Identity.Stores
         private static readonly Type _identifierTypeDefinition
             = typeof(IIdentifier<>);
 
-        private static readonly Type _identifierGeneratorTypeDefinition
-            = typeof(IStoreIdentifierGenerator<>);
-
 
         /// <summary>
         /// 获取身份存储标识符生成器。
@@ -58,7 +55,7 @@ namespace Librame.AspNetCore.Identity.Stores
             if (!userType.IsImplementedInterface(_identifierTypeDefinition, out var resultType))
                 throw new InvalidOperationException($"The user type '{userType}' is not implemented {_identifierTypeDefinition}.");
 
-            return serviceProvider.GetIdentityStoreIdentifierGenerator<TId>(resultType.GenericTypeArguments[0]);
+            return serviceProvider.GetIdentityStoreIdentifierGenerator<TId>();
         }
 
         /// <summary>
@@ -66,12 +63,11 @@ namespace Librame.AspNetCore.Identity.Stores
         /// </summary>
         /// <typeparam name="TId">指定的标识类型。</typeparam>
         /// <param name="serviceProvider">给定的 <see cref="IServiceProvider"/>。</param>
-        /// <param name="idType">给定的生成式标识符类型。</param>
         /// <returns>返回 <see cref="IIdentityStoreIdentifierGenerator{TId}"/>。</returns>
         public static IIdentityStoreIdentifierGenerator<TId> GetIdentityStoreIdentifierGenerator<TId>
-            (this IServiceProvider serviceProvider, Type idType)
+            (this IServiceProvider serviceProvider)
             where TId : IEquatable<TId>
-            => (IIdentityStoreIdentifierGenerator<TId>)serviceProvider.GetRequiredService(_identifierGeneratorTypeDefinition.MakeGenericType(idType));
+            => (IIdentityStoreIdentifierGenerator<TId>)serviceProvider.GetRequiredService<IStoreIdentifierGenerator>();
 
 
         /// <summary>
@@ -100,7 +96,7 @@ namespace Librame.AspNetCore.Identity.Stores
             if (!userType.IsImplementedInterface(_identifierTypeDefinition, out var resultType))
                 throw new InvalidOperationException($"The user type '{userType}' is not implemented {_identifierTypeDefinition}.");
 
-            return serviceFactory.GetIdentityStoreIdentifierGenerator<TId>(resultType.GenericTypeArguments[0]);
+            return serviceFactory.GetIdentityStoreIdentifierGenerator<TId>();
         }
 
         /// <summary>
@@ -108,12 +104,11 @@ namespace Librame.AspNetCore.Identity.Stores
         /// </summary>
         /// <typeparam name="TId">指定的标识类型。</typeparam>
         /// <param name="serviceFactory">给定的 <see cref="ServiceFactory"/>。</param>
-        /// <param name="idType">给定的生成式标识符类型。</param>
         /// <returns>返回 <see cref="IIdentityStoreIdentifierGenerator{TId}"/>。</returns>
         public static IIdentityStoreIdentifierGenerator<TId> GetIdentityStoreIdentifierGenerator<TId>
-            (this ServiceFactory serviceFactory, Type idType)
+            (this ServiceFactory serviceFactory)
             where TId : IEquatable<TId>
-            => (IIdentityStoreIdentifierGenerator<TId>)serviceFactory.GetRequiredService(_identifierGeneratorTypeDefinition.MakeGenericType(idType));
+            => (IIdentityStoreIdentifierGenerator<TId>)serviceFactory.GetRequiredService<IStoreIdentifierGenerator>();
 
     }
 }

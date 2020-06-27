@@ -25,6 +25,23 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
     /// <summary>
     /// 持久化授予数据库上下文访问器。
     /// </summary>
+    public class PersistedGrantDbContextAccessor : PersistedGrantDbContextAccessor<Guid, int, Guid>
+    {
+        /// <summary>
+        /// 构造一个持久化授予数据库上下文访问器实例。
+        /// </summary>
+        /// <param name="options">给定的 <see cref="DbContextOptions"/>。</param>
+        public PersistedGrantDbContextAccessor(DbContextOptions options)
+            : base(options)
+        {
+        }
+
+    }
+
+
+    /// <summary>
+    /// 持久化授予数据库上下文访问器。
+    /// </summary>
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>

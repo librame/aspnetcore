@@ -59,15 +59,15 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                     // Use SQL Server
                     dependency.BindDefaultTenant();
                 })
-                .AddAccessorCore<DemoIdentityDbContextAccessor>((tenant, optionsBuilder) =>
+                .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
                 {
                     optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
-                        sql => sql.MigrationsAssembly(typeof(DemoIdentityDbContextAccessor).GetAssemblyDisplayName()));
+                        sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
                 })
                 .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
                 .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
                 .AddStoreInitializer<GuidIdentityStoreInitializer>()
-                .AddDemoIdentity<DemoIdentityDbContextAccessor>(dependency =>
+                .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
                 })

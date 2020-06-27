@@ -41,7 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configureIdentityServer">给定的配置身份服务器选项动作方法。</param>
         /// <param name="builderFactory">给定创建身份构建器的工厂方法（可选）。</param>
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
-        public static IIdentityServerBuilderDecorator AddDemoIdentityServer(this IExtensionBuilder parentBuilder,
+        public static IIdentityServerBuilderDecorator AddIdentityServer(this IExtensionBuilder parentBuilder,
             Action<IdentityServerOptions> configureIdentityServer,
             Func<IIdentityServerBuilder, IExtensionBuilder, IdentityServerBuilderDependency, IIdentityServerBuilderDecorator> builderFactory = null)
             => parentBuilder.AddIdentityServer<DefaultIdentityUser<Guid, Guid>>(configureIdentityServer, builderFactory);
@@ -217,17 +217,17 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.AddService<IEnumerable<IdentityResource>>(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>().Value;
-                return options.Authorizations.IdentityResources;
+                return options.Stores.Initialization.DefaultIdentityResources;
             });
             builder.AddService<IEnumerable<ApiResource>>(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>().Value;
-                return options.Authorizations.ApiResources;
+                return options.Stores.Initialization.DefaultApiResources;
             });
             builder.AddService<IEnumerable<Client>>(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<IdentityServerBuilderOptions>>().Value;
-                return options.Authorizations.Clients;
+                return options.Stores.Initialization.DefaultClients;
             });
 
             var existingCors = builder.Services.Where(x => x.ServiceType == typeof(ICorsPolicyService)).LastOrDefault();

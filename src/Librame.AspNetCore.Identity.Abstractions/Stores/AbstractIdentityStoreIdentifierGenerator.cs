@@ -35,9 +35,9 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <param name="generator">给定的 <see cref="IIdentifierGenerator{TId}"/>。</param>
         /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        protected AbstractIdentityStoreIdentifierGenerator(IClockService clock,
-            IIdentifierGenerator<TId> generator, ILoggerFactory loggerFactory)
-            : base(clock, generator, loggerFactory)
+        protected AbstractIdentityStoreIdentifierGenerator(IIdentifierGenerator<TId> generator,
+            IClockService clock, ILoggerFactory loggerFactory)
+            : base(generator, clock, loggerFactory)
         {
         }
 
