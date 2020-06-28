@@ -40,19 +40,19 @@ namespace Librame.AspNetCore.Identity.Builders
 
 
         /// <summary>
+        /// 数据构建器。
+        /// </summary>
+        /// <value>返回 <see cref="IDataBuilder"/>。</value>
+        public IDataBuilder DataBuilder { get; private set; }
+
+
+        /// <summary>
         /// 获取指定服务类型的特征。
         /// </summary>
         /// <param name="serviceType">给定的服务类型。</param>
         /// <returns>返回 <see cref="ServiceCharacteristics"/>。</returns>
         public override ServiceCharacteristics GetServiceCharacteristics(Type serviceType)
             => ServiceCharacteristics.Singleton();
-
-
-        /// <summary>
-        /// 数据构建器。
-        /// </summary>
-        /// <value>返回 <see cref="IDataBuilder"/>。</value>
-        public IDataBuilder DataBuilder { get; private set; }
 
     }
 }

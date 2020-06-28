@@ -46,6 +46,12 @@ namespace Librame.AspNetCore.Web.Builders
         }
 
 
+        /// <summary>
+        /// 支持泛型控制器。
+        /// </summary>
+        public bool SupportedGenericController { get; private set; }
+
+
         private void AddInternalServices()
         {
             // Applications
@@ -75,12 +81,6 @@ namespace Librame.AspNetCore.Web.Builders
             // Themepacks
             AddService<IThemepackContext, ThemepackContext>();
         }
-
-
-        /// <summary>
-        /// 支持泛型控制器。
-        /// </summary>
-        public bool SupportedGenericController { get; private set; }
 
 
         /// <summary>
