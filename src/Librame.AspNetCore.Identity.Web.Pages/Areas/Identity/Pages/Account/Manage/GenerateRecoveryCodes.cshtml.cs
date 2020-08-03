@@ -87,32 +87,33 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync();
+            var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAwait();
             if (!isTwoFactorEnabled)
             {
-                var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+                var userId = await _userManager.GetUserIdAsync(user).ConfigureAwait();
                 throw new InvalidOperationException($"Cannot generate recovery codes for user with ID '{userId}' because they do not have 2FA enabled.");
             }
 
             return Page();
         }
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync();
-            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+            var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAwait();
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAwait();
             if (!isTwoFactorEnabled)
             {
                 throw new InvalidOperationException($"Cannot generate recovery codes for user with ID '{userId}' as they do not have 2FA enabled.");
@@ -120,7 +121,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
             var dependency = HttpContext.RequestServices.GetRequiredService<IdentityWebBuilderDependency>();
             var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user,
-                dependency.TwoFactorRecoveryCodeLength).ConfigureAndResultAsync();
+                dependency.TwoFactorRecoveryCodeLength).ConfigureAwait();
 
             RecoveryCodes = recoveryCodes.ToArray();
             _logger.LogInformation("User with ID '{UserId}' has generated new 2FA recovery codes.", userId);

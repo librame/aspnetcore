@@ -16,12 +16,14 @@ using System;
 namespace Librame.AspNetCore.Identity.Accessors
 {
     using AspNetCore.Identity.Stores;
+    using Extensions.Data;
     using Extensions.Data.Accessors;
 
     /// <summary>
     /// 身份数据库上下文访问器。
     /// </summary>
-    public class IdentityDbContextAccessor : IdentityDbContextAccessor<Guid, int, Guid>
+    public class IdentityDbContextAccessor : IdentityDbContextAccessor<Guid, int, Guid>,
+        IIdentityAccessor, IDataAccessor
     {
         /// <summary>
         /// 构造一个 <see cref="IdentityDbContextAccessor"/>。
@@ -42,10 +44,9 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     public class IdentityDbContextAccessor<TGenId, TIncremId, TCreatedBy>
-        : IdentityDbContextAccessor<
-            DefaultIdentityRole<TGenId, TCreatedBy>,
+        : IdentityDbContextAccessor<DefaultIdentityRole<TGenId, TCreatedBy>,
             DefaultIdentityUser<TGenId, TCreatedBy>,
-            TGenId, TIncremId, TCreatedBy>
+            TGenId, TIncremId, TCreatedBy>, IIdentityAccessor<TGenId, TIncremId, TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
         where TCreatedBy : IEquatable<TCreatedBy>
@@ -54,7 +55,7 @@ namespace Librame.AspNetCore.Identity.Accessors
         /// 构造一个身份数据库上下文访问器实例。
         /// </summary>
         /// <param name="options">给定的 <see cref="DbContextOptions"/>。</param>
-        public IdentityDbContextAccessor(DbContextOptions options)
+        protected IdentityDbContextAccessor(DbContextOptions options)
             : base(options)
         {
         }
@@ -78,7 +79,7 @@ namespace Librame.AspNetCore.Identity.Accessors
             DefaultIdentityUserLogin<TGenId, TCreatedBy>,
             DefaultIdentityUserRole<TGenId, TCreatedBy>,
             DefaultIdentityUserToken<TGenId, TCreatedBy>,
-            TGenId, TIncremId, TCreatedBy>
+            TGenId, TIncremId, TCreatedBy>, IIdentityAccessor<TRole, TUser, TGenId, TIncremId, TCreatedBy>
         where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
         where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
         where TGenId : IEquatable<TGenId>
@@ -89,7 +90,7 @@ namespace Librame.AspNetCore.Identity.Accessors
         /// 构造一个身份数据库上下文访问器实例。
         /// </summary>
         /// <param name="options">给定的 <see cref="DbContextOptions"/>。</param>
-        public IdentityDbContextAccessor(DbContextOptions options)
+        protected IdentityDbContextAccessor(DbContextOptions options)
             : base(options)
         {
         }
@@ -111,8 +112,8 @@ namespace Librame.AspNetCore.Identity.Accessors
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     public class IdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy>
-        : DbContextAccessor<TGenId, TIncremId, TCreatedBy>,
-            IIdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken>
+        : DataDbContextAccessor<TGenId, TIncremId, TCreatedBy>,
+            IIdentityAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken>
         where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
         where TRoleClaim : DefaultIdentityRoleClaim<TGenId, TCreatedBy>
         where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
@@ -128,7 +129,7 @@ namespace Librame.AspNetCore.Identity.Accessors
         /// 构造一个身份数据库上下文访问器实例。
         /// </summary>
         /// <param name="options">给定的 <see cref="DbContextOptions"/>。</param>
-        public IdentityDbContextAccessor(DbContextOptions options)
+        protected IdentityDbContextAccessor(DbContextOptions options)
             : base(options)
         {
         }
@@ -143,7 +144,6 @@ namespace Librame.AspNetCore.Identity.Accessors
         /// 角色声明数据集。
         /// </summary>
         public DbSet<TRoleClaim> RoleClaims { get; set; }
-
 
         /// <summary>
         /// 用户数据集。
@@ -172,10 +172,53 @@ namespace Librame.AspNetCore.Identity.Accessors
 
 
         /// <summary>
-        /// 开始创建模型。
+        /// 角色数据集管理器。
+        /// </summary>
+        public DbSetManager<TRole> RolesManager
+            => Roles.AsManager();
+
+        /// <summary>
+        /// 角色声明数据集管理器。
+        /// </summary>
+        public DbSetManager<TRoleClaim> RoleClaimsManager
+            => RoleClaims.AsManager();
+
+        /// <summary>
+        /// 用户数据集管理器。
+        /// </summary>
+        public DbSetManager<TUser> UsersManager
+            => Users.AsManager();
+
+        /// <summary>
+        /// 用户声明数据集管理器。
+        /// </summary>
+        public DbSetManager<TUserClaim> UserClaimsManager
+            => UserClaims.AsManager();
+
+        /// <summary>
+        /// 用户登入数据集管理器。
+        /// </summary>
+        public DbSetManager<TUserLogin> UserLoginsManager
+            => UserLogins.AsManager();
+
+        /// <summary>
+        /// 用户角色数据集管理器。
+        /// </summary>
+        public DbSetManager<TUserRole> UserRolesManager
+            => UserRoles.AsManager();
+
+        /// <summary>
+        /// 用户令牌数据集管理器。
+        /// </summary>
+        public DbSetManager<TUserToken> UserTokensManager
+            => UserTokens.AsManager();
+
+
+        /// <summary>
+        /// 配置模型构建器核心。
         /// </summary>
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreatingCore(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ConfigureIdentityStores(this);

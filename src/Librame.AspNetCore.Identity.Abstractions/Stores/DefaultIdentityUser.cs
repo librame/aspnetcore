@@ -97,12 +97,27 @@ namespace Librame.AspNetCore.Identity.Stores
 
 
         /// <summary>
+        /// 获取对象标识。
+        /// </summary>
+        /// <returns>返回标识（兼容各种引用与值类型标识）。</returns>
+        public virtual object GetObjectId()
+            => Id;
+
+        /// <summary>
         /// 异步获取对象标识。
         /// </summary>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含标识（兼容各种引用与值类型标识）的异步操作。</returns>
         public virtual ValueTask<object> GetObjectIdAsync(CancellationToken cancellationToken)
-            => cancellationToken.RunFactoryOrCancellationValueAsync(() => (object)Id);
+            => cancellationToken.RunOrCancelValueAsync(() => (object)Id);
+
+
+        /// <summary>
+        /// 获取对象创建时间。
+        /// </summary>
+        /// <returns>返回日期与时间（兼容 <see cref="DateTime"/> 或 <see cref="DateTimeOffset"/>）。</returns>
+        public virtual object GetObjectCreatedTime()
+            => CreatedTime;
 
         /// <summary>
         /// 异步获取创建时间。
@@ -110,7 +125,15 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含日期与时间（兼容 <see cref="DateTime"/> 或 <see cref="DateTimeOffset"/>）的异步操作。</returns>
         public virtual ValueTask<object> GetObjectCreatedTimeAsync(CancellationToken cancellationToken)
-            => cancellationToken.RunFactoryOrCancellationValueAsync(() => (object)CreatedTime);
+            => cancellationToken.RunOrCancelValueAsync(() => (object)CreatedTime);
+
+
+        /// <summary>
+        /// 获取对象创建者。
+        /// </summary>
+        /// <returns>返回创建者（兼容标识或字符串）。</returns>
+        public virtual object GetObjectCreatedBy()
+            => CreatedBy;
 
         /// <summary>
         /// 异步获取创建者。
@@ -118,8 +141,19 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含创建者（兼容标识或字符串）的异步操作。</returns>
         public virtual ValueTask<object> GetObjectCreatedByAsync(CancellationToken cancellationToken)
-            => cancellationToken.RunFactoryOrCancellationValueAsync(() => (object)CreatedBy);
+            => cancellationToken.RunOrCancelValueAsync(() => (object)CreatedBy);
 
+
+        /// <summary>
+        /// 异步设置对象标识。
+        /// </summary>
+        /// <param name="newId">给定的新对象标识。</param>
+        /// <returns>返回标识（兼容各种引用与值类型标识）。</returns>
+        public virtual object SetObjectId(object newId)
+        {
+            Id = newId.CastTo<object, TGenId>(nameof(newId));
+            return newId;
+        }
 
         /// <summary>
         /// 异步设置对象标识。
@@ -131,15 +165,27 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var realNewId = newId.CastTo<object, TGenId>(nameof(newId));
 
-            return cancellationToken.RunFactoryOrCancellationValueAsync(() =>
+            return cancellationToken.RunOrCancelValueAsync(() =>
             {
                 Id = realNewId;
                 return newId;
             });
         }
 
+
         /// <summary>
-        /// 异步设置创建时间。
+        /// 设置对象创建时间。
+        /// </summary>
+        /// <param name="newCreatedTime">给定的新创建时间对象。</param>
+        /// <returns>返回日期与时间（兼容 <see cref="DateTime"/> 或 <see cref="DateTimeOffset"/>）。</returns>
+        public virtual object SetObjectCreatedTime(object newCreatedTime)
+        {
+            CreatedTime = newCreatedTime.CastTo<object, DateTimeOffset>(nameof(newCreatedTime));
+            return newCreatedTime;
+        }
+
+        /// <summary>
+        /// 异步设置对象创建时间。
         /// </summary>
         /// <param name="newCreatedTime">给定的新创建时间对象。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
@@ -149,15 +195,27 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var realNewCreatedTime = newCreatedTime.CastTo<object, DateTimeOffset>(nameof(newCreatedTime));
 
-            return cancellationToken.RunFactoryOrCancellationValueAsync(() =>
+            return cancellationToken.RunOrCancelValueAsync(() =>
             {
                 CreatedTime = realNewCreatedTime;
                 return newCreatedTime;
             });
         }
 
+
         /// <summary>
-        /// 异步设置创建者。
+        /// 设置对象创建者。
+        /// </summary>
+        /// <param name="newCreatedBy">给定的新创建者对象。</param>
+        /// <returns>返回创建者（兼容标识或字符串）。</returns>
+        public virtual object SetObjectCreatedBy(object newCreatedBy)
+        {
+            CreatedBy = newCreatedBy.CastTo<object, TCreatedBy>(nameof(newCreatedBy));
+            return newCreatedBy;
+        }
+
+        /// <summary>
+        /// 异步设置对象创建者。
         /// </summary>
         /// <param name="newCreatedBy">给定的新创建者对象。</param>
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
@@ -167,7 +225,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var realNewCreatedBy = newCreatedBy.CastTo<object, TCreatedBy>(nameof(newCreatedBy));
 
-            return cancellationToken.RunFactoryOrCancellationValueAsync(() =>
+            return cancellationToken.RunOrCancelValueAsync(() =>
             {
                 CreatedBy = realNewCreatedBy;
                 return newCreatedBy;
@@ -176,7 +234,7 @@ namespace Librame.AspNetCore.Identity.Stores
 
 
         /// <summary>
-        /// 唯一索引是否相等。
+        /// 除主键外的唯一索引相等比较（参见实体映射的唯一索引配置）。
         /// </summary>
         /// <param name="other">给定的 <see cref="DefaultIdentityUser{TGenId, TCreatedBy}"/>。</param>
         /// <returns>返回布尔值。</returns>
@@ -206,5 +264,6 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <returns>返回字符串。</returns>
         public override string ToString()
             => NormalizedUserName;
+
     }
 }

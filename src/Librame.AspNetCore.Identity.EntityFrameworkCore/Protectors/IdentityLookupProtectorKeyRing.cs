@@ -17,15 +17,15 @@ using System.Diagnostics.CodeAnalysis;
 namespace Librame.AspNetCore.Identity.Protectors
 {
     using Extensions;
-    using Extensions.Core.Identifiers;
+    using Extensions.Core.Tokens;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class IdentityLookupProtectorKeyRing : ILookupProtectorKeyRing
     {
-        private readonly ISecurityIdentifierKeyRing _keyRing;
+        private readonly ISecurityTokenKeyRing _keyRing;
 
 
-        public IdentityLookupProtectorKeyRing(ISecurityIdentifierKeyRing keyRing)
+        public IdentityLookupProtectorKeyRing(ISecurityTokenKeyRing keyRing)
         {
             _keyRing = keyRing.NotNull(nameof(keyRing));
         }

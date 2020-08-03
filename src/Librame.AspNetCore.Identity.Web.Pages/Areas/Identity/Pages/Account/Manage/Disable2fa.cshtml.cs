@@ -76,13 +76,13 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync())
+            if (!await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAwait())
             {
                 throw new InvalidOperationException($"Cannot disable 2FA for user with ID '{_userManager.GetUserId(User)}' as it's not currently enabled.");
             }
@@ -90,15 +90,16 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
             return Page();
         }
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false).ConfigureAndResultAsync();
+            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false).ConfigureAwait();
             if (!disable2faResult.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred disabling 2FA for user with ID '{_userManager.GetUserId(User)}'.");

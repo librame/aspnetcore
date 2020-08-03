@@ -16,9 +16,9 @@ using System;
 
 namespace Librame.AspNetCore.Identity.Builders
 {
+    using AspNetCore.Identity.Mappers;
     using Extensions.Core.Builders;
     using Extensions.Core.Services;
-    using Extensions.Data.Builders;
 
     /// <summary>
     /// <see cref="IdentityBuilder"/> 装饰器。
@@ -40,10 +40,10 @@ namespace Librame.AspNetCore.Identity.Builders
 
 
         /// <summary>
-        /// 数据构建器。
+        /// 身份访问器类型参数映射器。
         /// </summary>
-        /// <value>返回 <see cref="IDataBuilder"/>。</value>
-        public IDataBuilder DataBuilder { get; private set; }
+        /// <value>返回 <see cref="IdentityAccessorTypeParameterMapper"/>。</value>
+        public IdentityAccessorTypeParameterMapper AccessorTypeParameterMapper { get; private set; }
 
 
         /// <summary>

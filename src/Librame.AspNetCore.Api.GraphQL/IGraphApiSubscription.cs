@@ -14,10 +14,12 @@ using GraphQL.Types;
 
 namespace Librame.AspNetCore.Api
 {
+    using Extensions.Core.Services;
+
     /// <summary>
     /// 图形 API 订阅接口。
     /// </summary>
-    public interface IGraphApiSubscription : IObjectGraphType
+    public interface IGraphApiSubscription : IObjectGraphType, IService
     {
     }
 }

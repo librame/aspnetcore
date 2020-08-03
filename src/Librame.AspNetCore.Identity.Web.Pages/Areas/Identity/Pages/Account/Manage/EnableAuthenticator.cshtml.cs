@@ -116,20 +116,21 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadSharedKeyAndQrCodeUriAsync(user).ConfigureAndWaitAsync();
+            await LoadSharedKeyAndQrCodeUriAsync(user).ConfigureAwait();
 
             return Page();
         }
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -137,7 +138,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
-                await LoadSharedKeyAndQrCodeUriAsync(user).ConfigureAndWaitAsync();
+                await LoadSharedKeyAndQrCodeUriAsync(user).ConfigureAwait();
                 return Page();
             }
 
@@ -147,24 +148,24 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
                 .Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
 
             var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
-                user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode).ConfigureAndResultAsync();
+                user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode).ConfigureAwait();
 
             if (!is2faTokenValid)
             {
                 ModelState.AddModelError(nameof(Input.TwoFactorCode), _errorLocalizer.GetString(r => r.InvalidVerificationCode));
-                await LoadSharedKeyAndQrCodeUriAsync(user).ConfigureAndWaitAsync();
+                await LoadSharedKeyAndQrCodeUriAsync(user).ConfigureAwait();
                 return Page();
             }
 
-            await _userManager.SetTwoFactorEnabledAsync(user, true).ConfigureAndResultAsync();
-            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+            await _userManager.SetTwoFactorEnabledAsync(user, true).ConfigureAwait();
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAwait();
             _logger.LogInformation("User with ID '{UserId}' has enabled 2FA with an authenticator app.", userId);
 
             StatusMessage = _statusLocalizer.GetString(r => r.EnableAuthenticator);
 
-            if (await _userManager.CountRecoveryCodesAsync(user).ConfigureAndResultAsync() == 0)
+            if (await _userManager.CountRecoveryCodesAsync(user).ConfigureAwait() == 0)
             {
-                var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10).ConfigureAndResultAsync();
+                var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10).ConfigureAwait();
                 RecoveryCodes = recoveryCodes.ToArray();
                 return RedirectToPage("./ShowRecoveryCodes");
             }
@@ -177,19 +178,20 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
         private async Task LoadSharedKeyAndQrCodeUriAsync(TUser user)
         {
             // Load the authenticator key & QR code URI to display on the form
-            var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
+            var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAwait();
             if (string.IsNullOrEmpty(unformattedKey))
             {
-                await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
-                unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
+                await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAwait();
+                unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAwait();
             }
 
             SharedKey = FormatKey(unformattedKey);
 
-            var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
+            var email = await _userManager.GetEmailAsync(user).ConfigureAwait();
             AuthenticatorUri = GenerateQrCodeUri(email, unformattedKey);
         }
 
+        [SuppressMessage("Globalization", "CA1308:将字符串规范化为大写", Justification = "<挂起>")]
         private static string FormatKey(string unformattedKey)
         {
             var result = new StringBuilder();

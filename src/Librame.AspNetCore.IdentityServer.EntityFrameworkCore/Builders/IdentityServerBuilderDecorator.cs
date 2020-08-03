@@ -57,20 +57,20 @@ namespace Librame.AspNetCore.IdentityServer.Builders
                     var service = provider.GetRequiredService<ISigningCredentialsService>();
                     options.SigningCredentials = service.GetGlobalSigningCredentials();
                 }
-                return new DefaultSigningCredentialsStore(options.SigningCredentials);
+                return new InMemorySigningCredentialsStore(options.SigningCredentials);
             });
 
             AddService<IValidationKeysStore>(provider =>
             {
                 var store = provider.GetRequiredService<ISigningCredentialStore>();
-                var credentials = store.GetSigningCredentialsAsync().ConfigureAndResult();
+                var credentials = store.GetSigningCredentialsAsync().ConfigureAwaitCompleted();
 
                 var keyInfo = new SecurityKeyInfo
                 {
                     Key = credentials.Key,
                     SigningAlgorithm = SecurityAlgorithms.RsaSha256
                 };
-                return new DefaultValidationKeysStore(keyInfo.YieldEnumerable());
+                return new InMemoryValidationKeysStore(keyInfo.YieldEnumerable());
             });
         }
 

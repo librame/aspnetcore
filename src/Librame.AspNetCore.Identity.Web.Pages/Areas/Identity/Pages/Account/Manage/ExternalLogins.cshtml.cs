@@ -116,21 +116,21 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            CurrentLogins = await _userManager.GetLoginsAsync(user).ConfigureAndResultAsync();
-            OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAndResultAsync())
+            CurrentLogins = await _userManager.GetLoginsAsync(user).ConfigureAwait();
+            OtherLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAwait())
                 .Where(auth => CurrentLogins.All(ul => auth.Name != ul.LoginProvider))
                 .ToList();
 
             string passwordHash = null;
             if (_userStore is IUserPasswordStore<TUser> userPasswordStore)
             {
-                passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted).ConfigureAndResultAsync();
+                passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted).ConfigureAwait();
             }
 
             ShowRemoveButton = passwordHash != null || CurrentLogins.Count > 1;
@@ -139,20 +139,20 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnPostRemoveLoginAsync(string loginProvider, string providerKey)
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey).ConfigureAndResultAsync();
+            var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey).ConfigureAwait();
             if (!result.Succeeded)
             {
-                var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+                var userId = await _userManager.GetUserIdAsync(user).ConfigureAwait();
                 throw new InvalidOperationException($"Unexpected error occurred removing external login for user with ID '{userId}'.");
             }
 
-            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
+            await _signInManager.RefreshSignInAsync(user).ConfigureAwait();
 
             StatusMessage = _statusLocalizer.GetString(r => r.ExternalLoginRemoved)?.ToString();
 
@@ -162,7 +162,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
         public override async Task<IActionResult> OnPostLinkLoginAsync(string provider)
         {
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAndWaitAsync();
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAwait();
 
             // Request a redirect to the external login provider to link a login for the current user
             var redirectUrl = Url.Page("./ExternalLogins", pageHandler: "LinkLoginCallback");
@@ -172,27 +172,27 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetLinkLoginCallbackAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
-            var info = await _signInManager.GetExternalLoginInfoAsync(userId).ConfigureAndResultAsync();
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAwait();
+            var info = await _signInManager.GetExternalLoginInfoAsync(userId).ConfigureAwait();
             if (info == null)
             {
                 throw new InvalidOperationException($"Unexpected error occurred loading external login info for user with ID '{userId}'.");
             }
 
-            var result = await _userManager.AddLoginAsync(user, info).ConfigureAndResultAsync();
+            var result = await _userManager.AddLoginAsync(user, info).ConfigureAwait();
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred adding external login for user with ID '{userId}'.");
             }
 
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAndWaitAsync();
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAwait();
 
             StatusMessage = _statusLocalizer.GetString(r => r.ExternalLoginAdded)?.ToString();
             return RedirectToPage();

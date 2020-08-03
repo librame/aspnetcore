@@ -7,12 +7,11 @@ namespace Librame.AspNetCore.Identity.Tests
     using AspNetCore.Identity.Stores;
     using Extensions.Data.Accessors;
     using Extensions.Data.Collections;
-    using Extensions.Data.Stores;
 
     public class TestStoreHub : IdentityStoreHub
     {
-        public TestStoreHub(IStoreInitializer initializer, IAccessor accessor)
-            : base(initializer, accessor)
+        public TestStoreHub(IAccessor accessor)
+            : base(accessor)
         {
         }
 
@@ -22,6 +21,19 @@ namespace Librame.AspNetCore.Identity.Tests
 
         public IPageable<DefaultIdentityUser<Guid, Guid>> GetUsers()
             => Accessor.Users.AsPagingByIndex(ordered => ordered.OrderBy(k => k.Id), 1, 10);
+
+
+        public TestStoreHub UseWriteDbConnection()
+        {
+            Accessor.ChangeConnectionString(t => t.WritingConnectionString);
+            return this;
+        }
+
+        public TestStoreHub UseDefaultDbConnection()
+        {
+            Accessor.ChangeConnectionString(t => t.DefaultConnectionString);
+            return this;
+        }
 
     }
 }

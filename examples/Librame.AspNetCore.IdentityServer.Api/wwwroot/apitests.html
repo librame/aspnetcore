@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Identity API Tests</title>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#login").submit(function (e) {
+                e.preventDefault();
+
+                $("#message").text("Send request...");
+
+                var username = $("#username").val();
+                var password = $("#password").val();
+                var rememberMe = $("#rememberMe").prop("checked");
+
+                var isValid = true;
+
+                if (username.length < 1) {
+                    $("#message-username").text("Username is null.");
+                    isValid = false;
+                }
+
+                if (password.length < 1) {
+                    $("#message-password").text("Password is null.");
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    var query = "{\
+                        \"query\": \"mutation($user: LoginInput!) {\
+                            login(user: $user) {\
+                                succeeded\
+                                isLockedOut\
+                                isNotAllowed\
+                                requiresTwoFactor\
+                            }\
+                        }\",\
+                        \"variables\": {\
+                            \"user\": {\
+                                \"username\": \"" + username + "\",\
+                                \"password\": \"" + password + "\",\
+                                \"rememberMe\": " + rememberMe + "\
+                            }\
+                        }\
+                    }}";
+
+                    $.post("/api/graphql", query, function (result) {
+                        $("#message").text("Request Succeeded: " + result.Succeeded + ", Login Succeeded: " + result.Data.login.succeeded + ".");
+                    });
+                }
+                else {
+                    $("#message").text("Invalid form inputs.");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <form id="login" action="" method="post">
+        <h3 id="message"></h3>
+
+        <div class="form-group">
+            <label for="username" class="sr-only"></label>
+            <input type="text" id="username" class="form-username form-control" />
+            <span id="message-username" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="password" class="sr-only"></label>
+            <input type="password" id="password" class="form-password form-control" />
+            <span id="message-password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <div class="checkbox">
+                <label for="rememberMe">
+                    <input id="rememberMe" type="checkbox" />
+                    RememberMe?
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Login" />
+        </div>
+    </form>
+
+</body>
+</html>

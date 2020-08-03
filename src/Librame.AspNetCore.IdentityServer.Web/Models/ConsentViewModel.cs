@@ -39,8 +39,8 @@ namespace Librame.AspNetCore.IdentityServer.Web.Models
         public IEnumerable<ScopeViewModel> IdentityScopes { get; set; }
 
         /// <summary>
-        /// 资源范围视图集合。
+        /// API 范围视图集合。
         /// </summary>
-        public IEnumerable<ScopeViewModel> ResourceScopes { get; set; }
+        public IEnumerable<ScopeViewModel> ApiScopes { get; set; }
     }
 }

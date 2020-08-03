@@ -105,7 +105,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(Input.Email).ConfigureAndResultAsync();
+                var user = await _userManager.FindByEmailAsync(Input.Email).ConfigureAwait();
                 if (user == null)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
@@ -114,7 +114,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
 
                 // For more information on how to enable account confirmation and password reset please 
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAndResultAsync();
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait();
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
                     pageHandler: null,
@@ -124,7 +124,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
                 await _emailService.SendAsync(
                     Input.Email,
                     Localizer.GetString(r => r.ResetPassword)?.Value,
-                    Localizer.GetString(r => r.ResetPasswordFormat, HtmlEncoder.Default.Encode(callbackUrl))?.Value).ConfigureAndWaitAsync();
+                    Localizer.GetString(r => r.ResetPasswordFormat, HtmlEncoder.Default.Encode(callbackUrl))?.Value).ConfigureAwait();
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

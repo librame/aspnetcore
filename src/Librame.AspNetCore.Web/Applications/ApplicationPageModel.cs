@@ -126,7 +126,7 @@ namespace Librame.AspNetCore.Web.Applications
             Func<TUser, IActionResult> actionResultFactory)
             where TUser : class
         {
-            (TUser user, IActionResult result) = await GetLoginUserAsync(userManager).ConfigureAndResultAsync();
+            (TUser user, IActionResult result) = await GetLoginUserAsync(userManager).ConfigureAwait();
 
             if (result.IsNotNull())
                 return result;
@@ -145,12 +145,12 @@ namespace Librame.AspNetCore.Web.Applications
             Func<TUser, Task<IActionResult>> actionResultFactory)
             where TUser : class
         {
-            (TUser user, IActionResult result) = await GetLoginUserAsync(userManager).ConfigureAndResultAsync();
+            (TUser user, IActionResult result) = await GetLoginUserAsync(userManager).ConfigureAwait();
 
             if (result.IsNotNull())
                 return result;
 
-            return await (actionResultFactory?.Invoke(user)).ConfigureAndResultAsync();
+            return await (actionResultFactory?.Invoke(user)).ConfigureAwait();
         }
 
         private async Task<(TUser user, IActionResult result)> GetLoginUserAsync<TUser>(UserManager<TUser> userManager)
@@ -158,7 +158,7 @@ namespace Librame.AspNetCore.Web.Applications
         {
             userManager.NotNull(nameof(userManager));
 
-            var user = await userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await userManager.GetUserAsync(User).ConfigureAwait();
             if (user.IsNull())
             {
                 var options = Application.ServiceFactory.GetRequiredService<IOptions<CookieAuthenticationOptions>>().Value;

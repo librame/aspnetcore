@@ -40,7 +40,7 @@ namespace Librame.AspNetCore.Web.Applications
         public GenericApplicationModelAttribute(Type genericTypeDefinitionMapperType,
             Type genericTypeDefinition = null)
         {
-            if (!genericTypeDefinitionMapperType.IsImplementedInterface(_baseGenericTypeDefinitionMapperType))
+            if (!genericTypeDefinitionMapperType.IsImplementedInterfaceType(_baseGenericTypeDefinitionMapperType))
                 throw new NotSupportedException($"The generic type definition mapper type '{genericTypeDefinitionMapperType}' does not implementation '{_baseGenericTypeDefinitionMapperType}'");
 
             if (genericTypeDefinition.IsNotNull())

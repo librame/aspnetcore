@@ -115,7 +115,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
         {
             return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                var hasPassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync();
+                var hasPassword = await _userManager.HasPasswordAsync(user).ConfigureAwait();
                 if (!hasPassword)
                 {
                     return RedirectToPage("./SetPassword");
@@ -123,7 +123,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
                 return Page();
             })
-            .ConfigureAndResultAsync();
+            .ConfigureAwait();
         }
 
         public override async Task<IActionResult> OnPostAsync()
@@ -136,7 +136,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
             return await VerifyLoginUserActionResult(_userManager, async user =>
             {
                 var result = await _userManager.ChangePasswordAsync(user,
-                    Input.OldPassword, Input.NewPassword).ConfigureAndResultAsync();
+                    Input.OldPassword, Input.NewPassword).ConfigureAwait();
 
                 if (!result.Succeeded)
                 {
@@ -144,13 +144,13 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
                     return Page();
                 }
 
-                await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
+                await _signInManager.RefreshSignInAsync(user).ConfigureAwait();
                 _logger.LogInformation("User changed their password successfully.");
 
                 StatusMessage = _statusLocalizer.GetString(r => r.ChangePassword);
                 return RedirectToPage();
             })
-            .ConfigureAndResultAsync();
+            .ConfigureAwait();
         }
 
     }

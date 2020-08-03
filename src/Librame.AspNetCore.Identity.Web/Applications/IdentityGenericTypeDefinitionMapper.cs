@@ -45,20 +45,20 @@ namespace Librame.AspNetCore.Web.Applications
             {
                 1 => new Type[]
                 {
-                    decorator.Source.UserType
+                    decorator.AccessorTypeParameterMapper.User.ArgumentType
                 },
 
                 2 => new Type[]
                 {
-                    decorator.Source.UserType,
-                    decorator.DataBuilder.AccessorMappingDescriptor.GenId.ArgumentType
+                    decorator.AccessorTypeParameterMapper.User.ArgumentType,
+                    decorator.AccessorTypeParameterMapper.BaseMapper.GenId.ArgumentType
                 },
 
                 3 => new Type[]
                 {
-                    decorator.Source.UserType,
-                    decorator.DataBuilder.AccessorMappingDescriptor.GenId.ArgumentType,
-                    decorator.DataBuilder.AccessorMappingDescriptor.CreatedBy.ArgumentType
+                    decorator.AccessorTypeParameterMapper.User.ArgumentType,
+                    decorator.AccessorTypeParameterMapper.BaseMapper.GenId.ArgumentType,
+                    decorator.AccessorTypeParameterMapper.BaseMapper.CreatedBy.ArgumentType
                 },
 
                 _ => Array.Empty<Type>()

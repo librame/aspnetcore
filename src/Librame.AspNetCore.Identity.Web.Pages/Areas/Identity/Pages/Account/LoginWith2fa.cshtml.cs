@@ -95,11 +95,11 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             _errorLocalizer = errorLocalizer;
         }
 
-
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         public override async Task<IActionResult> OnGetAsync(bool rememberMe, string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAwait();
 
             if (user == null)
             {
@@ -112,6 +112,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             return Page();
         }
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         public override async Task<IActionResult> OnPostAsync(bool rememberMe, string returnUrl = null)
         {
             if (!ModelState.IsValid)
@@ -121,15 +122,17 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
 
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAndResultAsync();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync().ConfigureAwait();
             if (user == null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
             
-            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
-            var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
-            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, Input.RememberMachine).ConfigureAndResultAsync();
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAwait();
+            var authenticatorCode = Input.TwoFactorCode.CompatibleReplace(" ", string.Empty)
+                .CompatibleReplace("-", string.Empty);
+
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, Input.RememberMachine).ConfigureAwait();
             if (result.Succeeded)
             {
                 _logger.LogInformation("User with ID '{UserId}' logged in with 2fa.", userId);

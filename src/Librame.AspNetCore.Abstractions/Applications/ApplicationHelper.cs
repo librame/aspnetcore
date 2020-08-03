@@ -33,7 +33,7 @@ namespace Librame.AspNetCore.Applications
         /// <typeparam name="TInfo">指定的应用信息类型。</typeparam>
         /// <param name="searchPatterns">给定的查找模式集合。</param>
         /// <param name="createInfoFactory">给定创建信息实例的工厂方法。</param>
-        /// <param name="allAssemblies">给定的所有程序集（可选；默认使用 <see cref="AssemblyUtility.CurrentAssembliesWithoutSystem"/>）。</param>
+        /// <param name="allAssemblies">给定的所有程序集（可选；默认使用 <see cref="AssemblyUtility.CurrentThirdPartyAssemblies"/>）。</param>
         /// <returns>返回加载的字典集合。</returns>
         public static Dictionary<string, TInfo> GetApplicationInfos<TInfo>(IEnumerable<string> searchPatterns,
             Func<Type, TInfo> createInfoFactory, IEnumerable<Assembly> allAssemblies = null)
@@ -63,15 +63,16 @@ namespace Librame.AspNetCore.Applications
         /// 查找符合指定模式列表的程序集集合。
         /// </summary>
         /// <param name="searchPatterns">给定的查找模式集合。</param>
-        /// <param name="allAssemblies">给定的所有程序集（可选；默认使用 <see cref="AssemblyUtility.CurrentAssembliesWithoutSystem"/>）。</param>
+        /// <param name="allAssemblies">给定的所有程序集（可选；默认使用 <see cref="AssemblyUtility.CurrentThirdPartyAssemblies"/>）。</param>
         /// <returns>返回 <see cref="List{Assembly}"/>。</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public static List<Assembly> SearchAssemblies(IEnumerable<string> searchPatterns, IEnumerable<Assembly> allAssemblies = null)
+        public static List<Assembly> SearchAssemblies(IEnumerable<string> searchPatterns,
+            IEnumerable<Assembly> allAssemblies = null)
         {
             searchPatterns.NotEmpty(nameof(searchPatterns));
 
             if (allAssemblies.IsNull())
-                allAssemblies = AssemblyUtility.CurrentAssembliesWithoutSystem;
+                allAssemblies = AssemblyUtility.CurrentThirdPartyAssemblies;
 
             var resultAssemblies = new List<Assembly>();
 

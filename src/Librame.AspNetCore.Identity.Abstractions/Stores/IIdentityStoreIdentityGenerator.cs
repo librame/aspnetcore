@@ -1,0 +1,55 @@
+﻿#region License
+
+/* **************************************************************************************
+ * Copyright (c) Librame Pong All rights reserved.
+ * 
+ * https://github.com/librame
+ * 
+ * You must not remove this notice, or any other, from this software.
+ * **************************************************************************************/
+
+#endregion
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Librame.AspNetCore.Identity.Stores
+{
+    using Extensions.Data.Stores;
+
+    /// <summary>
+    /// 身份存储标识生成器接口。
+    /// </summary>
+    /// <typeparam name="TId">指定的标识类型。</typeparam>
+    public interface IIdentityStoreIdentityGenerator<TId> : IDataStoreIdentityGenerator<TId>
+        where TId : IEquatable<TId>
+    {
+        /// <summary>
+        /// 生成角色标识。
+        /// </summary>
+        /// <returns>返回 <typeparamref name="TId"/>。</returns>
+        TId GenerateRoleId();
+
+        /// <summary>
+        /// 异步生成角色标识。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TId"/> 的异步操作。</returns>
+        Task<TId> GenerateRoleIdAsync(CancellationToken cancellationToken = default);
+
+
+        /// <summary>
+        /// 生成用户标识。
+        /// </summary>
+        /// <returns>返回 <typeparamref name="TId"/>。</returns>
+        TId GenerateUserId();
+
+        /// <summary>
+        /// 异步生成用户标识。
+        /// </summary>
+        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
+        /// <returns>返回一个包含 <typeparamref name="TId"/> 的异步操作。</returns>
+        Task<TId> GenerateUserIdAsync(CancellationToken cancellationToken = default);
+    }
+}

@@ -62,13 +62,13 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
                 return RedirectToPage("/Index");
             }
 
-            var user = await _userManager.FindByIdAsync(userId).ConfigureAndResultAsync();
+            var user = await _userManager.FindByIdAsync(userId).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAndResultAsync();
+            var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAwait();
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Error confirming email for user with ID '{userId}':");

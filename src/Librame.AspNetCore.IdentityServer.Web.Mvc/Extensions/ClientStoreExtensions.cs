@@ -15,7 +15,7 @@ namespace Librame.AspNetCore.IdentityServer
             if (clientId.IsEmpty())
                 return false;
 
-            var client = await store.FindEnabledClientByIdAsync(clientId).ConfigureAndResultAsync();
+            var client = await store.FindEnabledClientByIdAsync(clientId).ConfigureAwait();
             return client?.RequirePkce == true;
         }
 

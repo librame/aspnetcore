@@ -49,13 +49,13 @@
                 @if (theme.CommonLocalizationVisibility)
                 {
                     await Engine.RequiredThemepackViewAsync(ViewContext, "Common/_LocalizationPartial",
-                        viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
+                        viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAwait();
                 }
 
                 @if (theme.CommonLoginVisibility)
                 {
                     await Engine.RequiredThemepackViewAsync(ViewContext, "Common/_LoginPartial",
-                        viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
+                        viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAwait();
                 }
             </div>
         </div>
@@ -64,7 +64,7 @@
     @if (theme.CommonCookieConsentVisibility)
     {
         await Engine.RequiredThemepackViewAsync(ViewContext, "Common/_CookieConsentPartial",
-            viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
+            viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAwait();
     }
 
     <div class="container body-content">
@@ -73,7 +73,7 @@
         @if (theme.CommonFooterVisibility)
         {
             await Engine.RequiredThemepackViewAsync(ViewContext, "Common/_FooterPartial",
-                viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAndWaitAsync();
+                viewName => Html.RenderPartialAsync(viewName, Application)).ConfigureAwait();
         }
     </div>
 

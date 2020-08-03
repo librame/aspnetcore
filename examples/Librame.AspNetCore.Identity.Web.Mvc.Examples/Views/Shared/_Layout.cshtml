@@ -37,7 +37,7 @@
                         }
                     }
                 </ul>
-                @await Html.PartialAsync("Common/_LoginPartial", Application).ConfigureAndResultAsync()
+                @await Html.PartialAsync("Common/_LoginPartial", Application).ConfigureAwait()
             </div>
         </div>
     </nav>

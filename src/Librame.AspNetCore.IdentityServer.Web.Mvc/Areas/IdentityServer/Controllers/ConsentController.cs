@@ -2,15 +2,16 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using IdentityServer4.Events;
+using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using IdentityServer4.Stores;
-using IdentityServer4.Extensions;
+using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,12 +37,6 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         private IIdentityServerInteractionService _interaction = null;
 
         [InjectionService]
-        private IClientStore _clientStore = null;
-
-        [InjectionService]
-        private IResourceStore _resourceStore = null;
-
-        [InjectionService]
         private IEventService _events = null;
 
         [InjectionService]
@@ -61,7 +56,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         }
 
 
-        private ConsentOptions _options
+        private ConsentOptions _consentOptions
             => _builderOptions.Value.Consents;
 
 
@@ -74,7 +69,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings")]
         public async Task<IActionResult> Index(string returnUrl)
         {
-            var vm = await BuildViewModelAsync(returnUrl).ConfigureAndResultAsync();
+            var vm = await BuildViewModelAsync(returnUrl).ConfigureAwait();
             if (vm != null)
             {
                 return View("Index", vm);
@@ -91,16 +86,16 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public async Task<IActionResult> Index(ConsentInputModel model)
         {
-            model.NotNull(nameof(model));
+            var result = await ProcessConsent(model).ConfigureAwait();
 
-            var result = await ProcessConsent(model).ConfigureAndResultAsync();
             if (result.IsRedirect)
             {
-                if (await _clientStore.IsPkceClientAsync(result.ClientId).ConfigureAndResultAsync())
+                var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl).ConfigureAwait();
+                if (context?.IsNativeClient() == true)
                 {
-                    // if the client is PKCE then we assume it's native, so this change in how to
+                    // The client is native, so this change in how to
                     // return the response is for better UX for the end user.
-                    return View("Redirect", new RedirectViewModel { RedirectUrl = result.RedirectUri });
+                    return this.LoadingPage("Redirect", result.RedirectUri);
                 }
 
                 return Redirect(result.RedirectUri);
@@ -108,7 +103,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
 
             if (result.HasValidationError)
             {
-                ModelState.AddModelError("", result.ValidationError);
+                ModelState.AddModelError(string.Empty, result.ValidationError);
             }
 
             if (result.ShowView)
@@ -127,27 +122,30 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
             var result = new ProcessConsentResult();
 
             // validate return url is still valid
-            var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl).ConfigureAndResultAsync();
+            var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl).ConfigureAwait();
             if (request == null) return result;
 
             ConsentResponse grantedConsent = null;
 
             // user clicked 'no' - send back the standard 'access_denied' response
-            if (model.Button == "no")
+            if (model?.Button == "no")
             {
-                grantedConsent = ConsentResponse.Denied;
+                grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), result.ClientId, request.ScopesRequested)).ConfigureAndWaitAsync();
+                await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(),
+                    request.Client.ClientId,
+                    request.ValidatedResources.RawScopeValues))
+                    .ConfigureAwait();
             }
             // user clicked 'yes' - validate the data
-            else if (model.Button == "yes" && model != null)
+            else if (model?.Button == "yes")
             {
                 // if the user consented to some scope, build the response model
                 if (model.ScopesConsented != null && model.ScopesConsented.Any())
                 {
                     var scopes = model.ScopesConsented;
-                    if (_options.EnableOfflineAccess == false)
+                    if (_consentOptions.EnableOfflineAccess == false)
                     {
                         scopes = scopes.Where(x => x != IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess);
                     }
@@ -155,62 +153,53 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
                     grantedConsent = new ConsentResponse
                     {
                         RememberConsent = model.RememberConsent,
-                        ScopesConsented = scopes.ToArray()
+                        ScopesValuesConsented = scopes.ToArray(),
+                        Description = model.Description
                     };
 
                     // emit event
-                    await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.ClientId, request.ScopesRequested, grantedConsent.ScopesConsented, grantedConsent.RememberConsent)).ConfigureAndWaitAsync();
+                    await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(),
+                        request.Client.ClientId,
+                        request.ValidatedResources.RawScopeValues,
+                        grantedConsent.ScopesValuesConsented,
+                        grantedConsent.RememberConsent))
+                        .ConfigureAwait();
                 }
                 else
                 {
-                    result.ValidationError = _options.MustChooseOneErrorMessage;
+                    result.ValidationError = _consentOptions.MustChooseOneErrorMessage;
                 }
             }
             else
             {
-                result.ValidationError = _options.InvalidSelectionErrorMessage;
+                result.ValidationError = _consentOptions.InvalidSelectionErrorMessage;
             }
 
             if (grantedConsent != null)
             {
                 // communicate outcome of consent back to identityserver
-                await _interaction.GrantConsentAsync(request, grantedConsent).ConfigureAndWaitAsync();
+                await _interaction.GrantConsentAsync(request, grantedConsent).ConfigureAwait();
 
                 // indicate that's it ok to redirect back to authorization endpoint
                 result.RedirectUri = model.ReturnUrl;
-                result.ClientId = request.ClientId;
+                result.Client = request.Client;
             }
             else
             {
                 // we need to redisplay the consent UI
-                result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model).ConfigureAndResultAsync();
+                result.ViewModel = await BuildViewModelAsync(model.ReturnUrl, model).ConfigureAwait();
             }
 
             return result;
         }
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         private async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel model = null)
         {
-            var request = await _interaction.GetAuthorizationContextAsync(returnUrl).ConfigureAndResultAsync();
+            var request = await _interaction.GetAuthorizationContextAsync(returnUrl).ConfigureAwait();
             if (request != null)
             {
-                var client = await _clientStore.FindEnabledClientByIdAsync(request.ClientId).ConfigureAndResultAsync();
-                if (client != null)
-                {
-                    var resources = await _resourceStore.FindEnabledResourcesByScopeAsync(request.ScopesRequested).ConfigureAndResultAsync();
-                    if (resources != null && (resources.IdentityResources.Any() || resources.ApiResources.Any()))
-                    {
-                        return CreateConsentViewModel(model, returnUrl, client, resources);
-                    }
-                    else
-                    {
-                        _logger.LogError("No scopes matching: {0}", request.ScopesRequested.Aggregate((x, y) => x + ", " + y));
-                    }
-                }
-                else
-                {
-                    _logger.LogError("Invalid client id: {0}", request.ClientId);
-                }
+                return CreateConsentViewModel(model, returnUrl, request);
             }
             else
             {
@@ -220,32 +209,43 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
             return null;
         }
 
-        private ConsentViewModel CreateConsentViewModel(
-            ConsentInputModel model, string returnUrl,
-            //AuthorizationRequest request,
-            Client client, IdentityServer4.Models.Resources resources)
+        private ConsentViewModel CreateConsentViewModel(ConsentInputModel model, string returnUrl,
+            AuthorizationRequest request)
         {
             var vm = new ConsentViewModel
             {
                 RememberConsent = model?.RememberConsent ?? true,
                 ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>(),
+                Description = model?.Description,
 
                 ReturnUrl = returnUrl,
 
-                ClientName = client.ClientName ?? client.ClientId,
-                ClientUrl = client.ClientUri,
-                ClientLogoUrl = client.LogoUri,
-                AllowRememberConsent = client.AllowRememberConsent
+                ClientName = request.Client.ClientName ?? request.Client.ClientId,
+                ClientUrl = request.Client.ClientUri,
+                ClientLogoUrl = request.Client.LogoUri,
+                AllowRememberConsent = request.Client.AllowRememberConsent
             };
 
-            vm.IdentityScopes = resources.IdentityResources.Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
-            vm.ResourceScopes = resources.ApiResources.SelectMany(x => x.Scopes).Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
-            if (_options.EnableOfflineAccess && resources.OfflineAccess)
+            vm.IdentityScopes = request.ValidatedResources.Resources.IdentityResources
+                .Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null))
+                .ToArray();
+
+            var apiScopes = new List<ScopeViewModel>();
+            foreach (var parsedScope in request.ValidatedResources.ParsedScopes)
             {
-                vm.ResourceScopes = vm.ResourceScopes.Union(new ScopeViewModel[] {
-                    GetOfflineAccessScope(vm.ScopesConsented.Contains(IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess) || model == null)
-                });
+                var apiScope = request.ValidatedResources.Resources.FindApiScope(parsedScope.ParsedName);
+                if (apiScope != null)
+                {
+                    var scopeVm = CreateScopeViewModel(parsedScope, apiScope,
+                        vm.ScopesConsented.Contains(parsedScope.RawValue) || model == null);
+                    apiScopes.Add(scopeVm);
+                }
             }
+            if (_consentOptions.EnableOfflineAccess && request.ValidatedResources.Resources.OfflineAccess)
+            {
+                apiScopes.Add(GetOfflineAccessScope(vm.ScopesConsented.Contains(IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess) || model == null));
+            }
+            vm.ApiScopes = apiScopes;
 
             return vm;
         }
@@ -254,7 +254,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         {
             return new ScopeViewModel
             {
-                Name = identity.Name,
+                Value = identity.Name,
                 DisplayName = identity.DisplayName,
                 Description = identity.Description,
                 Emphasize = identity.Emphasize,
@@ -263,16 +263,22 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
             };
         }
 
-        private static ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
+        private static ScopeViewModel CreateScopeViewModel(ParsedScopeValue parsedScopeValue, ApiScope apiScope, bool check)
         {
+            var displayName = apiScope.DisplayName ?? apiScope.Name;
+            if (!string.IsNullOrWhiteSpace(parsedScopeValue.ParsedParameter))
+            {
+                displayName += ":" + parsedScopeValue.ParsedParameter;
+            }
+
             return new ScopeViewModel
             {
-                Name = scope.Name,
-                DisplayName = scope.DisplayName,
-                Description = scope.Description,
-                Emphasize = scope.Emphasize,
-                Required = scope.Required,
-                Checked = check || scope.Required
+                Value = parsedScopeValue.RawValue,
+                DisplayName = displayName,
+                Description = apiScope.Description,
+                Emphasize = apiScope.Emphasize,
+                Required = apiScope.Required,
+                Checked = check || apiScope.Required
             };
         }
 
@@ -280,9 +286,9 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         {
             return new ScopeViewModel
             {
-                Name = IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess,
-                DisplayName = _options.OfflineAccessDisplayName,
-                Description = _options.OfflineAccessDescription,
+                Value = IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess,
+                DisplayName = _consentOptions.OfflineAccessDisplayName,
+                Description = _consentOptions.OfflineAccessDescription,
                 Emphasize = true,
                 Checked = check
             };

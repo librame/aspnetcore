@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Librame.AspNetCore.Identity.Builders
 {
+    using AspNetCore.Identity.Mappers;
     using Extensions.Core.Builders;
-    using Extensions.Data.Builders;
 
     /// <summary>
     /// <see cref="IdentityBuilder"/> 装饰器接口。
@@ -23,9 +23,9 @@ namespace Librame.AspNetCore.Identity.Builders
     public interface IIdentityBuilderDecorator : IExtensionBuilder, IExtensionBuilderDecorator<IdentityBuilder>
     {
         /// <summary>
-        /// 数据构建器。
+        /// 身份访问器类型参数映射器。
         /// </summary>
-        /// <value>返回 <see cref="IDataBuilder"/>。</value>
-        IDataBuilder DataBuilder { get; }
+        /// <value>返回 <see cref="IdentityAccessorTypeParameterMapper"/>。</value>
+        IdentityAccessorTypeParameterMapper AccessorTypeParameterMapper { get; }
     }
 }

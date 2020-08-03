@@ -47,7 +47,7 @@
                 <nav class="navbar navbar-header navbar-expand-lg">
                     <div class="container-fluid">
                         @await Engine.RequiredThemepackViewAsync(ViewContext, "Manage/_LoginPartial",
-                           viewName => Html.PartialAsync(viewName, Application)).ConfigureAndResultAsync()
+                           viewName => Html.PartialAsync(viewName, Application)).ConfigureAwait()
                     </div>
                 </nav>
             }
@@ -58,7 +58,7 @@
             <div class="sidebar">
                 <div class="scrollbar-inner sidebar-wrapper">
                     @await Engine.RequiredThemepackViewAsync(ViewContext, "Manage/_SidebarPartial",
-                       viewName => Html.PartialAsync(viewName, Application)).ConfigureAndResultAsync()
+                       viewName => Html.PartialAsync(viewName, Application)).ConfigureAwait()
                 </div>
             </div>
         }
@@ -75,7 +75,7 @@
                 <footer class="footer">
                     <div class="container-fluid">
                         @await Engine.RequiredThemepackViewAsync(ViewContext, "Manage/_FooterPartial",
-                            viewName => Html.PartialAsync(viewName, Application)).ConfigureAndResultAsync()
+                            viewName => Html.PartialAsync(viewName, Application)).ConfigureAwait()
                     </div>
                 </footer>
             }

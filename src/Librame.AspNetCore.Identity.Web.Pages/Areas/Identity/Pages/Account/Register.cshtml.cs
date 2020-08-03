@@ -117,7 +117,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         private readonly ILogger<LoginPageModel> _logger;
         private readonly IClockService _clock;
         private readonly IEmailService _email;
-        private readonly IIdentityStoreIdentifierGenerator<TGenId> _identifierGenerator;
+        private readonly IIdentityStoreIdentityGenerator<TGenId> _identifierGenerator;
 
 
         public RegisterPageModel(
@@ -126,7 +126,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             ILogger<LoginPageModel> logger,
             IClockService clock,
             IEmailService email,
-            ServiceFactory serviceFactory,
+            IStoreIdentityGenerator identityGenerator,
             IHtmlLocalizer<RegisterViewResource> localizer,
             IOptions<IdentityBuilderOptions> builderOptions,
             IOptions<IdentityOptions> options)
@@ -138,7 +138,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             _clock = clock.NotNull(nameof(clock));
             _email = email.NotNull(nameof(email));
 
-            _identifierGenerator = serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser, TGenId>();
+            _identifierGenerator = (IIdentityStoreIdentityGenerator<TGenId>)identityGenerator;
             _userManager = signInManager.UserManager;
         }
 
@@ -148,34 +148,33 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             ReturnUrl = returnUrl;
         }
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         public override async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-
-                var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
-                await user.SetIdAsync(userId).ConfigureAndResultAsync();
+                user.Id = await _identifierGenerator.GenerateUserIdAsync().ConfigureAwait();
 
                 var result = await _userManager.CreateUserByEmail<TUser, TCreatedBy>(_userStore,
-                    _clock, user, Input.Email, Input.Password).ConfigureAndResultAsync();
+                    _clock, user, Input.Email, Input.Password).ConfigureAwait();
 
                 if (result.Succeeded)
                 {
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait();
 
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { userId = userId.ToString(), code },
+                        values: new { userId = user.Id?.ToString(), code },
                         protocol: Request.Scheme);
 
                     await _email.SendAsync(Input.Email,
                         Localizer.GetString(r => r.ConfirmYourEmail)?.Value,
-                        Localizer.GetString(r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl))?.Value).ConfigureAndWaitAsync();
+                        Localizer.GetString(r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl))?.Value).ConfigureAwait();
 
-                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAwait();
                     _logger.LogInformation(3, "User created a new account with password.");
 
                     return LocalRedirect(returnUrl);
@@ -191,27 +190,29 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             return Page();
         }
 
+
         //private async Task<IdentityResult> CreateUserByEmail(IClockService clock, TUser user, string email, string password = null,
         //    CancellationToken cancellationToken = default)
         //{
-        //    await _userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+        //    await _userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAwait();
 
         //    if (!_userManager.SupportsUserEmail)
         //        throw new NotSupportedException("The identity builder requires a user store with email support.");
 
         //    var emailStore = (IUserEmailStore<TUser>)_userStore;
-        //    await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+        //    await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAwait();
 
         //    // Populate Creation
         //    await EntityPopulator.PopulateCreationAsync<RegisterPageModel>(clock, user, cancellationToken: cancellationToken)
-        //        .ConfigureAndWaitAsync();
+        //        .ConfigureAwait();
 
         //    if (password.IsNotEmpty())
-        //        return await _userManager.CreateAsync(user, password).ConfigureAndResultAsync();
+        //        return await _userManager.CreateAsync(user, password).ConfigureAwait();
 
-        //    return await _userManager.CreateAsync(user).ConfigureAndResultAsync();
+        //    return await _userManager.CreateAsync(user).ConfigureAwait();
         //}
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         private static TUser CreateUser()
         {
             try

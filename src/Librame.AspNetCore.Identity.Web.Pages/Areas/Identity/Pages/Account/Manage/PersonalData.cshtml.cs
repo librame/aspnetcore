@@ -52,7 +52,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");

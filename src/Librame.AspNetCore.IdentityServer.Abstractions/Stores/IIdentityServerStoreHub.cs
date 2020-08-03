@@ -14,7 +14,6 @@ using System.Linq;
 
 namespace Librame.AspNetCore.IdentityServer.Stores
 {
-    using Extensions.Data;
     using Extensions.Data.Stores;
 
     /// <summary>
@@ -47,25 +46,25 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         IQueryable<TIdentityResource> IdentityResources { get; }
 
 
-        /// <summary>
-        /// 尝试创建客户端集合。
-        /// </summary>
-        /// <param name="clients">给定的 <typeparamref name="TClient"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        OperationResult TryCreate(params TClient[] clients);
+        ///// <summary>
+        ///// 尝试创建客户端集合。
+        ///// </summary>
+        ///// <param name="clients">给定的 <typeparamref name="TClient"/> 数组。</param>
+        ///// <returns>返回 <see cref="OperationResult"/>。</returns>
+        //OperationResult TryCreate(params TClient[] clients);
 
-        /// <summary>
-        /// 尝试创建 API 资源集合。
-        /// </summary>
-        /// <param name="apiResources">给定的 <typeparamref name="TApiResource"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        OperationResult TryCreate(params TApiResource[] apiResources);
+        ///// <summary>
+        ///// 尝试创建 API 资源集合。
+        ///// </summary>
+        ///// <param name="apiResources">给定的 <typeparamref name="TApiResource"/> 数组。</param>
+        ///// <returns>返回 <see cref="OperationResult"/>。</returns>
+        //OperationResult TryCreate(params TApiResource[] apiResources);
 
-        /// <summary>
-        /// 尝试创建身份资源集合。
-        /// </summary>
-        /// <param name="identityResources">给定的 <typeparamref name="TIdentityResource"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        OperationResult TryCreate(params TIdentityResource[] identityResources);
+        ///// <summary>
+        ///// 尝试创建身份资源集合。
+        ///// </summary>
+        ///// <param name="identityResources">给定的 <typeparamref name="TIdentityResource"/> 数组。</param>
+        ///// <returns>返回 <see cref="OperationResult"/>。</returns>
+        //OperationResult TryCreate(params TIdentityResource[] identityResources);
     }
 }

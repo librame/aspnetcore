@@ -12,6 +12,7 @@
 
 using Librame.AspNetCore.Identity;
 using Librame.AspNetCore.Identity.Builders;
+using Librame.AspNetCore.Identity.Mappers;
 using Librame.AspNetCore.Identity.Protectors;
 using Librame.AspNetCore.Identity.Stores;
 using Librame.Extensions;
@@ -124,9 +125,11 @@ namespace Microsoft.Extensions.DependencyInjection
             })
             .Invoke(sourceBuilder, parentBuilder, dependency);
 
-            decorator.SetProperty(p => p.DataBuilder, dataBuilder);
+            var parameterMapper = IdentityAccessorTypeParameterMappingHelper
+                .ParseMapper(dataBuilder.AccessorTypeParameterMapper);
 
-            // Configure Decorator
+            decorator.SetProperty(p => p.AccessorTypeParameterMapper, parameterMapper);
+
             return decorator;
         }
 

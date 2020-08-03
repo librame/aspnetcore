@@ -10,7 +10,6 @@ using System.Diagnostics.CodeAnalysis;
 namespace Librame.AspNetCore.IdentityServer.Web.Models
 {
     using Extensions;
-    using Extensions.Core.Builders;
 
     /// <summary>
     /// 诊断视图模型。
@@ -21,9 +20,8 @@ namespace Librame.AspNetCore.IdentityServer.Web.Models
         /// 构造一个 <see cref="DiagnosticsViewModel"/>。
         /// </summary>
         /// <param name="result">给定的 <see cref="Microsoft.AspNetCore.Authentication.AuthenticateResult"/>。</param>
-        /// <param name="coreOptions">给定的 <see cref="CoreBuilderOptions"/>。</param>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-        public DiagnosticsViewModel(AuthenticateResult result, CoreBuilderOptions coreOptions)
+        public DiagnosticsViewModel(AuthenticateResult result)
         {
             AuthenticateResult = result.NotNull(nameof(result));
 
@@ -32,7 +30,8 @@ namespace Librame.AspNetCore.IdentityServer.Web.Models
                 var encoded = result.Properties.Items["client_list"];
                 var buffer = Base64Url.Decode(encoded);
 
-                Clients = JsonConvert.DeserializeObject<string[]>(buffer.AsEncodingString(coreOptions.Encoding));
+                var encoding = ExtensionSettings.Preference.DefaultEncoding;
+                Clients = JsonConvert.DeserializeObject<string[]>(buffer.AsEncodingString(encoding));
             }
         }
 

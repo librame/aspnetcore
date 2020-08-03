@@ -53,11 +53,11 @@ namespace Librame.AspNetCore.Web.Projects
             if (next.IsNull())
                 return;
 
-            var executedContext = await next.Invoke().ConfigureAndResultAsync();
+            var executedContext = await next.Invoke().ConfigureAwait();
             if (executedContext.Result is PageResult pageResult)
             {
                 var signInManager = context.HttpContext.RequestServices.GetRequiredService<SignInManager<TUser>>();
-                var schemes = await signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAndResultAsync();
+                var schemes = await signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAwait();
 
                 pageResult.ViewData[_options.HasExternalAuthenticationSchemesKey] = schemes.IsNotEmpty();
             }

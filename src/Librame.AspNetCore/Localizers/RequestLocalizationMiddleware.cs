@@ -71,7 +71,7 @@ namespace Librame.AspNetCore.Localizers
             {
                 foreach (var provider in _options.RequestCultureProviders)
                 {
-                    var providerResultCulture = await provider.DetermineProviderCultureResult(context).ConfigureAndResultAsync();
+                    var providerResultCulture = await provider.DetermineProviderCultureResult(context).ConfigureAwait();
                     if (providerResultCulture == null)
                     {
                         continue;
@@ -139,7 +139,7 @@ namespace Librame.AspNetCore.Localizers
 
             SetCurrentThreadCulture(requestCulture);
 
-            await _next.Invoke(context).ConfigureAndWaitAsync();
+            await _next.Invoke(context).ConfigureAwait();
         }
 
         private void EnsureLogger(HttpContext context)

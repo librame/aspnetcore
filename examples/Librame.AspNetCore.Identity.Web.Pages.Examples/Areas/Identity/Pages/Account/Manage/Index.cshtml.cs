@@ -71,16 +71,16 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
             {
                 Profile = new ProfileViewModel
                 {
-                    HasPassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync(),
-                    PhoneNumber = await _userManager.GetPhoneNumberAsync(user).ConfigureAndResultAsync(),
-                    TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync(),
-                    Logins = await _userManager.GetLoginsAsync(user).ConfigureAndResultAsync(),
-                    BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user).ConfigureAndResultAsync(),
-                    AuthenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync()
+                    HasPassword = await _userManager.HasPasswordAsync(user).ConfigureAwait(),
+                    PhoneNumber = await _userManager.GetPhoneNumberAsync(user).ConfigureAwait(),
+                    TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAwait(),
+                    Logins = await _userManager.GetLoginsAsync(user).ConfigureAwait(),
+                    BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user).ConfigureAwait(),
+                    AuthenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAwait()
                 };
 
-                var userName = await _userManager.GetUserNameAsync(user).ConfigureAndResultAsync();
-                var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
+                var userName = await _userManager.GetUserNameAsync(user).ConfigureAwait();
+                var email = await _userManager.GetEmailAsync(user).ConfigureAwait();
 
                 Input = new UserViewModel
                 {
@@ -88,10 +88,10 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                     Email = email
                 };
 
-                IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user).ConfigureAndResultAsync();
+                IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user).ConfigureAwait();
                 return Page();
             })
-            .ConfigureAndResultAsync();
+            .ConfigureAwait();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -103,32 +103,32 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
 
             return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
+                var email = await _userManager.GetEmailAsync(user).ConfigureAwait();
                 if (Input.Email != email)
                 {
-                    var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email).ConfigureAndResultAsync();
+                    var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email).ConfigureAwait();
                     if (!setEmailResult.Succeeded)
                     {
-                        var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+                        var userId = await _userManager.GetUserIdAsync(user).ConfigureAwait();
                         throw new InvalidOperationException($"Unexpected error occurred setting email for user with ID '{userId}'.");
                     }
 
                     // In our UI email and user name are one and the same, so when we update the email
                     // we need to update the user name.
-                    var setUserNameResult = await _userManager.SetUserNameAsync(user, Input.Email).ConfigureAndResultAsync();
+                    var setUserNameResult = await _userManager.SetUserNameAsync(user, Input.Email).ConfigureAwait();
                     if (!setUserNameResult.Succeeded)
                     {
-                        var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+                        var userId = await _userManager.GetUserIdAsync(user).ConfigureAwait();
                         throw new InvalidOperationException($"Unexpected error occurred setting name for user with ID '{userId}'.");
                     }
                 }
 
-                await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
+                await _signInManager.RefreshSignInAsync(user).ConfigureAwait();
 
                 StatusMessage = _statusLocalizer.GetString(r => r.ProfileUpdated)?.ToString();
                 return RedirectToPage();
             })
-            .ConfigureAndResultAsync();
+            .ConfigureAwait();
         }
 
         public async Task<IActionResult> OnPostRemovePhoneNumberAsync()
@@ -140,10 +140,10 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
 
             return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                var result = await _userManager.SetPhoneNumberAsync(user, null).ConfigureAndResultAsync();
+                var result = await _userManager.SetPhoneNumberAsync(user, null).ConfigureAwait();
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                    await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAwait();
                     StatusMessage = "Remove phone number succeeded.";
                 }
                 else
@@ -153,7 +153,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
 
                 return RedirectToPage();
             })
-            .ConfigureAndResultAsync();
+            .ConfigureAwait();
         }
 
         public async Task<IActionResult> OnPostSendVerificationEmailAsync()
@@ -165,9 +165,9 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
 
             return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
-                var email = await _userManager.GetEmailAsync(user).ConfigureAndResultAsync();
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
+                var userId = await _userManager.GetUserIdAsync(user).ConfigureAwait();
+                var email = await _userManager.GetEmailAsync(user).ConfigureAwait();
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait();
 
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmail",
@@ -178,12 +178,12 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
                 await _emailService.SendAsync(
                     email,
                     _registerLocalizer.GetString(r => r.ConfirmYourEmail)?.ToString(),
-                    _registerLocalizer.GetString(r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl))?.ToString()).ConfigureAndWaitAsync();
+                    _registerLocalizer.GetString(r => r.ConfirmYourEmailFormat, HtmlEncoder.Default.Encode(callbackUrl))?.ToString()).ConfigureAwait();
 
                 StatusMessage = _statusLocalizer.GetString(r => r.VerificationEmailSent)?.ToString();
                 return RedirectToPage();
             })
-            .ConfigureAndResultAsync();
+            .ConfigureAwait();
         }
 
         public async Task<IActionResult> OnPostEnableTwoFactorAuthenticationAsync()
@@ -195,14 +195,14 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
 
             return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                await _userManager.SetTwoFactorEnabledAsync(user, true).ConfigureAndWaitAsync();
-                await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                await _userManager.SetTwoFactorEnabledAsync(user, true).ConfigureAwait();
+                await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAwait();
                 //_logger.LogInformation(2, "User enabled two-factor authentication.");
 
                 StatusMessage = "User enabled two-factor authentication.";
                 return RedirectToAction(nameof(Index));
             })
-            .ConfigureAndResultAsync();
+            .ConfigureAwait();
         }
 
         public async Task<IActionResult> OnPostResetAuthenticatorKeyAsync()
@@ -214,13 +214,13 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Examples
 
             return await VerifyLoginUserActionResult(_userManager, async user =>
             {
-                await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
+                await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAwait();
                 //_logger.LogInformation(1, "User reset authenticator key.");
 
                 StatusMessage = "User reset authenticator key.";
                 return RedirectToAction(nameof(Index));
             })
-            .ConfigureAndResultAsync();
+            .ConfigureAwait();
         }
 
     }

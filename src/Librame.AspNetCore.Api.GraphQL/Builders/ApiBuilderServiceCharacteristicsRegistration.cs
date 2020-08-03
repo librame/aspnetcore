@@ -43,10 +43,13 @@ namespace Librame.AspNetCore.Api.Builders
             {
                 { typeof(IDocumentExecuter), ServiceCharacteristics.Singleton() },
                 { typeof(IDocumentWriter), ServiceCharacteristics.Singleton() },
+
                 { typeof(IGraphApiMutation), ServiceCharacteristics.Scoped() },
                 { typeof(IGraphApiQuery), ServiceCharacteristics.Scoped() },
                 { typeof(IGraphApiSubscription), ServiceCharacteristics.Scoped() },
-                { typeof(IGraphApiSchema), ServiceCharacteristics.Scoped() }
+                { typeof(IGraphApiSchema), ServiceCharacteristics.Scoped() },
+
+                { typeof(IApiRequest), ServiceCharacteristics.Transient() }
             };
         }
 

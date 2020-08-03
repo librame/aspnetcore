@@ -59,15 +59,17 @@ namespace Librame.AspNetCore.IdentityServer.Builders
                 options.ClientSecret = TableConfigurationHelper.Create<ClientSecret>();
 
                 // Resource
-                options.IdentityClaim = TableConfigurationHelper.Create<IdentityClaim>();
                 options.IdentityResource = TableConfigurationHelper.Create<IdentityResource>();
+                options.IdentityResourceClaim = TableConfigurationHelper.Create<IdentityResourceClaim>();
                 options.IdentityResourceProperty = TableConfigurationHelper.Create<IdentityResourceProperty>();
-                options.ApiClaim = TableConfigurationHelper.Create<ApiResourceClaim>();
                 options.ApiResource = TableConfigurationHelper.Create<ApiResource>();
+                options.ApiResourceClaim = TableConfigurationHelper.Create<ApiResourceClaim>();
                 options.ApiResourceProperty = TableConfigurationHelper.Create<ApiResourceProperty>();
+                options.ApiResourceScope = TableConfigurationHelper.Create<ApiResourceScope>();
+                options.ApiResourceSecret = TableConfigurationHelper.Create<ApiResourceSecret>();
                 options.ApiScope = TableConfigurationHelper.Create<ApiScope>();
                 options.ApiScopeClaim = TableConfigurationHelper.Create<ApiScopeClaim>();
-                options.ApiSecret = TableConfigurationHelper.Create<ApiSecret>();
+                options.ApiScopeProperty = TableConfigurationHelper.Create<ApiScopeProperty>();
             };
 
         /// <summary>
@@ -79,5 +81,6 @@ namespace Librame.AspNetCore.IdentityServer.Builders
                 options.PersistedGrants = TableConfigurationHelper.Create<PersistedGrant>();
                 options.DeviceFlowCodes = TableConfigurationHelper.Create<DeviceFlowCodes>();
             };
+
     }
 }

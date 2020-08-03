@@ -102,29 +102,29 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync() != null;
-            Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAndResultAsync();
-            IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user).ConfigureAndResultAsync();
-            RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user).ConfigureAndResultAsync();
+            HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAwait() != null;
+            Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user).ConfigureAwait();
+            IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user).ConfigureAwait();
+            RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user).ConfigureAwait();
 
             return Page();
         }
 
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await _signInManager.ForgetTwoFactorClientAsync().ConfigureAndWaitAsync();
+            await _signInManager.ForgetTwoFactorClientAsync().ConfigureAwait();
 
             StatusMessage = _statusLocalizer.GetString(r => r.TwoFactorAuthentication)?.ToString();
 

@@ -67,7 +67,7 @@ namespace Librame.AspNetCore.Web.Projects
             resultFilter.OnResultExecuting(context);
             if (!context.Cancel)
             {
-                resultFilter.OnResultExecuted(await next.Invoke().ConfigureAndResultAsync());
+                resultFilter.OnResultExecuted(await next.Invoke().ConfigureAwait());
             }
         }
     }

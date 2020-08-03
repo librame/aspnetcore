@@ -11,10 +11,8 @@
 #endregion
 
 using Librame.AspNetCore.Builders;
-using Librame.Extensions;
 using Librame.Extensions.Core.Builders;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -24,26 +22,6 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class AspNetCoreCoreBuilderServiceCollectionExtensions
     {
-        /// <summary>
-        /// 添加 Librame for ASP.NET Core。
-        /// </summary>
-        /// <param name="services">给定的 <see cref="IServiceCollection"/>。</param>
-        /// <param name="configureLoggingBuilder">给定的配置日志构建器动作方法。</param>
-        /// <param name="builderFactory">给定创建核心构建器的工厂方法（可选）。</param>
-        /// <returns>返回 <see cref="ICoreBuilder"/>。</returns>
-        public static ICoreBuilder AddLibrameCore(this IServiceCollection services,
-            Action<ILoggingBuilder> configureLoggingBuilder,
-            Func<IServiceCollection, AspNetCoreCoreBuilderDependency, ICoreBuilder> builderFactory = null)
-        {
-            configureLoggingBuilder.NotNull(nameof(configureLoggingBuilder));
-
-            return services.AddLibrameCore(dependency =>
-            {
-                dependency.ConfigureLoggingBuilder = configureLoggingBuilder;
-            },
-            builderFactory);
-        }
-
         /// <summary>
         /// 添加 Librame for ASP.NET Core。
         /// </summary>

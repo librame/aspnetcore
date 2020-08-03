@@ -89,6 +89,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Identity
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librame.AspNetCore.Identity.Api.GraphQL", "src\Librame.AspNetCore.Identity.Api.GraphQL\Librame.AspNetCore.Identity.Api.GraphQL.csproj", "{41429298-B6CF-4DB6-BB24-BF862E47ED32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librame.AspNetCore.Identity.Api.GraphQL.Tests", "tests\Librame.AspNetCore.Identity.Api.GraphQL.Tests\Librame.AspNetCore.Identity.Api.GraphQL.Tests.csproj", "{BB4CA49C-4D45-482D-B228-A96B1CD04D82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -251,6 +253,10 @@ Global
 		{41429298-B6CF-4DB6-BB24-BF862E47ED32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41429298-B6CF-4DB6-BB24-BF862E47ED32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41429298-B6CF-4DB6-BB24-BF862E47ED32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB4CA49C-4D45-482D-B228-A96B1CD04D82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB4CA49C-4D45-482D-B228-A96B1CD04D82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB4CA49C-4D45-482D-B228-A96B1CD04D82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB4CA49C-4D45-482D-B228-A96B1CD04D82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -295,6 +301,7 @@ Global
 		{C7100C60-AD69-4476-9C32-B2274AB91F65} = {64F541DF-34A5-4451-B3F2-AB1A7592B652}
 		{6F3BF4E2-CA86-4135-8608-1373A9AA42EB} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
 		{41429298-B6CF-4DB6-BB24-BF862E47ED32} = {3BA1621E-3386-4339-B6A7-02ACF5515B1A}
+		{BB4CA49C-4D45-482D-B228-A96B1CD04D82} = {64F541DF-34A5-4451-B3F2-AB1A7592B652}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C045FFCB-A85F-4F5E-9830-8F503D71513E}

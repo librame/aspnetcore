@@ -11,29 +11,28 @@
 #endregion
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 
 namespace Librame.AspNetCore.IdentityServer.Stores
 {
+    using AspNetCore.Identity.Stores;
+    using Extensions.Core.Identifiers;
     using Extensions.Core.Services;
-    using Extensions.Data.Builders;
-    using Identity.Stores;
 
     /// <summary>
-    /// <see cref="Guid"/> 身份服务器存储标识符生成器。
+    /// <see cref="Guid"/> 身份服务器存储标识生成器。
     /// </summary>
-    public class GuidIdentityServerStoreIdentifierGenerator : GuidIdentityStoreIdentifierGenerator
+    public class GuidIdentityServerStoreIdentifierGenerator : GuidIdentityStoreIdentityGenerator
     {
         /// <summary>
         /// 构造一个 <see cref="GuidIdentityServerStoreIdentifierGenerator"/>。
         /// </summary>
-        /// <param name="options">给定的 <see cref="IOptions{DataBuilderOptions}"/>。</param>
         /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
+        /// <param name="factory">给定的 <see cref="IIdentityGeneratorFactory"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        public GuidIdentityServerStoreIdentifierGenerator(IOptions<DataBuilderOptions> options,
-            IClockService clock, ILoggerFactory loggerFactory)
-            : base(options, clock, loggerFactory)
+        public GuidIdentityServerStoreIdentifierGenerator(IClockService clock,
+            IIdentityGeneratorFactory factory, ILoggerFactory loggerFactory)
+            : base(clock, factory, loggerFactory)
         {
         }
 

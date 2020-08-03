@@ -125,7 +125,7 @@ namespace Microsoft.AspNetCore.Http
         public static async Task<IPAddress> GetIPv4Async(this HttpRequest request,
             string addressKey = null)
         {
-            (IPAddress v4, _) = await request.GetIPv4AndIPv6AddressAsync(addressKey).ConfigureAndResultAsync();
+            (IPAddress v4, _) = await request.GetIPv4AndIPv6AddressAsync(addressKey).ConfigureAwait();
             return v4;
         }
 
@@ -138,7 +138,7 @@ namespace Microsoft.AspNetCore.Http
         public static async Task<IPAddress> GetIPv6Async(this HttpRequest request,
             string addressKey = null)
         {
-            (_, IPAddress v6) = await request.GetIPv4AndIPv6AddressAsync(addressKey).ConfigureAndResultAsync();
+            (_, IPAddress v6) = await request.GetIPv4AndIPv6AddressAsync(addressKey).ConfigureAwait();
             return v6;
         }
 
@@ -162,7 +162,7 @@ namespace Microsoft.AspNetCore.Http
         public static async Task<IPAddress> GetIPv4Async(this IHeaderDictionary headers,
             string ipAddressKey = null)
         {
-            (IPAddress v4, _) = await headers.GetIPv4AndIPv6AddressAsync(ipAddressKey).ConfigureAndResultAsync();
+            (IPAddress v4, _) = await headers.GetIPv4AndIPv6AddressAsync(ipAddressKey).ConfigureAwait();
             return v4;
         }
 
@@ -175,7 +175,7 @@ namespace Microsoft.AspNetCore.Http
         public static async Task<IPAddress> GetIPv6Async(this IHeaderDictionary headers,
             string addressKey = null)
         {
-            (_, IPAddress v6) = await headers.GetIPv4AndIPv6AddressAsync(addressKey).ConfigureAndResultAsync();
+            (_, IPAddress v6) = await headers.GetIPv4AndIPv6AddressAsync(addressKey).ConfigureAwait();
             return v6;
         }
 
@@ -215,7 +215,7 @@ namespace Microsoft.AspNetCore.Http
 
             var host = new HostString(address);
             if (host.IsLocalIPAddress())
-                return await IPAddressUtility.GetLocalIPv4AndIPv6AddressAsync().ConfigureAndResultAsync();
+                return await IPAddressUtility.GetLocalIPv4AndIPv6AddressAsync().ConfigureAwait();
 
             if (IPAddress.TryParse(host.Host, out IPAddress current))
             {

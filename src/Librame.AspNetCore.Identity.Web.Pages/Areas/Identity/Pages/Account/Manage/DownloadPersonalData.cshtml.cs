@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,7 +25,6 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 {
     using AspNetCore.Web.Applications;
     using Extensions;
-    using Extensions.Core.Builders;
 
     /// <summary>
     /// 下载个人数据页面模型。
@@ -56,17 +54,14 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
         where TUser : class
     {
         private readonly UserManager<TUser> _userManager;
-        private readonly CoreBuilderOptions _coreOptions;
         private readonly ILogger<DownloadPersonalDataPageModel> _logger;
 
 
         public DownloadPersonalDataPageModel(
             UserManager<TUser> userManager,
-            IOptions<CoreBuilderOptions> coreOptions,
             ILogger<DownloadPersonalDataPageModel> logger)
         {
             _userManager = userManager;
-            _coreOptions = coreOptions.Value;
             _logger = logger;
         }
 
@@ -78,7 +73,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -96,18 +91,21 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
                 personalData.Add(p.Name, p.GetValue(user)?.ToString() ?? "null");
             }
 
-            var logins = await _userManager.GetLoginsAsync(user).ConfigureAndResultAsync();
+            var logins = await _userManager.GetLoginsAsync(user).ConfigureAwait();
             foreach (var l in logins)
             {
                 personalData.Add($"{l.LoginProvider} external login provider key", l.ProviderKey);
             }
 
-            personalData.Add($"Authenticator Key", await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAndResultAsync());
-
-            var json = JsonConvert.SerializeObject(personalData);
+            personalData.Add($"Authenticator Key", await _userManager.GetAuthenticatorKeyAsync(user).ConfigureAwait());
 
             Response.Headers.Add("Content-Disposition", "attachment; filename=PersonalData.json");
-            return new FileContentResult(json.FromEncodingString(_coreOptions.Encoding), "text/json");
+
+            var encoding = ExtensionSettings.Preference.DefaultEncoding;
+            var json = JsonConvert.SerializeObject(personalData);
+
+            return new FileContentResult(json.FromEncodingString(encoding), "text/json");
         }
+
     }
 }

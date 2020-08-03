@@ -1,6 +1,7 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityServer4.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Librame.AspNetCore.IdentityServer.Web
@@ -26,9 +27,9 @@ namespace Librame.AspNetCore.IdentityServer.Web
         public string RedirectUri { get; set; }
 
         /// <summary>
-        /// 客户端标识。
+        /// 客户端。
         /// </summary>
-        public string ClientId { get; set; }
+        public Client Client { get; set; }
 
         /// <summary>
         /// 显示视图。

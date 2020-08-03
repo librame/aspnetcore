@@ -89,7 +89,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var userClaim = base.CreateUserClaim(user, claim);
 
-            userClaim.PopulateCreationAsync(Clock);
+            userClaim.PopulateCreation(Clock);
 
             return userClaim;
         }
@@ -105,7 +105,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var userLogin = base.CreateUserLogin(user, login);
 
-            userLogin.PopulateCreationAsync(Clock);
+            userLogin.PopulateCreation(Clock);
 
             return userLogin;
         }
@@ -121,7 +121,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var userRole = base.CreateUserRole(user, role);
 
-            userRole.PopulateCreationAsync(Clock);
+            userRole.PopulateCreation(Clock);
 
             return userRole;
         }
@@ -139,7 +139,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var userToken = base.CreateUserToken(user, loginProvider, name, value);
 
-            userToken.PopulateCreationAsync(Clock);
+            userToken.PopulateCreation(Clock);
 
             return userToken;
         }

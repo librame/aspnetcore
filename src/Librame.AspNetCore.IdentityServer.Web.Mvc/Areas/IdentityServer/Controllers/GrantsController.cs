@@ -56,7 +56,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View("Index", await BuildViewModelAsync().ConfigureAndResultAsync());
+            return View("Index", await BuildViewModelAsync().ConfigureAwait());
         }
 
         /// <summary>
@@ -66,23 +66,23 @@ namespace Librame.AspNetCore.IdentityServer.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Revoke(string clientId)
         {
-            await _interaction.RevokeUserConsentAsync(clientId).ConfigureAndWaitAsync();
-            await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId)).ConfigureAndWaitAsync();
+            await _interaction.RevokeUserConsentAsync(clientId).ConfigureAwait();
+            await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId)).ConfigureAwait();
 
             return RedirectToAction("Index");
         }
 
         private async Task<GrantsViewModel> BuildViewModelAsync()
         {
-            var grants = await _interaction.GetAllUserConsentsAsync().ConfigureAndResultAsync();
+            var grants = await _interaction.GetAllUserGrantsAsync().ConfigureAwait();
 
             var list = new List<GrantViewModel>();
             foreach(var grant in grants)
             {
-                var client = await _clients.FindClientByIdAsync(grant.ClientId).ConfigureAndResultAsync();
+                var client = await _clients.FindClientByIdAsync(grant.ClientId).ConfigureAwait();
                 if (client != null)
                 {
-                    var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes).ConfigureAndResultAsync();
+                    var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes).ConfigureAwait();
 
                     var item = new GrantViewModel()
                     {

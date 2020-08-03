@@ -18,7 +18,7 @@ namespace Librame.AspNetCore.Api
     using Extensions;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    class GraphApiSchema : Schema, IGraphApiSchema
+    internal class GraphApiSchema : Schema, IGraphApiSchema
     {
         public GraphApiSchema(IGraphApiMutation mutation,
             IGraphApiQuery query, IGraphApiSubscription subscription)

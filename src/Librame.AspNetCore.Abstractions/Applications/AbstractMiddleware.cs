@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -21,7 +20,6 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Applications
 {
     using Extensions;
-    using Extensions.Core.Services;
 
     /// <summary>
     /// 抽象应用中间件。
@@ -55,6 +53,40 @@ namespace Librame.AspNetCore.Applications
         /// </summary>
         public virtual IReadOnlyList<string> RestrictRequestMethods { get; }
 
+        /// <summary>
+        /// 响应内容类型。
+        /// </summary>
+        public virtual string ResponseContentType { get; }
+
+
+        /// <summary>
+        /// 是限定请求路径。
+        /// </summary>
+        /// <param name="requestPath">给定的请求 <see cref="PathString"/>。</param>
+        /// <returns>返回布尔值。</returns>
+        protected virtual bool IsRestrictRequestPath(PathString requestPath)
+        {
+            if (!RestrictRequestPath.HasValue)
+                return true; // 未限定请求路径
+
+            return requestPath.StartsWithSegments(RestrictRequestPath,
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// 是限定请求方法。
+        /// </summary>
+        /// <param name="requestMethod">给定的请求方法。</param>
+        /// <returns>返回布尔值。</returns>
+        protected virtual bool IsRestrictRequestMethods(string requestMethod)
+        {
+            if (!RestrictRequestMethods.IsEmpty())
+                return true; // 未限定请求方法
+
+            return RestrictRequestMethods.Any(method
+                => requestMethod.Equals(method, StringComparison.OrdinalIgnoreCase));
+        }
+
 
         /// <summary>
         /// 调用中间件。
@@ -66,33 +98,21 @@ namespace Librame.AspNetCore.Applications
         {
             context.NotNull(nameof(context));
 
-            // 如果未通过路径验证
-            if (!RestrictRequestPath.HasValue
-                || !context.Request.Path.StartsWithSegments(RestrictRequestPath, StringComparison.OrdinalIgnoreCase))
+            // 如果不是限定请求路径
+            if (!IsRestrictRequestPath(context.Request.Path))
             {
-                await Next.Invoke(context).ConfigureAndWaitAsync();
+                await Next.Invoke(context).ConfigureAwait();
                 return;
             }
 
-            // 如果未通过方法验证
-            if (RestrictRequestMethods.IsEmpty()
-                || !RestrictRequestMethods.Any(method => context.Request.Method.Equals(method, StringComparison.OrdinalIgnoreCase)))
+            // 如果不是限定请求方法
+            if (!IsRestrictRequestMethods(context.Request.Method))
             {
-                if (!context.Request.ContentLength.HasValue)
-                {
-                    var now = await context.RequestServices.GetRequiredService<IClockService>().GetNowOffsetAsync()
-                        .ConfigureAndResultAsync();
-
-                    var welcome = $"Welcome to Librame.AspNetCore.ApplicationMiddleware at {now}.";
-                    await context.Response.WriteAsync(welcome, ExtensionSettings.Preference.DefaultEncoding).ConfigureAndWaitAsync();
-                    return;
-                }
-
-                await Next.Invoke(context).ConfigureAndWaitAsync();
+                await Next.Invoke(context).ConfigureAwait();
                 return;
             }
 
-            await InvokeCore(context).ConfigureAndWaitAsync();
+            await InvokeCore(context).ConfigureAwait();
         }
 
         /// <summary>

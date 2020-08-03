@@ -18,36 +18,43 @@ namespace Librame.AspNetCore.Identity.Tests
             {
                 var services = new ServiceCollection();
 
-                // Add Authentication
                 services.AddAuthentication(options =>
                 {
+                    // SignInManager.SignOutAsync
                     options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-                })
-                .AddIdentityCookies(cookies => { });
+                    // SignInManager.SignInWithClaimsAsync
+                    //options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+                });
 
-                services.AddLibrameCore()
-                    .AddData(dependency =>
-                    {
-                        dependency.Options.DefaultTenant.DefaultConnectionString
-                            = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
-                        dependency.Options.DefaultTenant.WritingConnectionString
-                            = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
-                        //dependency.Options.DefaultTenant.WritingSeparation = true;
-                    })
-                    .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
-                    {
-                        optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
-                            sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
-                    })
-                    .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
-                    .AddStoreHub<TestStoreHub>()
-                    .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
-                    .AddStoreInitializer<GuidIdentityStoreInitializer>()
-                    .AddIdentity<IdentityDbContextAccessor>(dependency =>
-                    {
-                        dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
-                    });
+                services.AddLibrameCore(dependency =>
+                {
+                    // SQLServer (Default)
+                    //dependency.Options.Identifier.GuidIdentifierGenerator = CombIdentityGenerator.SQLServer;
+                })
+                .AddData(dependency =>
+                {
+                    dependency.Options.DefaultTenant.DefaultConnectionString
+                        = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
+                    dependency.Options.DefaultTenant.WritingConnectionString
+                        = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
+
+                    dependency.Options.DefaultTenant.WritingSeparation = true;
+                    dependency.Options.DefaultTenant.DataSynchronization = true;
+                    dependency.Options.DefaultTenant.StructureSynchronization = true;
+                })
+                .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
+                {
+                    optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
+                        sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
+                })
+                .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
+                .AddStoreHub<TestStoreHub>()
+                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentityGenerator>()
+                .AddStoreInitializer<IdentityStoreInitializer>()
+                .AddIdentity<IdentityDbContextAccessor>(dependency =>
+                {
+                    dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
+                });
 
                 return services.BuildServiceProvider();
             });

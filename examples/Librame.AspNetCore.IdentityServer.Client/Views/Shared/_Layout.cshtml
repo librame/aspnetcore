@@ -35,7 +35,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>
 
-                @await Html.PartialAsync("_LoginPartial").ConfigureAndResultAsync()
+                @await Html.PartialAsync("_LoginPartial").ConfigureAwait()
             </div>
         </div>
     </nav>

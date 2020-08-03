@@ -34,24 +34,31 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>返回 <see cref="IApiBuilder"/>。</returns>
         [SuppressMessage("Design", "CA1062:验证公共方法的参数")]
         public static IApiBuilder AddIdentityApi(this IIdentityBuilderDecorator decorator,
-            Action<ApiBuilderDependency> configureDependency = null,
+            Action<IdentityApiBuilderDependency> configureDependency = null,
             Func<IExtensionBuilder, ApiBuilderDependency, IApiBuilder> builderFactory = null)
         {
             var builder = decorator.AddApi(configureDependency, builderFactory);
 
-            var accessorMappingDescriptor = decorator.DataBuilder.AccessorMappingDescriptor;
+            var parameterMapper = decorator.AccessorTypeParameterMapper;
 
-            var apiMutationType = typeof(IdentityGraphApiMutation<,,>).MakeGenericType(
-                decorator.Source.UserType,
-                accessorMappingDescriptor.GenId.ArgumentType,
-                accessorMappingDescriptor.CreatedBy.ArgumentType);
+            var identityApiMutationType = typeof(IdentityGraphApiMutation<,,>).MakeGenericType(
+                parameterMapper.User.ArgumentType,
+                parameterMapper.BaseMapper.GenId.ArgumentType,
+                parameterMapper.BaseMapper.CreatedBy.ArgumentType);
 
-            var apiQueryType = typeof(IdentityGraphApiQuery<,>).MakeGenericType(
-                decorator.Source.RoleType,
-                decorator.Source.UserType);
+            var identityApiQueryType = typeof(IdentityGraphApiQuery<,,,,,,,,>).MakeGenericType(
+                parameterMapper.Role.ArgumentType,
+                parameterMapper.RoleClaim.ArgumentType,
+                parameterMapper.User.ArgumentType,
+                parameterMapper.UserClaim.ArgumentType,
+                parameterMapper.UserLogin.ArgumentType,
+                parameterMapper.UserRole.ArgumentType,
+                parameterMapper.UserToken.ArgumentType,
+                parameterMapper.BaseMapper.GenId.ArgumentType,
+                parameterMapper.BaseMapper.CreatedBy.ArgumentType);
 
-            decorator.Services.TryReplaceAll(typeof(IGraphApiMutation), apiMutationType);
-            decorator.Services.TryReplaceAll(typeof(IGraphApiQuery), apiQueryType);
+            decorator.Services.TryReplaceAll(typeof(IGraphApiMutation), identityApiMutationType);
+            decorator.Services.TryReplaceAll(typeof(IGraphApiQuery), identityApiQueryType);
 
             return builder;
         }

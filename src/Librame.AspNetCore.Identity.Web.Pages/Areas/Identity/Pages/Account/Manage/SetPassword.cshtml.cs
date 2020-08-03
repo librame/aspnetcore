@@ -120,13 +120,13 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var hasPassword = await _userManager.HasPasswordAsync(user).ConfigureAndResultAsync();
+            var hasPassword = await _userManager.HasPasswordAsync(user).ConfigureAwait();
 
             if (hasPassword)
             {
@@ -143,13 +143,13 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var addPasswordResult = await _userManager.AddPasswordAsync(user, Input.NewPassword).ConfigureAndResultAsync();
+            var addPasswordResult = await _userManager.AddPasswordAsync(user, Input.NewPassword).ConfigureAwait();
             if (!addPasswordResult.Succeeded)
             {
                 foreach (var error in addPasswordResult.Errors)
@@ -159,7 +159,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
                 return Page();
             }
 
-            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
+            await _signInManager.RefreshSignInAsync(user).ConfigureAwait();
 
             StatusMessage = _statusLocalizer.GetString(r => r.SetPassword)?.ToString();
 

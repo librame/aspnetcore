@@ -40,7 +40,7 @@ namespace Librame.AspNetCore.IdentityServer.Client.Controllers
         //[Authorize]
         //public async Task Logout()
         //{
-        //    await HttpContext.SignOutAsync().ConfigureAndWaitAsync(); //IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME
+        //    await HttpContext.SignOutAsync().ConfigureAwait(); //IdentityExtensionConfigurator.Defaults.COOKIE_AUTH_SCHEME
         //    //await HttpContext.SignOutAsync(IdentityExtensionConfigurator.Defaults.OIDC_AUTH_SCHEME);
         //}
 

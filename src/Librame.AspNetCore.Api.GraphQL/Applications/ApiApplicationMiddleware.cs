@@ -10,15 +10,11 @@
 
 #endregion
 
-using GraphQL;
 using GraphQL.Http;
-using GraphQL.Types;
-using GraphQL.Validation.Complexity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Api.Applications
@@ -28,40 +24,44 @@ namespace Librame.AspNetCore.Api.Applications
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class ApiApplicationMiddleware : AbstractApiApplicationMiddleware
     {
-        public ApiApplicationMiddleware(RequestDelegate next)
+        private readonly IDocumentWriter _writer;
+
+
+        public ApiApplicationMiddleware(IDocumentWriter writer,
+            RequestDelegate next)
             : base(next)
         {
+            _writer = writer.NotNull(nameof(writer));
         }
+
+
+        public override PathString RestrictRequestPath
+            => $"{ApiSettings.Preference.RestrictRequestPath}/graphql";
 
 
         protected override async Task InvokeCore(HttpContext context)
         {
-            var body = string.Empty;
-            using (var sr = new StreamReader(context.Request.Body))
-            {
-                body = await sr.ReadToEndAsync().ConfigureAndResultAsync();
-            }
+            // Transient Service
+            var request = context.RequestServices.GetRequiredService<IApiRequest>();
 
-            var executor = context.RequestServices.GetRequiredService<IDocumentExecuter>();
-            var schema = (Schema)context.RequestServices.GetRequiredService<IGraphApiSchema>();
+            await request.PopulateAsync(context)
+                .ConfigureAwait();
 
-            var request = JsonConvert.DeserializeObject<ApiRequest>(body);
-            var result = await executor.ExecuteAsync(options =>
-            {
-                options.Schema = schema;
-                options.Query = request.Query;
-                options.OperationName = request.OperationName;
-                options.Inputs = request.Variables.ToInputs();
+            var result = await request.ExecuteAsync(context: context)
+                .ConfigureAwait();
 
-                options.ComplexityConfiguration = new ComplexityConfiguration
-                {
-                    MaxDepth = 15
-                };
-            })
-            .ConfigureAndResultAsync();
+            await WriteResponseAsync(context, result).ConfigureAwait();
+        }
 
-            var writer = context.RequestServices.GetRequiredService<IDocumentWriter>();
-            await writer.WriteAsync(context.Response.Body, result).ConfigureAndWaitAsync();
+        private async Task WriteResponseAsync(HttpContext context, ApiRequestResult result)
+        {
+            context.Response.ContentType = ResponseContentType;
+            context.Response.StatusCode = result.Succeeded
+                ? (int)HttpStatusCode.OK
+                : (int)HttpStatusCode.BadRequest;
+            
+            await _writer.WriteAsync(context.Response.Body, result)
+                .ConfigureAwait();
         }
 
     }

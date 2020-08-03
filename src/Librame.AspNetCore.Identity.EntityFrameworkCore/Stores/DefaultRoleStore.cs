@@ -84,7 +84,7 @@ namespace Librame.AspNetCore.Identity.Stores
         {
             var roleClaim = base.CreateRoleClaim(role, claim);
 
-            roleClaim.PopulateCreationAsync(Clock);
+            roleClaim.PopulateCreation(Clock);
 
             return roleClaim;
         }

@@ -51,20 +51,20 @@ namespace Librame.AspNetCore.Identity
             userManager.NotNull(nameof(userManager));
             userStore.NotNull(nameof(userStore));
 
-            await userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+            await userStore.SetUserNameAsync(user, email, cancellationToken).ConfigureAwait();
 
             if (!userManager.SupportsUserEmail)
                 throw new NotSupportedException("The identity builder requires a user store with email support.");
 
             var emailStore = (IUserEmailStore<TUser>)userStore;
-            await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAndWaitAsync();
+            await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAwait();
 
-            await user.PopulateCreationAsync(clock).ConfigureAndResultAsync();
+            await user.PopulateCreationAsync(clock).ConfigureAwait();
 
             if (password.IsNotEmpty())
-                return await userManager.CreateAsync(user, password).ConfigureAndResultAsync();
+                return await userManager.CreateAsync(user, password).ConfigureAwait();
 
-            return await userManager.CreateAsync(user).ConfigureAndResultAsync();
+            return await userManager.CreateAsync(user).ConfigureAwait();
         }
 
     }

@@ -15,8 +15,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Encodings.Web;
 
@@ -24,28 +22,30 @@ namespace Librame.AspNetCore.Identity.Api
 {
     using AspNetCore.Api;
     using AspNetCore.Identity.Api.Models;
-    using AspNetCore.Identity.Api.ModelTypes;
     using AspNetCore.Identity.Api.Resources;
+    using AspNetCore.Identity.Api.Types;
+    using AspNetCore.Identity.Builders;
     using AspNetCore.Identity.Stores;
     using Extensions;
     using Extensions.Core.Combiners;
-    using Extensions.Core.Identifiers;
     using Extensions.Core.Localizers;
     using Extensions.Core.Services;
     using Extensions.Data.Stores;
     using Extensions.Network.Services;
 
-    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-    internal class IdentityGraphApiMutation<TUser, TGenId, TCreatedBy> : ObjectGraphType, IGraphApiMutation
-        where TUser : class, IIdentifier<TGenId>, ICreation<TCreatedBy>
+    /// <summary>
+    /// 身份图形 API 变化。
+    /// </summary>
+    /// <typeparam name="TUser">指定的用户类型。</typeparam>
+    /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
+    /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
+    public class IdentityGraphApiMutation<TUser, TGenId, TCreatedBy> : GraphApiMutationBase
+        where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TCreatedBy : IEquatable<TCreatedBy>
     {
         [InjectionService]
-        private ILogger<IdentityGraphApiMutation<TUser, TGenId, TCreatedBy>> _logger = null;
-
-        [InjectionService]
-        private IClockService _clock = null;
+        private IClockService _clockService = null;
 
         [InjectionService]
         private IEmailService _emailService = null;
@@ -54,7 +54,7 @@ namespace Librame.AspNetCore.Identity.Api
         private ServiceFactory _serviceFactory = null;
 
         [InjectionService]
-        private IEnhancedStringLocalizer<RegisterApiModelResource> _localizer = null;
+        private IEnhancedStringLocalizer<RegisterModelResource> _localizer = null;
 
         [InjectionService]
         private IUserStore<TUser> _userStore = null;
@@ -62,29 +62,45 @@ namespace Librame.AspNetCore.Identity.Api
         [InjectionService]
         private SignInManager<TUser> _signInManager = null;
 
+        [InjectionService]
+        private IdentityApiBuilderDependency _dependency = null;
 
-        private readonly IIdentityStoreIdentifierGenerator<TGenId> _identifierGenerator = null;
+
+        private readonly IIdentityStoreIdentityGenerator<TGenId> _identityGenerator = null;
         private readonly UserManager<TUser> _userManager;
 
 
-        public IdentityGraphApiMutation(IInjectionService injectionService)
+        /// <summary>
+        /// 构造一个身份图形 API 变化。
+        /// </summary>
+        /// <param name="injectionService">给定的 <see cref="IInjectionService"/>。</param>
+        /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
+        public IdentityGraphApiMutation(IInjectionService injectionService, ILoggerFactory loggerFactory)
+            : base(injectionService, loggerFactory)
         {
-            injectionService.Inject(this);
+            _identityGenerator = (IIdentityStoreIdentityGenerator<TGenId>)_serviceFactory
+                .GetRequiredService<IStoreIdentityGenerator>();
 
-            _identifierGenerator = _serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser, TGenId>();
             _userManager = _signInManager.UserManager;
 
             Name = nameof(ISchema.Mutation);
 
             AddLoginTypeField();
-
             AddRegisterTypeField();
         }
 
 
         private void AddLoginTypeField()
         {
-            FieldAsync<LoginType>
+            // "query": "mutation($user:LoginInput!) { login(user: $user) { succeeded isLockedOut isNotAllowed requiresTwoFactor }}",
+            // "variables": {
+            //     "user": {
+            //         "username": "",
+            //         "password": "",
+            //         "rememberMe": true
+            //     }
+            // }
+            FieldAsync<SignInResultType>
             (
                 name: "login",
                 arguments: new QueryArguments(
@@ -92,91 +108,76 @@ namespace Librame.AspNetCore.Identity.Api
                 ),
                 resolve: async context =>
                 {
-                    var model = context.GetArgument<LoginApiModel>("user");
+                    var model = context.GetArgument<LoginModel>("user");
 
-                    var result = await _signInManager.PasswordSignInAsync(model.Email,
-                        model.Password, model.RememberMe, lockoutOnFailure: false).ConfigureAndResultAsync();
+                    var result = await _signInManager.PasswordSignInAsync(model.Username,
+                        model.Password, model.RememberMe, lockoutOnFailure: false)
+                    .ConfigureAwait();
 
-                    if (result.Succeeded)
-                    {
-                        model.Message = "User logged in.";
-                    }
-                    if (result.RequiresTwoFactor)
-                    {
-                        model.Message = "Need requires two factor.";
-                        model.RedirectUrl = "./LoginWith2fa";
-                    }
-                    if (result.IsLockedOut)
-                    {
-                        model.Message = "User account locked out.";
-                        model.RedirectUrl = "./Lockout";
-                    }
-                    else
-                    {
-                        model.IsError = true;
-                        model.Message = "Invalid login attempt.";
-                    }
-
-                    return model.Log(_logger);
+                    return result;
                 }
             );
         }
 
         private void AddRegisterTypeField()
         {
-            FieldAsync<RegisterType>
+            // "query": "mutation($user:RegisterInput!) { register(user: $user) { succeeded errors { code description } }}",
+            // "variables": {
+            //     "user": {
+            //         "username": "",
+            //         "password": "",
+            //         "confirmEmailUrl": ""
+            //     }
+            // }
+            FieldAsync<IdentityResultType>
             (
-                name: "addUser",
+                name: "register",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<RegisterInputType>> { Name = "user" }
                 ),
                 resolve: async context =>
                 {
-                    var model = context.GetArgument<RegisterApiModel>("user");
+                    var model = context.GetArgument<RegisterModel>("user");
 
                     var user = typeof(TUser).EnsureCreate<TUser>();
-
-                    var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
-                    await user.SetIdAsync(userId).ConfigureAndResultAsync();
+                    user.Id = await _identityGenerator.GenerateUserIdAsync().ConfigureAwait();
 
                     var result = await _userManager.CreateUserByEmail<TUser, TCreatedBy>(_userStore,
-                        _clock, user, model.Email, model.Password).ConfigureAndResultAsync();
+                        _clockService, user, model.Username, model.Password).ConfigureAwait();
 
                     if (result.Succeeded)
                     {
-                        model.Message = "User created a new account with password.";
-                        model.UserId = userId.ToString();
+                        var userIdString = user.Id.ToString();
 
                         // 确认邮件
-                        string code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAndResultAsync();
-
-                        var confirmEmailLocator = model.ConfirmEmailUrl.AsUriCombinerCore();
-                        confirmEmailLocator.ChangeQueries(queries =>
+                        if (_dependency.SupportConfirmEmail)
                         {
-                            queries.AddOrUpdate("userId", model.UserId, (key, value) => model.UserId);
-                            queries.AddOrUpdate("code", code, (key, value) => code);
-                        });
-                        var confirmEmailExternalLink = HtmlEncoder.Default.Encode(confirmEmailLocator.ToString());
+                            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait();
 
-                        await _emailService.SendAsync(model.Email,
-                            _localizer.GetString(r => r.ConfirmYourEmail)?.Value,
-                            _localizer.GetString(r => r.ConfirmYourEmailFormat, confirmEmailExternalLink)?.Value).ConfigureAndWaitAsync();
-                        //await userStore.GetUserEmailStore(signInManager).SetEmailAsync(user, model.Email, default);
+                            var combiner = model.ConfirmEmailUrl.AsUriCombinerCore();
+                            combiner.ChangeQueries(queries =>
+                            {
+                                queries.AddOrUpdate("userId", userIdString, (key, value) => userIdString);
+                                queries.AddOrUpdate("code", code, (key, value) => code);
+                            });
+                            var externalLink = HtmlEncoder.Default.Encode(combiner.ToString());
 
-                        await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
-                        _logger.LogInformation(3, "User created a new account with password.");
+                            await _emailService.SendAsync(model.Username,
+                                _localizer.GetString(r => r.ConfirmYourEmail)?.Value,
+                                _localizer.GetString(r => r.ConfirmYourEmailFormat, externalLink)?.Value)
+                            .ConfigureAwait();
+                            //await userStore.GetUserEmailStore(signInManager).SetEmailAsync(user, model.Email, default);
+                        }
+
+                        await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAwait();
+                        Logger.LogInformation(3, "User created a new account with password.");
                     }
 
-                    IEnumerable<IdentityError> errors = result.Errors;
-                    if (errors.IsNotEmpty())
+                    return new IdentityResultModel
                     {
-                        model.Errors.AddRange(errors.Select(error =>
-                        {
-                            return new Exception($"Code: {error.Code}, Description: {error.Description}");
-                        }));
-                    }
-
-                    return model.Log(_logger);
+                        Succeeded = result.Succeeded,
+                        Errors = result.Errors.ToList()
+                    };
                 }
             );
         }

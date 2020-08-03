@@ -66,7 +66,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples.Controllers
             var vm = new ErrorViewModel();
 
             // retrieve error details from identityserver
-            var message = await _interaction.GetErrorContextAsync(errorId).ConfigureAndResultAsync();
+            var message = await _interaction.GetErrorContextAsync(errorId).ConfigureAwait();
             if (message != null)
             {
                 vm.Error = message;

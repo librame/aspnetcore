@@ -66,10 +66,10 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             _logger = logger;
         }
 
-
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         public override async Task<IActionResult> OnPost(string returnUrl = null)
         {
-            await _signInManager.SignOutAsync().ConfigureAndWaitAsync();
+            await _signInManager.SignOutAsync().ConfigureAwait();
             _logger.LogInformation("User logged out.");
             if (returnUrl != null)
             {

@@ -36,12 +36,18 @@ namespace Librame.AspNetCore.Api.Applications
         /// 限定的请求路径。
         /// </summary>
         public override PathString RestrictRequestPath
-            => "/api/graphql";
+            => ApiSettings.Preference.RestrictRequestPath;
 
         /// <summary>
-        /// 限定的请求方法列表（默认仅支持 POST）。
+        /// 限定的请求方法列表。
         /// </summary>
         public override IReadOnlyList<string> RestrictRequestMethods
-            => new List<string> { "POST" };
+            => ApiSettings.Preference.RestrictRequestMethods;
+
+        /// <summary>
+        /// 响应内容类型。
+        /// </summary>
+        public override string ResponseContentType
+            => ApiSettings.Preference.ResponseContentType;
     }
 }

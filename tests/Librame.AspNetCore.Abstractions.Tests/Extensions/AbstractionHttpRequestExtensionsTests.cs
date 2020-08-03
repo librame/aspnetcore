@@ -25,7 +25,7 @@ namespace Microsoft.AspNetCore.Http
             dict.Add("X-Original-For", IPAddress.Loopback.ToString() + "," + IPAddress.IPv6Loopback.ToString());
 
             var headers = new HeaderDictionary(dict);
-            (IPAddress v4, IPAddress v6) = await headers.GetIPv4AndIPv6AddressAsync().ConfigureAndResultAsync();
+            (IPAddress v4, IPAddress v6) = await headers.GetIPv4AndIPv6AddressAsync().ConfigureAwait();
             Assert.NotNull(v4);
             Assert.NotNull(v6);
             Assert.False(v4.IsNullOrNone());

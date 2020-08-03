@@ -173,7 +173,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder">给定的 <see cref="IIdentityServerBuilderDecorator"/>。</param>
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
         public static IIdentityServerBuilderDecorator AddAccessorStores<TIdentityServerAccessor>(this IIdentityServerBuilderDecorator builder)
-            where TIdentityServerAccessor : DbContext, IIdentityServerDbContextAccessor
+            where TIdentityServerAccessor : DbContext, IIdentityServerAccessor
             => builder.AddAccessorStores<TIdentityServerAccessor, TIdentityServerAccessor>();
 
         /// <summary>
@@ -185,8 +185,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>返回 <see cref="IIdentityServerBuilderDecorator"/>。</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         public static IIdentityServerBuilderDecorator AddAccessorStores<TConfigurationAccessor, TPersistedGrantAccessor>(this IIdentityServerBuilderDecorator builder)
-            where TConfigurationAccessor : DbContext, IConfigurationDbContextAccessor
-            where TPersistedGrantAccessor : DbContext, IPersistedGrantDbContextAccessor
+            where TConfigurationAccessor : DbContext, IConfigurationAccessor
+            where TPersistedGrantAccessor : DbContext, IPersistedGrantAccessor
         {
             builder.NotNull(nameof(builder));
 

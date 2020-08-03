@@ -85,8 +85,8 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync(string phoneNumber)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User).ConfigureAndResultAsync();
-            await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber).ConfigureAndWaitAsync();
+            var user = await _userManager.GetUserAsync(HttpContext.User).ConfigureAwait();
+            await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber).ConfigureAwait();
 
             if (phoneNumber.IsEmpty())
                 return RedirectToPage("Error");
@@ -104,13 +104,13 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
             }
 
             // Generate the token and send it
-            var user = await _userManager.GetUserAsync(HttpContext.User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(HttpContext.User).ConfigureAwait();
             if (user != null)
             {
-                var result = await _userManager.ChangePhoneNumberAsync(user, Input.Phone, Input.Code).ConfigureAndResultAsync();
+                var result = await _userManager.ChangePhoneNumberAsync(user, Input.Phone, Input.Code).ConfigureAwait();
                 if (result.Succeeded)
                 {
-                    await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
+                    await _signInManager.RefreshSignInAsync(user).ConfigureAwait();
 
                     StatusMessage = _indexLocalizer.GetString(r => r.AddPhoneSuccess).Value;
                     return RedirectToPage();

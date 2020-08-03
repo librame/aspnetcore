@@ -62,7 +62,7 @@ namespace Librame.AspNetCore.Web.Applications
         /// <returns>返回 <see cref="Task{IActionResult}"/>。</returns>
         protected virtual async Task<IActionResult> VerifyLoginUserActionResult(Func<TUser, IActionResult> actionResultFactory)
         {
-            (TUser user, IActionResult result) = await GetLoginUserAsync().ConfigureAndResultAsync();
+            (TUser user, IActionResult result) = await GetLoginUserAsync().ConfigureAwait();
 
             if (result.IsNotNull())
                 return result;
@@ -77,17 +77,17 @@ namespace Librame.AspNetCore.Web.Applications
         /// <returns>返回 <see cref="Task{IActionResult}"/>。</returns>
         protected virtual async Task<IActionResult> VerifyLoginUserActionResult(Func<TUser, Task<IActionResult>> actionResultFactory)
         {
-            (TUser user, IActionResult result) = await GetLoginUserAsync().ConfigureAndResultAsync();
+            (TUser user, IActionResult result) = await GetLoginUserAsync().ConfigureAwait();
 
             if (result.IsNotNull())
                 return result;
 
-            return await (actionResultFactory?.Invoke(user)).ConfigureAndResultAsync();
+            return await (actionResultFactory?.Invoke(user)).ConfigureAwait();
         }
 
         private async Task<(TUser user, IActionResult result)> GetLoginUserAsync()
         {
-            var user = await UserManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await UserManager.GetUserAsync(User).ConfigureAwait();
             if (user.IsNull())
             {
                 var options = Application.ServiceFactory.GetRequiredService<IOptions<CookieAuthenticationOptions>>().Value;

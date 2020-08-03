@@ -63,7 +63,7 @@ namespace Librame.AspNetCore.Identity.Web.Mvc.Examples
                         sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
                 })
                 .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
-                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
+                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentityGenerator>()
                 .AddStoreInitializer<GuidIdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {

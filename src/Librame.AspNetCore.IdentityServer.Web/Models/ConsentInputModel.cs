@@ -31,5 +31,10 @@ namespace Librame.AspNetCore.IdentityServer.Web.Models
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string ReturnUrl { get; set; }
+
+        /// <summary>
+        /// 描述。
+        /// </summary>
+        public string Description { get; set; }
     }
 }

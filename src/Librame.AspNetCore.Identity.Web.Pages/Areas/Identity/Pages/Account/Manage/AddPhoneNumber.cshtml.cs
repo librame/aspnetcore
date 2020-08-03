@@ -84,10 +84,10 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
             }
 
             // Generate the token and send it
-            var user = await _userManager.GetUserAsync(HttpContext.User).ConfigureAndResultAsync();
-            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, Input.Phone).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(HttpContext.User).ConfigureAwait();
+            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, Input.Phone).ConfigureAwait();
 
-            await _smsService.SendAsync(Input.Phone, _addPhoneNumberLocalizer.GetString(r => r.YourSecurityCodeIs).Value + code).ConfigureAndWaitAsync();
+            await _smsService.SendAsync(Input.Phone, _addPhoneNumberLocalizer.GetString(r => r.YourSecurityCodeIs).Value + code).ConfigureAwait();
 
             return RedirectToPage("./VerifyPhoneNumber", new { phoneNumber = Input.Phone });
         }

@@ -43,10 +43,13 @@ namespace Librame.AspNetCore.Api.Builders
         {
             AddService<IDocumentExecuter, DocumentExecuter>();
             AddService<IDocumentWriter, DocumentWriter>();
-            AddService<IGraphApiMutation, GraphApiMutation>();
-            AddService<IGraphApiQuery, GraphApiQuery>();
-            AddService<IGraphApiSubscription, GraphApiSubscription>();
+
+            AddService<IGraphApiMutation, DefaultGraphApiMutation>();
+            AddService<IGraphApiQuery, DefaultGraphApiQuery>();
+            AddService<IGraphApiSubscription, DefaultGraphApiSubscription>();
             AddService<IGraphApiSchema, GraphApiSchema>();
+
+            AddService<IApiRequest, GraphApiRequest>();
         }
 
 

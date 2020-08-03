@@ -80,7 +80,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
 
         public override async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -89,20 +89,21 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
             return Page();
         }
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         public override async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAndResultAsync();
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await _userManager.SetTwoFactorEnabledAsync(user, false).ConfigureAndResultAsync();
-            await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAndResultAsync();
-            var userId = await _userManager.GetUserIdAsync(user).ConfigureAndResultAsync();
+            await _userManager.SetTwoFactorEnabledAsync(user, false).ConfigureAwait();
+            await _userManager.ResetAuthenticatorKeyAsync(user).ConfigureAwait();
+            var userId = await _userManager.GetUserIdAsync(user).ConfigureAwait();
             _logger.LogInformation("User with ID '{UserId}' has reset their authentication app key.", userId);
 
-            await _signInManager.RefreshSignInAsync(user).ConfigureAndWaitAsync();
+            await _signInManager.RefreshSignInAsync(user).ConfigureAwait();
 
             StatusMessage = _statusLocalizer.GetString(r => r.ResetAuthenticator)?.ToString();
 

@@ -83,7 +83,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
         [SuppressMessage("Design", "CA1031:不捕获常规异常类型")]
         private async Task<bool> BaseHandleRequestAsync()
         {
-            if (!await ShouldHandleRequestAsync().ConfigureAndResultAsync())
+            if (!await ShouldHandleRequestAsync().ConfigureAwait())
             {
                 return false;
             }
@@ -94,7 +94,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
 
             try
             {
-                var authResult = await HandleRemoteAuthenticateAsync().ConfigureAndResultAsync();
+                var authResult = await HandleRemoteAuthenticateAsync().ConfigureAwait();
                 if (authResult == null)
                 {
                     exception = new InvalidOperationException("Invalid return state, unable to redirect.");
@@ -127,7 +127,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                 {
                     Properties = properties
                 };
-                await Events.RemoteFailure(errorContext).ConfigureAndWaitAsync();
+                await Events.RemoteFailure(errorContext).ConfigureAwait();
 
                 if (errorContext.Result != null)
                 {
@@ -163,7 +163,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
             // RemoteAuthenticationHandler<OpenIdConnectOptions>.AuthSchemeKey
             ticketContext.Properties.Items[".AuthScheme"] = Scheme.Name;
 
-            await Events.TicketReceived(ticketContext).ConfigureAndWaitAsync();
+            await Events.TicketReceived(ticketContext).ConfigureAwait();
 
             if (ticketContext.Result != null)
             {
@@ -179,7 +179,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                 }
             }
 
-            await Context.SignInAsync(SignInScheme, ticketContext.Principal, ticketContext.Properties).ConfigureAndWaitAsync();
+            await Context.SignInAsync(SignInScheme, ticketContext.Principal, ticketContext.Properties).ConfigureAwait();
 
             // 解决当配置了 OpenIdConnectOptions.CallbackPath 路径却重定向到 AuthenticationHandler<OpenIdConnectOptions>.OriginalPath (默认路径)的问题
             if (ticketContext.Properties.Items.TryGetValue(OpenIdConnectDefaults.RedirectUriForCodePropertiesKey, out string callbackUri)
@@ -239,7 +239,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
               && Request.ContentType.StartsWith("application/x-www-form-urlencoded", StringComparison.OrdinalIgnoreCase)
               && Request.Body.CanRead)
             {
-                var form = await Request.ReadFormAsync().ConfigureAndResultAsync();
+                var form = await Request.ReadFormAsync().ConfigureAwait();
                 authorizationResponse = new OpenIdConnectMessage(form.Select(pair => new KeyValuePair<string, string[]>(pair.Key, pair.Value)));
             }
 
@@ -258,7 +258,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
             {
                 properties = ReadPropertiesAndClearState(authorizationResponse);
 
-                var messageReceivedContext = await RunMessageReceivedEventAsync(authorizationResponse, properties).ConfigureAndResultAsync();
+                var messageReceivedContext = await RunMessageReceivedEventAsync(authorizationResponse, properties).ConfigureAwait();
                 if (messageReceivedContext.Result != null)
                 {
                     return messageReceivedContext.Result;
@@ -276,7 +276,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
 
                         // 解决当请求路径是 CallbackPath 且未认证时，会抛出 OpenIdConnectAuthenticationHandler: message.State is null or empty. 的异常
                         // ShouldHandleRequestAsync() => Options.CallbackPath == Request.Path
-                        if (Options.SkipUnrecognizedRequests || await ShouldHandleRequestAsync().ConfigureAndResultAsync())
+                        if (Options.SkipUnrecognizedRequests || await ShouldHandleRequestAsync().ConfigureAwait())
                         {
                             return HandleRequestResult.SkipHandler();
                         }
@@ -314,7 +314,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                     // Visit https://tools.ietf.org/html/rfc6749#section-4.1.2.1 for more information.
                     if (string.Equals(authorizationResponse.Error, "access_denied", StringComparison.Ordinal))
                     {
-                        var result = await HandleAccessDeniedErrorAsync(properties).ConfigureAndResultAsync();
+                        var result = await HandleAccessDeniedErrorAsync(properties).ConfigureAwait();
                         if (!result.None)
                         {
                             return result;
@@ -327,7 +327,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                 if (_configuration == null && Options.ConfigurationManager != null)
                 {
                     Logger.UpdatingConfiguration();
-                    _configuration = await Options.ConfigurationManager.GetConfigurationAsync(Context.RequestAborted).ConfigureAndResultAsync();
+                    _configuration = await Options.ConfigurationManager.GetConfigurationAsync(Context.RequestAborted).ConfigureAwait();
                 }
 
                 PopulateSessionProperties(authorizationResponse, properties);
@@ -349,7 +349,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                         nonce = ReadNonceCookie(nonce);
                     }
 
-                    var tokenValidatedContext = await RunTokenValidatedEventAsync(authorizationResponse, null, user, properties, jwt, nonce).ConfigureAndResultAsync();
+                    var tokenValidatedContext = await RunTokenValidatedEventAsync(authorizationResponse, null, user, properties, jwt, nonce).ConfigureAwait();
                     if (tokenValidatedContext.Result != null)
                     {
                         return tokenValidatedContext.Result;
@@ -374,7 +374,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                 // Authorization Code or Hybrid flow
                 if (!string.IsNullOrEmpty(authorizationResponse.Code))
                 {
-                    var authorizationCodeReceivedContext = await RunAuthorizationCodeReceivedEventAsync(authorizationResponse, user, properties, jwt).ConfigureAndResultAsync();
+                    var authorizationCodeReceivedContext = await RunAuthorizationCodeReceivedEventAsync(authorizationResponse, user, properties, jwt).ConfigureAwait();
                     if (authorizationCodeReceivedContext.Result != null)
                     {
                         return authorizationCodeReceivedContext.Result;
@@ -389,10 +389,10 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
 
                     if (!authorizationCodeReceivedContext.HandledCodeRedemption)
                     {
-                        tokenEndpointResponse = await RedeemAuthorizationCodeAsync(tokenEndpointRequest).ConfigureAndResultAsync();
+                        tokenEndpointResponse = await RedeemAuthorizationCodeAsync(tokenEndpointRequest).ConfigureAwait();
                     }
 
-                    var tokenResponseReceivedContext = await RunTokenResponseReceivedEventAsync(authorizationResponse, tokenEndpointResponse, user, properties).ConfigureAndResultAsync();
+                    var tokenResponseReceivedContext = await RunTokenResponseReceivedEventAsync(authorizationResponse, tokenEndpointResponse, user, properties).ConfigureAwait();
                     if (tokenResponseReceivedContext.Result != null)
                     {
                         return tokenResponseReceivedContext.Result;
@@ -420,7 +420,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                             nonce = ReadNonceCookie(nonce);
                         }
 
-                        var tokenValidatedContext = await RunTokenValidatedEventAsync(authorizationResponse, tokenEndpointResponse, tokenEndpointUser, properties, tokenEndpointJwt, nonce).ConfigureAndResultAsync();
+                        var tokenValidatedContext = await RunTokenValidatedEventAsync(authorizationResponse, tokenEndpointResponse, tokenEndpointUser, properties, tokenEndpointJwt, nonce).ConfigureAwait();
                         if (tokenValidatedContext.Result != null)
                         {
                             return tokenValidatedContext.Result;
@@ -462,7 +462,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
 
                 if (Options.GetClaimsFromUserInfoEndpoint)
                 {
-                    return await GetUserInformationAsync(tokenEndpointResponse ?? authorizationResponse, jwt, user, properties).ConfigureAndResultAsync();
+                    return await GetUserInformationAsync(tokenEndpointResponse ?? authorizationResponse, jwt, user, properties).ConfigureAwait();
                 }
                 else
                 {
@@ -492,7 +492,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                     }
                 }
 
-                var authenticationFailedContext = await RunAuthenticationFailedEventAsync(authorizationResponse, exception).ConfigureAndResultAsync();
+                var authenticationFailedContext = await RunAuthenticationFailedEventAsync(authorizationResponse, exception).ConfigureAwait();
                 if (authenticationFailedContext.Result != null)
                 {
                     return authenticationFailedContext.Result;
@@ -624,7 +624,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                 ProtocolMessage = message,
             };
 
-            await Events.MessageReceived(context).ConfigureAndWaitAsync();
+            await Events.MessageReceived(context).ConfigureAwait();
             if (context.Result != null)
             {
                 if (context.Result.Handled)
@@ -652,7 +652,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                 Nonce = nonce,
             };
 
-            await Events.TokenValidated(context).ConfigureAndWaitAsync();
+            await Events.TokenValidated(context).ConfigureAwait();
             if (context.Result != null)
             {
                 if (context.Result.Handled)
@@ -701,7 +701,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
             };
             typeof(AuthorizationCodeReceivedContext).GetProperty(nameof(context.Backchannel)).SetValue(context, Backchannel);
 
-            await Events.AuthorizationCodeReceived(context).ConfigureAndWaitAsync();
+            await Events.AuthorizationCodeReceived(context).ConfigureAwait();
             if (context.Result != null)
             {
                 if (context.Result.Handled)
@@ -730,7 +730,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                 TokenEndpointResponse = tokenEndpointResponse,
             };
 
-            await Events.TokenResponseReceived(context).ConfigureAndWaitAsync();
+            await Events.TokenResponseReceived(context).ConfigureAwait();
             if (context.Result != null)
             {
                 if (context.Result.Handled)
@@ -755,7 +755,7 @@ namespace Librame.AspNetCore.Authentication.OpenIdConnect
                 Exception = exception
             };
 
-            await Events.AuthenticationFailed(context).ConfigureAndWaitAsync();
+            await Events.AuthenticationFailed(context).ConfigureAwait();
             if (context.Result != null)
             {
                 if (context.Result.Handled)

@@ -9,9 +9,9 @@ namespace Librame.AspNetCore.IdentityServer.Web.Models
     public class ScopeViewModel
     {
         /// <summary>
-        /// 名称。
+        /// 值。
         /// </summary>
-        public string Name { get; set; }
+        public string Value { get; set; }
 
         /// <summary>
         /// 显示名称。

@@ -14,7 +14,6 @@ using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Stores
 {
-    using Extensions.Data;
     using Extensions.Data.Stores;
 
     /// <summary>
@@ -77,55 +76,5 @@ namespace Librame.AspNetCore.Identity.Stores
         /// </summary>
         /// <value>返回 <see cref="IQueryable{TUserToken}"/>。</value>
         IQueryable<TUserToken> UserTokens { get; }
-
-
-        /// <summary>
-        /// 尝试创建角色集合。
-        /// </summary>
-        /// <param name="roles">给定的 <typeparamref name="TRole"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        OperationResult TryCreate(params TRole[] roles);
-
-        /// <summary>
-        /// 尝试创建角色声明集合。
-        /// </summary>
-        /// <param name="roleClaims">给定的 <typeparamref name="TRoleClaim"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        OperationResult TryCreate(params TRoleClaim[] roleClaims);
-
-        /// <summary>
-        /// 尝试创建用户集合。
-        /// </summary>
-        /// <param name="users">给定的 <typeparamref name="TUser"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        OperationResult TryCreate(params TUser[] users);
-
-        /// <summary>
-        /// 尝试创建用户声明集合。
-        /// </summary>
-        /// <param name="userClaims">给定的 <typeparamref name="TUserClaim"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        OperationResult TryCreate(params TUserClaim[] userClaims);
-
-        /// <summary>
-        /// 尝试创建用户登入集合。
-        /// </summary>
-        /// <param name="userLogins">给定的 <typeparamref name="TUserLogin"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        OperationResult TryCreate(params TUserLogin[] userLogins);
-
-        /// <summary>
-        /// 尝试创建用户角色集合。
-        /// </summary>
-        /// <param name="userRoles">给定的 <typeparamref name="TUserRole"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        OperationResult TryCreate(params TUserRole[] userRoles);
-
-        /// <summary>
-        /// 尝试创建用户令牌集合。
-        /// </summary>
-        /// <param name="userTokens">给定的 <typeparamref name="TUserToken"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        OperationResult TryCreate(params TUserToken[] userTokens);
     }
 }

@@ -114,7 +114,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         private readonly ILogger<ExternalLoginPageModel> _logger;
         private readonly IClockService _clock;
         private readonly IStringLocalizer<ErrorMessageResource> _errorLocalizer;
-        private readonly IIdentityStoreIdentifierGenerator<TGenId> _identifierGenerator;
+        private readonly IIdentityStoreIdentityGenerator<TGenId> _identifierGenerator;
 
 
         public ExternalLoginPageModel(
@@ -123,7 +123,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             ILogger<ExternalLoginPageModel> logger,
             IClockService clock,
             IStringLocalizer<ErrorMessageResource> errorLocalizer,
-            ServiceFactory serviceFactory)
+            IStoreIdentityGenerator identityGenerator)
         {
             _signInManager = signInManager.NotNull(nameof(signInManager));
             _userStore = userStore.NotNull(nameof(userStore));
@@ -131,7 +131,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             _clock = clock.NotNull(nameof(clock));
             _errorLocalizer = errorLocalizer.NotNull(nameof(errorLocalizer));
 
-            _identifierGenerator = serviceFactory.GetIdentityStoreIdentifierGeneratorByUser<TUser, TGenId>();
+            _identifierGenerator = (IIdentityStoreIdentityGenerator<TGenId>)identityGenerator;
             _userManager = signInManager.UserManager;
         }
 
@@ -149,6 +149,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             return new ChallengeResult(provider, properties);
         }
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         public override async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
@@ -158,7 +159,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
-            var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAndResultAsync();
+            var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAwait();
             if (info == null)
             {
                 ErrorMessage = _errorLocalizer.GetString(r => r.LoadingExternalLogin)?.ToString();
@@ -166,7 +167,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true).ConfigureAndResultAsync();
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true).ConfigureAwait();
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
@@ -194,12 +195,13 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             }
         }
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         public override async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
             // Get the information about the user from the external login provider
-            var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAndResultAsync();
+            var info = await _signInManager.GetExternalLoginInfoAsync().ConfigureAwait();
             if (info == null)
             {
                 ErrorMessage = _errorLocalizer.GetString(r => r.LoadingExternalLoginWhenConfirmation)?.ToString();
@@ -209,19 +211,17 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-
-                var userId = await _identifierGenerator.GenerateUserIdAsync().ConfigureAndResultAsync();
-                await user.SetIdAsync(userId).ConfigureAndResultAsync();
+                user.Id = await _identifierGenerator.GenerateUserIdAsync().ConfigureAwait();
 
                 var result = await _userManager.CreateUserByEmail<TUser, TCreatedBy>(_userStore,
-                    _clock, user, Input.Email).ConfigureAndResultAsync();
+                    _clock, user, Input.Email).ConfigureAwait();
 
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user, info).ConfigureAndResultAsync();
+                    result = await _userManager.AddLoginAsync(user, info).ConfigureAwait();
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAndWaitAsync();
+                        await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAwait();
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return LocalRedirect(returnUrl);
                     }
@@ -238,6 +238,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             return Page();
         }
 
+        [SuppressMessage("Globalization", "CA1303:请不要将文本作为本地化参数传递", Justification = "<挂起>")]
         private static TUser CreateUser()
         {
             try

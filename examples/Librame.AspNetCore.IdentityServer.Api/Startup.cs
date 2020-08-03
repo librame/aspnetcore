@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
@@ -32,7 +33,8 @@ namespace Librame.AspNetCore.IdentityServer.Api
                     options.Authority = "https://localhost:44303";
                     options.RequireHttpsMetadata = true;
                     options.Audience = "Api";
-                });
+                })
+                .AddIdentityCookies();
 
             services.AddLibrameCore()
                 //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
@@ -47,7 +49,8 @@ namespace Librame.AspNetCore.IdentityServer.Api
                         sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
                 })
                 .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
-                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentifierGenerator>()
+                .AddStoreHub<IdentityStoreHub>()
+                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentityGenerator>()
                 .AddStoreInitializer<GuidIdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
@@ -80,7 +83,7 @@ namespace Librame.AspNetCore.IdentityServer.Api
                 routes.MapControllers();
             });
 
-            // api/graphql
+            // /api/graphql
             app.UseLibrameCore()
                 .UseApi();
         }

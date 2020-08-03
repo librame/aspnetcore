@@ -131,14 +131,14 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
                 return Page();
             }
 
-            var user = await _userManager.FindByNameAsync(Input.Email).ConfigureAndResultAsync();
+            var user = await _userManager.FindByNameAsync(Input.Email).ConfigureAwait();
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password).ConfigureAndResultAsync();
+            var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password).ConfigureAwait();
             if (result.Succeeded)
             {
                 return RedirectToPage("./ResetPasswordConfirmation");

@@ -10,6 +10,10 @@
 
 #endregion
 
+using GraphQL.Validation.Complexity;
+using Microsoft.AspNetCore.Http;
+using System;
+
 namespace Librame.AspNetCore.Api.Builders
 {
     using Extensions.Core.Builders;
@@ -28,5 +32,29 @@ namespace Librame.AspNetCore.Api.Builders
         {
         }
 
+
+        /// <summary>
+        /// 构建用户上下文（<see cref="HttpContext"/> 可为空）。
+        /// </summary>
+        public Func<HttpContext, object> BuildUserContext { get; set; }
+            = context => new GraphUserContext
+            {
+                User = context?.User
+            };
+
+        /// <summary>
+        /// 启用指标（默认启用）。
+        /// </summary>
+        public bool EnableMetrics { get; set; }
+            = true;
+
+        /// <summary>
+        /// 复杂度配置。
+        /// </summary>
+        public ComplexityConfiguration Complexity { get; set; }
+            = new ComplexityConfiguration
+            {
+                MaxDepth = 15
+            };
     }
 }

@@ -9,12 +9,11 @@ namespace Librame.AspNetCore.IdentityServer.Tests
     using AspNetCore.IdentityServer.Accessors;
     using Extensions.Data.Accessors;
     using Extensions.Data.Collections;
-    using Extensions.Data.Stores;
 
-    public class TestStoreHub : IdentityStoreHub<IdentityServerDbContextAccessor, Guid, int, Guid>
+    public class TestStoreHub : IdentityStoreHub<IdentityServerDbContextAccessor>
     {
-        public TestStoreHub(IStoreInitializer initializer, IAccessor accessor)
-            : base(initializer, accessor)
+        public TestStoreHub(IAccessor accessor)
+            : base(accessor)
         {
         }
 
@@ -34,6 +33,19 @@ namespace Librame.AspNetCore.IdentityServer.Tests
 
         public IList<IdentityResource> GetIdentityResources()
             => Accessor.IdentityResources.ToList();
+
+
+        public TestStoreHub UseWriteDbConnection()
+        {
+            Accessor.ChangeConnectionString(t => t.WritingConnectionString);
+            return this;
+        }
+
+        public TestStoreHub UseDefaultDbConnection()
+        {
+            Accessor.ChangeConnectionString(t => t.DefaultConnectionString);
+            return this;
+        }
 
     }
 }

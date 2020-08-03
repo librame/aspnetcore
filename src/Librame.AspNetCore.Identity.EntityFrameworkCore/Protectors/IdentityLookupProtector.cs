@@ -11,14 +11,13 @@
 #endregion
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace Librame.AspNetCore.Identity.Protectors
 {
     using Extensions;
-    using Extensions.Core.Builders;
-    using Extensions.Core.Identifiers;
+    using Extensions.Core.Tokens;
     using Extensions.Encryption.Services;
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
@@ -26,36 +25,38 @@ namespace Librame.AspNetCore.Identity.Protectors
     {
         private readonly ILookupProtectorKeyRing _keyRing;
         private readonly ISymmetricService _symmetric;
-        private readonly CoreBuilderOptions _coreOptions;
+
+        private readonly Encoding _encoding;
 
 
         public IdentityLookupProtector(ILookupProtectorKeyRing keyRing,
-            ISymmetricService symmetric, IOptions<CoreBuilderOptions> coreOptions)
+            ISymmetricService symmetric)
         {
             _keyRing = keyRing.NotNull(nameof(keyRing));
             _symmetric = symmetric.NotNull(nameof(symmetric));
-            _coreOptions = coreOptions.NotNull(nameof(coreOptions)).Value;
+
+            _encoding = ExtensionSettings.Preference.DefaultEncoding;
         }
 
 
         public string Protect(string keyId, string data)
         {
-            SecurityIdentifier.TryGetIdentifier(_keyRing[keyId], out var identifier);
+            SecurityToken.TryGetToken(_keyRing[keyId], out var token);
 
-            var buffer = data.FromEncodingString(_coreOptions.Encoding);
-            buffer = _symmetric.EncryptAes(buffer, identifier);
+            var buffer = data.FromEncodingString(_encoding);
+            buffer = _symmetric.EncryptAes(buffer, token);
 
             return buffer.AsBase64String();
         }
 
         public string Unprotect(string keyId, string data)
         {
-            SecurityIdentifier.TryGetIdentifier(_keyRing[keyId], out var identifier);
+            SecurityToken.TryGetToken(_keyRing[keyId], out var token);
 
             var buffer = data.FromBase64String();
-            buffer = _symmetric.DecryptAes(buffer, identifier);
+            buffer = _symmetric.DecryptAes(buffer, token);
 
-            return buffer.AsEncodingString(_coreOptions.Encoding);
+            return buffer.AsEncodingString(_encoding);
         }
 
     }

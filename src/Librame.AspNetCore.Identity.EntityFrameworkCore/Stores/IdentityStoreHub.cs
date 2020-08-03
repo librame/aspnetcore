@@ -10,14 +10,12 @@
 
 #endregion
 
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Stores
 {
     using AspNetCore.Identity.Accessors;
-    using Extensions.Data;
     using Extensions.Data.Accessors;
     using Extensions.Data.Stores;
 
@@ -29,10 +27,9 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 构造一个身份存储中心。
         /// </summary>
-        /// <param name="initializer">给定的 <see cref="IStoreInitializer"/>。</param>
         /// <param name="accessor">给定的 <see cref="IAccessor"/>。</param>
-        public IdentityStoreHub(IStoreInitializer initializer, IAccessor accessor)
-            : base(initializer, accessor)
+        public IdentityStoreHub(IAccessor accessor)
+            : base(accessor)
         {
         }
 
@@ -45,15 +42,14 @@ namespace Librame.AspNetCore.Identity.Stores
     /// <typeparam name="TAccessor">指定的访问器类型。</typeparam>
     public class IdentityStoreHub<TAccessor> : IdentityStoreHub<TAccessor,
         Guid, int, Guid>
-        where TAccessor : IdentityDbContextAccessor
+        where TAccessor : class, IIdentityAccessor, IDataAccessor
     {
         /// <summary>
         /// 构造一个身份存储中心。
         /// </summary>
-        /// <param name="initializer">给定的 <see cref="IStoreInitializer"/>。</param>
         /// <param name="accessor">给定的 <see cref="IAccessor"/>。</param>
-        public IdentityStoreHub(IStoreInitializer initializer, IAccessor accessor)
-            : base(initializer, accessor)
+        public IdentityStoreHub(IAccessor accessor)
+            : base(accessor)
         {
         }
 
@@ -77,7 +73,8 @@ namespace Librame.AspNetCore.Identity.Stores
             DefaultIdentityUserRole<TGenId, TCreatedBy>,
             DefaultIdentityUserToken<TGenId, TCreatedBy>,
             TGenId, TIncremId, TCreatedBy>
-        where TAccessor : IdentityDbContextAccessor<TGenId, TIncremId, TCreatedBy>
+        where TAccessor : class, IIdentityAccessor<TGenId, TIncremId, TCreatedBy>,
+            IDataAccessor<TGenId, TIncremId, TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
         where TCreatedBy : IEquatable<TCreatedBy>
@@ -85,10 +82,9 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 构造一个身份存储中心。
         /// </summary>
-        /// <param name="initializer">给定的 <see cref="IStoreInitializer"/>。</param>
         /// <param name="accessor">给定的 <see cref="IAccessor"/>。</param>
-        public IdentityStoreHub(IStoreInitializer initializer, IAccessor accessor)
-            : base(initializer, accessor)
+        protected IdentityStoreHub(IAccessor accessor)
+            : base(accessor)
         {
         }
 
@@ -112,7 +108,8 @@ namespace Librame.AspNetCore.Identity.Stores
     public class IdentityStoreHub<TAccessor, TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy>
         : DataStoreHub<TAccessor, TGenId, TIncremId, TCreatedBy>,
         IIdentityStoreHub<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken>
-        where TAccessor : IdentityDbContextAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken, TGenId, TIncremId, TCreatedBy>
+        where TAccessor : class, IIdentityAccessor<TRole, TRoleClaim, TUser, TUserClaim, TUserLogin, TUserRole, TUserToken>,
+            IDataAccessor<TGenId, TIncremId, TCreatedBy>
         where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
         where TRoleClaim : DefaultIdentityRoleClaim<TGenId, TCreatedBy>
         where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
@@ -127,10 +124,9 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 构造一个身份存储中心。
         /// </summary>
-        /// <param name="initializer">给定的 <see cref="IStoreInitializer"/>。</param>
         /// <param name="accessor">给定的 <see cref="IAccessor"/>。</param>
-        public IdentityStoreHub(IStoreInitializer initializer, IAccessor accessor)
-            : base(initializer, accessor)
+        protected IdentityStoreHub(IAccessor accessor)
+            : base(accessor)
         {
         }
 
@@ -183,63 +179,5 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <value>返回 <see cref="IQueryable{TUserToken}"/>。</value>
         public IQueryable<TUserToken> UserTokens
             => Accessor.UserTokens;
-
-
-        /// <summary>
-        /// 尝试创建角色集合。
-        /// </summary>
-        /// <param name="roles">给定的 <typeparamref name="TRole"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        public virtual OperationResult TryCreate(params TRole[] roles)
-            => Accessor.Roles.TryCreate(roles);
-
-        /// <summary>
-        /// 尝试创建角色声明集合。
-        /// </summary>
-        /// <param name="roleClaims">给定的 <typeparamref name="TRoleClaim"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        public virtual OperationResult TryCreate(params TRoleClaim[] roleClaims)
-            => Accessor.RoleClaims.TryCreate(roleClaims);
-
-        /// <summary>
-        /// 尝试创建用户集合。
-        /// </summary>
-        /// <param name="users">给定的 <typeparamref name="TUser"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        public virtual OperationResult TryCreate(params TUser[] users)
-            => Accessor.Users.TryCreate(users);
-
-        /// <summary>
-        /// 尝试创建用户声明集合。
-        /// </summary>
-        /// <param name="userClaims">给定的 <typeparamref name="TUserClaim"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        public virtual OperationResult TryCreate(params TUserClaim[] userClaims)
-            => Accessor.UserClaims.TryCreate(userClaims);
-
-        /// <summary>
-        /// 尝试创建用户登入集合。
-        /// </summary>
-        /// <param name="userLogins">给定的 <typeparamref name="TUserLogin"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        public virtual OperationResult TryCreate(params TUserLogin[] userLogins)
-            => Accessor.UserLogins.TryCreate(userLogins);
-
-        /// <summary>
-        /// 尝试创建用户角色集合。
-        /// </summary>
-        /// <param name="userRoles">给定的 <typeparamref name="TUserRole"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        public virtual OperationResult TryCreate(params TUserRole[] userRoles)
-            => Accessor.UserRoles.TryCreate(userRoles);
-
-        /// <summary>
-        /// 尝试创建用户令牌集合。
-        /// </summary>
-        /// <param name="userTokens">给定的 <typeparamref name="TUserToken"/> 数组。</param>
-        /// <returns>返回 <see cref="OperationResult"/>。</returns>
-        public virtual OperationResult TryCreate(params TUserToken[] userTokens)
-            => Accessor.UserTokens.TryCreate(userTokens);
-
     }
 }

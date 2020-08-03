@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.IdentityServer.Accessors
 {
+    using Extensions.Data;
     using Extensions.Data.Accessors;
 
     /// <summary>
@@ -46,7 +47,7 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
     /// <typeparam name="TIncremId">指定的增量式标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     public class PersistedGrantDbContextAccessor<TGenId, TIncremId, TCreatedBy>
-        : DbContextAccessor<TGenId, TIncremId, TCreatedBy>, IPersistedGrantDbContextAccessor
+        : DataDbContextAccessor<TGenId, TIncremId, TCreatedBy>, IPersistedGrantAccessor
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
         where TCreatedBy : IEquatable<TCreatedBy>
@@ -55,7 +56,7 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
         /// 构造一个持久化授予数据库上下文访问器实例。
         /// </summary>
         /// <param name="options">给定的 <see cref="DbContextOptions"/>。</param>
-        public PersistedGrantDbContextAccessor(DbContextOptions options)
+        protected PersistedGrantDbContextAccessor(DbContextOptions options)
             : base(options)
         {
         }
@@ -70,6 +71,19 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
         /// 设备代码数据集。
         /// </summary>
         public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; }
+
+
+        /// <summary>
+        /// 持久化授予数据集管理器。
+        /// </summary>
+        public DbSetManager<PersistedGrant> PersistedGrantsManager
+            => PersistedGrants.AsManager();
+
+        /// <summary>
+        /// 设备流程代码数据集管理器。
+        /// </summary>
+        public DbSetManager<DeviceFlowCodes> DeviceFlowCodesManager
+            => DeviceFlowCodes.AsManager();
 
 
         /// <summary>
