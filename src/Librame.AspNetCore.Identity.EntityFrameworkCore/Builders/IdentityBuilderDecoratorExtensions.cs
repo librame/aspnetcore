@@ -89,7 +89,7 @@ namespace Microsoft.Extensions.DependencyInjection
             where TUser : class
         {
             if (!parentBuilder.TryGetBuilder<IDataBuilder>(out var dataBuilder))
-                throw new NotSupportedException($"You need to register to builder.{nameof(DataBuilderExtensions.AddData)}().");
+                throw new InvalidOperationException($"You need to register to builder.{nameof(DataBuilderExtensions.AddData)}().");
 
             if (!parentBuilder.ContainsBuilder<IEncryptionBuilder>())
             {
