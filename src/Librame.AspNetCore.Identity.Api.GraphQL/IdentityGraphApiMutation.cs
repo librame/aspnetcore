@@ -66,7 +66,7 @@ namespace Librame.AspNetCore.Identity.Api
         private IdentityApiBuilderDependency _dependency = null;
 
 
-        private readonly IIdentityStoreIdentityGenerator<TGenId> _identityGenerator = null;
+        private readonly IIdentityStoreIdentificationGenerator<TGenId> _identityGenerator;
         private readonly UserManager<TUser> _userManager;
 
 
@@ -78,8 +78,8 @@ namespace Librame.AspNetCore.Identity.Api
         public IdentityGraphApiMutation(IInjectionService injectionService, ILoggerFactory loggerFactory)
             : base(injectionService, loggerFactory)
         {
-            _identityGenerator = (IIdentityStoreIdentityGenerator<TGenId>)_serviceFactory
-                .GetRequiredService<IStoreIdentityGenerator>();
+            _identityGenerator = (IIdentityStoreIdentificationGenerator<TGenId>)_serviceFactory
+                .GetRequiredService<IStoreIdentificationGenerator>();
 
             _userManager = _signInManager.UserManager;
 

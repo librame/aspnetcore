@@ -40,16 +40,14 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
-        /// <param name="identityGenerator">给定的 <see cref="IStoreIdentityGenerator"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
+        /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         public IdentityStoreInitializer(IdentityStoreInitializationOptions initializationOptions,
             SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
             RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
-            IStoreIdentityGenerator identityGenerator,
-            IDataInitializationValidator validator, ILoggerFactory loggerFactory)
-            : base(initializationOptions, signInManager, roleMananger,
-                  identityGenerator, validator, loggerFactory)
+            IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
+            : base(initializationOptions, signInManager, roleMananger, validator, generator, loggerFactory)
         {
         }
 
@@ -69,16 +67,14 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
-        /// <param name="identityGenerator">给定的 <see cref="IStoreIdentityGenerator"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
+        /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         public IdentityStoreInitializer(IdentityStoreInitializationOptions initializationOptions,
             SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
             RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
-            IStoreIdentityGenerator identityGenerator,
-            IDataInitializationValidator validator, ILoggerFactory loggerFactory)
-            : base(initializationOptions, signInManager, roleMananger,
-                  identityGenerator, validator, loggerFactory)
+            IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
+            : base(initializationOptions, signInManager, roleMananger, validator, generator, loggerFactory)
         {
         }
 
@@ -114,16 +110,14 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
-        /// <param name="identityGenerator">给定的 <see cref="IStoreIdentityGenerator"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
+        /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         protected IdentityStoreInitializer(IdentityStoreInitializationOptions initializationOptions,
             SignInManager<DefaultIdentityUser<TGenId, TCreatedBy>> signInManager,
             RoleManager<DefaultIdentityRole<TGenId, TCreatedBy>> roleMananger,
-            IStoreIdentityGenerator identityGenerator,
-            IDataInitializationValidator validator, ILoggerFactory loggerFactory)
-            : base(initializationOptions, signInManager, roleMananger,
-                  identityGenerator, validator, loggerFactory)
+            IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
+            : base(initializationOptions, signInManager, roleMananger, validator, generator, loggerFactory)
         {
         }
 
@@ -165,14 +159,13 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
-        /// <param name="identityGenerator">给定的 <see cref="IStoreIdentityGenerator"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
+        /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         protected IdentityStoreInitializer(IdentityStoreInitializationOptions initializationOptions,
             SignInManager<TUser> signInManager, RoleManager<TRole> roleMananger,
-            IStoreIdentityGenerator identityGenerator,
-            IDataInitializationValidator validator, ILoggerFactory loggerFactory)
-            : base(identityGenerator, validator, loggerFactory)
+            IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
+            : base(validator, generator, loggerFactory)
         {
             InitializationOptions = initializationOptions.NotNull(nameof(initializationOptions));
 
@@ -207,8 +200,8 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 身份存储标识生成器。
         /// </summary>
-        protected IIdentityStoreIdentityGenerator<TGenId> IdentityIdentityGenerator
-            => IdentityGenerator as IIdentityStoreIdentityGenerator<TGenId>;
+        protected IIdentityStoreIdentificationGenerator<TGenId> IdentityGenerator
+            => Generator as IIdentityStoreIdentificationGenerator<TGenId>;
 
 
         /// <summary>
@@ -275,7 +268,7 @@ namespace Librame.AspNetCore.Identity.Stores
                     role.NormalizedName = RoleManager.NormalizeKey(role.Name);
                     role.Name = name;
 
-                    role.Id = IdentityIdentityGenerator.GenerateRoleId();
+                    role.Id = IdentityGenerator.GenerateRoleId();
 
                     role.PopulateCreation(Clock);
 
@@ -318,7 +311,7 @@ namespace Librame.AspNetCore.Identity.Stores
 
                 CurrentRoles.ForEach(async role =>
                 {
-                    role.Id = await IdentityIdentityGenerator.GenerateRoleIdAsync(cancellationToken).ConfigureAwait();
+                    role.Id = await IdentityGenerator.GenerateRoleIdAsync(cancellationToken).ConfigureAwait();
 
                     await role.PopulateCreationAsync(Clock, cancellationToken).ConfigureAwait();
                 });
@@ -363,7 +356,7 @@ namespace Librame.AspNetCore.Identity.Stores
                     user.PasswordHash = UserManager.PasswordHasher.HashPassword(user, defaultPassword);
                     user.SecurityStamp = RandomUtility.GenerateByteArray(20).AsHexString();
 
-                    user.Id = IdentityIdentityGenerator.GenerateRoleId();
+                    user.Id = IdentityGenerator.GenerateRoleId();
 
                     user.PopulateCreation(Clock);
 
@@ -437,7 +430,7 @@ namespace Librame.AspNetCore.Identity.Stores
 
                 CurrentUsers.ForEach(async user =>
                 {
-                    user.Id = await IdentityIdentityGenerator.GenerateUserIdAsync(cancellationToken).ConfigureAwait();
+                    user.Id = await IdentityGenerator.GenerateUserIdAsync(cancellationToken).ConfigureAwait();
 
                     await user.PopulateCreationAsync(Clock, cancellationToken).ConfigureAwait();
                 });

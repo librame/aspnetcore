@@ -47,7 +47,6 @@ namespace Librame.AspNetCore.IdentityServer.Options
         /// 自动重定向后登出。
         /// </summary>
         public bool AutomaticRedirectAfterSignOut { get; set; }
-            = false;
 
         /// <summary>
         /// 指定正在使用的 Windows 身份验证方案。
@@ -61,7 +60,6 @@ namespace Librame.AspNetCore.IdentityServer.Options
         /// 如果用户使用 Windows 认证，是否应该从 Windows 加载组。
         /// </summary>
         public bool IncludeWindowsGroups { get; set; }
-            = false;
 
         /// <summary>
         /// 无效证书的错误消息。

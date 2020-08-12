@@ -14,6 +14,7 @@ using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
@@ -102,7 +103,7 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
         {
             base.OnModelCreating(modelBuilder);
 
-            var storeOptions = GetService<IOptions<OperationalStoreOptions>>().Value;
+            var storeOptions = ApplicationServiceProvider.GetService<IOptions<OperationalStoreOptions>>().Value;
             modelBuilder.ConfigurePersistedGrantContext(storeOptions);
         }
 

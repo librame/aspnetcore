@@ -114,7 +114,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         private readonly ILogger<ExternalLoginPageModel> _logger;
         private readonly IClockService _clock;
         private readonly IStringLocalizer<ErrorMessageResource> _errorLocalizer;
-        private readonly IIdentityStoreIdentityGenerator<TGenId> _identifierGenerator;
+        private readonly IIdentityStoreIdentificationGenerator<TGenId> _identifierGenerator;
 
 
         public ExternalLoginPageModel(
@@ -123,7 +123,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             ILogger<ExternalLoginPageModel> logger,
             IClockService clock,
             IStringLocalizer<ErrorMessageResource> errorLocalizer,
-            IStoreIdentityGenerator identityGenerator)
+            IStoreIdentificationGenerator identityGenerator)
         {
             _signInManager = signInManager.NotNull(nameof(signInManager));
             _userStore = userStore.NotNull(nameof(userStore));
@@ -131,7 +131,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             _clock = clock.NotNull(nameof(clock));
             _errorLocalizer = errorLocalizer.NotNull(nameof(errorLocalizer));
 
-            _identifierGenerator = (IIdentityStoreIdentityGenerator<TGenId>)identityGenerator;
+            _identifierGenerator = (IIdentityStoreIdentificationGenerator<TGenId>)identityGenerator;
             _userManager = signInManager.UserManager;
         }
 

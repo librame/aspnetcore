@@ -117,7 +117,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
         private readonly ILogger<LoginPageModel> _logger;
         private readonly IClockService _clock;
         private readonly IEmailService _email;
-        private readonly IIdentityStoreIdentityGenerator<TGenId> _identifierGenerator;
+        private readonly IIdentityStoreIdentificationGenerator<TGenId> _identifierGenerator;
 
 
         public RegisterPageModel(
@@ -126,7 +126,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             ILogger<LoginPageModel> logger,
             IClockService clock,
             IEmailService email,
-            IStoreIdentityGenerator identityGenerator,
+            IStoreIdentificationGenerator identityGenerator,
             IHtmlLocalizer<RegisterViewResource> localizer,
             IOptions<IdentityBuilderOptions> builderOptions,
             IOptions<IdentityOptions> options)
@@ -138,7 +138,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account
             _clock = clock.NotNull(nameof(clock));
             _email = email.NotNull(nameof(email));
 
-            _identifierGenerator = (IIdentityStoreIdentityGenerator<TGenId>)identityGenerator;
+            _identifierGenerator = (IIdentityStoreIdentificationGenerator<TGenId>)identityGenerator;
             _userManager = signInManager.UserManager;
         }
 

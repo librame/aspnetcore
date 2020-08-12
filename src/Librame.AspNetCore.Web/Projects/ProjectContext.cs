@@ -25,7 +25,7 @@ namespace Librame.AspNetCore.Web.Projects
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class ProjectContext : IProjectContext
     {
-        private readonly WebBuilderOptions _options = null;
+        private readonly WebBuilderOptions _options;
 
         private ProjectDescriptor _current;
 

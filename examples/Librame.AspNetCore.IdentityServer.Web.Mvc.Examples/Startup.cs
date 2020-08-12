@@ -64,7 +64,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                     });
                 })
                 .AddDatabaseDesignTime<MySqlDesignTimeServices>()
-                .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentifierGenerator>()
+                .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentificationGenerator>()
                 .AddStoreInitializer<GuidIdentityStoreInitializer>()
                 .AddIdentity<IdentityServerDbContextAccessor>()
                 .AddIdentityWeb(dependency =>

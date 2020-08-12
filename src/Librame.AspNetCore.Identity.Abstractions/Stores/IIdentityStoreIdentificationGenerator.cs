@@ -22,7 +22,7 @@ namespace Librame.AspNetCore.Identity.Stores
     /// 身份存储标识生成器接口。
     /// </summary>
     /// <typeparam name="TId">指定的标识类型。</typeparam>
-    public interface IIdentityStoreIdentityGenerator<TId> : IDataStoreIdentityGenerator<TId>
+    public interface IIdentityStoreIdentificationGenerator<TId> : IDataStoreIdentificationGenerator<TId>
         where TId : IEquatable<TId>
     {
         /// <summary>

@@ -129,7 +129,7 @@ namespace Librame.AspNetCore.Identity.Web.Pages.Account.Manage
         private IStringLocalizer<StatusMessageResource> _statusLocalizer = null;
 
 
-        private readonly UserManager<TUser> _userManager = null;
+        private readonly UserManager<TUser> _userManager;
 
 
         public IndexPageModel(IInjectionService injection)

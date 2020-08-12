@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Web.Projects
@@ -47,6 +48,7 @@ namespace Librame.AspNetCore.Web.Projects
         /// <param name="context">给定的 <see cref="PageHandlerExecutingContext"/>。</param>
         /// <param name="next">给定的 <see cref="PageHandlerExecutionDelegate"/>。</param>
         /// <returns>返回一个异步操作。</returns>
+        [SuppressMessage("Design", "CA1062:验证公共方法的参数", Justification = "<挂起>")]
         public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context,
             PageHandlerExecutionDelegate next)
         {
@@ -56,6 +58,8 @@ namespace Librame.AspNetCore.Web.Projects
             var executedContext = await next.Invoke().ConfigureAwait();
             if (executedContext.Result is PageResult pageResult)
             {
+                context.NotNull(nameof(context));
+
                 var signInManager = context.HttpContext.RequestServices.GetRequiredService<SignInManager<TUser>>();
                 var schemes = await signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAwait();
 

@@ -40,12 +40,12 @@
     
   <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="4.0.4" />
-    <PackageReference Include="Librame.Extensions.Encryption.Abstractions" Version="7.7.0.7" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+    <PackageReference Include="Librame.Extensions.Encryption.Abstractions" Version="7.7.0.8" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.7" />
   </ItemGroup>
 
   <ItemGroup>

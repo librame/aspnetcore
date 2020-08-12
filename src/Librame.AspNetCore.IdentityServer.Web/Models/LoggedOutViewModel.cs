@@ -30,7 +30,7 @@ namespace Librame.AspNetCore.IdentityServer.Web.Models
         /// <summary>
         /// 自动重定向后签出。
         /// </summary>
-        public bool AutomaticRedirectAfterSignOut { get; set; } = false;
+        public bool AutomaticRedirectAfterSignOut { get; set; }
 
         /// <summary>
         /// 登出标识。

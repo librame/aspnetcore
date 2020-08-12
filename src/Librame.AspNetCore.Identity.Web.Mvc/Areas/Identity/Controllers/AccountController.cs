@@ -93,7 +93,7 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         private IdentityWebBuilderDependency _dependency = null;
 
 
-        private readonly IIdentityStoreIdentityGenerator<TGenId> _identityGenerator = null;
+        private readonly IIdentityStoreIdentificationGenerator<TGenId> _identityGenerator;
 
 
         /// <summary>
@@ -103,8 +103,8 @@ namespace Librame.AspNetCore.Identity.Web.Controllers
         public AccountController(IInjectionService injection)
             : base(injection)
         {
-            _identityGenerator = (IIdentityStoreIdentityGenerator<TGenId>)_serviceFactory
-                .GetRequiredService<IStoreIdentityGenerator>();
+            _identityGenerator = (IIdentityStoreIdentificationGenerator<TGenId>)_serviceFactory
+                .GetRequiredService<IStoreIdentificationGenerator>();
         }
 
 

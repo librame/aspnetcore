@@ -11,7 +11,6 @@
 #endregion
 
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace Librame.AspNetCore.IdentityServer.Stores
 {
@@ -20,18 +19,18 @@ namespace Librame.AspNetCore.IdentityServer.Stores
     using Extensions.Core.Services;
 
     /// <summary>
-    /// <see cref="Guid"/> 身份服务器存储标识生成器。
+    /// <see cref="long"/> 身份服务器存储标识生成器。
     /// </summary>
-    public class GuidIdentityServerStoreIdentifierGenerator : GuidIdentityStoreIdentityGenerator
+    public class LongIdentityServerStoreIdentificationGenerator : LongIdentityStoreIdentificationGenerator
     {
         /// <summary>
-        /// 构造一个 <see cref="GuidIdentityServerStoreIdentifierGenerator"/>。
+        /// 构造一个 <see cref="LongIdentityServerStoreIdentificationGenerator"/>。
         /// </summary>
         /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
-        /// <param name="factory">给定的 <see cref="IIdentityGeneratorFactory"/>。</param>
+        /// <param name="factory">给定的 <see cref="IIdentificationGeneratorFactory"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        public GuidIdentityServerStoreIdentifierGenerator(IClockService clock,
-            IIdentityGeneratorFactory factory, ILoggerFactory loggerFactory)
+        public LongIdentityServerStoreIdentificationGenerator(IClockService clock,
+            IIdentificationGeneratorFactory factory, ILoggerFactory loggerFactory)
             : base(clock, factory, loggerFactory)
         {
         }

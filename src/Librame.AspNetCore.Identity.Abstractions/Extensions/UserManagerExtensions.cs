@@ -59,7 +59,7 @@ namespace Librame.AspNetCore.Identity
             var emailStore = (IUserEmailStore<TUser>)userStore;
             await emailStore.SetEmailAsync(user, email, cancellationToken).ConfigureAwait();
 
-            await user.PopulateCreationAsync(clock).ConfigureAwait();
+            await user.PopulateCreationAsync(clock, cancellationToken).ConfigureAwait();
 
             if (password.IsNotEmpty())
                 return await userManager.CreateAsync(user, password).ConfigureAwait();

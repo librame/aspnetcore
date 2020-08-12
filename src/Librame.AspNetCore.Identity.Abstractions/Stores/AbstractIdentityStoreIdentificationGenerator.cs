@@ -25,17 +25,17 @@ namespace Librame.AspNetCore.Identity.Stores
     /// 抽象身份存储标识生成器。
     /// </summary>
     /// <typeparam name="TId">指定的标识类型。</typeparam>
-    public abstract class AbstractIdentityStoreIdentityGenerator<TId>
-        : AbstractDataStoreIdentityGenerator<TId>, IIdentityStoreIdentityGenerator<TId>
+    public abstract class AbstractIdentityStoreIdentificationGenerator<TId>
+        : AbstractDataStoreIdentificationGenerator<TId>, IIdentityStoreIdentificationGenerator<TId>
         where TId : IEquatable<TId>
     {
         /// <summary>
-        /// 构造一个 <see cref="AbstractIdentityStoreIdentityGenerator{TId}"/>。
+        /// 构造一个 <see cref="AbstractIdentityStoreIdentificationGenerator{TId}"/>。
         /// </summary>
         /// <param name="clock">给定的 <see cref="IClockService"/>。</param>
         /// <param name="factory">给定的 <see cref="IIdentificationGeneratorFactory"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        protected AbstractIdentityStoreIdentityGenerator(IClockService clock,
+        protected AbstractIdentityStoreIdentificationGenerator(IClockService clock,
             IIdentificationGeneratorFactory factory, ILoggerFactory loggerFactory)
             : base(clock, factory, loggerFactory)
         {

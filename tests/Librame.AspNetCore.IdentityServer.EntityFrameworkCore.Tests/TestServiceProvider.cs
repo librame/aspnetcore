@@ -32,7 +32,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
 
                 services.AddLibrameCore(dependency =>
                 {
-                    dependency.Options.Identifier.GuidIdentifierGenerator = CombIdentityGenerator.MySQL;
+                    dependency.Options.Identifier.GuidIdentificationGenerator = CombIdentificationGenerator.MySQL;
                 })
                 //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
                 .AddData(dependency =>
@@ -56,7 +56,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                     });
                 })
                 .AddDatabaseDesignTime<MySqlDesignTimeServices>()
-                .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentifierGenerator>()
+                .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentificationGenerator>()
                 .AddStoreInitializer<IdentityServerStoreInitializer>()
                 .AddStoreHub<TestStoreHub>()
                 .AddIdentity<IdentityServerDbContextAccessor>(dependency =>

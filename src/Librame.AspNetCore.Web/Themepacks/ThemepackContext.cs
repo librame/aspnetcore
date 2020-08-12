@@ -23,7 +23,7 @@ namespace Librame.AspNetCore.Web.Themepacks
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal class ThemepackContext : IThemepackContext
     {
-        private IThemepackInfo _currentInfo = null;
+        private IThemepackInfo _currentInfo;
 
 
         public ThemepackContext(ServiceFactory serviceFactory, IWebBuilder builder)

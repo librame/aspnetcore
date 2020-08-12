@@ -14,6 +14,7 @@ using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
@@ -160,11 +161,11 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
         {
             base.OnModelCreating(modelBuilder);
 
-            var configOptions = GetService<IOptions<ConfigurationStoreOptions>>().Value;
+            var configOptions = ApplicationServiceProvider.GetService<IOptions<ConfigurationStoreOptions>>().Value;
             modelBuilder.ConfigureClientContext(configOptions);
             modelBuilder.ConfigureResourcesContext(configOptions);
 
-            var operatOptions = GetService<IOptions<OperationalStoreOptions>>().Value;
+            var operatOptions = ApplicationServiceProvider.GetService<IOptions<OperationalStoreOptions>>().Value;
             modelBuilder.ConfigurePersistedGrantContext(operatOptions);
         }
 

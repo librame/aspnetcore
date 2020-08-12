@@ -29,7 +29,7 @@ namespace Librame.AspNetCore.Identity.Api.Tests
 
                 services.AddLibrameCore(dependency =>
                 {
-                    dependency.Options.Identifier.GuidIdentifierGenerator = CombIdentityGenerator.MySQL;
+                    dependency.Options.Identifier.GuidIdentificationGenerator = CombIdentificationGenerator.MySQL;
                 })
                 .AddData(dependency =>
                 {
@@ -49,7 +49,7 @@ namespace Librame.AspNetCore.Identity.Api.Tests
                 })
                 .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
                 .AddStoreHub<IdentityStoreHub>()
-                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentityGenerator>()
+                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentificationGenerator>()
                 .AddStoreInitializer<IdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {

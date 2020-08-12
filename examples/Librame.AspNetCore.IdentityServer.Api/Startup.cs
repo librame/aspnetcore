@@ -50,7 +50,7 @@ namespace Librame.AspNetCore.IdentityServer.Api
                 })
                 .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
                 .AddStoreHub<IdentityStoreHub>()
-                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentityGenerator>()
+                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentificationGenerator>()
                 .AddStoreInitializer<GuidIdentityStoreInitializer>()
                 .AddIdentity<IdentityDbContextAccessor>(dependency =>
                 {
