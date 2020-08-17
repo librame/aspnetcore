@@ -17,6 +17,7 @@ using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -26,9 +27,11 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.IdentityServer.Stores
 {
     using AspNetCore.Identity.Accessors;
+    using AspNetCore.Identity.Builders;
     using AspNetCore.Identity.Options;
     using AspNetCore.Identity.Stores;
     using AspNetCore.IdentityServer.Accessors;
+    using AspNetCore.IdentityServer.Builders;
     using AspNetCore.IdentityServer.Options;
     using Extensions;
     using Extensions.Data.Accessors;
@@ -44,20 +47,20 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         /// <summary>
         /// 构造一个身份服务器存储初始化器。
         /// </summary>
-        /// <param name="serverInitializationOptions">给定的 <see cref="IdentityServerStoreInitializationOptions"/>。</param>
-        /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
+        /// <param name="identityServerOptions">给定的 <see cref="IOptions{IdentityServerBuilderOptions}"/>。</param>
+        /// <param name="identityOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
         /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         public IdentityServerStoreInitializer
-            (IdentityServerStoreInitializationOptions serverInitializationOptions,
-            IdentityStoreInitializationOptions initializationOptions,
+            (IOptions<IdentityServerBuilderOptions> identityServerOptions,
+            IOptions<IdentityBuilderOptions> identityOptions,
             SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
             RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
             IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
-            : base(serverInitializationOptions, initializationOptions, signInManager, roleMananger,
+            : base(identityServerOptions, identityOptions, signInManager, roleMananger,
                   validator, generator, loggerFactory)
         {
         }
@@ -77,21 +80,22 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         /// <summary>
         /// 构造一个身份服务器存储初始化器。
         /// </summary>
-        /// <param name="serverInitializationOptions">给定的 <see cref="IdentityServerStoreInitializationOptions"/>。</param>
-        /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
+        /// <param name="identityServerOptions">给定的 <see cref="IOptions{IdentityServerBuilderOptions}"/>。</param>
+        /// <param name="identityOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
         /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         public IdentityServerStoreInitializer
-            (IdentityServerStoreInitializationOptions serverInitializationOptions,
-            IdentityStoreInitializationOptions initializationOptions,
+            (IOptions<IdentityServerBuilderOptions> identityServerOptions,
+            IOptions<IdentityBuilderOptions> identityOptions,
             SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
             RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
             IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
-            : base(serverInitializationOptions, initializationOptions, signInManager, roleMananger,
-                  validator, generator, loggerFactory)
+            : base(identityServerOptions?.Value.Stores.Initialization,
+                  identityOptions?.Value.Stores.Initialization,
+                  signInManager, roleMananger, validator, generator, loggerFactory)
         {
         }
 

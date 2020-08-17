@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using Pomelo.EntityFrameworkCore.MySql.Design.Internal;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 
 namespace Librame.AspNetCore.Identity.Api.Tests
@@ -33,10 +34,11 @@ namespace Librame.AspNetCore.Identity.Api.Tests
                 })
                 .AddData(dependency =>
                 {
+                    // Use MySQL
                     dependency.Options.DefaultTenant.DefaultConnectionString
-                        = "Data Source=.;Initial Catalog=librame_identity_default;Integrated Security=True";
+                        = MySqlConnectionStringHelper.Validate("server=localhost;port=3306;database=librame_identity_default;user=root;password=123456;");
                     dependency.Options.DefaultTenant.WritingConnectionString
-                        = "Data Source=.;Initial Catalog=librame_identity_writing;Integrated Security=True";
+                        = MySqlConnectionStringHelper.Validate("server=localhost;port=3306;database=librame_identity_writing;user=root;password=123456;");
 
                     dependency.Options.DefaultTenant.WritingSeparation = true;
                     dependency.Options.DefaultTenant.DataSynchronization = true;
@@ -44,10 +46,13 @@ namespace Librame.AspNetCore.Identity.Api.Tests
                 })
                 .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
                 {
-                    optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
-                        sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
+                    optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
+                    {
+                        mySql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName());
+                        mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
+                    });
                 })
-                .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
+                .AddDatabaseDesignTime<MySqlDesignTimeServices>()
                 .AddStoreHub<IdentityStoreHub>()
                 .AddStoreIdentifierGenerator<GuidIdentityStoreIdentificationGenerator>()
                 .AddStoreInitializer<IdentityStoreInitializer>()

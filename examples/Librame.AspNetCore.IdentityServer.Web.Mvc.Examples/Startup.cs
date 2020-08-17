@@ -13,12 +13,11 @@ using System;
 
 namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
 {
-    using AspNetCore.Web.Builders;
     using AspNetCore.Identity.Builders;
-    using AspNetCore.Identity.Stores;
     using AspNetCore.IdentityServer.Accessors;
     using AspNetCore.IdentityServer.Builders;
     using AspNetCore.IdentityServer.Stores;
+    using AspNetCore.Web.Builders;
     using Extensions;
     using Extensions.Core.Identifiers;
 
@@ -45,55 +44,56 @@ namespace Librame.AspNetCore.IdentityServer.Web.Mvc.Examples
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
-            services.AddLibrameCore()
-                //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
-                .AddNetwork()
-                .AddData(dependency =>
+            services.AddLibrameCore(dependency =>
+            {
+                dependency.Options.Identifier.GuidIdentificationGenerator = CombIdentificationGenerator.MySQL;
+            })
+            //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
+            .AddNetwork()
+            .AddData(dependency =>
+            {
+                // Use MySQL
+                dependency.BindDefaultTenant(MySqlConnectionStringHelper.Validate);
+            })
+            .AddAccessorCore<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
+            {
+                optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
                 {
-                    dependency.Options.IdentifierGenerator = CombIdentifierGenerator.MySQL;
+                    mySql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName());
+                    mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
+                });
+            })
+            .AddDatabaseDesignTime<MySqlDesignTimeServices>()
+            .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentificationGenerator>()
+            .AddStoreInitializer<IdentityServerStoreInitializer>()
+            .AddIdentity<IdentityServerDbContextAccessor>()
+            .AddIdentityWeb(dependency =>
+            {
+                dependency.Options.Themepack.CommonHeaderNavigationVisibility = false;
+            })
+            .AddIdentityProjectController(mvcBuilder)
+            .AddIdentityServer(dependency =>
+            {
+                // Use InMemoryStores
+                //dependency.Options.Authorizations.IdentityResources.AddRange(IdentityServerConfiguration.DefaultIdentityResources);
+                //dependency.Options.Authorizations.ApiResources.Add(IdentityServerConfiguration.DefaultApiResource);
+                //dependency.Options.Authorizations.Clients.Add(IdentityServerConfiguration.DefaultClient);
 
-                    // Use MySQL
-                    dependency.BindDefaultTenant(MySqlConnectionStringHelper.Validate);
-                })
-                .AddAccessorCore<IdentityServerDbContextAccessor>((tenant, optionsBuilder) =>
+                dependency.IdentityServer = server =>
                 {
-                    optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
-                    {
-                        mySql.MigrationsAssembly(typeof(IdentityServerDbContextAccessor).GetAssemblyDisplayName());
-                        mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
-                    });
-                })
-                .AddDatabaseDesignTime<MySqlDesignTimeServices>()
-                .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentificationGenerator>()
-                .AddStoreInitializer<GuidIdentityStoreInitializer>()
-                .AddIdentity<IdentityServerDbContextAccessor>()
-                .AddIdentityWeb(dependency =>
-                {
-                    dependency.Options.Themepack.CommonHeaderNavigationVisibility = false;
-                })
-                .AddIdentityProjectController(mvcBuilder)
-                .AddIdentityServer(dependency =>
-                {
-                    // Use InMemoryStores
-                    //dependency.Options.Authorizations.IdentityResources.AddRange(IdentityServerConfiguration.DefaultIdentityResources);
-                    //dependency.Options.Authorizations.ApiResources.Add(IdentityServerConfiguration.DefaultApiResource);
-                    //dependency.Options.Authorizations.Clients.Add(IdentityServerConfiguration.DefaultClient);
+                    // Use Librame.AspNetCore.IdentityServer.Web.Mvc RPL
+                    server.UserInteraction.LoginUrl = "/IdentityServer/Account/Login";
+                    server.UserInteraction.LogoutUrl = "/IdentityServer/Account/Logout";
 
-                    dependency.IdentityServer = server =>
-                    {
-                        // Use Librame.AspNetCore.IdentityServer.Web.Mvc RPL
-                        server.UserInteraction.LoginUrl = "/IdentityServer/Account/Login";
-                        server.UserInteraction.LogoutUrl = "/IdentityServer/Account/Logout";
-
-                        server.Events.RaiseErrorEvents = true;
-                        server.Events.RaiseInformationEvents = true;
-                        server.Events.RaiseFailureEvents = true;
-                        server.Events.RaiseSuccessEvents = true;
-                    };
-                })
-                .AddAccessorStores<IdentityServerDbContextAccessor>() //.AddInMemoryStores()
-                .AddIdentityServerWeb()
-                .AddIdentityServerProjectController(mvcBuilder);
+                    server.Events.RaiseErrorEvents = true;
+                    server.Events.RaiseInformationEvents = true;
+                    server.Events.RaiseFailureEvents = true;
+                    server.Events.RaiseSuccessEvents = true;
+                };
+            })
+            .AddAccessorStores<IdentityServerDbContextAccessor>() //.AddInMemoryStores()
+            .AddIdentityServerWeb()
+            .AddIdentityServerProjectController(mvcBuilder);
 
             services.AddAuthentication(options =>
             {

@@ -6,7 +6,7 @@
     <ApplicationIcon>..\..\Librame.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.6.0.1</Version>
+    <Version>7.6.0.2</Version>
     <Authors>Librame Pong</Authors>
     <Company>librame.net</Company>
     <Description>The Simple for Librame.AspNetCore.Web themepack.</Description>
@@ -20,8 +20,8 @@
     <PackageReleaseNotes>The Simple for Librame.AspNetCore.Web themepack.</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.6.0.1</AssemblyVersion>
-    <FileVersion>7.6.2025.15117</FileVersion>
+    <AssemblyVersion>7.6.0.2</AssemblyVersion>
+    <FileVersion>7.6.2039.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore.Web.Themepacks.Simple</RootNamespace>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <NeutralLanguage>en-US</NeutralLanguage>

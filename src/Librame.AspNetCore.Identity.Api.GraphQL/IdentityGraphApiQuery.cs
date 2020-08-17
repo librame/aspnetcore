@@ -13,6 +13,7 @@
 using GraphQL.Types;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Librame.AspNetCore.Identity.Api
@@ -313,10 +314,22 @@ namespace Librame.AspNetCore.Identity.Api
                 resolve: context =>
                 {
                     var userId = context.GetArgument<TGenId>("userId");
-                    return IdentityAccessor.UserRoles
+                    var roleIds = IdentityAccessor.UserRoles
                         .Where(p => p.UserId.Equals(userId))
-                        .Select(s => IdentityAccessor.Roles.FirstOrDefault(p => p.Id.Equals(s.RoleId)))
+                        .Select(p => p.RoleId)
                         .ToList();
+
+                    // 解决不支持的客户端评估（多层嵌套的 SQL 语句不利于跨数据库）
+                    // 参考：https://go.microsoft.com/fwlink/?linkid=2101038
+                    var roles = new List<TRole>();
+                    foreach (var id in roleIds)
+                    {
+                        var role = IdentityAccessor.Roles.Find(id);
+                        if (role.IsNotNull())
+                            roles.Add(role);
+                    }
+
+                    return roles;
                 }
             );
         }

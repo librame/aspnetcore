@@ -12,7 +12,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -92,8 +92,8 @@ namespace Librame.AspNetCore.Identity.Accessors
             modelBuilder.NotNull(nameof(modelBuilder));
             accessor.NotNull(nameof(accessor));
 
-            var options = accessor.ApplicationServiceProvider.GetService<IOptions<IdentityBuilderOptions>>().Value;
-            var sourceOptions = accessor.ApplicationServiceProvider.GetService<IOptions<IdentityOptions>>().Value;
+            var options = accessor.GetService<IOptions<IdentityBuilderOptions>>().Value;
+            var sourceOptions = accessor.GetService<IOptions<IdentityOptions>>().Value;
             
             var encryptPersonalData = sourceOptions.Stores?.ProtectPersonalData ?? false;
             var maxKeyLength = sourceOptions.Stores?.MaxLengthForKeys ?? 0;
@@ -103,7 +103,7 @@ namespace Librame.AspNetCore.Identity.Accessors
             PersonalDataConverter converter = null;
             if (encryptPersonalData)
             {
-                var dataProtector = accessor.ApplicationServiceProvider.GetService<IPersonalDataProtector>();
+                var dataProtector = accessor.GetService<IPersonalDataProtector>();
                 converter = new PersonalDataConverter(dataProtector);
             }
 

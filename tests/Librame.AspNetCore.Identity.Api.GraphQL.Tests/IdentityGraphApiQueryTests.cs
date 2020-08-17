@@ -1,17 +1,32 @@
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 using Xunit;
 
 namespace Librame.AspNetCore.Identity.Api.Tests
 {
     using AspNetCore.Api;
+    using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Stores;
     using Extensions;
 
     public class IdentityGraphApiQueryTests
     {
-        private readonly string _testRoleId = "b38c4952-e791-9981-973f-39f5ce48b046";
-        private readonly string _testRoleName = "Administrator";
-        private readonly string _testUserId = "5e0a511e-85d0-ad7d-5ef1-39f5ce48b084";
-        private readonly string _testUserName = "librame@librame.net";
+        private string _testRoleId;
+        private string _testRoleName;
+        private string _testUserId;
+        private string _testUserName;
+
+
+        public IdentityGraphApiQueryTests()
+        {
+            var dependency = TestServiceProvider.Current.GetRequiredService<IdentityBuilderDependency>();
+            _testRoleName = dependency.Options.Stores.Initialization.DefaultRoleNames[0];
+            _testUserName = dependency.Options.Stores.Initialization.DefaultUserEmails[0];
+
+            var stores = TestServiceProvider.Current.GetRequiredService<IdentityStoreHub>();
+            _testRoleId = stores.Roles.First(p => p.Name == _testRoleName).Id.ToString();
+            _testUserId = stores.Users.First(p => p.UserName == _testUserName).Id.ToString();
+        }
 
 
         [Fact]

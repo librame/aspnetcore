@@ -14,6 +14,7 @@ using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
@@ -154,18 +155,18 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
 
 
         /// <summary>
-        /// 开始创建模型。
+        /// 配置模型构建器核心。
         /// </summary>
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreatingCore(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreatingCore(modelBuilder);
 
-            var configOptions = ApplicationServiceProvider.GetService<IOptions<ConfigurationStoreOptions>>().Value;
+            var configOptions = this.GetService<IOptions<ConfigurationStoreOptions>>().Value;
             modelBuilder.ConfigureClientContext(configOptions);
             modelBuilder.ConfigureResourcesContext(configOptions);
 
-            var operatOptions = ApplicationServiceProvider.GetService<IOptions<OperationalStoreOptions>>().Value;
+            var operatOptions = this.GetService<IOptions<OperationalStoreOptions>>().Value;
             modelBuilder.ConfigurePersistedGrantContext(operatOptions);
         }
 

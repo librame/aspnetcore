@@ -27,7 +27,7 @@ namespace Librame.AspNetCore.Api.Tests
         public void AllTest()
         {
             var middleware = new TestApiApplicationMiddleware(context => Task.CompletedTask);
-            Assert.Equal("/api/graphql", middleware.RestrictRequestPath);
+            Assert.Equal("/api", middleware.RestrictRequestPath);
             Assert.NotEmpty(middleware.RestrictRequestMethods);
         }
 

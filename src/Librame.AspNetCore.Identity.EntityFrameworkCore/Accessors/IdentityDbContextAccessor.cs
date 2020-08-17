@@ -220,7 +220,7 @@ namespace Librame.AspNetCore.Identity.Accessors
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
         protected override void OnModelCreatingCore(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreatingCore(modelBuilder);
             modelBuilder.ConfigureIdentityStores(this);
         }
 

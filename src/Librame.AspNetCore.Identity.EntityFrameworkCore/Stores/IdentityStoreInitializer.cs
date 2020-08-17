@@ -12,6 +12,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -22,6 +23,7 @@ using System.Threading.Tasks;
 namespace Librame.AspNetCore.Identity.Stores
 {
     using AspNetCore.Identity.Accessors;
+    using AspNetCore.Identity.Builders;
     using AspNetCore.Identity.Options;
     using Extensions;
     using Extensions.Core.Utilities;
@@ -37,17 +39,17 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 构造一个身份存储初始化器。
         /// </summary>
-        /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
+        /// <param name="identityOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
         /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        public IdentityStoreInitializer(IdentityStoreInitializationOptions initializationOptions,
+        public IdentityStoreInitializer(IOptions<IdentityBuilderOptions> identityOptions,
             SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
             RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
             IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
-            : base(initializationOptions, signInManager, roleMananger, validator, generator, loggerFactory)
+            : base(identityOptions, signInManager, roleMananger, validator, generator, loggerFactory)
         {
         }
 
@@ -64,17 +66,18 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 构造一个身份存储初始化器。
         /// </summary>
-        /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
+        /// <param name="identityOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
         /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        public IdentityStoreInitializer(IdentityStoreInitializationOptions initializationOptions,
+        public IdentityStoreInitializer(IOptions<IdentityBuilderOptions> identityOptions,
             SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
             RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
             IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
-            : base(initializationOptions, signInManager, roleMananger, validator, generator, loggerFactory)
+            : base(identityOptions?.Value.Stores.Initialization,
+                  signInManager, roleMananger, validator, generator, loggerFactory)
         {
         }
 

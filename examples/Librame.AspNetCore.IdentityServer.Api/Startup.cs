@@ -2,16 +2,19 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pomelo.EntityFrameworkCore.MySql.Design.Internal;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using System;
 
 namespace Librame.AspNetCore.IdentityServer.Api
 {
     using AspNetCore.Identity.Accessors;
     using AspNetCore.Identity.Stores;
     using Extensions;
+    using Extensions.Core.Identifiers;
 
     public class Startup
     {
@@ -36,27 +39,33 @@ namespace Librame.AspNetCore.IdentityServer.Api
                 })
                 .AddIdentityCookies();
 
-            services.AddLibrameCore()
-                //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
-                .AddData(dependency =>
+            services.AddLibrameCore(dependency =>
+            {
+                dependency.Options.Identifier.GuidIdentificationGenerator = CombIdentificationGenerator.MySQL;
+            })
+            //.AddEncryption().AddGlobalSigningCredentials() // AddIdentity() Default: AddDeveloperGlobalSigningCredentials()
+            .AddData(dependency =>
+            {
+                // Use MySQL
+                dependency.BindDefaultTenant(MySqlConnectionStringHelper.Validate);
+            })
+            .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
+            {
+                optionsBuilder.UseMySql(tenant.DefaultConnectionString, mySql =>
                 {
-                    // Use SQL Server
-                    dependency.BindDefaultTenant();
-                })
-                .AddAccessorCore<IdentityDbContextAccessor>((tenant, optionsBuilder) =>
-                {
-                    optionsBuilder.UseSqlServer(tenant.DefaultConnectionString,
-                        sql => sql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName()));
-                })
-                .AddDatabaseDesignTime<SqlServerDesignTimeServices>()
-                .AddStoreHub<IdentityStoreHub>()
-                .AddStoreIdentifierGenerator<GuidIdentityStoreIdentificationGenerator>()
-                .AddStoreInitializer<GuidIdentityStoreInitializer>()
-                .AddIdentity<IdentityDbContextAccessor>(dependency =>
-                {
-                    dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
-                })
-                .AddIdentityApi();
+                    mySql.MigrationsAssembly(typeof(IdentityDbContextAccessor).GetAssemblyDisplayName());
+                    mySql.ServerVersion(new Version(5, 7, 28), ServerType.MySql);
+                });
+            })
+            .AddDatabaseDesignTime<MySqlDesignTimeServices>()
+            .AddStoreHub<IdentityStoreHub>()
+            .AddStoreIdentifierGenerator<GuidIdentityStoreIdentificationGenerator>()
+            .AddStoreInitializer<IdentityStoreInitializer>()
+            .AddIdentity<IdentityDbContextAccessor>(dependency =>
+            {
+                dependency.Identity.Options.Stores.MaxLengthForKeys = 128;
+            })
+            .AddIdentityApi();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

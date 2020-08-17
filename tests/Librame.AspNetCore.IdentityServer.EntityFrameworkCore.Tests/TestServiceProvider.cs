@@ -56,9 +56,9 @@ namespace Librame.AspNetCore.IdentityServer.Tests
                     });
                 })
                 .AddDatabaseDesignTime<MySqlDesignTimeServices>()
+                .AddStoreHub<TestStoreHub>()
                 .AddStoreIdentifierGenerator<GuidIdentityServerStoreIdentificationGenerator>()
                 .AddStoreInitializer<IdentityServerStoreInitializer>()
-                .AddStoreHub<TestStoreHub>()
                 .AddIdentity<IdentityServerDbContextAccessor>(dependency =>
                 {
                     dependency.Identity.Options.Stores.MaxLengthForKeys = 128;

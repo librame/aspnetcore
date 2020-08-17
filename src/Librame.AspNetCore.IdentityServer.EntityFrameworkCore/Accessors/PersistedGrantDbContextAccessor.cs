@@ -14,7 +14,7 @@ using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
@@ -23,6 +23,7 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
 {
     using Extensions.Data;
     using Extensions.Data.Accessors;
+    using Microsoft.EntityFrameworkCore.Infrastructure;
 
     /// <summary>
     /// 持久化授予数据库上下文访问器。
@@ -96,14 +97,14 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
 
 
         /// <summary>
-        /// 开始创建模型。
+        /// 配置模型构建器核心。
         /// </summary>
         /// <param name="modelBuilder">给定的 <see cref="ModelBuilder"/>。</param>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreatingCore(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreatingCore(modelBuilder);
 
-            var storeOptions = ApplicationServiceProvider.GetService<IOptions<OperationalStoreOptions>>().Value;
+            var storeOptions = this.GetService<IOptions<OperationalStoreOptions>>().Value;
             modelBuilder.ConfigurePersistedGrantContext(storeOptions);
         }
 

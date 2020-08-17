@@ -1,7 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 
-namespace Librame.AspNetCore.IdentityServer.Tests
+namespace Librame.AspNetCore.Identity.Tests
 {
     internal class MySqlConnectionStringHelper
     {

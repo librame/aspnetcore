@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Librame.AspNetCore.Identity.Api.Tests
 {
     using AspNetCore.Api;
     using AspNetCore.Identity.Builders;
+    using AspNetCore.Identity.Stores;
     using Extensions;
 
     public class IdentityGraphApiMutationTests
@@ -75,11 +77,19 @@ namespace Librame.AspNetCore.Identity.Api.Tests
 
             request.Populate(query);
 
-            var result = await request.ExecuteAsync().ConfigureAwait();
-            Assert.True(result.Succeeded);
+            var stores = TestServiceProvider.Current.GetRequiredService<IdentityStoreHub>();
 
-            var addResult = result.LookupDataValue<bool>("register", "succeeded");
-            Assert.False(addResult); // code: DuplicateUserName
+            var result = await request.ExecuteAsync().ConfigureAwait();
+            if (stores.Accessor.ContainsInitializationData)
+                Assert.False(result.Succeeded);
+            else
+                Assert.True(result.Succeeded);
+
+            var registerResult = result.LookupDataValue<bool>("register", "succeeded");
+            Assert.False(registerResult);
+
+            var errors = (Dictionary<string, object>)result.LookupDataValue<List<object>>("register", "errors")[0];
+            Assert.Equal("DuplicateUserName", errors["code"]); // errors["description"]: 用户名称“xxx”已被使用。
         }
 
     }
