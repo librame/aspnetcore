@@ -39,17 +39,17 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 构造一个身份存储初始化器。
         /// </summary>
-        /// <param name="identityOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
+        /// <param name="options">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
         /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        public IdentityStoreInitializer(IOptions<IdentityBuilderOptions> identityOptions,
+        public IdentityStoreInitializer(IOptions<IdentityBuilderOptions> options,
             SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
             RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
             IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
-            : base(identityOptions, signInManager, roleMananger, validator, generator, loggerFactory)
+            : base(options, signInManager, roleMananger, validator, generator, loggerFactory)
         {
         }
 
@@ -66,17 +66,17 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <summary>
         /// 构造一个身份存储初始化器。
         /// </summary>
-        /// <param name="identityOptions">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
+        /// <param name="options">给定的 <see cref="IOptions{IdentityBuilderOptions}"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
         /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
-        public IdentityStoreInitializer(IOptions<IdentityBuilderOptions> identityOptions,
+        public IdentityStoreInitializer(IOptions<IdentityBuilderOptions> options,
             SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
             RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
             IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
-            : base(identityOptions?.Value.Stores.Initialization,
+            : base(options?.Value.Stores.Initialization,
                   signInManager, roleMananger, validator, generator, loggerFactory)
         {
         }

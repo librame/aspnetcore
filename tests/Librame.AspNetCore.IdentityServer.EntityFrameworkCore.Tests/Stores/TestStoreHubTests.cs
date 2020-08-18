@@ -16,6 +16,7 @@ namespace Librame.AspNetCore.IdentityServer.Tests
             var stores = TestServiceProvider.Current.GetRequiredService<TestStoreHub>();
             var dependency = TestServiceProvider.Current.GetRequiredService<DataBuilderDependency>();
 
+            // Identity
             var roles = stores.GetRoles();
             VerifyDefaultData(roles);
 

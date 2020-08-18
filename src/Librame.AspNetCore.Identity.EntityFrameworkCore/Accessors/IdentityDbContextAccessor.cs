@@ -46,7 +46,8 @@ namespace Librame.AspNetCore.Identity.Accessors
     public class IdentityDbContextAccessor<TGenId, TIncremId, TCreatedBy>
         : IdentityDbContextAccessor<DefaultIdentityRole<TGenId, TCreatedBy>,
             DefaultIdentityUser<TGenId, TCreatedBy>,
-            TGenId, TIncremId, TCreatedBy>, IIdentityAccessor<TGenId, TIncremId, TCreatedBy>
+            TGenId, TIncremId, TCreatedBy>,
+            IIdentityAccessor<TGenId, TIncremId, TCreatedBy>
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
         where TCreatedBy : IEquatable<TCreatedBy>
@@ -79,7 +80,9 @@ namespace Librame.AspNetCore.Identity.Accessors
             DefaultIdentityUserLogin<TGenId, TCreatedBy>,
             DefaultIdentityUserRole<TGenId, TCreatedBy>,
             DefaultIdentityUserToken<TGenId, TCreatedBy>,
-            TGenId, TIncremId, TCreatedBy>, IIdentityAccessor<TRole, TUser, TGenId, TIncremId, TCreatedBy>
+            TGenId, TIncremId, TCreatedBy>,
+            IIdentityAccessor<TRole, TUser, TGenId, TIncremId, TCreatedBy>,
+            IDataAccessor<TGenId, TIncremId, TCreatedBy>
         where TRole : DefaultIdentityRole<TGenId, TCreatedBy>
         where TUser : DefaultIdentityUser<TGenId, TCreatedBy>
         where TGenId : IEquatable<TGenId>

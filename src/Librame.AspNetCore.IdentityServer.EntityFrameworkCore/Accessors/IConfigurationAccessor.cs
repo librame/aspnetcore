@@ -21,7 +21,7 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
     /// <summary>
     /// 配置访问器接口。
     /// </summary>
-    public interface IConfigurationAccessor : IAccessor, IConfigurationDbContext
+    public interface IConfigurationAccessor : IConfigurationDbContext, IAccessor
     {
         /// <summary>
         /// 客户端数据集管理器。

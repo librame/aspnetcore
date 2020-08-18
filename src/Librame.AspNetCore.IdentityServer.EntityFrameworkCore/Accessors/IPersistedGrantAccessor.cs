@@ -21,7 +21,7 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
     /// <summary>
     /// 持久化授予访问器接口。
     /// </summary>
-    public interface IPersistedGrantAccessor : IAccessor, IPersistedGrantDbContext
+    public interface IPersistedGrantAccessor : IPersistedGrantDbContext, IAccessor
     {
         /// <summary>
         /// 持久化授予数据集管理器。

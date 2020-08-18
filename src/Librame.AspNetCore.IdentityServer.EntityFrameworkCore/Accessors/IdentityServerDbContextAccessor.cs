@@ -52,7 +52,7 @@ namespace Librame.AspNetCore.IdentityServer.Accessors
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     public class IdentityServerDbContextAccessor<TGenId, TIncremId, TCreatedBy>
         : IdentityDbContextAccessor<TGenId, TIncremId, TCreatedBy>,
-        IIdentityServerAccessor
+            IIdentityServerAccessor
         where TGenId : IEquatable<TGenId>
         where TIncremId : IEquatable<TIncremId>
         where TCreatedBy : IEquatable<TCreatedBy>

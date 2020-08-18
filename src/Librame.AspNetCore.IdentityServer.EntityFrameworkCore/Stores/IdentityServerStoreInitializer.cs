@@ -55,10 +55,8 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         public IdentityServerStoreInitializer
-            (IOptions<IdentityServerBuilderOptions> identityServerOptions,
-            IOptions<IdentityBuilderOptions> identityOptions,
-            SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
-            RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
+            (IOptions<IdentityServerBuilderOptions> identityServerOptions, IOptions<IdentityBuilderOptions> identityOptions,
+            SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager, RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
             IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
             : base(identityServerOptions, identityOptions, signInManager, roleMananger,
                   validator, generator, loggerFactory)
@@ -88,10 +86,8 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         public IdentityServerStoreInitializer
-            (IOptions<IdentityServerBuilderOptions> identityServerOptions,
-            IOptions<IdentityBuilderOptions> identityOptions,
-            SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager,
-            RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
+            (IOptions<IdentityServerBuilderOptions> identityServerOptions, IOptions<IdentityBuilderOptions> identityOptions,
+            SignInManager<DefaultIdentityUser<Guid, Guid>> signInManager, RoleManager<DefaultIdentityRole<Guid, Guid>> roleMananger,
             IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
             : base(identityServerOptions?.Value.Stores.Initialization,
                   identityOptions?.Value.Stores.Initialization,
@@ -122,20 +118,20 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         /// <summary>
         /// 构造一个身份服务器存储初始化器。
         /// </summary>
-        /// <param name="serverInitializationOptions">给定的 <see cref="IdentityServerStoreInitializationOptions"/>。</param>
-        /// <param name="initializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
+        /// <param name="identityServerInitializationOptions">给定的 <see cref="IdentityServerStoreInitializationOptions"/>。</param>
+        /// <param name="identityInitializationOptions">给定的 <see cref="IdentityStoreInitializationOptions"/>。</param>
         /// <param name="signInManager">给定的 <see cref="SignInManager{TUser}"/>。</param>
         /// <param name="roleMananger">给定的 <see cref="RoleManager{TRole}"/>。</param>
         /// <param name="validator">给定的 <see cref="IDataInitializationValidator"/>。</param>
         /// <param name="generator">给定的 <see cref="IStoreIdentificationGenerator"/>。</param>
         /// <param name="loggerFactory">给定的 <see cref="ILoggerFactory"/>。</param>
         protected IdentityServerStoreInitializer
-            (IdentityServerStoreInitializationOptions serverInitializationOptions,
-            IdentityStoreInitializationOptions initializationOptions,
+            (IdentityServerStoreInitializationOptions identityServerInitializationOptions,
+            IdentityStoreInitializationOptions identityInitializationOptions,
             SignInManager<DefaultIdentityUser<TGenId, TCreatedBy>> signInManager,
             RoleManager<DefaultIdentityRole<TGenId, TCreatedBy>> roleMananger,
             IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
-            : base(serverInitializationOptions, initializationOptions, signInManager, roleMananger,
+            : base(identityServerInitializationOptions, identityInitializationOptions, signInManager, roleMananger,
                   validator, generator, loggerFactory)
         {
         }
@@ -207,7 +203,7 @@ namespace Librame.AspNetCore.IdentityServer.Stores
             IDataInitializationValidator validator, IStoreIdentificationGenerator generator, ILoggerFactory loggerFactory)
             : base(initializationOptions, signInManager, roleMananger, validator, generator, loggerFactory)
         {
-            ServerInitializationOptions = serverInitializationOptions
+            IdentityServerInitializationOptions = serverInitializationOptions
                 .NotNull(nameof(serverInitializationOptions));
         }
 
@@ -216,7 +212,7 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         /// 初始化选项。
         /// </summary>
         /// <value>返回 <see cref="IdentityStoreInitializationOptions"/>。</value>
-        protected IdentityServerStoreInitializationOptions ServerInitializationOptions { get; }
+        protected IdentityServerStoreInitializationOptions IdentityServerInitializationOptions { get; }
 
 
         /// <summary>
@@ -284,10 +280,10 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         [SuppressMessage("Design", "CA1062:验证公共方法的参数")]
         protected virtual void InitializeClients()
         {
-            Accessor.ClientsManager.TryAddRange(p => p.ClientId == ServerInitializationOptions.DefaultClients[0].ClientId,
+            Accessor.ClientsManager.TryAddRange(p => p.ClientId == IdentityServerInitializationOptions.DefaultClients[0].ClientId,
                 () =>
                 {
-                    return ServerInitializationOptions.DefaultClients.Select(s => s.ToEntity());
+                    return IdentityServerInitializationOptions.DefaultClients.Select(s => s.ToEntity());
                 },
                 addedPost =>
                 {
@@ -312,10 +308,10 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         [SuppressMessage("Design", "CA1062:验证公共方法的参数")]
         protected virtual void InitializeApiResources()
         {
-            Accessor.ApiResourcesManager.TryAddRange(p => p.Name == ServerInitializationOptions.DefaultApiResources[0].Name,
+            Accessor.ApiResourcesManager.TryAddRange(p => p.Name == IdentityServerInitializationOptions.DefaultApiResources[0].Name,
                 () =>
                 {
-                    return ServerInitializationOptions.DefaultApiResources.Select(s => s.ToEntity());
+                    return IdentityServerInitializationOptions.DefaultApiResources.Select(s => s.ToEntity());
                 },
                 addedPost =>
                 {
@@ -340,10 +336,10 @@ namespace Librame.AspNetCore.IdentityServer.Stores
         [SuppressMessage("Design", "CA1062:验证公共方法的参数")]
         protected virtual void InitializeIdentityResources()
         {
-            Accessor.IdentityResourcesManager.TryAddRange(p => p.Name == ServerInitializationOptions.DefaultIdentityResources[0].Name,
+            Accessor.IdentityResourcesManager.TryAddRange(p => p.Name == IdentityServerInitializationOptions.DefaultIdentityResources[0].Name,
                 () =>
                 {
-                    return ServerInitializationOptions.DefaultIdentityResources.Select(s => s.ToEntity());
+                    return IdentityServerInitializationOptions.DefaultIdentityResources.Select(s => s.ToEntity());
                 },
                 addedPost =>
                 {
