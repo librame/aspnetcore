@@ -12,8 +12,6 @@
 
 using Microsoft.Extensions.Logging;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Librame.AspNetCore.Identity.Stores
 {
@@ -36,25 +34,6 @@ namespace Librame.AspNetCore.Identity.Stores
             : base(clock, factory, loggerFactory)
         {
         }
-
-
-        /// <summary>
-        /// 生成标识。
-        /// </summary>
-        /// <param name="idName">给定的标识名称。</param>
-        /// <returns>返回 <see cref="Guid"/>。</returns>
-        public virtual Guid GenerateId(string idName)
-            => GenerateId<Guid>(idName);
-
-        /// <summary>
-        /// 异步生成标识。
-        /// </summary>
-        /// <param name="idName">给定的标识名称。</param>
-        /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
-        /// <returns>返回一个包含 <see cref="Guid"/> 的异步操作。</returns>
-        public virtual Task<Guid> GenerateIdAsync(string idName,
-            CancellationToken cancellationToken = default)
-            => GenerateIdAsync<Guid>(idName, cancellationToken);
 
     }
 }

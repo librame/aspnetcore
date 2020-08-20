@@ -47,7 +47,7 @@ namespace Librame.AspNetCore.Identity.Stores
         /// </summary>
         /// <returns>返回 <typeparamref name="TId"/>。</returns>
         public virtual TId GenerateRoleId()
-            => GenerateId<TId>("RoleId");
+            => GenerateId("RoleId");
 
         /// <summary>
         /// 异步生成角色标识。
@@ -55,7 +55,7 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TId"/> 的异步操作。</returns>
         public virtual Task<TId> GenerateRoleIdAsync(CancellationToken cancellationToken = default)
-            => GenerateIdAsync<TId>("RoleId", cancellationToken);
+            => GenerateIdAsync("RoleId", cancellationToken);
 
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Librame.AspNetCore.Identity.Stores
         /// </summary>
         /// <returns>返回 <typeparamref name="TId"/>。</returns>
         public virtual TId GenerateUserId()
-            => GenerateId<TId>("UserId");
+            => GenerateId("UserId");
 
         /// <summary>
         /// 异步生成用户标识。
@@ -71,6 +71,6 @@ namespace Librame.AspNetCore.Identity.Stores
         /// <param name="cancellationToken">给定的 <see cref="CancellationToken"/>（可选）。</param>
         /// <returns>返回一个包含 <typeparamref name="TId"/> 的异步操作。</returns>
         public virtual Task<TId> GenerateUserIdAsync(CancellationToken cancellationToken = default)
-            => GenerateIdAsync<TId>("UserId", cancellationToken);
+            => GenerateIdAsync("UserId", cancellationToken);
     }
 }
