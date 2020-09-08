@@ -30,8 +30,8 @@ namespace Librame.AspNetCore.Identity.Stores
     /// <typeparam name="TUserId">指定的用户标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     [Description("默认身份用户登入")]
-    public class DefaultIdentityUserLogin<TUserId, TCreatedBy> : IdentityUserLogin<TUserId>,
-        ICreation<TCreatedBy>
+    public class DefaultIdentityUserLogin<TUserId, TCreatedBy>
+        : IdentityUserLogin<TUserId>, ICreation<TCreatedBy>
         where TUserId : IEquatable<TUserId>
         where TCreatedBy : IEquatable<TCreatedBy>
     {

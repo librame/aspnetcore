@@ -31,9 +31,9 @@ namespace Librame.AspNetCore.Identity.Stores
     /// <typeparam name="TGenId">指定的生成式标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     [Description("默认身份用户")]
-    public class DefaultIdentityUser<TGenId, TCreatedBy> : IdentityUser<TGenId>,
-        IIdentifier<TGenId>, ICreation<TCreatedBy>,
-        IEquatable<DefaultIdentityUser<TGenId, TCreatedBy>>
+    public class DefaultIdentityUser<TGenId, TCreatedBy>
+        : IdentityUser<TGenId>, ICreationIdentifier<TGenId, TCreatedBy>, IGenerativeIdentifier<TGenId>
+        , IEquatable<DefaultIdentityUser<TGenId, TCreatedBy>>
         where TGenId : IEquatable<TGenId>
         where TCreatedBy : IEquatable<TCreatedBy>
     {

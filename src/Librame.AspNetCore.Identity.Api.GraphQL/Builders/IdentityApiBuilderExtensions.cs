@@ -41,7 +41,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var parameterMapper = decorator.AccessorTypeParameterMapper;
 
-            var identityApiMutationType = typeof(IdentityGraphApiMutation<,,>).MakeGenericType(
+            var identityApiMutationType = typeof(IdentityGraphApiMutation<,,,>).MakeGenericType(
+                parameterMapper.Role.ArgumentType,
                 parameterMapper.User.ArgumentType,
                 parameterMapper.BaseMapper.GenId.ArgumentType,
                 parameterMapper.BaseMapper.CreatedBy.ArgumentType);

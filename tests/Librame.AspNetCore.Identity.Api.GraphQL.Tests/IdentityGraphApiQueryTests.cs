@@ -36,11 +36,9 @@ namespace Librame.AspNetCore.Identity.Api.Tests
 
             // PageRoles
             var query = @"{
-                pageRoles(index: 1, size: 10) {
+                pageRoles(index: 1, size: 10, includeRoleClaims: false) {
                     id
                     name
-                    createdTime
-                    createdBy
                 }
             }";
 
@@ -55,8 +53,6 @@ namespace Librame.AspNetCore.Identity.Api.Tests
                 roleId(id: ""{_testRoleId}"") {{
                     id
                     name
-                    createdTime
-                    createdBy
                 }}
             }}";
 
@@ -71,8 +67,6 @@ namespace Librame.AspNetCore.Identity.Api.Tests
                 roleName(name: ""{_testRoleName}"") {{
                     id
                     name
-                    createdTime
-                    createdBy
                 }}
             }}";
 
@@ -89,15 +83,12 @@ namespace Librame.AspNetCore.Identity.Api.Tests
         {
             var request = TestServiceProvider.Current.GetRequiredService<IApiRequest>();
 
-            // roleClaimId
+            // PageRoleClaims
             var query = @"{
-                roleClaimId(id: 1) {
+                pageRoleClaims(index: 1, size: 10, includeRole: false) {
                     id
-                    roleId
                     claimType
                     claimValue
-                    createdTime
-                    createdBy
                 }
             }";
 
@@ -107,17 +98,18 @@ namespace Librame.AspNetCore.Identity.Api.Tests
             var json = await request.ExecuteJsonAsync(query).ConfigureAwait();
             Assert.NotEmpty(json);
 
-            // roleClaimRoleId
-            query = @$"{{
-                roleClaimRoleId(roleId: ""{_testRoleId}"") {{
+            // roleClaimId
+            query = @"{
+                roleClaimId(id: 1, includeRole: true) {
                     id
-                    roleId
                     claimType
                     claimValue
-                    createdTime
-                    createdBy
-                }}
-            }}";
+                    role {
+                        id
+                        name
+                    }
+                }
+            }";
 
             result = await request.ExecuteAsync(query).ConfigureAwait();
             Assert.True(result.Succeeded);
@@ -134,11 +126,9 @@ namespace Librame.AspNetCore.Identity.Api.Tests
 
             // PageUsers
             var query = @"{
-                pageUsers(index: 1, size: 10) {
+                pageUsers(index: 1, size: 10, includeRoles: false, includeUserClaims: false, includeUserLogins: false, includeUserTokens: false) {
                     id
                     userName
-                    createdTime
-                    createdBy
                 }
             }";
 
@@ -150,11 +140,9 @@ namespace Librame.AspNetCore.Identity.Api.Tests
 
             // UserId
             query = @$"{{
-                userId(id: ""{_testUserId}"") {{
+                userId(id: ""{_testUserId}"", includeRoles: false, includeUserClaims: false, includeUserLogins: false, includeUserTokens: false) {{
                     id
                     userName
-                    createdTime
-                    createdBy
                 }}
             }}";
 
@@ -166,11 +154,9 @@ namespace Librame.AspNetCore.Identity.Api.Tests
 
             // UserName
             query = @$"{{
-                userName(name: ""{_testUserName}"") {{
+                userName(name: ""{_testUserName}"", includeRoles: false, includeUserClaims: false, includeUserLogins: false, includeUserTokens: false) {{
                     id
                     userName
-                    createdTime
-                    createdBy
                 }}
             }}";
 
@@ -187,15 +173,12 @@ namespace Librame.AspNetCore.Identity.Api.Tests
         {
             var request = TestServiceProvider.Current.GetRequiredService<IApiRequest>();
 
-            // userClaimId
+            // PageUserClaims
             var query = @"{
-                userClaimId(id: 1) {
+                pageUserClaims(index: 1, size: 10, includeUser: false) {
                     id
-                    userId
                     claimType
                     claimValue
-                    createdTime
-                    createdBy
                 }
             }";
 
@@ -205,17 +188,18 @@ namespace Librame.AspNetCore.Identity.Api.Tests
             var json = await request.ExecuteJsonAsync(query).ConfigureAwait();
             Assert.NotEmpty(json);
 
-            // userClaimUserId
-            query = @$"{{
-                userClaimUserId(userId: ""{_testUserId}"") {{
+            // userClaimId
+            query = @"{
+                userClaimId(id: 1, includeUser: true) {
                     id
-                    userId
                     claimType
                     claimValue
-                    createdTime
-                    createdBy
-                }}
-            }}";
+                    user {
+                        id
+                        userName
+                    }
+                }
+            }";
 
             result = await request.ExecuteAsync(query).ConfigureAwait();
             Assert.True(result.Succeeded);
@@ -232,38 +216,12 @@ namespace Librame.AspNetCore.Identity.Api.Tests
 
             // PageUserLogins
             var query = @"{
-                pageUserLogins(index: 1, size: 10) {
-                    userId
+                pageUserLogins(index: 1, size: 10, includeUser: false) {
                     loginProvider
                     providerDisplayName
                     providerKey
-                    createdTime
-                    createdBy
                 }
             }";
-
-            var result = await request.ExecuteAsync(query).ConfigureAwait();
-            Assert.True(result.Succeeded);
-
-            var json = await request.ExecuteJsonAsync(query).ConfigureAwait();
-            Assert.NotEmpty(json);
-        }
-
-
-        [Fact]
-        public async void UserRoleTypeFieldsTest()
-        {
-            var request = TestServiceProvider.Current.GetRequiredService<IApiRequest>();
-
-            // UserRoles
-            var query = @$"{{
-                userRoles(userId: ""{_testUserId}"") {{
-                    id
-                    name
-                    createdTime
-                    createdBy
-                }}
-            }}";
 
             var result = await request.ExecuteAsync(query).ConfigureAwait();
             Assert.True(result.Succeeded);
@@ -281,12 +239,9 @@ namespace Librame.AspNetCore.Identity.Api.Tests
             // PageUserTokens
             var query = @"{
                 pageUserTokens(index: 1, size: 10) {
-                    userId
                     loginProvider
                     name
                     value
-                    createdTime
-                    createdBy
                 }
             }";
 

@@ -12,7 +12,7 @@ namespace Librame.AspNetCore.Identity.Api.Tests
     public class IdentityGraphApiMutationTests
     {
         [Fact]
-        public async void LoginTypeFieldTest()
+        public async void UserInputTypeFieldsTest()
         {
             var request = TestServiceProvider.Current.GetRequiredService<IApiRequest>();
 
@@ -20,9 +20,9 @@ namespace Librame.AspNetCore.Identity.Api.Tests
             var defaultUser = dependency.Options.Stores.Initialization.DefaultUserEmails[0];
             var defaultPassword = dependency.Options.Stores.Initialization.DefaultPassword;
 
-            // mutation
+            // Login
             var query = @$"{{
-                ""query"": ""mutation($user: LoginInput!) {{
+                ""query"": ""mutation($user: UserInput!) {{
                     login(user: $user) {{
                         succeeded
                         isLockedOut
@@ -32,7 +32,7 @@ namespace Librame.AspNetCore.Identity.Api.Tests
                 }}"",
                 ""variables"": {{
                      ""user"": {{
-                         ""username"": ""{defaultUser}"",
+                         ""userName"": ""{defaultUser}"",
                          ""password"": ""{defaultPassword}"",
                          ""rememberMe"": true
                      }}
@@ -43,21 +43,10 @@ namespace Librame.AspNetCore.Identity.Api.Tests
 
             var result = await request.ExecuteAsync().ConfigureAwait();
             Assert.False(result.Succeeded); // HttpContext must not be null.
-        }
 
-
-        [Fact]
-        public async void RegisterTypeFieldTest()
-        {
-            var request = TestServiceProvider.Current.GetRequiredService<IApiRequest>();
-
-            var dependency = TestServiceProvider.Current.GetRequiredService<IdentityBuilderDependency>();
-            var defaultUser = dependency.Options.Stores.Initialization.DefaultUserEmails[0];
-            var defaultPassword = dependency.Options.Stores.Initialization.DefaultPassword;
-
-            // mutation
-            var query = @$"{{
-                ""query"": ""mutation($user: RegisterInput!) {{
+            // Register
+            query = @$"{{
+                ""query"": ""mutation($user: UserInput!) {{
                     register(user: $user) {{
                         succeeded
                         errors {{
@@ -68,9 +57,9 @@ namespace Librame.AspNetCore.Identity.Api.Tests
                 }}"",
                 ""variables"": {{
                      ""user"": {{
-                         ""username"": ""{defaultUser}"",
+                         ""userName"": ""{defaultUser}"",
                          ""password"": ""{defaultPassword}"",
-                         ""confirmEmailUrl"": null
+                         ""emailConfirmationUrl"": null
                      }}
                  }}
             }}";
@@ -79,7 +68,7 @@ namespace Librame.AspNetCore.Identity.Api.Tests
 
             var stores = TestServiceProvider.Current.GetRequiredService<IdentityStoreHub>();
 
-            var result = await request.ExecuteAsync().ConfigureAwait();
+            result = await request.ExecuteAsync().ConfigureAwait();
             if (stores.Accessor.ContainsInitializationData)
                 Assert.False(result.Succeeded);
             else

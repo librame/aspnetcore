@@ -31,8 +31,8 @@ namespace Librame.AspNetCore.Identity.Stores
     /// <typeparam name="TRoleId">指定的角色标识类型。</typeparam>
     /// <typeparam name="TCreatedBy">指定的创建者类型。</typeparam>
     [Description("默认身份角色声明")]
-    public class DefaultIdentityRoleClaim<TRoleId, TCreatedBy> : IdentityRoleClaim<TRoleId>,
-        IIdentifier<int>, ICreation<TCreatedBy>
+    public class DefaultIdentityRoleClaim<TRoleId, TCreatedBy>
+        : IdentityRoleClaim<TRoleId>, ICreationIdentifier<int, TCreatedBy>, IIncrementalIdentifier<int>
         where TRoleId : IEquatable<TRoleId>
         where TCreatedBy : IEquatable<TCreatedBy>
     {

@@ -42,15 +42,26 @@ namespace Librame.AspNetCore.Api
 
 
         /// <summary>
-        /// API 类型名称工厂方法（如：ApiType => Api）。
+        /// 模型类型名称工厂方法（支持省略类型名称的模型类型、或类型后缀，如：TestModelType/TestType => Test）。
         /// </summary>
-        public Func<Type, string> ApiTypeNameFactory
-            => type => type?.Name.TrimEnd(nameof(Type));
+        public Func<Type, string> ModelTypeNameFactory
+            => type =>
+            {
+                type.NotNull(nameof(type));
+
+                if (type.Name.EndsWith("ModelType", StringComparison.OrdinalIgnoreCase))
+                    return type.Name.TrimEnd("ModelType", loops: false);
+
+                if (type.Name.EndsWith("Type", StringComparison.OrdinalIgnoreCase))
+                    return type.Name.TrimEnd("Type", loops: false);
+
+                return type.Name;
+            };
 
         /// <summary>
-        /// API 输入类型名称工厂方法（如：ApiInputType => ApiInput）。
+        /// 输入模型类型名称工厂方法（支持省略类型名称的模型类型、或类型后缀，如：TestInputModelType/TestInputType => TestInput）。
         /// </summary>
-        public Func<Type, string> ApiInputTypeNameFactory
-            => type => type?.Name.TrimEnd(nameof(Type));
+        public Func<Type, string> InputModelTypeNameFactory
+            => ModelTypeNameFactory; // 保留 Input 后缀以示区别
     }
 }

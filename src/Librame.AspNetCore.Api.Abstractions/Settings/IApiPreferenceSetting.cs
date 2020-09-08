@@ -39,13 +39,13 @@ namespace Librame.AspNetCore.Api
 
 
         /// <summary>
-        /// API 类型名称工厂方法。
+        /// 模型类型名称工厂方法。
         /// </summary>
-        Func<Type, string> ApiTypeNameFactory { get; }
+        Func<Type, string> ModelTypeNameFactory { get; }
 
         /// <summary>
-        /// API 输入类型名称工厂方法。
+        /// 输入模型类型名称工厂方法。
         /// </summary>
-        Func<Type, string> ApiInputTypeNameFactory { get; }
+        Func<Type, string> InputModelTypeNameFactory { get; }
     }
 }

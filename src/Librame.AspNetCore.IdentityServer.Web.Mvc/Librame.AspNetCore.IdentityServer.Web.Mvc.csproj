@@ -6,7 +6,7 @@
     <ApplicationIcon>..\..\Librame.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>7.6.0.3</Version>
+    <Version>7.6.1</Version>
     <Authors>Librame Pong</Authors>
     <Company>librame.net</Company>
     <Description>The MVC Web for Librame.AspNetCore.IdentityServer</Description>
@@ -20,8 +20,8 @@
     <PackageReleaseNotes>The MVC Web for Librame.AspNetCore.Identity</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Librame.AspNetCore.pfx</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>7.6.0.3</AssemblyVersion>
-    <FileVersion>7.6.2042.15117</FileVersion>
+    <AssemblyVersion>7.6.1</AssemblyVersion>
+    <FileVersion>7.6.2061.15117</FileVersion>
     <RootNamespace>Librame.AspNetCore.IdentityServer.Web</RootNamespace>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <NeutralLanguage>en-US</NeutralLanguage>
